@@ -6,20 +6,22 @@ fun main() {
     println("NOTE: You should handle also types:")
     println(sections.findUnknownTypes().joinToString("\n") { "`$it`" })
     sections.toReadmeExample()
+    sections.toKotlinFile()
 }
 
-private fun List<Section>.toReadmeExample() = forEach {
-    println("\n\n## ${it.name}")
-    if (it.types.isNotEmpty()) {
+private fun List<Section>.toReadmeExample() = forEach { section ->
+    println("\n\n## ${section.name}")
+    if (section.types.isNotEmpty()) {
         println("\n### Data Types")
-        it.types.forEach {
-            println("    ${it.name}(${it.fields.map { "${it.name}: ${it.type}" }.joinToString()})")
+        section.types.forEach { dataType ->
+            println("    ${dataType.name}(${dataType.fields.map { f -> "${f.name}: ${f.type}" }.joinToString()})")
         }
     }
-    if (it.methods.isNotEmpty()) {
+    if (section.methods.isNotEmpty()) {
         println("\n### Methods")
-        it.methods.forEach {
-            println("    ${it.name}(${it.parameter.map { "${it.name}: ${it.type}" }.joinToString()})")
+        section.methods.forEach { method ->
+            println("    ${method.name}(${method.parameter.map { p -> "${p.name}: ${p.type}" }.joinToString()})")
         }
     }
 }
+
