@@ -1,17 +1,3 @@
-# telegram-api-generator
-Parse https://core.telegram.org/bots/api page and generate a Kotlin class "Section" with "Type" and "Method"
-
-Example in:
-- Kotlin: [TelegramModels.kt](example/TelegramModels.kt)
-- Json: [telegram.json](example/telegram.json)
-- Markdown: [telegram.md](example/telegram.md)
-- Build your own ...
-
-
-Below an example generated with [TelegramApiGenerator.kt](src/main/kotlin/TelegramApiGenerator.kt)
-
----
-
 NOTE: You should handle also types:
 `Integer`
 `String`
@@ -27,7 +13,6 @@ NOTE: You should handle also types:
 `InputMedia`
 `InlineQueryResult`
 `PassportElementError`
-
 
 ## Getting updates
 
@@ -230,4 +215,3 @@ NOTE: You should handle also types:
     sendGame(chat_id: Integer, game_short_name: String, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup)
     setGameScore(user_id: Integer, score: Integer, force: Boolean, disable_edit_message: Boolean, chat_id: Integer, message_id: Integer, inline_message_id: String)
     getGameHighScores(user_id: Integer, chat_id: Integer, message_id: Integer, inline_message_id: String)
-    

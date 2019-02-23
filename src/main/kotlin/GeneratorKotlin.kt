@@ -1,6 +1,6 @@
 import java.io.File
 
-fun List<Section>.toKotlinFile() {
+fun List<Section>.toKotlin() {
     File("out/models.kt").writer().apply {
         write("""import kotlinx.serialization.Optional
 import kotlinx.serialization.Serializable
