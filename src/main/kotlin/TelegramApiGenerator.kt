@@ -5,12 +5,18 @@ import java.io.File
 fun main() {
     val sections = webpageToSection(Jsoup.parse(File("data/telegramapi.html").readText()))
     sections.forEach {
-        println(it.name)
-        it.types.forEach {
-            println("type: ${it.name} ${it.fields.map { it.name }}")
+        println("\n\n## ${it.name}")
+        if (it.types.isNotEmpty()) {
+            println("\n### Data Types")
+            it.types.forEach {
+                println("    ${it.name}(${it.fields.map { "${it.name}: ${it.type}" }.joinToString()})")
+            }
         }
-        it.methods.forEach {
-            println("method: ${it.name}(${it.parameter.map { it.name }.joinToString()})")
+        if (it.methods.isNotEmpty()) {
+            println("\n### Methods")
+            it.methods.forEach {
+                println("    ${it.name}(${it.parameter.map { "${it.name}: ${it.type}" }.joinToString()})")
+            }
         }
     }
 }
