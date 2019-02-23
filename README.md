@@ -8,7 +8,7 @@ Example in:
 - Build your own ...
 
 
-Below an example generated with [TelegramApiGenerator.kt](src/main/kotlin/TelegramApiGenerator.kt)
+Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/GeneratorReadmeExample.kt)
 
 ---
 
