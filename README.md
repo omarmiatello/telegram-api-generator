@@ -1,6 +1,8 @@
 # telegram-api-generator
 Parse https://core.telegram.org/bots/api page and generate a Kotlin class "Section" with "Type" and "Method"
 
+Example in Kotlin: [TelegramModels.kt](example/TelegramModels.kt)
+
 Below an example generated with [TelegramApiGenerator.kt](src/main/kotlin/TelegramApiGenerator.kt)
 
 ---
