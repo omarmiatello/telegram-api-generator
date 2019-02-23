@@ -22,16 +22,15 @@ NOTE: You should handle also types:
 `PassportElementError`
 
 
-
 ## Getting updates
 
 ### Data Types
     Update(update_id: Integer, message: Message, edited_message: Message, channel_post: Message, edited_channel_post: Message, inline_query: InlineQuery, chosen_inline_result: ChosenInlineResult, callback_query: CallbackQuery, shipping_query: ShippingQuery, pre_checkout_query: PreCheckoutQuery)
-    WebhookInfo(url: String, has_custom_certificate: Boolean, pending_update_count: Integer, last_error_date: Integer, last_error_message: String, max_connections: Integer, allowed_updates: Array of String)
+    WebhookInfo(url: String, has_custom_certificate: Boolean, pending_update_count: Integer, last_error_date: Integer, last_error_message: String, max_connections: Integer, allowed_updates: List<String>)
 
 ### Methods
-    getUpdates(offset: Integer, limit: Integer, timeout: Integer, allowed_updates: Array of String)
-    setWebhook(url: String, certificate: InputFile, max_connections: Integer, allowed_updates: Array of String)
+    getUpdates(offset: Integer, limit: Integer, timeout: Integer, allowed_updates: List<String>)
+    setWebhook(url: String, certificate: InputFile, max_connections: Integer, allowed_updates: List<String>)
     deleteWebhook()
     getWebhookInfo()
 
@@ -41,7 +40,7 @@ NOTE: You should handle also types:
 ### Data Types
     User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String)
     Chat(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, all_members_are_administrators: Boolean, photo: ChatPhoto, description: String, invite_link: String, pinned_message: Message, sticker_set_name: String, can_set_sticker_set: Boolean)
-    Message(message_id: Integer, from: User, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_date: Integer, reply_to_message: Message, edit_date: Integer, media_group_id: String, author_signature: String, text: String, entities: Array of MessageEntity, caption_entities: Array of MessageEntity, audio: Audio, document: Document, animation: Animation, game: Game, photo: Array of PhotoSize, sticker: Sticker, video: Video, voice: Voice, video_note: VideoNote, caption: String, contact: Contact, location: Location, venue: Venue, new_chat_members: Array of User, left_chat_member: User, new_chat_title: String, new_chat_photo: Array of PhotoSize, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData)
+    Message(message_id: Integer, from: User, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_date: Integer, reply_to_message: Message, edit_date: Integer, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, caption_entities: List<MessageEntity>, audio: Audio, document: Document, animation: Animation, game: Game, photo: List<PhotoSize>, sticker: Sticker, video: Video, voice: Voice, video_note: VideoNote, caption: String, contact: Contact, location: Location, venue: Venue, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData)
     MessageEntity(type: String, offset: Integer, length: Integer, url: String, user: User)
     PhotoSize(file_id: String, width: Integer, height: Integer, file_size: Integer)
     Audio(file_id: String, duration: Integer, performer: String, title: String, mime_type: String, file_size: Integer, thumb: PhotoSize)
@@ -53,12 +52,12 @@ NOTE: You should handle also types:
     Contact(phone_number: String, first_name: String, last_name: String, user_id: Integer, vcard: String)
     Location(longitude: Float, latitude: Float)
     Venue(location: Location, title: String, address: String, foursquare_id: String, foursquare_type: String)
-    UserProfilePhotos(total_count: Integer, photos: Array of Array of PhotoSize)
+    UserProfilePhotos(total_count: Integer, photos: List<List<PhotoSize>>)
     File(file_id: String, file_size: Integer, file_path: String)
-    ReplyKeyboardMarkup(keyboard: Array of Array of KeyboardButton, resize_keyboard: Boolean, one_time_keyboard: Boolean, selective: Boolean)
+    ReplyKeyboardMarkup(keyboard: List<List<KeyboardButton>>, resize_keyboard: Boolean, one_time_keyboard: Boolean, selective: Boolean)
     KeyboardButton(text: String, request_contact: Boolean, request_location: Boolean)
     ReplyKeyboardRemove(remove_keyboard: Boolean, selective: Boolean)
-    InlineKeyboardMarkup(inline_keyboard: Array of Array of InlineKeyboardButton)
+    InlineKeyboardMarkup(inline_keyboard: List<List<InlineKeyboardButton>>)
     InlineKeyboardButton(text: String, url: String, callback_data: String, switch_inline_query: String, switch_inline_query_current_chat: String, callback_game: CallbackGame, pay: Boolean)
     CallbackQuery(id: String, from: User, message: Message, inline_message_id: String, chat_instance: String, data: String, game_short_name: String)
     ForceReply(force_reply: Boolean, selective: Boolean)
@@ -84,7 +83,7 @@ NOTE: You should handle also types:
     sendAnimation(chat_id: Integer or String, animation: InputFile or String, duration: Integer, width: Integer, height: Integer, thumb: InputFile or String, caption: String, parse_mode: String, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply)
     sendVoice(chat_id: Integer or String, voice: InputFile or String, caption: String, parse_mode: String, duration: Integer, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply)
     sendVideoNote(chat_id: Integer or String, video_note: InputFile or String, duration: Integer, length: Integer, thumb: InputFile or String, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply)
-    sendMediaGroup(chat_id: Integer or String, media: Array of InputMediaPhoto and InputMediaVideo, disable_notification: Boolean, reply_to_message_id: Integer)
+    sendMediaGroup(chat_id: Integer or String, media: List<InputMediaPhoto and InputMediaVideo>, disable_notification: Boolean, reply_to_message_id: Integer)
     sendLocation(chat_id: Integer or String, latitude: Float, longitude: Float, live_period: Integer, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply)
     editMessageLiveLocation(chat_id: Integer or String, message_id: Integer, inline_message_id: String, latitude: Float, longitude: Float, reply_markup: InlineKeyboardMarkup)
     stopMessageLiveLocation(chat_id: Integer or String, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
@@ -128,7 +127,7 @@ NOTE: You should handle also types:
 
 ### Data Types
     Sticker(file_id: String, width: Integer, height: Integer, thumb: PhotoSize, emoji: String, set_name: String, mask_position: MaskPosition, file_size: Integer)
-    StickerSet(name: String, title: String, contains_masks: Boolean, stickers: Array of Sticker)
+    StickerSet(name: String, title: String, contains_masks: Boolean, stickers: List<Sticker>)
     MaskPosition(point: String, x_shift: Float, y_shift: Float, scale: Float)
 
 ### Methods
@@ -172,7 +171,7 @@ NOTE: You should handle also types:
     ChosenInlineResult(result_id: String, from: User, location: Location, inline_message_id: String, query: String)
 
 ### Methods
-    answerInlineQuery(inline_query_id: String, results: Array of InlineQueryResult, cache_time: Integer, is_personal: Boolean, next_offset: String, switch_pm_text: String, switch_pm_parameter: String)
+    answerInlineQuery(inline_query_id: String, results: List<InlineQueryResult>, cache_time: Integer, is_personal: Boolean, next_offset: String, switch_pm_text: String, switch_pm_parameter: String)
 
 
 ## Payments
@@ -182,45 +181,46 @@ NOTE: You should handle also types:
     Invoice(title: String, description: String, start_parameter: String, currency: String, total_amount: Integer)
     ShippingAddress(country_code: String, state: String, city: String, street_line1: String, street_line2: String, post_code: String)
     OrderInfo(name: String, phone_number: String, email: String, shipping_address: ShippingAddress)
-    ShippingOption(id: String, title: String, prices: Array of LabeledPrice)
+    ShippingOption(id: String, title: String, prices: List<LabeledPrice>)
     SuccessfulPayment(currency: String, total_amount: Integer, invoice_payload: String, shipping_option_id: String, order_info: OrderInfo, telegram_payment_charge_id: String, provider_payment_charge_id: String)
     ShippingQuery(id: String, from: User, invoice_payload: String, shipping_address: ShippingAddress)
     PreCheckoutQuery(id: String, from: User, currency: String, total_amount: Integer, invoice_payload: String, shipping_option_id: String, order_info: OrderInfo)
 
 ### Methods
-    sendInvoice(chat_id: Integer, title: String, description: String, payload: String, provider_token: String, start_parameter: String, currency: String, prices: Array of LabeledPrice, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup)
-    answerShippingQuery(shipping_query_id: String, ok: Boolean, shipping_options: Array of ShippingOption, error_message: String)
+    sendInvoice(chat_id: Integer, title: String, description: String, payload: String, provider_token: String, start_parameter: String, currency: String, prices: List<LabeledPrice>, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup)
+    answerShippingQuery(shipping_query_id: String, ok: Boolean, shipping_options: List<ShippingOption>, error_message: String)
     answerPreCheckoutQuery(pre_checkout_query_id: String, ok: Boolean, error_message: String)
 
 
 ## Telegram Passport
 
 ### Data Types
-    PassportData(data: Array of EncryptedPassportElement, credentials: EncryptedCredentials)
+    PassportData(data: List<EncryptedPassportElement>, credentials: EncryptedCredentials)
     PassportFile(file_id: String, file_size: Integer, file_date: Integer)
-    EncryptedPassportElement(type: String, data: String, phone_number: String, email: String, files: Array of PassportFile, front_side: PassportFile, reverse_side: PassportFile, selfie: PassportFile, translation: Array of PassportFile, hash: String)
+    EncryptedPassportElement(type: String, data: String, phone_number: String, email: String, files: List<PassportFile>, front_side: PassportFile, reverse_side: PassportFile, selfie: PassportFile, translation: List<PassportFile>, hash: String)
     EncryptedCredentials(data: String, hash: String, secret: String)
     PassportElementErrorDataField(source: String, type: String, field_name: String, data_hash: String, message: String)
     PassportElementErrorFrontSide(source: String, type: String, file_hash: String, message: String)
     PassportElementErrorReverseSide(source: String, type: String, file_hash: String, message: String)
     PassportElementErrorSelfie(source: String, type: String, file_hash: String, message: String)
     PassportElementErrorFile(source: String, type: String, file_hash: String, message: String)
-    PassportElementErrorFiles(source: String, type: String, file_hashes: Array of String, message: String)
+    PassportElementErrorFiles(source: String, type: String, file_hashes: List<String>, message: String)
     PassportElementErrorTranslationFile(source: String, type: String, file_hash: String, message: String)
-    PassportElementErrorTranslationFiles(source: String, type: String, file_hashes: Array of String, message: String)
+    PassportElementErrorTranslationFiles(source: String, type: String, file_hashes: List<String>, message: String)
     PassportElementErrorUnspecified(source: String, type: String, element_hash: String, message: String)
 
 ### Methods
-    setPassportDataErrors(user_id: Integer, errors: Array of PassportElementError)
+    setPassportDataErrors(user_id: Integer, errors: List<PassportElementError>)
 
 
 ## Games
 
 ### Data Types
-    Game(title: String, description: String, photo: Array of PhotoSize, text: String, text_entities: Array of MessageEntity, animation: Animation)
+    Game(title: String, description: String, photo: List<PhotoSize>, text: String, text_entities: List<MessageEntity>, animation: Animation)
     GameHighScore(position: Integer, user: User, score: Integer)
 
 ### Methods
     sendGame(chat_id: Integer, game_short_name: String, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup)
     setGameScore(user_id: Integer, score: Integer, force: Boolean, disable_edit_message: Boolean, chat_id: Integer, message_id: Integer, inline_message_id: String)
     getGameHighScores(user_id: Integer, chat_id: Integer, message_id: Integer, inline_message_id: String)
+    
