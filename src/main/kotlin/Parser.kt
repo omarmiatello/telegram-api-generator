@@ -44,7 +44,8 @@ fun Document.toSection(): List<Section> {
                                     fields = tableData.children().map {
                                         it.getElementsByTag("td").let {
                                             val fieldDesc = it[2].html()
-                                            Field(it[0].text(), fieldDesc, it[1].text(), "Optional" !in fieldDesc)
+                                            val type = it[1].text().fixType()
+                                            Field(it[0].text(), fieldDesc, type, "Optional" !in fieldDesc)
                                         }
                                     }
                                 }
@@ -53,7 +54,8 @@ fun Document.toSection(): List<Section> {
                                     parameters = tableData.children().map {
                                         it.getElementsByTag("td").let {
                                             val fieldDesc = it[3].html()
-                                            Parameter(it[0].text(), fieldDesc, it[1].text(), "Yes" == it[2].text())
+                                            val type = it[1].text().fixType()
+                                            Parameter(it[0].text(), fieldDesc, type, "Yes" == it[2].text())
                                         }
                                     }
                                 }
@@ -83,4 +85,10 @@ fun Document.toSection(): List<Section> {
         .filterNot {
             it.types.isEmpty() && it.methods.isEmpty()
         }
+}
+
+private fun String.fixType() = when (this) {
+    "Float number" -> "Float"
+    "True" -> "Boolean"
+    else -> this
 }
