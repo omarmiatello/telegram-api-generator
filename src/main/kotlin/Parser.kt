@@ -8,8 +8,8 @@ data class Field(val name: String, val description: String, val type: String, va
 data class Method(val name: String, val description: String, val parameter: List<Parameter>) : ValidData()
 data class Parameter(val name: String, val description: String, val type: String, val required: Boolean)
 
-fun webpageToSection(document: Document): List<Section> {
-    val content = document.select("#dev_page_content").first()
+fun Document.toSection(): List<Section> {
+    val content = select("#dev_page_content").first()
     var splitBy = ""
     return content.children()
         .groupBy {

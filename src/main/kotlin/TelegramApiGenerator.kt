@@ -3,7 +3,7 @@ import org.jsoup.Jsoup
 import java.io.File
 
 fun main() {
-    val sections = webpageToSection(Jsoup.parse(File("data/telegramapi.html").readText()))
+    val sections = Jsoup.parse(File("data/telegramapi.html").readText()).toSection()
     sections.toReadmeExample()
 }
 
