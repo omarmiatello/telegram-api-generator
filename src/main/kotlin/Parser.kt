@@ -86,9 +86,3 @@ fun Document.toSection(): List<Section> {
             it.types.isEmpty() && it.methods.isEmpty()
         }
 }
-
-private fun String.fixType() = when (this) {
-    "Float number" -> "Float"
-    "True" -> "Boolean"
-    else -> this
-}

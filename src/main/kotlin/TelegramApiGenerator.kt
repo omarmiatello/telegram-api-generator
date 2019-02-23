@@ -1,9 +1,10 @@
-
 import org.jsoup.Jsoup
 import java.io.File
 
 fun main() {
     val sections = Jsoup.parse(File("data/telegramapi.html").readText()).toSection()
+    println("NOTE: You should handle also types:")
+    println(sections.findUnknownTypes().joinToString("\n") { "`$it`" })
     sections.toReadmeExample()
 }
 

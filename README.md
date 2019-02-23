@@ -5,6 +5,23 @@ Below an example generated with [TelegramApiGenerator.kt](src/main/kotlin/Telegr
 
 ---
 
+NOTE: You should handle also types:
+`Integer`
+`String`
+`Boolean`
+`Float`
+`CallbackGame`
+`InputFile or String`
+`InputMessageContent`
+`InputFile`
+`Integer or String`
+`InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply`
+`InputMediaPhoto and InputMediaVideo`
+`InputMedia`
+`InlineQueryResult`
+`PassportElementError`
+
+
 
 ## Getting updates
 
