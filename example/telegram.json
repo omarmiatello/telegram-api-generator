@@ -2,11 +2,11 @@
   {
     "name": "Getting updates",
     "description": "\u003cp\u003eThere are two mutually exclusive ways of receiving updates for your bot — the \u003ca href\u003d\"#getupdates\"\u003egetUpdates\u003c/a\u003e method on one hand and \u003ca href\u003d\"#setwebhook\"\u003eWebhooks\u003c/a\u003e on the other. Incoming updates are stored on the server until the bot receives them either way, but they will not be kept longer than 24 hours.\u003c/p\u003e\n\u003cp\u003eRegardless of which option you choose, you will receive JSON-serialized \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e objects as a result.\u003c/p\u003e",
-    "types": [
+    "docTypes": [
       {
         "name": "Update",
         "description": "\u003cp\u003eThis \u003ca href\u003d\"#available-types\"\u003eobject\u003c/a\u003e represents an incoming update.\u003cbr\u003eAt most \u003cstrong\u003eone\u003c/strong\u003e of the optional parameters can be present in any given update.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "update_id",
             "description": "The update‘s unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you’re using \u003ca href\u003d\"#setwebhook\"\u003eWebhooks\u003c/a\u003e, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.",
@@ -72,7 +72,7 @@
       {
         "name": "WebhookInfo",
         "description": "\u003cp\u003eContains information about the current status of a webhook.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "url",
             "description": "Webhook URL, may be empty if webhook is not set up",
@@ -118,11 +118,11 @@
         ]
       }
     ],
-    "methods": [
+    "docMethods": [
       {
         "name": "getUpdates",
         "description": "\u003cp\u003eUse this method to receive incoming updates using long polling (\u003ca href\u003d\"http://en.wikipedia.org/wiki/Push_technology#Long_polling\"\u003ewiki\u003c/a\u003e). An Array of \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e objects is returned.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003e\u003cstrong\u003eNotes\u003c/strong\u003e\u003cbr\u003e\u003cstrong\u003e1.\u003c/strong\u003e This method will not work if an outgoing webhook is set up.\u003cbr\u003e\u003cstrong\u003e2.\u003c/strong\u003e In order to avoid getting duplicate updates, recalculate \u003cem\u003eoffset\u003c/em\u003e after each server response.\u003c/p\u003e \n\u003c/blockquote\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "offset",
             "description": "Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as \u003ca href\u003d\"#getupdates\"\u003egetUpdates\u003c/a\u003e is called with an \u003cem\u003eoffset\u003c/em\u003e higher than its \u003cem\u003eupdate_id\u003c/em\u003e. The negative offset can be specified to retrieve updates starting from \u003cem\u003e-offset\u003c/em\u003e update from the end of the updates queue. All previous updates will forgotten.",
@@ -152,7 +152,7 @@
       {
         "name": "setWebhook",
         "description": "\u003cp\u003eUse this method to specify a url and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e\u003cp\u003eIf you\u0027d like to make sure that the Webhook request comes from Telegram, we recommend using a secret path in the URL, e.g. \u003ccode\u003ehttps://www.example.com/\u0026lt;token\u0026gt;\u003c/code\u003e. Since nobody else knows your bot‘s token, you can be pretty sure it’s us.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003e\u003cstrong\u003eNotes\u003c/strong\u003e\u003cbr\u003e\u003cstrong\u003e1.\u003c/strong\u003e You will not be able to receive updates using \u003ca href\u003d\"#getupdates\"\u003egetUpdates\u003c/a\u003e for as long as an outgoing webhook is set up.\u003cbr\u003e\u003cstrong\u003e2.\u003c/strong\u003e To use a self-signed certificate, you need to upload your \u003ca href\u003d\"/bots/self-signed\"\u003epublic key certificate\u003c/a\u003e using \u003cem\u003ecertificate\u003c/em\u003e parameter. Please upload as InputFile, sending a String will not work.\u003cbr\u003e\u003cstrong\u003e3.\u003c/strong\u003e Ports currently supported \u003cem\u003efor Webhooks\u003c/em\u003e: \u003cstrong\u003e443, 80, 88, 8443\u003c/strong\u003e.\u003c/p\u003e \n \u003cp\u003e\u003cstrong\u003eNEW!\u003c/strong\u003e If you\u0027re having any trouble setting up webhooks, please check out this \u003ca href\u003d\"/bots/webhooks\"\u003eamazing guide to Webhooks\u003c/a\u003e.\u003c/p\u003e \n\u003c/blockquote\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "url",
             "description": "HTTPS url to send updates to. Use an empty string to remove webhook integration",
@@ -182,23 +182,23 @@
       {
         "name": "deleteWebhook",
         "description": "\u003cp\u003eUse this method to remove webhook integration if you decide to switch back to \u003ca href\u003d\"#getupdates\"\u003egetUpdates\u003c/a\u003e. Returns \u003cem\u003eTrue\u003c/em\u003e on success. Requires no parameters. \u003c/p\u003e",
-        "parameter": []
+        "docParameters": []
       },
       {
         "name": "getWebhookInfo",
         "description": "\u003cp\u003eUse this method to get current webhook status. Requires no parameters. On success, returns a \u003ca href\u003d\"#webhookinfo\"\u003eWebhookInfo\u003c/a\u003e object. If the bot is using \u003ca href\u003d\"#getupdates\"\u003egetUpdates\u003c/a\u003e, will return an object with the \u003cem\u003eurl\u003c/em\u003e field empty.\u003c/p\u003e",
-        "parameter": []
+        "docParameters": []
       }
     ]
   },
   {
     "name": "Available types",
     "description": "\u003cp\u003eAll types used in the Bot API responses are represented as JSON-objects.\u003c/p\u003e\n\u003cp\u003eIt is safe to use 32-bit signed integers for storing all \u003cstrong\u003eInteger\u003c/strong\u003e fields unless otherwise noted.\u003c/p\u003e\n\u003cblockquote\u003e \n \u003cp\u003e\u003cstrong\u003eOptional\u003c/strong\u003e fields may be not returned when irrelevant.\u003c/p\u003e \n\u003c/blockquote\u003e",
-    "types": [
+    "docTypes": [
       {
         "name": "User",
         "description": "\u003cp\u003eThis object represents a Telegram user or bot.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "id",
             "description": "Unique identifier for this user or bot",
@@ -240,7 +240,7 @@
       {
         "name": "Chat",
         "description": "\u003cp\u003eThis object represents a chat.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "id",
             "description": "Unique identifier for this chat. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.",
@@ -324,7 +324,7 @@
       {
         "name": "Message",
         "description": "\u003cp\u003eThis object represents a message.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "message_id",
             "description": "Unique message identifier inside this chat",
@@ -594,7 +594,7 @@
       {
         "name": "MessageEntity",
         "description": "\u003cp\u003eThis object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc. \u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the entity. Can be \u003cem\u003emention\u003c/em\u003e (\u003ccode\u003e@username\u003c/code\u003e), \u003cem\u003ehashtag\u003c/em\u003e, \u003cem\u003ecashtag\u003c/em\u003e, \u003cem\u003ebot_command\u003c/em\u003e, \u003cem\u003eurl\u003c/em\u003e, \u003cem\u003eemail\u003c/em\u003e, \u003cem\u003ephone_number\u003c/em\u003e, \u003cem\u003ebold\u003c/em\u003e (bold text), \u003cem\u003eitalic\u003c/em\u003e (italic text), \u003cem\u003ecode\u003c/em\u003e (monowidth string), \u003cem\u003epre\u003c/em\u003e (monowidth block), \u003cem\u003etext_link\u003c/em\u003e (for clickable text URLs), \u003cem\u003etext_mention\u003c/em\u003e (for users \u003ca href\u003d\"https://telegram.org/blog/edit#new-mentions\"\u003ewithout usernames\u003c/a\u003e)",
@@ -630,7 +630,7 @@
       {
         "name": "PhotoSize",
         "description": "\u003cp\u003eThis object represents one size of a photo or a \u003ca href\u003d\"#document\"\u003efile\u003c/a\u003e / \u003ca href\u003d\"#sticker\"\u003esticker\u003c/a\u003e thumbnail.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "file_id",
             "description": "Unique identifier for this file",
@@ -660,7 +660,7 @@
       {
         "name": "Audio",
         "description": "\u003cp\u003eThis object represents an audio file to be treated as music by the Telegram clients.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "file_id",
             "description": "Unique identifier for this file",
@@ -708,7 +708,7 @@
       {
         "name": "Document",
         "description": "\u003cp\u003eThis object represents a general file (as opposed to \u003ca href\u003d\"#photosize\"\u003ephotos\u003c/a\u003e, \u003ca href\u003d\"#voice\"\u003evoice messages\u003c/a\u003e and \u003ca href\u003d\"#audio\"\u003eaudio files\u003c/a\u003e).\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "file_id",
             "description": "Unique file identifier",
@@ -744,7 +744,7 @@
       {
         "name": "Video",
         "description": "\u003cp\u003eThis object represents a video file.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "file_id",
             "description": "Unique identifier for this file",
@@ -792,7 +792,7 @@
       {
         "name": "Animation",
         "description": "\u003cp\u003eThis object represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "file_id",
             "description": "Unique file identifier",
@@ -846,7 +846,7 @@
       {
         "name": "Voice",
         "description": "\u003cp\u003eThis object represents a voice note.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "file_id",
             "description": "Unique identifier for this file",
@@ -876,7 +876,7 @@
       {
         "name": "VideoNote",
         "description": "\u003cp\u003eThis object represents a \u003ca href\u003d\"https://telegram.org/blog/video-messages-and-telescope\"\u003evideo message\u003c/a\u003e (available in Telegram apps as of \u003ca href\u003d\"https://telegram.org/blog/video-messages-and-telescope\"\u003ev.4.0\u003c/a\u003e).\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "file_id",
             "description": "Unique identifier for this file",
@@ -912,7 +912,7 @@
       {
         "name": "Contact",
         "description": "\u003cp\u003eThis object represents a phone contact.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "phone_number",
             "description": "Contact\u0027s phone number",
@@ -948,7 +948,7 @@
       {
         "name": "Location",
         "description": "\u003cp\u003eThis object represents a point on the map.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "longitude",
             "description": "Longitude as defined by sender",
@@ -966,7 +966,7 @@
       {
         "name": "Venue",
         "description": "\u003cp\u003eThis object represents a venue.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "location",
             "description": "Venue location",
@@ -1002,7 +1002,7 @@
       {
         "name": "UserProfilePhotos",
         "description": "\u003cp\u003eThis object represent a user\u0027s profile pictures.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "total_count",
             "description": "Total number of profile pictures the target user has",
@@ -1020,7 +1020,7 @@
       {
         "name": "File",
         "description": "\u003cp\u003eThis object represents a file ready to be downloaded. The file can be downloaded via the link \u003ccode\u003ehttps://api.telegram.org/file/bot\u0026lt;token\u0026gt;/\u0026lt;file_path\u0026gt;\u003c/code\u003e. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling \u003ca href\u003d\"#getfile\"\u003egetFile\u003c/a\u003e.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eMaximum file size to download is 20 MB\u003c/p\u003e \n\u003c/blockquote\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "file_id",
             "description": "Unique identifier for this file",
@@ -1044,7 +1044,7 @@
       {
         "name": "ReplyKeyboardMarkup",
         "description": "\u003cp\u003eThis object represents a \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom keyboard\u003c/a\u003e with reply options (see \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003eIntroduction to bots\u003c/a\u003e for details and examples).\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "keyboard",
             "description": "Array of button rows, each represented by an Array of \u003ca href\u003d\"#keyboardbutton\"\u003eKeyboardButton\u003c/a\u003e objects",
@@ -1074,7 +1074,7 @@
       {
         "name": "KeyboardButton",
         "description": "\u003cp\u003eThis object represents one button of the reply keyboard. For simple text buttons \u003cem\u003eString\u003c/em\u003e can be used instead of this object to specify text of the button. Optional fields are mutually exclusive.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e \u003cem\u003erequest_contact\u003c/em\u003e and \u003cem\u003erequest_location\u003c/em\u003e options will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "text",
             "description": "Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed",
@@ -1098,7 +1098,7 @@
       {
         "name": "ReplyKeyboardRemove",
         "description": "\u003cp\u003eUpon receiving a message with this object, Telegram clients will remove the current custom keyboard and display the default letter-keyboard. By default, custom keyboards are displayed until a new keyboard is sent by a bot. An exception is made for one-time keyboards that are hidden immediately after the user presses a button (see \u003ca href\u003d\"#replykeyboardmarkup\"\u003eReplyKeyboardMarkup\u003c/a\u003e). \u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "remove_keyboard",
             "description": "Requests clients to remove the custom keyboard (user will not be able to summon this keyboard; if you want to hide the keyboard from sight but keep it accessible, use \u003cem\u003eone_time_keyboard\u003c/em\u003e in \u003ca href\u003d\"#replykeyboardmarkup\"\u003eReplyKeyboardMarkup\u003c/a\u003e)",
@@ -1116,7 +1116,7 @@
       {
         "name": "InlineKeyboardMarkup",
         "description": "\u003cp\u003eThis object represents an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e that appears right next to the message it belongs to.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will display \u003cem\u003eunsupported message\u003c/em\u003e.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "inline_keyboard",
             "description": "Array of button rows, each represented by an Array of \u003ca href\u003d\"#inlinekeyboardbutton\"\u003eInlineKeyboardButton\u003c/a\u003e objects",
@@ -1128,7 +1128,7 @@
       {
         "name": "InlineKeyboardButton",
         "description": "\u003cp\u003eThis object represents one button of an inline keyboard. You \u003cstrong\u003emust\u003c/strong\u003e use exactly one of the optional fields.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "text",
             "description": "Label text on the button",
@@ -1176,7 +1176,7 @@
       {
         "name": "CallbackQuery",
         "description": "\u003cp\u003eThis object represents an incoming callback query from a callback button in an \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e. If the button that originated the query was attached to a message sent by the bot, the field \u003cem\u003emessage\u003c/em\u003e will be present. If the button was attached to a message sent via the bot (in \u003ca href\u003d\"#inline-mode\"\u003einline mode\u003c/a\u003e), the field \u003cem\u003einline_message_id\u003c/em\u003e will be present. Exactly one of the fields \u003cem\u003edata\u003c/em\u003e or \u003cem\u003egame_short_name\u003c/em\u003e will be present. \u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003e\u003cstrong\u003eNOTE:\u003c/strong\u003e After the user presses a callback button, Telegram clients will display a progress bar until you call \u003ca href\u003d\"#answercallbackquery\"\u003eanswerCallbackQuery\u003c/a\u003e. It is, therefore, necessary to react by calling \u003ca href\u003d\"#answercallbackquery\"\u003eanswerCallbackQuery\u003c/a\u003e even if no notification to the user is needed (e.g., without specifying any of the optional parameters).\u003c/p\u003e \n\u003c/blockquote\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "id",
             "description": "Unique identifier for this query",
@@ -1224,7 +1224,7 @@
       {
         "name": "ForceReply",
         "description": "\u003cp\u003eUpon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot‘s message and tapped ’Reply\u0027). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice \u003ca href\u003d\"/bots#privacy-mode\"\u003eprivacy mode\u003c/a\u003e.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003e\u003cstrong\u003eExample:\u003c/strong\u003e A \u003ca href\u003d\"https://t.me/PollBot\"\u003epoll bot\u003c/a\u003e for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:\u003c/p\u003e \n\u003c/blockquote\u003e\u003cul\u003e \n \u003cli\u003eExplain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish. \u003c/li\u003e \n \u003cli\u003eGuide the user through a step-by-step process. ‘Please send me your question’, ‘Cool, now let’s add the first answer option‘, ’Great. Keep adding answer options, then send /done when you‘re ready’. \u003c/li\u003e \n\u003c/ul\u003e\u003cp\u003eThe last option is definitely more attractive. And if you use \u003ca href\u003d\"#forcereply\"\u003eForceReply\u003c/a\u003e in your bot‘s questions, it will receive the user’s answers even if it only receives replies, commands and mentions — without any extra work for the user.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "force_reply",
             "description": "Shows reply interface to the user, as if they manually selected the bot‘s message and tapped ’Reply\u0027",
@@ -1242,7 +1242,7 @@
       {
         "name": "ChatPhoto",
         "description": "\u003cp\u003eThis object represents a chat photo.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "small_file_id",
             "description": "Unique file identifier of small (160x160) chat photo. This file_id can be used only for photo download.",
@@ -1260,7 +1260,7 @@
       {
         "name": "ChatMember",
         "description": "\u003cp\u003eThis object contains information about one member of a chat.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "user",
             "description": "Information about the user",
@@ -1362,7 +1362,7 @@
       {
         "name": "ResponseParameters",
         "description": "\u003cp\u003eContains information about why a request was unsuccessful.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "migrate_to_chat_id",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. The group has been migrated to a supergroup with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.",
@@ -1380,7 +1380,7 @@
       {
         "name": "InputMediaPhoto",
         "description": "\u003cp\u003eRepresents a photo to be sent.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003ephoto\u003c/em\u003e",
@@ -1410,7 +1410,7 @@
       {
         "name": "InputMediaVideo",
         "description": "\u003cp\u003eRepresents a video to be sent.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003evideo\u003c/em\u003e",
@@ -1470,7 +1470,7 @@
       {
         "name": "InputMediaAnimation",
         "description": "\u003cp\u003eRepresents an animation file (GIF or H.264/MPEG-4 AVC video without sound) to be sent.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003eanimation\u003c/em\u003e",
@@ -1524,7 +1524,7 @@
       {
         "name": "InputMediaAudio",
         "description": "\u003cp\u003eRepresents an audio file to be treated as music to be sent.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003eaudio\u003c/em\u003e",
@@ -1578,7 +1578,7 @@
       {
         "name": "InputMediaDocument",
         "description": "\u003cp\u003eRepresents a general file to be sent.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003edocument\u003c/em\u003e",
@@ -1612,17 +1612,17 @@
         ]
       }
     ],
-    "methods": []
+    "docMethods": []
   },
   {
     "name": "Available methods",
     "description": "\u003cblockquote\u003e \n \u003cp\u003eAll methods in the Bot API are case-insensitive. We support \u003cstrong\u003eGET\u003c/strong\u003e and \u003cstrong\u003ePOST\u003c/strong\u003e HTTP methods. Use either \u003ca href\u003d\"https://en.wikipedia.org/wiki/Query_string\"\u003eURL query string\u003c/a\u003e or \u003cem\u003eapplication/json\u003c/em\u003e or \u003cem\u003eapplication/x-www-form-urlencoded\u003c/em\u003e or \u003cem\u003emultipart/form-data\u003c/em\u003e for passing parameters in Bot API requests.\u003cbr\u003eOn successful call, a JSON-object containing the result will be returned. \u003c/p\u003e \n\u003c/blockquote\u003e",
-    "types": [],
-    "methods": [
+    "docTypes": [],
+    "docMethods": [
       {
         "name": "sendMessage",
         "description": "\u003cp\u003eUse this method to send text messages. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -1670,7 +1670,7 @@
       {
         "name": "forwardMessage",
         "description": "\u003cp\u003eUse this method to forward messages of any kind. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -1700,7 +1700,7 @@
       {
         "name": "sendPhoto",
         "description": "\u003cp\u003eUse this method to send photos. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned. \u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -1748,7 +1748,7 @@
       {
         "name": "sendAudio",
         "description": "\u003cp\u003eUse this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .mp3 format. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.\u003c/p\u003e\u003cp\u003eFor sending voice messages, use the \u003ca href\u003d\"#sendvoice\"\u003esendVoice\u003c/a\u003e method instead.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -1820,7 +1820,7 @@
       {
         "name": "sendDocument",
         "description": "\u003cp\u003eUse this method to send general files. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -1874,7 +1874,7 @@
       {
         "name": "sendVideo",
         "description": "\u003cp\u003eUse this method to send video files, Telegram clients support mp4 videos (other formats may be sent as \u003ca href\u003d\"#document\"\u003eDocument\u003c/a\u003e). On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -1952,7 +1952,7 @@
       {
         "name": "sendAnimation",
         "description": "\u003cp\u003eUse this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2024,7 +2024,7 @@
       {
         "name": "sendVoice",
         "description": "\u003cp\u003eUse this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .ogg file encoded with OPUS (other formats may be sent as \u003ca href\u003d\"#audio\"\u003eAudio\u003c/a\u003e or \u003ca href\u003d\"#document\"\u003eDocument\u003c/a\u003e). On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2078,7 +2078,7 @@
       {
         "name": "sendVideoNote",
         "description": "\u003cp\u003eAs of \u003ca href\u003d\"https://telegram.org/blog/video-messages-and-telescope\"\u003ev.4.0\u003c/a\u003e, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2132,7 +2132,7 @@
       {
         "name": "sendMediaGroup",
         "description": "\u003cp\u003eUse this method to send a group of photos or videos as an album. On success, an array of the sent \u003ca href\u003d\"#message\"\u003eMessages\u003c/a\u003e is returned.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2162,7 +2162,7 @@
       {
         "name": "sendLocation",
         "description": "\u003cp\u003eUse this method to send point on the map. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2210,7 +2210,7 @@
       {
         "name": "editMessageLiveLocation",
         "description": "\u003cp\u003eUse this method to edit live location messages sent by the bot or via the bot (for \u003ca href\u003d\"#inline-mode\"\u003einline bots\u003c/a\u003e). A location can be edited until its \u003cem\u003elive_period\u003c/em\u003e expires or editing is explicitly disabled by a call to \u003ca href\u003d\"#stopmessagelivelocation\"\u003estopMessageLiveLocation\u003c/a\u003e. On success, if the edited message was sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2252,7 +2252,7 @@
       {
         "name": "stopMessageLiveLocation",
         "description": "\u003cp\u003eUse this method to stop updating a live location message sent by the bot or via the bot (for \u003ca href\u003d\"#inline-mode\"\u003einline bots\u003c/a\u003e) before \u003cem\u003elive_period\u003c/em\u003e expires. On success, if the message was sent by the bot, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2282,7 +2282,7 @@
       {
         "name": "sendVenue",
         "description": "\u003cp\u003eUse this method to send information about a venue. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2348,7 +2348,7 @@
       {
         "name": "sendContact",
         "description": "\u003cp\u003eUse this method to send phone contacts. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2402,7 +2402,7 @@
       {
         "name": "sendChatAction",
         "description": "\u003cp\u003eUse this method when you need to tell the user that something is happening on the bot\u0027s side. The status is set for 5 seconds or less (when a message arrives from your bot, Telegram clients clear its typing status). Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eExample: The \u003ca href\u003d\"https://t.me/imagebot\"\u003eImageBot\u003c/a\u003e needs some time to process a request and upload the image. Instead of sending a text message along the lines of “Retrieving image, please wait…”, the bot may use \u003ca href\u003d\"#sendchataction\"\u003esendChatAction\u003c/a\u003e with \u003cem\u003eaction\u003c/em\u003e \u003d \u003cem\u003eupload_photo\u003c/em\u003e. The user will see a “sending photo” status for the bot.\u003c/p\u003e \n\u003c/blockquote\u003e\u003cp\u003eWe only recommend using this method when a response from the bot will take a \u003cstrong\u003enoticeable\u003c/strong\u003e amount of time to arrive.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2420,7 +2420,7 @@
       {
         "name": "getUserProfilePhotos",
         "description": "\u003cp\u003eUse this method to get a list of profile pictures for a user. Returns a \u003ca href\u003d\"#userprofilephotos\"\u003eUserProfilePhotos\u003c/a\u003e object.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "user_id",
             "description": "Unique identifier of the target user",
@@ -2444,7 +2444,7 @@
       {
         "name": "getFile",
         "description": "\u003cp\u003eUse this method to get basic info about a file and prepare it for downloading. For the moment, bots can download files of up to 20MB in size. On success, a \u003ca href\u003d\"#file\"\u003eFile\u003c/a\u003e object is returned. The file can then be downloaded via the link \u003ccode\u003ehttps://api.telegram.org/file/bot\u0026lt;token\u0026gt;/\u0026lt;file_path\u0026gt;\u003c/code\u003e, where \u003ccode\u003e\u0026lt;file_path\u0026gt;\u003c/code\u003e is taken from the response. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling \u003ca href\u003d\"#getfile\"\u003egetFile\u003c/a\u003e again.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This function may not preserve the original file name and MIME type. You should save the file\u0027s MIME type and name (if available) when the File object is received. \u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "file_id",
             "description": "File identifier to get info about",
@@ -2456,7 +2456,7 @@
       {
         "name": "kickChatMember",
         "description": "\u003cp\u003eUse this method to kick a user from a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the group on their own using invite links, etc., unless \u003ca href\u003d\"#unbanchatmember\"\u003eunbanned\u003c/a\u003e first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group. Otherwise members may only be removed by the group\u0027s creator or by the member that added them.\u003c/p\u003e \n\u003c/blockquote\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target group or username of the target supergroup or channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2480,7 +2480,7 @@
       {
         "name": "unbanChatMember",
         "description": "\u003cp\u003eUse this method to unban a previously kicked user in a supergroup or channel. The user will \u003cstrong\u003enot\u003c/strong\u003e return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. Returns \u003cem\u003eTrue\u003c/em\u003e on success. \u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target group or username of the target supergroup or channel (in the format \u003ccode\u003e@username\u003c/code\u003e)",
@@ -2498,7 +2498,7 @@
       {
         "name": "restrictChatMember",
         "description": "\u003cp\u003eUse this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights. Pass \u003cem\u003eTrue\u003c/em\u003e for all boolean parameters to lift restrictions from a user. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target supergroup (in the format \u003ccode\u003e@supergroupusername\u003c/code\u003e)",
@@ -2546,7 +2546,7 @@
       {
         "name": "promoteChatMember",
         "description": "\u003cp\u003eUse this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Pass \u003cem\u003eFalse\u003c/em\u003e for all boolean parameters to demote a user. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2612,7 +2612,7 @@
       {
         "name": "exportChatInviteLink",
         "description": "\u003cp\u003eUse this method to generate a new invite link for a chat; any previously generated link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as \u003cem\u003eString\u003c/em\u003e on success.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: Each administrator in a chat generates their own invite links. Bots can\u0027t use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using \u003ca href\u003d\"#exportchatinvitelink\"\u003eexportChatInviteLink\u003c/a\u003e – after this the link will become available to the bot via the \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e method. If your bot needs to generate a new invite link replacing its previous one, use \u003ca href\u003d\"#exportchatinvitelink\"\u003eexportChatInviteLink\u003c/a\u003e again.\u003c/p\u003e \n\u003c/blockquote\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2624,7 +2624,7 @@
       {
         "name": "setChatPhoto",
         "description": "\u003cp\u003eUse this method to set a new profile photo for the chat. Photos can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success. \u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.\u003c/p\u003e \n\u003c/blockquote\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2642,7 +2642,7 @@
       {
         "name": "deleteChatPhoto",
         "description": "\u003cp\u003eUse this method to delete a chat photo. Photos can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success. \u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.\u003c/p\u003e \n\u003c/blockquote\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2654,7 +2654,7 @@
       {
         "name": "setChatTitle",
         "description": "\u003cp\u003eUse this method to change the title of a chat. Titles can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success. \u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.\u003c/p\u003e \n\u003c/blockquote\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2672,7 +2672,7 @@
       {
         "name": "setChatDescription",
         "description": "\u003cp\u003eUse this method to change the description of a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success. \u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2690,7 +2690,7 @@
       {
         "name": "pinChatMessage",
         "description": "\u003cp\u003eUse this method to pin a message in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2714,7 +2714,7 @@
       {
         "name": "unpinChatMessage",
         "description": "\u003cp\u003eUse this method to unpin a message in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success. \u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2726,7 +2726,7 @@
       {
         "name": "leaveChat",
         "description": "\u003cp\u003eUse this method for your bot to leave a group, supergroup or channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2738,7 +2738,7 @@
       {
         "name": "getChat",
         "description": "\u003cp\u003eUse this method to get up to date information about the chat (current name of the user for one-on-one conversations, current username of a user, group or channel, etc.). Returns a \u003ca href\u003d\"#chat\"\u003eChat\u003c/a\u003e object on success.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2750,7 +2750,7 @@
       {
         "name": "getChatAdministrators",
         "description": "\u003cp\u003eUse this method to get a list of administrators in a chat. On success, returns an Array of \u003ca href\u003d\"#chatmember\"\u003eChatMember\u003c/a\u003e objects that contains information about all chat administrators except other bots. If the chat is a group or a supergroup and no administrators were appointed, only the creator will be returned.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2762,7 +2762,7 @@
       {
         "name": "getChatMembersCount",
         "description": "\u003cp\u003eUse this method to get the number of members in a chat. Returns \u003cem\u003eInt\u003c/em\u003e on success.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2774,7 +2774,7 @@
       {
         "name": "getChatMember",
         "description": "\u003cp\u003eUse this method to get information about a member of a chat. Returns a \u003ca href\u003d\"#chatmember\"\u003eChatMember\u003c/a\u003e object on success.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2792,7 +2792,7 @@
       {
         "name": "setChatStickerSet",
         "description": "\u003cp\u003eUse this method to set a new group sticker set for a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Use the field \u003cem\u003ecan_set_sticker_set\u003c/em\u003e optionally returned in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e requests to check if the bot can use this method. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target supergroup (in the format \u003ccode\u003e@supergroupusername\u003c/code\u003e)",
@@ -2810,7 +2810,7 @@
       {
         "name": "deleteChatStickerSet",
         "description": "\u003cp\u003eUse this method to delete a group sticker set from a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Use the field \u003cem\u003ecan_set_sticker_set\u003c/em\u003e optionally returned in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e requests to check if the bot can use this method. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target supergroup (in the format \u003ccode\u003e@supergroupusername\u003c/code\u003e)",
@@ -2822,7 +2822,7 @@
       {
         "name": "answerCallbackQuery",
         "description": "\u003cp\u003eUse this method to send answers to callback queries sent from \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboards\u003c/a\u003e. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eAlternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via \u003ca href\u003d\"https://t.me/botfather\"\u003e@Botfather\u003c/a\u003e and accept the terms. Otherwise, you may use links like \u003ccode\u003et.me/your_bot?start\u003dXXXX\u003c/code\u003e that open your bot with a parameter.\u003c/p\u003e \n\u003c/blockquote\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "callback_query_id",
             "description": "Unique identifier for the query to be answered",
@@ -2860,12 +2860,12 @@
   {
     "name": "Updating messages",
     "description": "\u003cp\u003eThe following methods allow you to change an existing message in the message history instead of sending a new one with a result of an action. This is most useful for messages with \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboards\u003c/a\u003e using callback queries, but can also help reduce clutter in conversations with regular chat bots.\u003c/p\u003e\n\u003cp\u003ePlease note, that it is currently only possible to edit messages without \u003cem\u003ereply_markup\u003c/em\u003e or with \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboards\u003c/a\u003e.\u003c/p\u003e",
-    "types": [],
-    "methods": [
+    "docTypes": [],
+    "docMethods": [
       {
         "name": "editMessageText",
         "description": "\u003cp\u003eUse this method to edit text and \u003ca href\u003d\"#games\"\u003egame\u003c/a\u003e messages sent by the bot or via the bot (for \u003ca href\u003d\"#inline-mode\"\u003einline bots\u003c/a\u003e). On success, if edited message is sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned. \u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2913,7 +2913,7 @@
       {
         "name": "editMessageCaption",
         "description": "\u003cp\u003eUse this method to edit captions of messages sent by the bot or via the bot (for \u003ca href\u003d\"#inline-mode\"\u003einline bots\u003c/a\u003e). On success, if edited message is sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2955,7 +2955,7 @@
       {
         "name": "editMessageMedia",
         "description": "\u003cp\u003eUse this method to edit animation, audio, document, photo, or video messages. If a message is a part of a message album, then it can be edited only to a photo or a video. Otherwise, message type can be changed arbitrarily. When inline message is edited, new file can\u0027t be uploaded. Use previously uploaded file via its file_id or specify a URL. On success, if the edited message was sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -2991,7 +2991,7 @@
       {
         "name": "editMessageReplyMarkup",
         "description": "\u003cp\u003eUse this method to edit only the reply markup of messages sent by the bot or via the bot (for \u003ca href\u003d\"#inline-mode\"\u003einline bots\u003c/a\u003e). On success, if edited message is sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -3021,7 +3021,7 @@
       {
         "name": "deleteMessage",
         "description": "\u003cp\u003eUse this method to delete a message, including service messages, with the following limitations:\u003cbr\u003e- A message can only be deleted if it was sent less than 48 hours ago.\u003cbr\u003e- Bots can delete outgoing messages in private chats, groups, and supergroups.\u003cbr\u003e- Bots granted \u003cem\u003ecan_post_messages\u003c/em\u003e permissions can delete outgoing messages in channels.\u003cbr\u003e- If the bot is an administrator of a group, it can delete any message there.\u003cbr\u003e- If the bot has \u003cem\u003ecan_delete_messages\u003c/em\u003e permission in a supergroup or a channel, it can delete any message there.\u003cbr\u003eReturns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -3041,11 +3041,11 @@
   {
     "name": "Stickers",
     "description": "\u003cp\u003eThe following methods and objects allow your bot to handle stickers and sticker sets.\u003c/p\u003e",
-    "types": [
+    "docTypes": [
       {
         "name": "Sticker",
         "description": "\u003cp\u003eThis object represents a sticker.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "file_id",
             "description": "Unique identifier for this file",
@@ -3099,7 +3099,7 @@
       {
         "name": "StickerSet",
         "description": "\u003cp\u003eThis object represents a sticker set.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "name",
             "description": "Sticker set name",
@@ -3129,7 +3129,7 @@
       {
         "name": "MaskPosition",
         "description": "\u003cp\u003eThis object describes the position on faces where a mask should be placed by default.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "point",
             "description": "The part of the face relative to which the mask should be placed. One of “forehead”, “eyes”, “mouth”, or “chin”.",
@@ -3157,11 +3157,11 @@
         ]
       }
     ],
-    "methods": [
+    "docMethods": [
       {
         "name": "sendSticker",
         "description": "\u003cp\u003eUse this method to send .webp stickers. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
@@ -3197,7 +3197,7 @@
       {
         "name": "getStickerSet",
         "description": "\u003cp\u003eUse this method to get a sticker set. On success, a \u003ca href\u003d\"#stickerset\"\u003eStickerSet\u003c/a\u003e object is returned.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "name",
             "description": "Name of the sticker set",
@@ -3209,7 +3209,7 @@
       {
         "name": "uploadStickerFile",
         "description": "\u003cp\u003eUse this method to upload a .png file with a sticker for later use in \u003cem\u003ecreateNewStickerSet\u003c/em\u003e and \u003cem\u003eaddStickerToSet\u003c/em\u003e methods (can be used multiple times). Returns the uploaded \u003ca href\u003d\"#file\"\u003eFile\u003c/a\u003e on success.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "user_id",
             "description": "User identifier of sticker file owner",
@@ -3227,7 +3227,7 @@
       {
         "name": "createNewStickerSet",
         "description": "\u003cp\u003eUse this method to create new sticker set owned by a user. The bot will be able to edit the created sticker set. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "user_id",
             "description": "User identifier of created sticker set owner",
@@ -3275,7 +3275,7 @@
       {
         "name": "addStickerToSet",
         "description": "\u003cp\u003eUse this method to add a new sticker to a set created by the bot. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "user_id",
             "description": "User identifier of sticker set owner",
@@ -3311,7 +3311,7 @@
       {
         "name": "setStickerPositionInSet",
         "description": "\u003cp\u003eUse this method to move a sticker in a set created by the bot to a specific position . Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "sticker",
             "description": "File identifier of the sticker",
@@ -3329,7 +3329,7 @@
       {
         "name": "deleteStickerFromSet",
         "description": "\u003cp\u003eUse this method to delete a sticker from a set created by the bot. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "sticker",
             "description": "File identifier of the sticker",
@@ -3343,11 +3343,11 @@
   {
     "name": "Inline mode",
     "description": "\u003cp\u003eThe following methods and objects allow your bot to work in \u003ca href\u003d\"/bots/inline\"\u003einline mode\u003c/a\u003e.\u003cbr\u003ePlease see our \u003ca href\u003d\"/bots/inline\"\u003eIntroduction to Inline bots\u003c/a\u003e for more details.\u003c/p\u003e\n\u003cp\u003eTo enable this option, send the \u003ccode\u003e/setinline\u003c/code\u003e command to \u003ca href\u003d\"https://t.me/botfather\"\u003e@BotFather\u003c/a\u003e and provide the placeholder text that the user will see in the input field after typing your bot’s name.\u003c/p\u003e",
-    "types": [
+    "docTypes": [
       {
         "name": "InlineQuery",
         "description": "\u003cp\u003eThis object represents an incoming inline query. When the user sends an empty query, your bot could return some default or trending results.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "id",
             "description": "Unique identifier for this query",
@@ -3383,7 +3383,7 @@
       {
         "name": "InlineQueryResultArticle",
         "description": "\u003cp\u003eRepresents a link to an article or web page.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003earticle\u003c/em\u003e",
@@ -3455,7 +3455,7 @@
       {
         "name": "InlineQueryResultPhoto",
         "description": "\u003cp\u003eRepresents a link to a photo. By default, this photo will be sent by the user with optional caption. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the photo.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003ephoto\u003c/em\u003e",
@@ -3533,7 +3533,7 @@
       {
         "name": "InlineQueryResultGif",
         "description": "\u003cp\u003eRepresents a link to an animated GIF file. By default, this animated GIF file will be sent by the user with optional caption. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the animation.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003egif\u003c/em\u003e",
@@ -3611,7 +3611,7 @@
       {
         "name": "InlineQueryResultMpeg4Gif",
         "description": "\u003cp\u003eRepresents a link to a video animation (H.264/MPEG-4 AVC video without sound). By default, this animated MPEG-4 file will be sent by the user with optional caption. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the animation.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003empeg4_gif\u003c/em\u003e",
@@ -3689,7 +3689,7 @@
       {
         "name": "InlineQueryResultVideo",
         "description": "\u003cp\u003eRepresents a link to a page containing an embedded video player or a video file. By default, this video file will be sent by the user with an optional caption. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the video.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eIf an InlineQueryResultVideo message contains an embedded video (e.g., YouTube), you \u003cstrong\u003emust\u003c/strong\u003e replace its content using \u003cem\u003einput_message_content\u003c/em\u003e.\u003c/p\u003e \n\u003c/blockquote\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003evideo\u003c/em\u003e",
@@ -3779,7 +3779,7 @@
       {
         "name": "InlineQueryResultAudio",
         "description": "\u003cp\u003eRepresents a link to an mp3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the audio.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003eaudio\u003c/em\u003e",
@@ -3845,7 +3845,7 @@
       {
         "name": "InlineQueryResultVoice",
         "description": "\u003cp\u003eRepresents a link to a voice recording in an .ogg container encoded with OPUS. By default, this voice recording will be sent by the user. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the the voice message.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003evoice\u003c/em\u003e",
@@ -3905,7 +3905,7 @@
       {
         "name": "InlineQueryResultDocument",
         "description": "\u003cp\u003eRepresents a link to a file. By default, this file will be sent by the user with an optional caption. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the file. Currently, only \u003cstrong\u003e.PDF\u003c/strong\u003e and \u003cstrong\u003e.ZIP\u003c/strong\u003e files can be sent using this method.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003edocument\u003c/em\u003e",
@@ -3989,7 +3989,7 @@
       {
         "name": "InlineQueryResultLocation",
         "description": "\u003cp\u003eRepresents a location on a map. By default, the location will be sent by the user. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the location.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003elocation\u003c/em\u003e",
@@ -4061,7 +4061,7 @@
       {
         "name": "InlineQueryResultVenue",
         "description": "\u003cp\u003eRepresents a venue. By default, the venue will be sent by the user. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the venue.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003evenue\u003c/em\u003e",
@@ -4145,7 +4145,7 @@
       {
         "name": "InlineQueryResultContact",
         "description": "\u003cp\u003eRepresents a contact with a phone number. By default, this contact will be sent by the user. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the contact.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003econtact\u003c/em\u003e",
@@ -4217,7 +4217,7 @@
       {
         "name": "InlineQueryResultGame",
         "description": "\u003cp\u003eRepresents a \u003ca href\u003d\"#games\"\u003eGame\u003c/a\u003e.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after October 1, 2016. Older clients will not display any inline results if a game result is among them.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003egame\u003c/em\u003e",
@@ -4247,7 +4247,7 @@
       {
         "name": "InlineQueryResultCachedPhoto",
         "description": "\u003cp\u003eRepresents a link to a photo stored on the Telegram servers. By default, this photo will be sent by the user with an optional caption. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the photo.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003ephoto\u003c/em\u003e",
@@ -4307,7 +4307,7 @@
       {
         "name": "InlineQueryResultCachedGif",
         "description": "\u003cp\u003eRepresents a link to an animated GIF file stored on the Telegram servers. By default, this animated GIF file will be sent by the user with an optional caption. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with specified content instead of the animation.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003egif\u003c/em\u003e",
@@ -4361,7 +4361,7 @@
       {
         "name": "InlineQueryResultCachedMpeg4Gif",
         "description": "\u003cp\u003eRepresents a link to a video animation (H.264/MPEG-4 AVC video without sound) stored on the Telegram servers. By default, this animated MPEG-4 file will be sent by the user with an optional caption. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the animation.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003empeg4_gif\u003c/em\u003e",
@@ -4415,7 +4415,7 @@
       {
         "name": "InlineQueryResultCachedSticker",
         "description": "\u003cp\u003eRepresents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the sticker.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003esticker\u003c/em\u003e",
@@ -4451,7 +4451,7 @@
       {
         "name": "InlineQueryResultCachedDocument",
         "description": "\u003cp\u003eRepresents a link to a file stored on the Telegram servers. By default, this file will be sent by the user with an optional caption. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the file.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003edocument\u003c/em\u003e",
@@ -4511,7 +4511,7 @@
       {
         "name": "InlineQueryResultCachedVideo",
         "description": "\u003cp\u003eRepresents a link to a video file stored on the Telegram servers. By default, this video file will be sent by the user with an optional caption. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the video.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003evideo\u003c/em\u003e",
@@ -4571,7 +4571,7 @@
       {
         "name": "InlineQueryResultCachedVoice",
         "description": "\u003cp\u003eRepresents a link to a voice message stored on the Telegram servers. By default, this voice message will be sent by the user. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the voice message.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003evoice\u003c/em\u003e",
@@ -4625,7 +4625,7 @@
       {
         "name": "InlineQueryResultCachedAudio",
         "description": "\u003cp\u003eRepresents a link to an mp3 audio file stored on the Telegram servers. By default, this audio file will be sent by the user. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the audio.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Type of the result, must be \u003cem\u003eaudio\u003c/em\u003e",
@@ -4673,7 +4673,7 @@
       {
         "name": "InputTextMessageContent",
         "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#inputmessagecontent\"\u003econtent\u003c/a\u003e of a text message to be sent as the result of an inline query. \u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "message_text",
             "description": "Text of the message to be sent, 1-4096 characters",
@@ -4697,7 +4697,7 @@
       {
         "name": "InputLocationMessageContent",
         "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#inputmessagecontent\"\u003econtent\u003c/a\u003e of a location message to be sent as the result of an inline query. \u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "latitude",
             "description": "Latitude of the location in degrees",
@@ -4721,7 +4721,7 @@
       {
         "name": "InputVenueMessageContent",
         "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#inputmessagecontent\"\u003econtent\u003c/a\u003e of a venue message to be sent as the result of an inline query. \u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "latitude",
             "description": "Latitude of the venue in degrees",
@@ -4763,7 +4763,7 @@
       {
         "name": "InputContactMessageContent",
         "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#inputmessagecontent\"\u003econtent\u003c/a\u003e of a contact message to be sent as the result of an inline query. \u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "phone_number",
             "description": "Contact\u0027s phone number",
@@ -4793,7 +4793,7 @@
       {
         "name": "ChosenInlineResult",
         "description": "\u003cp\u003eRepresents a \u003ca href\u003d\"#inlinequeryresult\"\u003eresult\u003c/a\u003e of an inline query that was chosen by the user and sent to their chat partner. \u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e It is necessary to enable \u003ca href\u003d\"/bots/inline#collecting-feedback\"\u003einline feedback\u003c/a\u003e via \u003ca href\u003d\"https://t.me/botfather\"\u003e@Botfather\u003c/a\u003e in order to receive these objects in updates.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "result_id",
             "description": "The unique identifier for the result that was chosen",
@@ -4827,11 +4827,11 @@
         ]
       }
     ],
-    "methods": [
+    "docMethods": [
       {
         "name": "answerInlineQuery",
         "description": "\u003cp\u003eUse this method to send answers to an inline query. On success, \u003cem\u003eTrue\u003c/em\u003e is returned.\u003cbr\u003eNo more than \u003cstrong\u003e50\u003c/strong\u003e results per query are allowed.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "inline_query_id",
             "description": "Unique identifier for the answered query",
@@ -4881,11 +4881,11 @@
   {
     "name": "Payments",
     "description": "\u003cp\u003eYour bot can accept payments from Telegram users. Please see the \u003ca href\u003d\"/bots/payments\"\u003eintroduction to payments\u003c/a\u003e for more details on the process and how to set up payments for your bot. Please note that users will need Telegram v.4.0 or higher to use payments (released on May 18, 2017). \u003c/p\u003e",
-    "types": [
+    "docTypes": [
       {
         "name": "LabeledPrice",
         "description": "\u003cp\u003eThis object represents a portion of the price for goods or services.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "label",
             "description": "Portion label",
@@ -4903,7 +4903,7 @@
       {
         "name": "Invoice",
         "description": "\u003cp\u003eThis object contains basic information about an invoice.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "title",
             "description": "Product name",
@@ -4939,7 +4939,7 @@
       {
         "name": "ShippingAddress",
         "description": "\u003cp\u003eThis object represents a shipping address.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "country_code",
             "description": "ISO 3166-1 alpha-2 country code",
@@ -4981,7 +4981,7 @@
       {
         "name": "OrderInfo",
         "description": "\u003cp\u003eThis object represents information about an order.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "name",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. User name",
@@ -5011,7 +5011,7 @@
       {
         "name": "ShippingOption",
         "description": "\u003cp\u003eThis object represents one shipping option.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "id",
             "description": "Shipping option identifier",
@@ -5035,7 +5035,7 @@
       {
         "name": "SuccessfulPayment",
         "description": "\u003cp\u003eThis object contains basic information about a successful payment.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "currency",
             "description": "Three-letter ISO 4217 \u003ca href\u003d\"/bots/payments#supported-currencies\"\u003ecurrency\u003c/a\u003e code",
@@ -5083,7 +5083,7 @@
       {
         "name": "ShippingQuery",
         "description": "\u003cp\u003eThis object contains information about an incoming shipping query.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "id",
             "description": "Unique query identifier",
@@ -5113,7 +5113,7 @@
       {
         "name": "PreCheckoutQuery",
         "description": "\u003cp\u003eThis object contains information about an incoming pre-checkout query.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "id",
             "description": "Unique query identifier",
@@ -5159,11 +5159,11 @@
         ]
       }
     ],
-    "methods": [
+    "docMethods": [
       {
         "name": "sendInvoice",
         "description": "\u003cp\u003eUse this method to send invoices. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target private chat",
@@ -5307,7 +5307,7 @@
       {
         "name": "answerShippingQuery",
         "description": "\u003cp\u003eIf you sent an invoice requesting a shipping address and the parameter \u003cem\u003eis_flexible\u003c/em\u003e was specified, the Bot API will send an \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e with a \u003cem\u003eshipping_query\u003c/em\u003e field to the bot. Use this method to reply to shipping queries. On success, True is returned. \u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "shipping_query_id",
             "description": "Unique identifier for the query to be answered",
@@ -5337,7 +5337,7 @@
       {
         "name": "answerPreCheckoutQuery",
         "description": "\u003cp\u003eOnce the user has confirmed their payment and shipping details, the Bot API sends the final confirmation in the form of an \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e with the field \u003cem\u003epre_checkout_query\u003c/em\u003e. Use this method to respond to such pre-checkout queries. On success, True is returned. \u003cstrong\u003eNote:\u003c/strong\u003e The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "pre_checkout_query_id",
             "description": "Unique identifier for the query to be answered",
@@ -5363,11 +5363,11 @@
   {
     "name": "Telegram Passport",
     "description": "\u003cp\u003e\u003cstrong\u003eTelegram Passport\u003c/strong\u003e is a unified authorization method for services that require personal identification. Users can upload their documents once, then instantly share their data with services that require real-world ID (finance, ICOs, etc.). Please see the \u003ca href\u003d\"/passport\"\u003emanual\u003c/a\u003e for details.\u003c/p\u003e",
-    "types": [
+    "docTypes": [
       {
         "name": "PassportData",
         "description": "\u003cp\u003eContains information about Telegram Passport data shared with the bot by the user.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "data",
             "description": "Array with information about documents and other Telegram Passport elements that was shared with the bot",
@@ -5385,7 +5385,7 @@
       {
         "name": "PassportFile",
         "description": "\u003cp\u003eThis object represents a file uploaded to Telegram Passport. Currently all Telegram Passport files are in JPEG format when decrypted and don\u0027t exceed 10MB.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "file_id",
             "description": "Unique identifier for this file",
@@ -5409,7 +5409,7 @@
       {
         "name": "EncryptedPassportElement",
         "description": "\u003cp\u003eContains information about documents or other Telegram Passport elements shared with the bot by the user.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "type",
             "description": "Element type. One of “personal_details”, “passport”, “driver_license”, “identity_card”, “internal_passport”, “address”, “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration”, “temporary_registration”, “phone_number”, “email”.",
@@ -5475,7 +5475,7 @@
       {
         "name": "EncryptedCredentials",
         "description": "\u003cp\u003eContains data required for decrypting and authenticating \u003ca href\u003d\"#encryptedpassportelement\"\u003eEncryptedPassportElement\u003c/a\u003e. See the \u003ca href\u003d\"https://core.telegram.org/passport#receiving-information\"\u003eTelegram Passport Documentation\u003c/a\u003e for a complete description of the data decryption and authentication processes.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "data",
             "description": "Base64-encoded encrypted JSON-serialized data with unique user\u0027s payload, data hashes and secrets required for \u003ca href\u003d\"#encryptedpassportelement\"\u003eEncryptedPassportElement\u003c/a\u003e decryption and authentication",
@@ -5499,7 +5499,7 @@
       {
         "name": "PassportElementErrorDataField",
         "description": "\u003cp\u003eRepresents an issue in one of the data fields that was provided by the user. The error is considered resolved when the field\u0027s value changes.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "source",
             "description": "Error source, must be \u003cem\u003edata\u003c/em\u003e",
@@ -5535,7 +5535,7 @@
       {
         "name": "PassportElementErrorFrontSide",
         "description": "\u003cp\u003eRepresents an issue with the front side of a document. The error is considered resolved when the file with the front side of the document changes.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "source",
             "description": "Error source, must be \u003cem\u003efront_side\u003c/em\u003e",
@@ -5565,7 +5565,7 @@
       {
         "name": "PassportElementErrorReverseSide",
         "description": "\u003cp\u003eRepresents an issue with the reverse side of a document. The error is considered resolved when the file with reverse side of the document changes.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "source",
             "description": "Error source, must be \u003cem\u003ereverse_side\u003c/em\u003e",
@@ -5595,7 +5595,7 @@
       {
         "name": "PassportElementErrorSelfie",
         "description": "\u003cp\u003eRepresents an issue with the selfie with a document. The error is considered resolved when the file with the selfie changes.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "source",
             "description": "Error source, must be \u003cem\u003eselfie\u003c/em\u003e",
@@ -5625,7 +5625,7 @@
       {
         "name": "PassportElementErrorFile",
         "description": "\u003cp\u003eRepresents an issue with a document scan. The error is considered resolved when the file with the document scan changes.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "source",
             "description": "Error source, must be \u003cem\u003efile\u003c/em\u003e",
@@ -5655,7 +5655,7 @@
       {
         "name": "PassportElementErrorFiles",
         "description": "\u003cp\u003eRepresents an issue with a list of scans. The error is considered resolved when the list of files containing the scans changes.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "source",
             "description": "Error source, must be \u003cem\u003efiles\u003c/em\u003e",
@@ -5685,7 +5685,7 @@
       {
         "name": "PassportElementErrorTranslationFile",
         "description": "\u003cp\u003eRepresents an issue with one of the files that constitute the translation of a document. The error is considered resolved when the file changes.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "source",
             "description": "Error source, must be \u003cem\u003etranslation_file\u003c/em\u003e",
@@ -5715,7 +5715,7 @@
       {
         "name": "PassportElementErrorTranslationFiles",
         "description": "\u003cp\u003eRepresents an issue with the translated version of a document. The error is considered resolved when a file with the document translation change.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "source",
             "description": "Error source, must be \u003cem\u003etranslation_files\u003c/em\u003e",
@@ -5745,7 +5745,7 @@
       {
         "name": "PassportElementErrorUnspecified",
         "description": "\u003cp\u003eRepresents an issue in an unspecified place. The error is considered resolved when new data is added.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "source",
             "description": "Error source, must be \u003cem\u003eunspecified\u003c/em\u003e",
@@ -5773,11 +5773,11 @@
         ]
       }
     ],
-    "methods": [
+    "docMethods": [
       {
         "name": "setPassportDataErrors",
         "description": "\u003cp\u003eInforms a user that some of the Telegram Passport elements they provided contains errors. The user will not be able to re-submit their Passport to you until the errors are fixed (the contents of the field for which you returned the error must change). Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e\u003cp\u003eUse this if the data submitted by the user doesn\u0027t satisfy the standards your service requires for any reason. For example, if a birthday date seems invalid, a submitted document is blurry, a scan shows evidence of tampering, etc. Supply some details in the error message to make sure the user knows how to correct the issues.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "user_id",
             "description": "User identifier",
@@ -5797,11 +5797,11 @@
   {
     "name": "Games",
     "description": "\u003cp\u003eYour bot can offer users \u003cstrong\u003eHTML5 games\u003c/strong\u003e to play solo or to compete against each other in groups and one-on-one chats. Create games via \u003ca href\u003d\"https://tme/botfather\"\u003e@BotFather\u003c/a\u003e using the \u003cem\u003e/newgame\u003c/em\u003e command. Please note that this kind of power requires responsibility: you will need to accept the terms for each game that your bots will be offering. \u003c/p\u003e\n\u003cul\u003e \n \u003cli\u003eGames are a new type of content on Telegram, represented by the \u003ca href\u003d\"#game\"\u003eGame\u003c/a\u003e and \u003ca href\u003d\"#inlinequeryresultgame\"\u003eInlineQueryResultGame\u003c/a\u003e objects. \u003c/li\u003e \n \u003cli\u003eOnce you\u0027ve created a game via \u003ca href\u003d\"https://t.me/botfather\"\u003eBotFather\u003c/a\u003e, you can send games to chats as regular messages using the \u003ca href\u003d\"#sendgame\"\u003esendGame\u003c/a\u003e method, or use \u003ca href\u003d\"#inline-mode\"\u003einline mode\u003c/a\u003e with \u003ca href\u003d\"#inlinequeryresultgame\"\u003eInlineQueryResultGame\u003c/a\u003e. \u003c/li\u003e \n \u003cli\u003eIf you send the game message without any buttons, it will automatically have a \u0027Play \u003cem\u003eGameName\u003c/em\u003e\u0027 button. When this button is pressed, your bot gets a \u003ca href\u003d\"#callbackquery\"\u003eCallbackQuery\u003c/a\u003e with the \u003cem\u003egame_short_name\u003c/em\u003e of the requested game. You provide the correct URL for this particular user and the app opens the game in the in-app browser. \u003c/li\u003e \n \u003cli\u003eYou can manually add multiple buttons to your game message. Please note that the first button in the first row \u003cstrong\u003emust always\u003c/strong\u003e launch the game, using the field \u003cem\u003ecallback_game\u003c/em\u003e in \u003ca href\u003d\"#inlinekeyboardbutton\"\u003eInlineKeyboardButton\u003c/a\u003e. You can add extra buttons according to taste: e.g., for a description of the rules, or to open the game\u0027s official community. \u003c/li\u003e \n \u003cli\u003eTo make your game more attractive, you can upload a GIF animation that demostrates the game to the users via \u003ca href\u003d\"https://t.me/botfather\"\u003eBotFather\u003c/a\u003e (see \u003ca href\u003d\"https://t.me/gamebot?game\u003dlumberjack\"\u003eLumberjack\u003c/a\u003e for example). \u003c/li\u003e \n \u003cli\u003eA game message will also display high scores for the current chat. Use \u003ca href\u003d\"#setgamescore\"\u003esetGameScore\u003c/a\u003e to post high scores to the chat with the game, add the \u003cem\u003eedit_message\u003c/em\u003e parameter to automatically update the message with the current scoreboard. \u003c/li\u003e \n \u003cli\u003eUse \u003ca href\u003d\"#getgamehighscores\"\u003egetGameHighScores\u003c/a\u003e to get data for in-game high score tables. \u003c/li\u003e \n \u003cli\u003eYou can also add an extra \u003ca href\u003d\"/bots/games#sharing-your-game-to-telegram-chats\"\u003esharing button\u003c/a\u003e for users to share their best score to different chats. \u003c/li\u003e \n \u003cli\u003eFor examples of what can be done using this new stuff, check the \u003ca href\u003d\"https://t.me/gamebot\"\u003e@gamebot\u003c/a\u003e and \u003ca href\u003d\"https://t.me/gamee\"\u003e@gamee\u003c/a\u003e bots. \u003c/li\u003e \n\u003c/ul\u003e",
-    "types": [
+    "docTypes": [
       {
         "name": "Game",
         "description": "\u003cp\u003eThis object represents a game. Use BotFather to create and edit games, their short names will act as unique identifiers.\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "title",
             "description": "Title of the game",
@@ -5843,7 +5843,7 @@
       {
         "name": "GameHighScore",
         "description": "\u003cp\u003eThis object represents one row of the high scores table for a game.\u003c/p\u003e\u003cp\u003eAnd that‘s about all we’ve got for now.\u003cbr\u003eIf you\u0027ve got any questions, please check out our \u003ca href\u003d\"/bots/faq\"\u003e\u003cstrong\u003eBot FAQ »\u003c/strong\u003e\u003c/a\u003e\u003c/p\u003e",
-        "fields": [
+        "docFields": [
           {
             "name": "position",
             "description": "Position in high score table for the game",
@@ -5865,11 +5865,11 @@
         ]
       }
     ],
-    "methods": [
+    "docMethods": [
       {
         "name": "sendGame",
         "description": "\u003cp\u003eUse this method to send a game. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned. \u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "chat_id",
             "description": "Unique identifier for the target chat",
@@ -5905,7 +5905,7 @@
       {
         "name": "setGameScore",
         "description": "\u003cp\u003eUse this method to set the score of the specified user in a game. On success, if the message was sent by the bot, returns the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e, otherwise returns \u003cem\u003eTrue\u003c/em\u003e. Returns an error, if the new score is not greater than the user\u0027s current score in the chat and \u003cem\u003eforce\u003c/em\u003e is \u003cem\u003eFalse\u003c/em\u003e.\u003c/p\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "user_id",
             "description": "User identifier",
@@ -5953,7 +5953,7 @@
       {
         "name": "getGameHighScores",
         "description": "\u003cp\u003eUse this method to get data for high score tables. Will return the score of the specified user and several of his neighbors in a game. On success, returns an \u003cem\u003eArray\u003c/em\u003e of \u003ca href\u003d\"#gamehighscore\"\u003eGameHighScore\u003c/a\u003e objects.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eThis method will currently return scores for the target user, plus two of his closest neighbors on each side. Will also return the top three users if the user and his neighbors are not among them. Please note that this behavior is subject to change.\u003c/p\u003e \n\u003c/blockquote\u003e",
-        "parameter": [
+        "docParameters": [
           {
             "name": "user_id",
             "description": "Target user id",
