@@ -15,7 +15,7 @@ fun List<Section>.toReadmeExample() {
             if (section.methods.isNotEmpty()) {
                 write("\n### Methods\n")
                 section.methods.forEach { method ->
-                    write("    ${method.name}(${method.parameter.map { p -> "${p.name}: ${p.type}" }.joinToString()})\n")
+                    write("    ${method.name}(${method.parameters.map { p -> "${p.name}: ${p.type}" }.joinToString()})\n")
                 }
             }
         }

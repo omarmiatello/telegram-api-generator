@@ -25,7 +25,7 @@ sealed class TelegramModel
             if (section.methods.isNotEmpty()) {
                 write("\n\n// ${section.name}\n\n")
                 section.methods.forEach { method ->
-                    write("fun ${method.name}(\n${method.parameter.map { p ->
+                    write("fun ${method.name}(\n${method.parameters.map { p ->
                         "${p.name}: ${p.toKotlinType()}"
                     }.joinToString(",\n")}\n) = telegram()\n")
                 }

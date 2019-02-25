@@ -5,7 +5,7 @@ sealed class ValidData
 data class Section(val name: String, val description: String, val types: List<Type>, val methods: List<Method>)
 data class Type(val name: String, val description: String, val fields: List<Field>) : ValidData()
 data class Field(val name: String, val description: String, val type: String, val required: Boolean)
-data class Method(val name: String, val description: String, val parameter: List<Parameter>) : ValidData()
+data class Method(val name: String, val description: String, val parameters: List<Parameter>) : ValidData()
 data class Parameter(val name: String, val description: String, val type: String, val required: Boolean)
 
 fun Document.toSection(): List<Section> {
@@ -108,7 +108,7 @@ fun List<Section>.findUnknownTypes(): List<String> {
     }
     val allTypeInMethod = this@findUnknownTypes.flatMap {
         it.methods.flatMap {
-            it.parameter.mapNotNull {
+            it.parameters.mapNotNull {
                 val fieldType = it.type.replace("List<", "").replace(">", "")
                 if (fieldType !in declaredTypeMap) {
                     fieldType
