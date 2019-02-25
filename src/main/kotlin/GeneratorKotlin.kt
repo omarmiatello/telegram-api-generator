@@ -41,18 +41,18 @@ private fun TelegramType.toKotlinType(): String = when (this) {
     TelegramType.StringType -> "String"
     TelegramType.Boolean -> "Boolean"
     TelegramType.Float -> "Float"
-    TelegramType.CallbackGame -> "Any"
-    TelegramType.InputMedia -> "Any"
-    TelegramType.InputFile -> "Any"
-    TelegramType.InputMessageContent -> "Any"
-    TelegramType.InlineQueryResult -> "Any"
+    TelegramType.CallbackGame,
+    TelegramType.InputMedia,
+    TelegramType.InputFile,
+    TelegramType.InputMessageContent,
+    TelegramType.InlineQueryResult,
     TelegramType.PassportElementError -> "Any"
     is TelegramType.WithAlternative -> {
         when (this) {
             // Example: TelegramType.WithAlternative.InputFileOrString -> if (alternative.isEmpty()) "v1" else "v2"
-            TelegramType.WithAlternative.InputFileOrString -> "Any"
-            TelegramType.WithAlternative.IntegerOrString -> "Any"
-            TelegramType.WithAlternative.KeyboardOption -> "Any"
+            TelegramType.WithAlternative.InputFileOrString,
+            TelegramType.WithAlternative.IntegerOrString,
+            TelegramType.WithAlternative.KeyboardOption,
             TelegramType.WithAlternative.InputMediaPhotoOrVideo -> "Any"
         }
     }
