@@ -97,7 +97,7 @@ fun String.fixType() = when (this) {
 }
 
 fun List<Section>.findUnknownTypes(): List<String> {
-    val declaredTypeMap = flatMap { it.types }.associateBy { it.name }
+    val declaredTypeMap = this@findUnknownTypes.flatMap { it.types }.associateBy { it.name }
     val allTypeInField = declaredTypeMap.values.flatMap { type ->
         type.fields.mapNotNull {
             val fieldType = it.type.replace("List<", "").replace(">", "")
