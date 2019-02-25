@@ -1,14 +1,14 @@
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
-sealed class ValidData
-data class Section(val name: String, val description: String, val types: List<Type>, val methods: List<Method>)
-data class Type(val name: String, val description: String, val fields: List<Field>) : ValidData()
-data class Field(val name: String, val description: String, val type: String, val required: Boolean)
-data class Method(val name: String, val description: String, val parameters: List<Parameter>) : ValidData()
-data class Parameter(val name: String, val description: String, val type: String, val required: Boolean)
+sealed class DocContent
+data class DocSection(val name: String, val description: String, val docTypes: List<DocType>, val docMethods: List<DocMethod>)
+data class DocType(val name: String, val description: String, val docFields: List<DocField>) : DocContent()
+data class DocField(val name: String, val description: String, val type: String, val required: Boolean)
+data class DocMethod(val name: String, val description: String, val docParameters: List<DocParameter>) : DocContent()
+data class DocParameter(val name: String, val description: String, val type: String, val required: Boolean)
 
-fun Document.toSection(): List<Section> {
+fun Document.toSection(): List<DocSection> {
     val content = select("#dev_page_content").first()
     var splitBy = ""
     return content.children()
@@ -26,14 +26,14 @@ fun Document.toSection(): List<Section> {
         .map { (h3, h3content) ->
             val validData = h3content.mapNotNull { (h4, h4content) ->
                 var h4Desc = ""
-                var fields: List<Field>? = null
-                var parameters: List<Parameter>? = null
+                var docFields: List<DocField>? = null
+                var docParameters: List<DocParameter>? = null
                 h4content.forEach {
                     when (it.tag().name) {
                         "p" -> {
                             h4Desc += it.toString()
                             val text = it.text()
-                            if ("Use this method" in text) parameters = emptyList()
+                            if ("Use this method" in text) docParameters = emptyList()
                         }
                         "table" -> {
                             val tableHead = it.child(0).text()
@@ -41,21 +41,21 @@ fun Document.toSection(): List<Section> {
                             when {
                                 "Field" in tableHead -> {
                                     // Field Type Description
-                                    fields = tableData.children().map {
+                                    docFields = tableData.children().map {
                                         it.getElementsByTag("td").let {
                                             val fieldDesc = it[2].html()
                                             val type = it[1].text().fixType()
-                                            Field(it[0].text(), fieldDesc, type, "Optional" !in fieldDesc)
+                                            DocField(it[0].text(), fieldDesc, type, "Optional" !in fieldDesc)
                                         }
                                     }
                                 }
                                 "Parameter" in tableHead -> {
                                     // Parameter Type Required Description
-                                    parameters = tableData.children().map {
+                                    docParameters = tableData.children().map {
                                         it.getElementsByTag("td").let {
                                             val fieldDesc = it[3].html()
                                             val type = it[1].text().fixType()
-                                            Parameter(it[0].text(), fieldDesc, type, "Yes" == it[2].text())
+                                            DocParameter(it[0].text(), fieldDesc, type, "Yes" == it[2].text())
                                         }
                                     }
                                 }
@@ -66,24 +66,24 @@ fun Document.toSection(): List<Section> {
                     }
                 }
 
-                val p = parameters
-                val f = fields
+                val p = docParameters
+                val f = docFields
                 when {
                     p != null && f != null -> error("isMethod and isType: $h4")
-                    p != null -> Method(h4, h4Desc, p)
-                    f != null -> Type(h4, h4Desc, f)
+                    p != null -> DocMethod(h4, h4Desc, p)
+                    f != null -> DocType(h4, h4Desc, f)
                     else -> null
                 }
             }
-            Section(
+            DocSection(
                 name = h3,
                 description = h3content.getValue("").drop<Element?>(1).joinToString("\n"),
-                types = validData.filterIsInstance(Type::class.java),
-                methods = validData.filterIsInstance(Method::class.java)
+                docTypes = validData.filterIsInstance(DocType::class.java),
+                docMethods = validData.filterIsInstance(DocMethod::class.java)
             )
         }
         .filterNot {
-            it.types.isEmpty() && it.methods.isEmpty()
+            it.docTypes.isEmpty() && it.docMethods.isEmpty()
         }
 }
 
@@ -96,19 +96,19 @@ fun String.fixType() = when (this) {
     } else this
 }
 
-fun List<Section>.findUnknownTypes(): List<String> {
-    val declaredTypeMap = this@findUnknownTypes.flatMap { it.types }.associateBy { it.name }
-    val allTypeInField = declaredTypeMap.values.flatMap { type ->
-        type.fields.mapNotNull {
+fun List<DocSection>.findUnknownTypes(): List<String> {
+    val declaredTypeMap = this@findUnknownTypes.flatMap { it.docTypes }.associateBy { it.name }
+    val allTypeInDocFields = declaredTypeMap.values.flatMap { type ->
+        type.docFields.mapNotNull {
             val fieldType = it.type.replace("List<", "").replace(">", "")
             if (fieldType !in declaredTypeMap) {
                 fieldType
             } else null
         }
     }
-    val allTypeInMethod = this@findUnknownTypes.flatMap {
-        it.methods.flatMap {
-            it.parameters.mapNotNull {
+    val allTypeInDocMethods = this@findUnknownTypes.flatMap {
+        it.docMethods.flatMap {
+            it.docParameters.mapNotNull {
                 val fieldType = it.type.replace("List<", "").replace(">", "")
                 if (fieldType !in declaredTypeMap) {
                     fieldType
@@ -116,5 +116,5 @@ fun List<Section>.findUnknownTypes(): List<String> {
             }
         }
     }
-    return (allTypeInField + allTypeInMethod).distinct()
+    return (allTypeInDocFields + allTypeInDocMethods).distinct()
 }

@@ -1,6 +1,6 @@
 import java.io.File
 
-fun List<Section>.toKotlin() {
+fun List<DocSection>.toKotlin() {
     File("out/models.kt").writer().apply {
         write("""import kotlinx.serialization.Optional
 import kotlinx.serialization.Serializable
@@ -8,10 +8,10 @@ import kotlinx.serialization.Serializable
 sealed class TelegramModel
 """)
         forEach { section ->
-            if (section.types.isNotEmpty()) {
+            if (section.docTypes.isNotEmpty()) {
                 write("\n\n// ${section.name}\n\n")
-                section.types.forEach { dataType ->
-                    write("@Serializable\ndata class ${dataType.name}(\n${dataType.fields.map { f ->
+                section.docTypes.forEach { dataType ->
+                    write("@Serializable\ndata class ${dataType.name}(\n${dataType.docFields.map { f ->
                         "${if (f.required) "" else "@Optional "}val ${f.name}: ${f.toKotlinType()}"
                     }.joinToString(",\n")}\n) : TelegramModel()\n\n")
                 }
@@ -22,10 +22,10 @@ sealed class TelegramModel
 
     File("out/api.kt").writer().apply {
         forEach { section ->
-            if (section.methods.isNotEmpty()) {
+            if (section.docMethods.isNotEmpty()) {
                 write("\n\n// ${section.name}\n\n")
-                section.methods.forEach { method ->
-                    write("fun ${method.name}(\n${method.parameters.map { p ->
+                section.docMethods.forEach { method ->
+                    write("fun ${method.name}(\n${method.docParameters.map { p ->
                         "${p.name}: ${p.toKotlinType()}"
                     }.joinToString(",\n")}\n) = telegram()\n")
                 }
@@ -35,9 +35,9 @@ sealed class TelegramModel
     }
 }
 
-private fun Field.toKotlinType() =  type.toKotlinType() + if (required) "" else "? = null"
+private fun DocField.toKotlinType() =  type.toKotlinType() + if (required) "" else "? = null"
 
-private fun Parameter.toKotlinType() = type.toKotlinType() + if (required) "" else "?"
+private fun DocParameter.toKotlinType() = type.toKotlinType() + if (required) "" else "?"
 
 private fun String.toKotlinType(): String = when (this) {
     "Integer" -> "Int"
