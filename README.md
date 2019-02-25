@@ -12,22 +12,6 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
 ---
 
-NOTE: You should handle also types:
-`Integer`
-`String`
-`Boolean`
-`Float`
-`CallbackGame`
-`InputFile or String`
-`InputMessageContent`
-`InputFile`
-`Integer or String`
-`InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply`
-`InputMediaPhoto and InputMediaVideo`
-`InputMedia`
-`InlineQueryResult`
-`PassportElementError`
-
 
 ## Getting updates
 
@@ -230,4 +214,3 @@ NOTE: You should handle also types:
     sendGame(chat_id: Integer, game_short_name: String, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup)
     setGameScore(user_id: Integer, score: Integer, force: Boolean, disable_edit_message: Boolean, chat_id: Integer, message_id: Integer, inline_message_id: String)
     getGameHighScores(user_id: Integer, chat_id: Integer, message_id: Integer, inline_message_id: String)
-    

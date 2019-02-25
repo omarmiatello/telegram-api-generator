@@ -1,8 +1,8 @@
 sealed class TelegramType(val name: String) {
     override fun toString() = name
 
-    data class Declared(private val docName: String) : TelegramType(docName)
-    data class ListType<T : TelegramType>(val elementType: T) : TelegramType("List<$elementType>")
+    class Declared(docName: String) : TelegramType(docName)
+    class ListType<T : TelegramType>(val elementType: T) : TelegramType("List<$elementType>")
 
     object Integer : TelegramType("Integer")
     object StringType : TelegramType("String")

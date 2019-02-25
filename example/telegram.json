@@ -19,7 +19,6 @@
             "name": "message",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. New incoming message of any kind — text, photo, sticker, etc.",
             "type": {
-              "docName": "Message",
               "name": "Message"
             },
             "required": false
@@ -28,7 +27,6 @@
             "name": "edited_message",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. New version of a message that is known to the bot and was edited",
             "type": {
-              "docName": "Message",
               "name": "Message"
             },
             "required": false
@@ -37,7 +35,6 @@
             "name": "channel_post",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. New incoming channel post of any kind — text, photo, sticker, etc.",
             "type": {
-              "docName": "Message",
               "name": "Message"
             },
             "required": false
@@ -46,7 +43,6 @@
             "name": "edited_channel_post",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. New version of a channel post that is known to the bot and was edited",
             "type": {
-              "docName": "Message",
               "name": "Message"
             },
             "required": false
@@ -55,7 +51,6 @@
             "name": "inline_query",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. New incoming \u003ca href\u003d\"#inline-mode\"\u003einline\u003c/a\u003e query",
             "type": {
-              "docName": "InlineQuery",
               "name": "InlineQuery"
             },
             "required": false
@@ -64,7 +59,6 @@
             "name": "chosen_inline_result",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. The result of an \u003ca href\u003d\"#inline-mode\"\u003einline\u003c/a\u003e query that was chosen by a user and sent to their chat partner. Please see our documentation on the \u003ca href\u003d\"/bots/inline#collecting-feedback\"\u003efeedback collecting\u003c/a\u003e for details on how to enable these updates for your bot.",
             "type": {
-              "docName": "ChosenInlineResult",
               "name": "ChosenInlineResult"
             },
             "required": false
@@ -73,7 +67,6 @@
             "name": "callback_query",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. New incoming callback query",
             "type": {
-              "docName": "CallbackQuery",
               "name": "CallbackQuery"
             },
             "required": false
@@ -82,7 +75,6 @@
             "name": "shipping_query",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. New incoming shipping query. Only for invoices with flexible price",
             "type": {
-              "docName": "ShippingQuery",
               "name": "ShippingQuery"
             },
             "required": false
@@ -91,7 +83,6 @@
             "name": "pre_checkout_query",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. New incoming pre-checkout query. Contains full information about checkout",
             "type": {
-              "docName": "PreCheckoutQuery",
               "name": "PreCheckoutQuery"
             },
             "required": false
@@ -381,7 +372,6 @@
             "name": "photo",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Chat photo. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
-              "docName": "ChatPhoto",
               "name": "ChatPhoto"
             },
             "required": false
@@ -406,7 +396,6 @@
             "name": "pinned_message",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Pinned message, for supergroups and channel chats. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
-              "docName": "Message",
               "name": "Message"
             },
             "required": false
@@ -445,7 +434,6 @@
             "name": "from",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Sender, empty for messages sent to channels",
             "type": {
-              "docName": "User",
               "name": "User"
             },
             "required": false
@@ -462,7 +450,6 @@
             "name": "chat",
             "description": "Conversation the message belongs to",
             "type": {
-              "docName": "Chat",
               "name": "Chat"
             },
             "required": true
@@ -471,7 +458,6 @@
             "name": "forward_from",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. For forwarded messages, sender of the original message",
             "type": {
-              "docName": "User",
               "name": "User"
             },
             "required": false
@@ -480,7 +466,6 @@
             "name": "forward_from_chat",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. For messages forwarded from channels, information about the original channel",
             "type": {
-              "docName": "Chat",
               "name": "Chat"
             },
             "required": false
@@ -513,7 +498,6 @@
             "name": "reply_to_message",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. For replies, the original message. Note that the Message object in this field will not contain further \u003cem\u003ereply_to_message\u003c/em\u003e fields even if it itself is a reply.",
             "type": {
-              "docName": "Message",
               "name": "Message"
             },
             "required": false
@@ -555,10 +539,9 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text",
             "type": {
               "elementType": {
-                "docName": "MessageEntity",
                 "name": "MessageEntity"
               },
-              "name": "List\u003cDeclared(docName\u003dMessageEntity)\u003e"
+              "name": "List\u003cMessageEntity\u003e"
             },
             "required": false
           },
@@ -567,10 +550,9 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption",
             "type": {
               "elementType": {
-                "docName": "MessageEntity",
                 "name": "MessageEntity"
               },
-              "name": "List\u003cDeclared(docName\u003dMessageEntity)\u003e"
+              "name": "List\u003cMessageEntity\u003e"
             },
             "required": false
           },
@@ -578,7 +560,6 @@
             "name": "audio",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is an audio file, information about the file",
             "type": {
-              "docName": "Audio",
               "name": "Audio"
             },
             "required": false
@@ -587,7 +568,6 @@
             "name": "document",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a general file, information about the file",
             "type": {
-              "docName": "Document",
               "name": "Document"
             },
             "required": false
@@ -596,7 +576,6 @@
             "name": "animation",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is an animation, information about the animation. For backward compatibility, when this field is set, the \u003cem\u003edocument\u003c/em\u003e field will also be set",
             "type": {
-              "docName": "Animation",
               "name": "Animation"
             },
             "required": false
@@ -605,7 +584,6 @@
             "name": "game",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a game, information about the game. \u003ca href\u003d\"#games\"\u003eMore about games »\u003c/a\u003e",
             "type": {
-              "docName": "Game",
               "name": "Game"
             },
             "required": false
@@ -615,10 +593,9 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a photo, available sizes of the photo",
             "type": {
               "elementType": {
-                "docName": "PhotoSize",
                 "name": "PhotoSize"
               },
-              "name": "List\u003cDeclared(docName\u003dPhotoSize)\u003e"
+              "name": "List\u003cPhotoSize\u003e"
             },
             "required": false
           },
@@ -626,7 +603,6 @@
             "name": "sticker",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a sticker, information about the sticker",
             "type": {
-              "docName": "Sticker",
               "name": "Sticker"
             },
             "required": false
@@ -635,7 +611,6 @@
             "name": "video",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a video, information about the video",
             "type": {
-              "docName": "Video",
               "name": "Video"
             },
             "required": false
@@ -644,7 +619,6 @@
             "name": "voice",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a voice message, information about the file",
             "type": {
-              "docName": "Voice",
               "name": "Voice"
             },
             "required": false
@@ -653,7 +627,6 @@
             "name": "video_note",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a \u003ca href\u003d\"https://telegram.org/blog/video-messages-and-telescope\"\u003evideo note\u003c/a\u003e, information about the video message",
             "type": {
-              "docName": "VideoNote",
               "name": "VideoNote"
             },
             "required": false
@@ -670,7 +643,6 @@
             "name": "contact",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a shared contact, information about the contact",
             "type": {
-              "docName": "Contact",
               "name": "Contact"
             },
             "required": false
@@ -679,7 +651,6 @@
             "name": "location",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a shared location, information about the location",
             "type": {
-              "docName": "Location",
               "name": "Location"
             },
             "required": false
@@ -688,7 +659,6 @@
             "name": "venue",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a venue, information about the venue",
             "type": {
-              "docName": "Venue",
               "name": "Venue"
             },
             "required": false
@@ -698,10 +668,9 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. New members that were added to the group or supergroup and information about them (the bot itself may be one of these members)",
             "type": {
               "elementType": {
-                "docName": "User",
                 "name": "User"
               },
-              "name": "List\u003cDeclared(docName\u003dUser)\u003e"
+              "name": "List\u003cUser\u003e"
             },
             "required": false
           },
@@ -709,7 +678,6 @@
             "name": "left_chat_member",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. A member was removed from the group, information about them (this member may be the bot itself)",
             "type": {
-              "docName": "User",
               "name": "User"
             },
             "required": false
@@ -727,10 +695,9 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. A chat photo was change to this value",
             "type": {
               "elementType": {
-                "docName": "PhotoSize",
                 "name": "PhotoSize"
               },
-              "name": "List\u003cDeclared(docName\u003dPhotoSize)\u003e"
+              "name": "List\u003cPhotoSize\u003e"
             },
             "required": false
           },
@@ -786,7 +753,6 @@
             "name": "pinned_message",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Specified message was pinned. Note that the Message object in this field will not contain further \u003cem\u003ereply_to_message\u003c/em\u003e fields even if it is itself a reply.",
             "type": {
-              "docName": "Message",
               "name": "Message"
             },
             "required": false
@@ -795,7 +761,6 @@
             "name": "invoice",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is an invoice for a \u003ca href\u003d\"#payments\"\u003epayment\u003c/a\u003e, information about the invoice. \u003ca href\u003d\"#payments\"\u003eMore about payments »\u003c/a\u003e",
             "type": {
-              "docName": "Invoice",
               "name": "Invoice"
             },
             "required": false
@@ -804,7 +769,6 @@
             "name": "successful_payment",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a service message about a successful payment, information about the payment. \u003ca href\u003d\"#payments\"\u003eMore about payments »\u003c/a\u003e",
             "type": {
-              "docName": "SuccessfulPayment",
               "name": "SuccessfulPayment"
             },
             "required": false
@@ -821,7 +785,6 @@
             "name": "passport_data",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Telegram Passport data",
             "type": {
-              "docName": "PassportData",
               "name": "PassportData"
             },
             "required": false
@@ -868,7 +831,6 @@
             "name": "user",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. For “text_mention” only, the mentioned user",
             "type": {
-              "docName": "User",
               "name": "User"
             },
             "required": false
@@ -969,7 +931,6 @@
             "name": "thumb",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the album cover to which the music file belongs",
             "type": {
-              "docName": "PhotoSize",
               "name": "PhotoSize"
             },
             "required": false
@@ -992,7 +953,6 @@
             "name": "thumb",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Document thumbnail as defined by sender",
             "type": {
-              "docName": "PhotoSize",
               "name": "PhotoSize"
             },
             "required": false
@@ -1063,7 +1023,6 @@
             "name": "thumb",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Video thumbnail",
             "type": {
-              "docName": "PhotoSize",
               "name": "PhotoSize"
             },
             "required": false
@@ -1126,7 +1085,6 @@
             "name": "thumb",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Animation thumbnail as defined by sender",
             "type": {
-              "docName": "PhotoSize",
               "name": "PhotoSize"
             },
             "required": false
@@ -1227,7 +1185,6 @@
             "name": "thumb",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Video thumbnail",
             "type": {
-              "docName": "PhotoSize",
               "name": "PhotoSize"
             },
             "required": false
@@ -1318,7 +1275,6 @@
             "name": "location",
             "description": "Venue location",
             "type": {
-              "docName": "Location",
               "name": "Location"
             },
             "required": true
@@ -1375,12 +1331,11 @@
             "type": {
               "elementType": {
                 "elementType": {
-                  "docName": "PhotoSize",
                   "name": "PhotoSize"
                 },
-                "name": "List\u003cDeclared(docName\u003dPhotoSize)\u003e"
+                "name": "List\u003cPhotoSize\u003e"
               },
-              "name": "List\u003cListType(elementType\u003dDeclared(docName\u003dPhotoSize))\u003e"
+              "name": "List\u003cList\u003cPhotoSize\u003e\u003e"
             },
             "required": true
           }
@@ -1426,12 +1381,11 @@
             "type": {
               "elementType": {
                 "elementType": {
-                  "docName": "KeyboardButton",
                   "name": "KeyboardButton"
                 },
-                "name": "List\u003cDeclared(docName\u003dKeyboardButton)\u003e"
+                "name": "List\u003cKeyboardButton\u003e"
               },
-              "name": "List\u003cListType(elementType\u003dDeclared(docName\u003dKeyboardButton))\u003e"
+              "name": "List\u003cList\u003cKeyboardButton\u003e\u003e"
             },
             "required": true
           },
@@ -1523,12 +1477,11 @@
             "type": {
               "elementType": {
                 "elementType": {
-                  "docName": "InlineKeyboardButton",
                   "name": "InlineKeyboardButton"
                 },
-                "name": "List\u003cDeclared(docName\u003dInlineKeyboardButton)\u003e"
+                "name": "List\u003cInlineKeyboardButton\u003e"
               },
-              "name": "List\u003cListType(elementType\u003dDeclared(docName\u003dInlineKeyboardButton))\u003e"
+              "name": "List\u003cList\u003cInlineKeyboardButton\u003e\u003e"
             },
             "required": true
           }
@@ -1612,7 +1565,6 @@
             "name": "from",
             "description": "Sender",
             "type": {
-              "docName": "User",
               "name": "User"
             },
             "required": true
@@ -1621,7 +1573,6 @@
             "name": "message",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message with the callback button that originated the query. Note that message content and message date will not be available if the message is too old",
             "type": {
-              "docName": "Message",
               "name": "Message"
             },
             "required": false
@@ -1712,7 +1663,6 @@
             "name": "user",
             "description": "Information about the user",
             "type": {
-              "docName": "User",
               "name": "User"
             },
             "required": true
@@ -2269,19 +2219,15 @@
             "type": {
               "alternative": [
                 {
-                  "docName": "InlineKeyboardMarkup",
                   "name": "InlineKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardMarkup",
                   "name": "ReplyKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardRemove",
                   "name": "ReplyKeyboardRemove"
                 },
                 {
-                  "docName": "ForceReply",
                   "name": "ForceReply"
                 }
               ],
@@ -2419,19 +2365,15 @@
             "type": {
               "alternative": [
                 {
-                  "docName": "InlineKeyboardMarkup",
                   "name": "InlineKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardMarkup",
                   "name": "ReplyKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardRemove",
                   "name": "ReplyKeyboardRemove"
                 },
                 {
-                  "docName": "ForceReply",
                   "name": "ForceReply"
                 }
               ],
@@ -2555,19 +2497,15 @@
             "type": {
               "alternative": [
                 {
-                  "docName": "InlineKeyboardMarkup",
                   "name": "InlineKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardMarkup",
                   "name": "ReplyKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardRemove",
                   "name": "ReplyKeyboardRemove"
                 },
                 {
-                  "docName": "ForceReply",
                   "name": "ForceReply"
                 }
               ],
@@ -2667,19 +2605,15 @@
             "type": {
               "alternative": [
                 {
-                  "docName": "InlineKeyboardMarkup",
                   "name": "InlineKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardMarkup",
                   "name": "ReplyKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardRemove",
                   "name": "ReplyKeyboardRemove"
                 },
                 {
-                  "docName": "ForceReply",
                   "name": "ForceReply"
                 }
               ],
@@ -2811,19 +2745,15 @@
             "type": {
               "alternative": [
                 {
-                  "docName": "InlineKeyboardMarkup",
                   "name": "InlineKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardMarkup",
                   "name": "ReplyKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardRemove",
                   "name": "ReplyKeyboardRemove"
                 },
                 {
-                  "docName": "ForceReply",
                   "name": "ForceReply"
                 }
               ],
@@ -2947,19 +2877,15 @@
             "type": {
               "alternative": [
                 {
-                  "docName": "InlineKeyboardMarkup",
                   "name": "InlineKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardMarkup",
                   "name": "ReplyKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardRemove",
                   "name": "ReplyKeyboardRemove"
                 },
                 {
-                  "docName": "ForceReply",
                   "name": "ForceReply"
                 }
               ],
@@ -3051,19 +2977,15 @@
             "type": {
               "alternative": [
                 {
-                  "docName": "InlineKeyboardMarkup",
                   "name": "InlineKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardMarkup",
                   "name": "ReplyKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardRemove",
                   "name": "ReplyKeyboardRemove"
                 },
                 {
-                  "docName": "ForceReply",
                   "name": "ForceReply"
                 }
               ],
@@ -3163,19 +3085,15 @@
             "type": {
               "alternative": [
                 {
-                  "docName": "InlineKeyboardMarkup",
                   "name": "InlineKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardMarkup",
                   "name": "ReplyKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardRemove",
                   "name": "ReplyKeyboardRemove"
                 },
                 {
-                  "docName": "ForceReply",
                   "name": "ForceReply"
                 }
               ],
@@ -3212,11 +3130,9 @@
               "elementType": {
                 "alternative": [
                   {
-                    "docName": "InputMediaPhoto",
                     "name": "InputMediaPhoto"
                   },
                   {
-                    "docName": "InputMediaVideo",
                     "name": "InputMediaVideo"
                   }
                 ],
@@ -3310,19 +3226,15 @@
             "type": {
               "alternative": [
                 {
-                  "docName": "InlineKeyboardMarkup",
                   "name": "InlineKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardMarkup",
                   "name": "ReplyKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardRemove",
                   "name": "ReplyKeyboardRemove"
                 },
                 {
-                  "docName": "ForceReply",
                   "name": "ForceReply"
                 }
               ],
@@ -3388,7 +3300,6 @@
             "name": "reply_markup",
             "description": "A JSON-serialized object for a new \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e.",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -3435,7 +3346,6 @@
             "name": "reply_markup",
             "description": "A JSON-serialized object for a new \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e.",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -3532,19 +3442,15 @@
             "type": {
               "alternative": [
                 {
-                  "docName": "InlineKeyboardMarkup",
                   "name": "InlineKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardMarkup",
                   "name": "ReplyKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardRemove",
                   "name": "ReplyKeyboardRemove"
                 },
                 {
-                  "docName": "ForceReply",
                   "name": "ForceReply"
                 }
               ],
@@ -3628,19 +3534,15 @@
             "type": {
               "alternative": [
                 {
-                  "docName": "InlineKeyboardMarkup",
                   "name": "InlineKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardMarkup",
                   "name": "ReplyKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardRemove",
                   "name": "ReplyKeyboardRemove"
                 },
                 {
-                  "docName": "ForceReply",
                   "name": "ForceReply"
                 }
               ],
@@ -4437,7 +4339,6 @@
             "name": "reply_markup",
             "description": "A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e.",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -4500,7 +4401,6 @@
             "name": "reply_markup",
             "description": "A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e.",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -4555,7 +4455,6 @@
             "name": "reply_markup",
             "description": "A JSON-serialized object for a new \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e.",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -4602,7 +4501,6 @@
             "name": "reply_markup",
             "description": "A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e.",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -4677,7 +4575,6 @@
             "name": "thumb",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Sticker thumbnail in the .webp or .jpg format",
             "type": {
-              "docName": "PhotoSize",
               "name": "PhotoSize"
             },
             "required": false
@@ -4702,7 +4599,6 @@
             "name": "mask_position",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. For mask stickers, the position where the mask should be placed",
             "type": {
-              "docName": "MaskPosition",
               "name": "MaskPosition"
             },
             "required": false
@@ -4750,10 +4646,9 @@
             "description": "List of all set stickers",
             "type": {
               "elementType": {
-                "docName": "Sticker",
                 "name": "Sticker"
               },
-              "name": "List\u003cDeclared(docName\u003dSticker)\u003e"
+              "name": "List\u003cSticker\u003e"
             },
             "required": true
           }
@@ -4857,19 +4752,15 @@
             "type": {
               "alternative": [
                 {
-                  "docName": "InlineKeyboardMarkup",
                   "name": "InlineKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardMarkup",
                   "name": "ReplyKeyboardMarkup"
                 },
                 {
-                  "docName": "ReplyKeyboardRemove",
                   "name": "ReplyKeyboardRemove"
                 },
                 {
-                  "docName": "ForceReply",
                   "name": "ForceReply"
                 }
               ],
@@ -4979,7 +4870,6 @@
             "name": "mask_position",
             "description": "A JSON-serialized object for position where the mask should be placed on faces",
             "type": {
-              "docName": "MaskPosition",
               "name": "MaskPosition"
             },
             "required": false
@@ -5034,7 +4924,6 @@
             "name": "mask_position",
             "description": "A JSON-serialized object for position where the mask should be placed on faces",
             "type": {
-              "docName": "MaskPosition",
               "name": "MaskPosition"
             },
             "required": false
@@ -5099,7 +4988,6 @@
             "name": "from",
             "description": "Sender",
             "type": {
-              "docName": "User",
               "name": "User"
             },
             "required": true
@@ -5108,7 +4996,6 @@
             "name": "location",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Sender location, only for bots that request user location",
             "type": {
-              "docName": "Location",
               "name": "Location"
             },
             "required": false
@@ -5171,7 +5058,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -5314,7 +5200,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -5417,7 +5302,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -5520,7 +5404,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -5639,7 +5522,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -5726,7 +5608,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -5805,7 +5686,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -5892,7 +5772,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Inline keyboard attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -5987,7 +5866,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -6098,7 +5976,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -6193,7 +6070,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -6264,7 +6140,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -6335,7 +6210,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -6406,7 +6280,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -6477,7 +6350,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -6524,7 +6396,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -6603,7 +6474,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -6682,7 +6552,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -6753,7 +6622,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -6816,7 +6684,6 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -6999,7 +6866,6 @@
             "name": "from",
             "description": "The user that chose the result",
             "type": {
-              "docName": "User",
               "name": "User"
             },
             "required": true
@@ -7008,7 +6874,6 @@
             "name": "location",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Sender location, only for bots that require user location",
             "type": {
-              "docName": "Location",
               "name": "Location"
             },
             "required": false
@@ -7258,7 +7123,6 @@
             "name": "shipping_address",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. User shipping address",
             "type": {
-              "docName": "ShippingAddress",
               "name": "ShippingAddress"
             },
             "required": false
@@ -7290,10 +7154,9 @@
             "description": "List of price portions",
             "type": {
               "elementType": {
-                "docName": "LabeledPrice",
                 "name": "LabeledPrice"
               },
-              "name": "List\u003cDeclared(docName\u003dLabeledPrice)\u003e"
+              "name": "List\u003cLabeledPrice\u003e"
             },
             "required": true
           }
@@ -7339,7 +7202,6 @@
             "name": "order_info",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Order info provided by the user",
             "type": {
-              "docName": "OrderInfo",
               "name": "OrderInfo"
             },
             "required": false
@@ -7378,7 +7240,6 @@
             "name": "from",
             "description": "User who sent the query",
             "type": {
-              "docName": "User",
               "name": "User"
             },
             "required": true
@@ -7395,7 +7256,6 @@
             "name": "shipping_address",
             "description": "User specified shipping address",
             "type": {
-              "docName": "ShippingAddress",
               "name": "ShippingAddress"
             },
             "required": true
@@ -7418,7 +7278,6 @@
             "name": "from",
             "description": "User who sent the query",
             "type": {
-              "docName": "User",
               "name": "User"
             },
             "required": true
@@ -7459,7 +7318,6 @@
             "name": "order_info",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Order info provided by the user",
             "type": {
-              "docName": "OrderInfo",
               "name": "OrderInfo"
             },
             "required": false
@@ -7533,10 +7391,9 @@
             "description": "Price breakdown, a list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)",
             "type": {
               "elementType": {
-                "docName": "LabeledPrice",
                 "name": "LabeledPrice"
               },
-              "name": "List\u003cDeclared(docName\u003dLabeledPrice)\u003e"
+              "name": "List\u003cLabeledPrice\u003e"
             },
             "required": true
           },
@@ -7656,7 +7513,6 @@
             "name": "reply_markup",
             "description": "A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e. If empty, one \u0027Pay \u003ccode\u003etotal price\u003c/code\u003e\u0027 button will be shown. If not empty, the first button must be a Pay button.",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
@@ -7688,10 +7544,9 @@
             "description": "Required if \u003cem\u003eok\u003c/em\u003e is True. A JSON-serialized array of available shipping options.",
             "type": {
               "elementType": {
-                "docName": "ShippingOption",
                 "name": "ShippingOption"
               },
-              "name": "List\u003cDeclared(docName\u003dShippingOption)\u003e"
+              "name": "List\u003cShippingOption\u003e"
             },
             "required": false
           },
@@ -7750,10 +7605,9 @@
             "description": "Array with information about documents and other Telegram Passport elements that was shared with the bot",
             "type": {
               "elementType": {
-                "docName": "EncryptedPassportElement",
                 "name": "EncryptedPassportElement"
               },
-              "name": "List\u003cDeclared(docName\u003dEncryptedPassportElement)\u003e"
+              "name": "List\u003cEncryptedPassportElement\u003e"
             },
             "required": true
           },
@@ -7761,7 +7615,6 @@
             "name": "credentials",
             "description": "Encrypted credentials required to decrypt the data",
             "type": {
-              "docName": "EncryptedCredentials",
               "name": "EncryptedCredentials"
             },
             "required": true
@@ -7839,10 +7692,9 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Array of encrypted files with documents provided by the user, available for “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration” and “temporary_registration” types. Files can be decrypted and verified using the accompanying \u003ca href\u003d\"#encryptedcredentials\"\u003eEncryptedCredentials\u003c/a\u003e.",
             "type": {
               "elementType": {
-                "docName": "PassportFile",
                 "name": "PassportFile"
               },
-              "name": "List\u003cDeclared(docName\u003dPassportFile)\u003e"
+              "name": "List\u003cPassportFile\u003e"
             },
             "required": false
           },
@@ -7850,7 +7702,6 @@
             "name": "front_side",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Encrypted file with the front side of the document, provided by the user. Available for “passport”, “driver_license”, “identity_card” and “internal_passport”. The file can be decrypted and verified using the accompanying \u003ca href\u003d\"#encryptedcredentials\"\u003eEncryptedCredentials\u003c/a\u003e.",
             "type": {
-              "docName": "PassportFile",
               "name": "PassportFile"
             },
             "required": false
@@ -7859,7 +7710,6 @@
             "name": "reverse_side",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Encrypted file with the reverse side of the document, provided by the user. Available for “driver_license” and “identity_card”. The file can be decrypted and verified using the accompanying \u003ca href\u003d\"#encryptedcredentials\"\u003eEncryptedCredentials\u003c/a\u003e.",
             "type": {
-              "docName": "PassportFile",
               "name": "PassportFile"
             },
             "required": false
@@ -7868,7 +7718,6 @@
             "name": "selfie",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Encrypted file with the selfie of the user holding a document, provided by the user; available for “passport”, “driver_license”, “identity_card” and “internal_passport”. The file can be decrypted and verified using the accompanying \u003ca href\u003d\"#encryptedcredentials\"\u003eEncryptedCredentials\u003c/a\u003e.",
             "type": {
-              "docName": "PassportFile",
               "name": "PassportFile"
             },
             "required": false
@@ -7878,10 +7727,9 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Array of encrypted files with translated versions of documents provided by the user. Available if requested for “passport”, “driver_license”, “identity_card”, “internal_passport”, “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration” and “temporary_registration” types. Files can be decrypted and verified using the accompanying \u003ca href\u003d\"#encryptedcredentials\"\u003eEncryptedCredentials\u003c/a\u003e.",
             "type": {
               "elementType": {
-                "docName": "PassportFile",
                 "name": "PassportFile"
               },
-              "name": "List\u003cDeclared(docName\u003dPassportFile)\u003e"
+              "name": "List\u003cPassportFile\u003e"
             },
             "required": false
           },
@@ -8339,10 +8187,9 @@
             "description": "Photo that will be displayed in the game message in chats.",
             "type": {
               "elementType": {
-                "docName": "PhotoSize",
                 "name": "PhotoSize"
               },
-              "name": "List\u003cDeclared(docName\u003dPhotoSize)\u003e"
+              "name": "List\u003cPhotoSize\u003e"
             },
             "required": true
           },
@@ -8359,10 +8206,9 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Special entities that appear in \u003cem\u003etext\u003c/em\u003e, such as usernames, URLs, bot commands, etc.",
             "type": {
               "elementType": {
-                "docName": "MessageEntity",
                 "name": "MessageEntity"
               },
-              "name": "List\u003cDeclared(docName\u003dMessageEntity)\u003e"
+              "name": "List\u003cMessageEntity\u003e"
             },
             "required": false
           },
@@ -8370,7 +8216,6 @@
             "name": "animation",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Animation that will be displayed in the game message in chats. Upload via \u003ca href\u003d\"https://t.me/botfather\"\u003eBotFather\u003c/a\u003e",
             "type": {
-              "docName": "Animation",
               "name": "Animation"
             },
             "required": false
@@ -8393,7 +8238,6 @@
             "name": "user",
             "description": "User",
             "type": {
-              "docName": "User",
               "name": "User"
             },
             "required": true
@@ -8450,7 +8294,6 @@
             "name": "reply_markup",
             "description": "A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e. If empty, one ‘Play game_title’ button will be shown. If not empty, the first button must launch the game.",
             "type": {
-              "docName": "InlineKeyboardMarkup",
               "name": "InlineKeyboardMarkup"
             },
             "required": false
