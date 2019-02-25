@@ -1,11 +1,17 @@
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
-data class DocSection(val name: String, val description: String, val docTypes: List<DocType>, val docMethods: List<DocMethod>)
+data class DocSection(
+    val name: String,
+    val description: String,
+    val docTypes: List<DocType>,
+    val docMethods: List<DocMethod>
+)
+
 data class DocType(val name: String, val description: String, val docFields: List<DocField>)
-data class DocField(val name: String, val description: String, val type: String, val required: Boolean)
+data class DocField(val name: String, val description: String, val type: TelegramType, val required: Boolean)
 data class DocMethod(val name: String, val description: String, val docParameters: List<DocParameter>)
-data class DocParameter(val name: String, val description: String, val type: String, val required: Boolean)
+data class DocParameter(val name: String, val description: String, val type: TelegramType, val required: Boolean)
 
 fun Document.toSection(): List<DocSection> {
     val content = select("#dev_page_content").first()
@@ -43,8 +49,13 @@ fun Document.toSection(): List<DocSection> {
                                     docFields = tableData.children().map {
                                         it.getElementsByTag("td").let {
                                             val fieldDesc = it[2].html()
-                                            val type = it[1].text().fixType()
-                                            DocField(it[0].text(), fieldDesc, type, "Optional" !in fieldDesc)
+                                            val type = it[1].text().fixTypeStrig()
+                                            DocField(
+                                                it[0].text(),
+                                                fieldDesc,
+                                                TelegramType.from(type),
+                                                "Optional" !in fieldDesc
+                                            )
                                         }
                                     }
                                 }
@@ -53,8 +64,13 @@ fun Document.toSection(): List<DocSection> {
                                     docParameters = tableData.children().map {
                                         it.getElementsByTag("td").let {
                                             val fieldDesc = it[3].html()
-                                            val type = it[1].text().fixType()
-                                            DocParameter(it[0].text(), fieldDesc, type, "Yes" == it[2].text())
+                                            val type = it[1].text().fixTypeStrig()
+                                            DocParameter(
+                                                it[0].text(),
+                                                fieldDesc,
+                                                TelegramType.from(type),
+                                                "Yes" == it[2].text()
+                                            )
                                         }
                                     }
                                 }
@@ -65,14 +81,10 @@ fun Document.toSection(): List<DocSection> {
                     }
                 }
 
-                val p = docParameters
-                val f = docFields
-                when {
-                    p != null && f != null -> error("isMethod and isType: $h4")
-                    p != null -> DocMethod(h4, h4Desc, p)
-                    f != null -> DocType(h4, h4Desc, f)
-                    else -> null
-                }
+                val docType = docFields?.let { DocType(h4, h4Desc, it) }
+                val docMethod = docParameters?.let { DocMethod(h4, h4Desc, it) }
+                if (docType != null && docMethod != null) error("hasTypes and hasMethods: $h4")
+                docType ?: docMethod
             }
             DocSection(
                 name = h3,
@@ -82,38 +94,40 @@ fun Document.toSection(): List<DocSection> {
             )
         }
         .filterNot {
-            it.docTypes.isEmpty() && it.docMethods.isEmpty()
+            val hasTypes = it.docTypes.isNotEmpty()
+            val hasMethods = it.docMethods.isNotEmpty()
+            !hasTypes && !hasMethods
+        }
+        .also { docSections ->
+            // validate result
+            val unknownTypes = docSections.findUnknownTypes()
+            if (unknownTypes.isNotEmpty()) error("found unknownTypes: $unknownTypes")
         }
 }
 
-fun String.fixType() = when (this) {
+fun String.fixTypeStrig() = when (this) {
     "Float number" -> "Float"
     "True" -> "Boolean"
-    else -> if ("Array of " in this) {
-        split("Array of ").size
-        replace("Array of ", "List<") + ">".repeat(split("Array of ").size - 1)
-    } else this
+    else -> this
 }
 
-fun List<DocSection>.findUnknownTypes(): List<String> {
+private fun List<DocSection>.findUnknownTypes(): List<String> {
     val declaredTypeMap = this@findUnknownTypes.flatMap { it.docTypes }.associateBy { it.name }
-    val allTypeInDocFields = declaredTypeMap.values.flatMap { type ->
+    val unknownTypeInDocFields = declaredTypeMap.values.flatMap { type ->
         type.docFields.mapNotNull {
-            val fieldType = it.type.replace("List<", "").replace(">", "")
-            if (fieldType !in declaredTypeMap) {
-                fieldType
-            } else null
-        }
-    }
-    val allTypeInDocMethods = this@findUnknownTypes.flatMap {
-        it.docMethods.flatMap {
-            it.docParameters.mapNotNull {
-                val fieldType = it.type.replace("List<", "").replace(">", "")
-                if (fieldType !in declaredTypeMap) {
-                    fieldType
-                } else null
+            it.type.getTypeWithoutGenerics().name.takeIf {
+                it !in declaredTypeMap && TelegramType.from(it) is TelegramType.Declared
             }
         }
     }
-    return (allTypeInDocFields + allTypeInDocMethods).distinct()
+    val unknownTypeInDocMethods = this@findUnknownTypes.flatMap {
+        it.docMethods.flatMap {
+            it.docParameters.mapNotNull {
+                it.type.getTypeWithoutGenerics().name.takeIf {
+                    it !in declaredTypeMap && TelegramType.from(it) is TelegramType.Declared
+                }
+            }
+        }
+    }
+    return (unknownTypeInDocFields + unknownTypeInDocMethods).distinct()
 }

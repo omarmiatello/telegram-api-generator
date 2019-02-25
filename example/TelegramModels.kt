@@ -34,7 +34,6 @@ data class WebhookInfo(
 ) : TelegramModel()
 
 
-
 // Available types
 
 @Serializable
@@ -367,7 +366,6 @@ data class InputMediaDocument(
 ) : TelegramModel()
 
 
-
 // Stickers
 
 @Serializable
@@ -397,7 +395,6 @@ data class MaskPosition(
     val y_shift: Float,
     val scale: Float
 ) : TelegramModel()
-
 
 
 // Inline mode
@@ -728,7 +725,6 @@ data class ChosenInlineResult(
 ) : TelegramModel()
 
 
-
 // Payments
 
 @Serializable
@@ -800,7 +796,6 @@ data class PreCheckoutQuery(
     @Optional val shipping_option_id: String? = null,
     @Optional val order_info: OrderInfo? = null
 ) : TelegramModel()
-
 
 
 // Telegram Passport
@@ -911,7 +906,6 @@ data class PassportElementErrorUnspecified(
     val element_hash: String,
     val message: String
 ) : TelegramModel()
-
 
 
 // Games

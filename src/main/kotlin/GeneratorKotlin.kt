@@ -11,7 +11,7 @@ sealed class TelegramModel"""
             section.docTypes.forEach { dataType ->
                 appendln("@Serializable\ndata class ${dataType.name}(\n${dataType.docFields.map { f ->
                     "${if (f.required) "" else "@Optional "}val ${f.name}: ${f.toKotlinType()}"
-                }.joinToString(",\n")}\n) : TelegramModel()\n")
+                }.joinToString(",\n")}\n) : TelegramModel()")
             }
         }
     }
@@ -34,25 +34,26 @@ private fun DocField.toKotlinType() = type.toKotlinType() + if (required) "" els
 
 private fun DocParameter.toKotlinType() = type.toKotlinType() + if (required) "" else "?"
 
-private fun String.toKotlinType(): String = when (this) {
-    "Integer" -> "Int"
-    "String" -> "String"
-    "Boolean" -> "Boolean"
-    "Float" -> "Float"
-    "CallbackGame" -> "Any"
-    "InputFile or String" -> "Any"
-    "InputMessageContent" -> "Any"
-    "InputFile" -> "Any"
-    "Integer or String" -> "Any"
-    "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply" -> "Any"
-    "InputMediaPhoto and InputMediaVideo" -> "Any"
-    "InputMedia" -> "Any"
-    "InlineQueryResult" -> "Any"
-    "PassportElementError" -> "Any"
-    else -> {
-        if ("List<" in this) {
-            val type = replace("List<", "")
-            replace(type, type.toKotlinType())
-        } else this
+private fun TelegramType.toKotlinType(): String = when (this) {
+    is TelegramType.Declared -> name
+    is TelegramType.ListType<*> -> "List<${elementType.toKotlinType()}>"
+    TelegramType.Integer -> "Int"
+    TelegramType.StringType -> "String"
+    TelegramType.Boolean -> "Boolean"
+    TelegramType.Float -> "Float"
+    TelegramType.CallbackGame -> "Any"
+    TelegramType.InputMedia -> "Any"
+    TelegramType.InputFile -> "Any"
+    TelegramType.InputMessageContent -> "Any"
+    TelegramType.InlineQueryResult -> "Any"
+    TelegramType.PassportElementError -> "Any"
+    is TelegramType.WithAlternative -> {
+        when (this) {
+            // Example: TelegramType.WithAlternative.InputFileOrString -> if (alternative.isEmpty()) "v1" else "v2"
+            TelegramType.WithAlternative.InputFileOrString -> "Any"
+            TelegramType.WithAlternative.IntegerOrString -> "Any"
+            TelegramType.WithAlternative.KeyboardOption -> "Any"
+            TelegramType.WithAlternative.InputMediaPhotoOrVideo -> "Any"
+        }
     }
 }

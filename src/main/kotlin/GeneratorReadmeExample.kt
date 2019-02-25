@@ -1,6 +1,4 @@
 fun List<DocSection>.toReadmeExample() = buildString {
-    appendln("NOTE: You should handle also types:")
-    appendln(findUnknownTypes().joinToString("\n") { "`$it`" })
     this@toReadmeExample.forEach { section ->
         appendln("\n\n## ${section.name}")
         if (section.docTypes.isNotEmpty()) {

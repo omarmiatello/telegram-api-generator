@@ -1,28 +1,14 @@
-NOTE: You should handle also types:
-`Integer`
-`String`
-`Boolean`
-`Float`
-`CallbackGame`
-`InputFile or String`
-`InputMessageContent`
-`InputFile`
-`Integer or String`
-`InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply`
-`InputMediaPhoto and InputMediaVideo`
-`InputMedia`
-`InlineQueryResult`
-`PassportElementError`
+
 
 ## Getting updates
 
 ### Data Types
-    Update(update_id: Integer, message: Message, edited_message: Message, channel_post: Message, edited_channel_post: Message, inline_query: InlineQuery, chosen_inline_result: ChosenInlineResult, callback_query: CallbackQuery, shipping_query: ShippingQuery, pre_checkout_query: PreCheckoutQuery)
-    WebhookInfo(url: String, has_custom_certificate: Boolean, pending_update_count: Integer, last_error_date: Integer, last_error_message: String, max_connections: Integer, allowed_updates: List<String>)
+    Update(update_id: Integer, message: Declared(docName=Message), edited_message: Declared(docName=Message), channel_post: Declared(docName=Message), edited_channel_post: Declared(docName=Message), inline_query: Declared(docName=InlineQuery), chosen_inline_result: Declared(docName=ChosenInlineResult), callback_query: Declared(docName=CallbackQuery), shipping_query: Declared(docName=ShippingQuery), pre_checkout_query: Declared(docName=PreCheckoutQuery))
+    WebhookInfo(url: String, has_custom_certificate: Boolean, pending_update_count: Integer, last_error_date: Integer, last_error_message: String, max_connections: Integer, allowed_updates: ListType(elementType=String))
 
 ### Methods
-    getUpdates(offset: Integer, limit: Integer, timeout: Integer, allowed_updates: List<String>)
-    setWebhook(url: String, certificate: InputFile, max_connections: Integer, allowed_updates: List<String>)
+    getUpdates(offset: Integer, limit: Integer, timeout: Integer, allowed_updates: ListType(elementType=String))
+    setWebhook(url: String, certificate: InputFile, max_connections: Integer, allowed_updates: ListType(elementType=String))
     deleteWebhook()
     getWebhookInfo()
 
@@ -31,30 +17,30 @@ NOTE: You should handle also types:
 
 ### Data Types
     User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String)
-    Chat(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, all_members_are_administrators: Boolean, photo: ChatPhoto, description: String, invite_link: String, pinned_message: Message, sticker_set_name: String, can_set_sticker_set: Boolean)
-    Message(message_id: Integer, from: User, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_date: Integer, reply_to_message: Message, edit_date: Integer, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, caption_entities: List<MessageEntity>, audio: Audio, document: Document, animation: Animation, game: Game, photo: List<PhotoSize>, sticker: Sticker, video: Video, voice: Voice, video_note: VideoNote, caption: String, contact: Contact, location: Location, venue: Venue, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData)
-    MessageEntity(type: String, offset: Integer, length: Integer, url: String, user: User)
+    Chat(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, all_members_are_administrators: Boolean, photo: Declared(docName=ChatPhoto), description: String, invite_link: String, pinned_message: Declared(docName=Message), sticker_set_name: String, can_set_sticker_set: Boolean)
+    Message(message_id: Integer, from: Declared(docName=User), date: Integer, chat: Declared(docName=Chat), forward_from: Declared(docName=User), forward_from_chat: Declared(docName=Chat), forward_from_message_id: Integer, forward_signature: String, forward_date: Integer, reply_to_message: Declared(docName=Message), edit_date: Integer, media_group_id: String, author_signature: String, text: String, entities: ListType(elementType=Declared(docName=MessageEntity)), caption_entities: ListType(elementType=Declared(docName=MessageEntity)), audio: Declared(docName=Audio), document: Declared(docName=Document), animation: Declared(docName=Animation), game: Declared(docName=Game), photo: ListType(elementType=Declared(docName=PhotoSize)), sticker: Declared(docName=Sticker), video: Declared(docName=Video), voice: Declared(docName=Voice), video_note: Declared(docName=VideoNote), caption: String, contact: Declared(docName=Contact), location: Declared(docName=Location), venue: Declared(docName=Venue), new_chat_members: ListType(elementType=Declared(docName=User)), left_chat_member: Declared(docName=User), new_chat_title: String, new_chat_photo: ListType(elementType=Declared(docName=PhotoSize)), delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Declared(docName=Message), invoice: Declared(docName=Invoice), successful_payment: Declared(docName=SuccessfulPayment), connected_website: String, passport_data: Declared(docName=PassportData))
+    MessageEntity(type: String, offset: Integer, length: Integer, url: String, user: Declared(docName=User))
     PhotoSize(file_id: String, width: Integer, height: Integer, file_size: Integer)
-    Audio(file_id: String, duration: Integer, performer: String, title: String, mime_type: String, file_size: Integer, thumb: PhotoSize)
-    Document(file_id: String, thumb: PhotoSize, file_name: String, mime_type: String, file_size: Integer)
-    Video(file_id: String, width: Integer, height: Integer, duration: Integer, thumb: PhotoSize, mime_type: String, file_size: Integer)
-    Animation(file_id: String, width: Integer, height: Integer, duration: Integer, thumb: PhotoSize, file_name: String, mime_type: String, file_size: Integer)
+    Audio(file_id: String, duration: Integer, performer: String, title: String, mime_type: String, file_size: Integer, thumb: Declared(docName=PhotoSize))
+    Document(file_id: String, thumb: Declared(docName=PhotoSize), file_name: String, mime_type: String, file_size: Integer)
+    Video(file_id: String, width: Integer, height: Integer, duration: Integer, thumb: Declared(docName=PhotoSize), mime_type: String, file_size: Integer)
+    Animation(file_id: String, width: Integer, height: Integer, duration: Integer, thumb: Declared(docName=PhotoSize), file_name: String, mime_type: String, file_size: Integer)
     Voice(file_id: String, duration: Integer, mime_type: String, file_size: Integer)
-    VideoNote(file_id: String, length: Integer, duration: Integer, thumb: PhotoSize, file_size: Integer)
+    VideoNote(file_id: String, length: Integer, duration: Integer, thumb: Declared(docName=PhotoSize), file_size: Integer)
     Contact(phone_number: String, first_name: String, last_name: String, user_id: Integer, vcard: String)
     Location(longitude: Float, latitude: Float)
-    Venue(location: Location, title: String, address: String, foursquare_id: String, foursquare_type: String)
-    UserProfilePhotos(total_count: Integer, photos: List<List<PhotoSize>>)
+    Venue(location: Declared(docName=Location), title: String, address: String, foursquare_id: String, foursquare_type: String)
+    UserProfilePhotos(total_count: Integer, photos: ListType(elementType=ListType(elementType=Declared(docName=PhotoSize))))
     File(file_id: String, file_size: Integer, file_path: String)
-    ReplyKeyboardMarkup(keyboard: List<List<KeyboardButton>>, resize_keyboard: Boolean, one_time_keyboard: Boolean, selective: Boolean)
+    ReplyKeyboardMarkup(keyboard: ListType(elementType=ListType(elementType=Declared(docName=KeyboardButton))), resize_keyboard: Boolean, one_time_keyboard: Boolean, selective: Boolean)
     KeyboardButton(text: String, request_contact: Boolean, request_location: Boolean)
     ReplyKeyboardRemove(remove_keyboard: Boolean, selective: Boolean)
-    InlineKeyboardMarkup(inline_keyboard: List<List<InlineKeyboardButton>>)
+    InlineKeyboardMarkup(inline_keyboard: ListType(elementType=ListType(elementType=Declared(docName=InlineKeyboardButton))))
     InlineKeyboardButton(text: String, url: String, callback_data: String, switch_inline_query: String, switch_inline_query_current_chat: String, callback_game: CallbackGame, pay: Boolean)
-    CallbackQuery(id: String, from: User, message: Message, inline_message_id: String, chat_instance: String, data: String, game_short_name: String)
+    CallbackQuery(id: String, from: Declared(docName=User), message: Declared(docName=Message), inline_message_id: String, chat_instance: String, data: String, game_short_name: String)
     ForceReply(force_reply: Boolean, selective: Boolean)
     ChatPhoto(small_file_id: String, big_file_id: String)
-    ChatMember(user: User, status: String, until_date: Integer, can_be_edited: Boolean, can_change_info: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_delete_messages: Boolean, can_invite_users: Boolean, can_restrict_members: Boolean, can_pin_messages: Boolean, can_promote_members: Boolean, can_send_messages: Boolean, can_send_media_messages: Boolean, can_send_other_messages: Boolean, can_add_web_page_previews: Boolean)
+    ChatMember(user: Declared(docName=User), status: String, until_date: Integer, can_be_edited: Boolean, can_change_info: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_delete_messages: Boolean, can_invite_users: Boolean, can_restrict_members: Boolean, can_pin_messages: Boolean, can_promote_members: Boolean, can_send_messages: Boolean, can_send_media_messages: Boolean, can_send_other_messages: Boolean, can_add_web_page_previews: Boolean)
     ResponseParameters(migrate_to_chat_id: Integer, retry_after: Integer)
     InputMediaPhoto(type: String, media: String, caption: String, parse_mode: String)
     InputMediaVideo(type: String, media: String, thumb: InputFile or String, caption: String, parse_mode: String, width: Integer, height: Integer, duration: Integer, supports_streaming: Boolean)
@@ -75,10 +61,10 @@ NOTE: You should handle also types:
     sendAnimation(chat_id: Integer or String, animation: InputFile or String, duration: Integer, width: Integer, height: Integer, thumb: InputFile or String, caption: String, parse_mode: String, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply)
     sendVoice(chat_id: Integer or String, voice: InputFile or String, caption: String, parse_mode: String, duration: Integer, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply)
     sendVideoNote(chat_id: Integer or String, video_note: InputFile or String, duration: Integer, length: Integer, thumb: InputFile or String, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply)
-    sendMediaGroup(chat_id: Integer or String, media: List<InputMediaPhoto and InputMediaVideo>, disable_notification: Boolean, reply_to_message_id: Integer)
+    sendMediaGroup(chat_id: Integer or String, media: ListType(elementType=InputMediaPhoto and InputMediaVideo), disable_notification: Boolean, reply_to_message_id: Integer)
     sendLocation(chat_id: Integer or String, latitude: Float, longitude: Float, live_period: Integer, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply)
-    editMessageLiveLocation(chat_id: Integer or String, message_id: Integer, inline_message_id: String, latitude: Float, longitude: Float, reply_markup: InlineKeyboardMarkup)
-    stopMessageLiveLocation(chat_id: Integer or String, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
+    editMessageLiveLocation(chat_id: Integer or String, message_id: Integer, inline_message_id: String, latitude: Float, longitude: Float, reply_markup: Declared(docName=InlineKeyboardMarkup))
+    stopMessageLiveLocation(chat_id: Integer or String, message_id: Integer, inline_message_id: String, reply_markup: Declared(docName=InlineKeyboardMarkup))
     sendVenue(chat_id: Integer or String, latitude: Float, longitude: Float, title: String, address: String, foursquare_id: String, foursquare_type: String, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply)
     sendContact(chat_id: Integer or String, phone_number: String, first_name: String, last_name: String, vcard: String, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply)
     sendChatAction(chat_id: Integer or String, action: String)
@@ -108,26 +94,26 @@ NOTE: You should handle also types:
 ## Updating messages
 
 ### Methods
-    editMessageText(chat_id: Integer or String, message_id: Integer, inline_message_id: String, text: String, parse_mode: String, disable_web_page_preview: Boolean, reply_markup: InlineKeyboardMarkup)
-    editMessageCaption(chat_id: Integer or String, message_id: Integer, inline_message_id: String, caption: String, parse_mode: String, reply_markup: InlineKeyboardMarkup)
-    editMessageMedia(chat_id: Integer or String, message_id: Integer, inline_message_id: String, media: InputMedia, reply_markup: InlineKeyboardMarkup)
-    editMessageReplyMarkup(chat_id: Integer or String, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
+    editMessageText(chat_id: Integer or String, message_id: Integer, inline_message_id: String, text: String, parse_mode: String, disable_web_page_preview: Boolean, reply_markup: Declared(docName=InlineKeyboardMarkup))
+    editMessageCaption(chat_id: Integer or String, message_id: Integer, inline_message_id: String, caption: String, parse_mode: String, reply_markup: Declared(docName=InlineKeyboardMarkup))
+    editMessageMedia(chat_id: Integer or String, message_id: Integer, inline_message_id: String, media: InputMedia, reply_markup: Declared(docName=InlineKeyboardMarkup))
+    editMessageReplyMarkup(chat_id: Integer or String, message_id: Integer, inline_message_id: String, reply_markup: Declared(docName=InlineKeyboardMarkup))
     deleteMessage(chat_id: Integer or String, message_id: Integer)
 
 
 ## Stickers
 
 ### Data Types
-    Sticker(file_id: String, width: Integer, height: Integer, thumb: PhotoSize, emoji: String, set_name: String, mask_position: MaskPosition, file_size: Integer)
-    StickerSet(name: String, title: String, contains_masks: Boolean, stickers: List<Sticker>)
+    Sticker(file_id: String, width: Integer, height: Integer, thumb: Declared(docName=PhotoSize), emoji: String, set_name: String, mask_position: Declared(docName=MaskPosition), file_size: Integer)
+    StickerSet(name: String, title: String, contains_masks: Boolean, stickers: ListType(elementType=Declared(docName=Sticker)))
     MaskPosition(point: String, x_shift: Float, y_shift: Float, scale: Float)
 
 ### Methods
     sendSticker(chat_id: Integer or String, sticker: InputFile or String, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply)
     getStickerSet(name: String)
     uploadStickerFile(user_id: Integer, png_sticker: InputFile)
-    createNewStickerSet(user_id: Integer, name: String, title: String, png_sticker: InputFile or String, emojis: String, contains_masks: Boolean, mask_position: MaskPosition)
-    addStickerToSet(user_id: Integer, name: String, png_sticker: InputFile or String, emojis: String, mask_position: MaskPosition)
+    createNewStickerSet(user_id: Integer, name: String, title: String, png_sticker: InputFile or String, emojis: String, contains_masks: Boolean, mask_position: Declared(docName=MaskPosition))
+    addStickerToSet(user_id: Integer, name: String, png_sticker: InputFile or String, emojis: String, mask_position: Declared(docName=MaskPosition))
     setStickerPositionInSet(sticker: String, position: Integer)
     deleteStickerFromSet(sticker: String)
 
@@ -135,35 +121,35 @@ NOTE: You should handle also types:
 ## Inline mode
 
 ### Data Types
-    InlineQuery(id: String, from: User, location: Location, query: String, offset: String)
-    InlineQueryResultArticle(type: String, id: String, title: String, input_message_content: InputMessageContent, reply_markup: InlineKeyboardMarkup, url: String, hide_url: Boolean, description: String, thumb_url: String, thumb_width: Integer, thumb_height: Integer)
-    InlineQueryResultPhoto(type: String, id: String, photo_url: String, thumb_url: String, photo_width: Integer, photo_height: Integer, title: String, description: String, caption: String, parse_mode: String, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
-    InlineQueryResultGif(type: String, id: String, gif_url: String, gif_width: Integer, gif_height: Integer, gif_duration: Integer, thumb_url: String, title: String, caption: String, parse_mode: String, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
-    InlineQueryResultMpeg4Gif(type: String, id: String, mpeg4_url: String, mpeg4_width: Integer, mpeg4_height: Integer, mpeg4_duration: Integer, thumb_url: String, title: String, caption: String, parse_mode: String, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
-    InlineQueryResultVideo(type: String, id: String, video_url: String, mime_type: String, thumb_url: String, title: String, caption: String, parse_mode: String, video_width: Integer, video_height: Integer, video_duration: Integer, description: String, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
-    InlineQueryResultAudio(type: String, id: String, audio_url: String, title: String, caption: String, parse_mode: String, performer: String, audio_duration: Integer, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
-    InlineQueryResultVoice(type: String, id: String, voice_url: String, title: String, caption: String, parse_mode: String, voice_duration: Integer, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
-    InlineQueryResultDocument(type: String, id: String, title: String, caption: String, parse_mode: String, document_url: String, mime_type: String, description: String, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent, thumb_url: String, thumb_width: Integer, thumb_height: Integer)
-    InlineQueryResultLocation(type: String, id: String, latitude: Float, longitude: Float, title: String, live_period: Integer, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent, thumb_url: String, thumb_width: Integer, thumb_height: Integer)
-    InlineQueryResultVenue(type: String, id: String, latitude: Float, longitude: Float, title: String, address: String, foursquare_id: String, foursquare_type: String, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent, thumb_url: String, thumb_width: Integer, thumb_height: Integer)
-    InlineQueryResultContact(type: String, id: String, phone_number: String, first_name: String, last_name: String, vcard: String, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent, thumb_url: String, thumb_width: Integer, thumb_height: Integer)
-    InlineQueryResultGame(type: String, id: String, game_short_name: String, reply_markup: InlineKeyboardMarkup)
-    InlineQueryResultCachedPhoto(type: String, id: String, photo_file_id: String, title: String, description: String, caption: String, parse_mode: String, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
-    InlineQueryResultCachedGif(type: String, id: String, gif_file_id: String, title: String, caption: String, parse_mode: String, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
-    InlineQueryResultCachedMpeg4Gif(type: String, id: String, mpeg4_file_id: String, title: String, caption: String, parse_mode: String, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
-    InlineQueryResultCachedSticker(type: String, id: String, sticker_file_id: String, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
-    InlineQueryResultCachedDocument(type: String, id: String, title: String, document_file_id: String, description: String, caption: String, parse_mode: String, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
-    InlineQueryResultCachedVideo(type: String, id: String, video_file_id: String, title: String, description: String, caption: String, parse_mode: String, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
-    InlineQueryResultCachedVoice(type: String, id: String, voice_file_id: String, title: String, caption: String, parse_mode: String, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
-    InlineQueryResultCachedAudio(type: String, id: String, audio_file_id: String, caption: String, parse_mode: String, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
+    InlineQuery(id: String, from: Declared(docName=User), location: Declared(docName=Location), query: String, offset: String)
+    InlineQueryResultArticle(type: String, id: String, title: String, input_message_content: InputMessageContent, reply_markup: Declared(docName=InlineKeyboardMarkup), url: String, hide_url: Boolean, description: String, thumb_url: String, thumb_width: Integer, thumb_height: Integer)
+    InlineQueryResultPhoto(type: String, id: String, photo_url: String, thumb_url: String, photo_width: Integer, photo_height: Integer, title: String, description: String, caption: String, parse_mode: String, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent)
+    InlineQueryResultGif(type: String, id: String, gif_url: String, gif_width: Integer, gif_height: Integer, gif_duration: Integer, thumb_url: String, title: String, caption: String, parse_mode: String, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent)
+    InlineQueryResultMpeg4Gif(type: String, id: String, mpeg4_url: String, mpeg4_width: Integer, mpeg4_height: Integer, mpeg4_duration: Integer, thumb_url: String, title: String, caption: String, parse_mode: String, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent)
+    InlineQueryResultVideo(type: String, id: String, video_url: String, mime_type: String, thumb_url: String, title: String, caption: String, parse_mode: String, video_width: Integer, video_height: Integer, video_duration: Integer, description: String, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent)
+    InlineQueryResultAudio(type: String, id: String, audio_url: String, title: String, caption: String, parse_mode: String, performer: String, audio_duration: Integer, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent)
+    InlineQueryResultVoice(type: String, id: String, voice_url: String, title: String, caption: String, parse_mode: String, voice_duration: Integer, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent)
+    InlineQueryResultDocument(type: String, id: String, title: String, caption: String, parse_mode: String, document_url: String, mime_type: String, description: String, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent, thumb_url: String, thumb_width: Integer, thumb_height: Integer)
+    InlineQueryResultLocation(type: String, id: String, latitude: Float, longitude: Float, title: String, live_period: Integer, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent, thumb_url: String, thumb_width: Integer, thumb_height: Integer)
+    InlineQueryResultVenue(type: String, id: String, latitude: Float, longitude: Float, title: String, address: String, foursquare_id: String, foursquare_type: String, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent, thumb_url: String, thumb_width: Integer, thumb_height: Integer)
+    InlineQueryResultContact(type: String, id: String, phone_number: String, first_name: String, last_name: String, vcard: String, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent, thumb_url: String, thumb_width: Integer, thumb_height: Integer)
+    InlineQueryResultGame(type: String, id: String, game_short_name: String, reply_markup: Declared(docName=InlineKeyboardMarkup))
+    InlineQueryResultCachedPhoto(type: String, id: String, photo_file_id: String, title: String, description: String, caption: String, parse_mode: String, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent)
+    InlineQueryResultCachedGif(type: String, id: String, gif_file_id: String, title: String, caption: String, parse_mode: String, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent)
+    InlineQueryResultCachedMpeg4Gif(type: String, id: String, mpeg4_file_id: String, title: String, caption: String, parse_mode: String, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent)
+    InlineQueryResultCachedSticker(type: String, id: String, sticker_file_id: String, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent)
+    InlineQueryResultCachedDocument(type: String, id: String, title: String, document_file_id: String, description: String, caption: String, parse_mode: String, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent)
+    InlineQueryResultCachedVideo(type: String, id: String, video_file_id: String, title: String, description: String, caption: String, parse_mode: String, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent)
+    InlineQueryResultCachedVoice(type: String, id: String, voice_file_id: String, title: String, caption: String, parse_mode: String, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent)
+    InlineQueryResultCachedAudio(type: String, id: String, audio_file_id: String, caption: String, parse_mode: String, reply_markup: Declared(docName=InlineKeyboardMarkup), input_message_content: InputMessageContent)
     InputTextMessageContent(message_text: String, parse_mode: String, disable_web_page_preview: Boolean)
     InputLocationMessageContent(latitude: Float, longitude: Float, live_period: Integer)
     InputVenueMessageContent(latitude: Float, longitude: Float, title: String, address: String, foursquare_id: String, foursquare_type: String)
     InputContactMessageContent(phone_number: String, first_name: String, last_name: String, vcard: String)
-    ChosenInlineResult(result_id: String, from: User, location: Location, inline_message_id: String, query: String)
+    ChosenInlineResult(result_id: String, from: Declared(docName=User), location: Declared(docName=Location), inline_message_id: String, query: String)
 
 ### Methods
-    answerInlineQuery(inline_query_id: String, results: List<InlineQueryResult>, cache_time: Integer, is_personal: Boolean, next_offset: String, switch_pm_text: String, switch_pm_parameter: String)
+    answerInlineQuery(inline_query_id: String, results: ListType(elementType=InlineQueryResult), cache_time: Integer, is_personal: Boolean, next_offset: String, switch_pm_text: String, switch_pm_parameter: String)
 
 
 ## Payments
@@ -172,46 +158,46 @@ NOTE: You should handle also types:
     LabeledPrice(label: String, amount: Integer)
     Invoice(title: String, description: String, start_parameter: String, currency: String, total_amount: Integer)
     ShippingAddress(country_code: String, state: String, city: String, street_line1: String, street_line2: String, post_code: String)
-    OrderInfo(name: String, phone_number: String, email: String, shipping_address: ShippingAddress)
-    ShippingOption(id: String, title: String, prices: List<LabeledPrice>)
-    SuccessfulPayment(currency: String, total_amount: Integer, invoice_payload: String, shipping_option_id: String, order_info: OrderInfo, telegram_payment_charge_id: String, provider_payment_charge_id: String)
-    ShippingQuery(id: String, from: User, invoice_payload: String, shipping_address: ShippingAddress)
-    PreCheckoutQuery(id: String, from: User, currency: String, total_amount: Integer, invoice_payload: String, shipping_option_id: String, order_info: OrderInfo)
+    OrderInfo(name: String, phone_number: String, email: String, shipping_address: Declared(docName=ShippingAddress))
+    ShippingOption(id: String, title: String, prices: ListType(elementType=Declared(docName=LabeledPrice)))
+    SuccessfulPayment(currency: String, total_amount: Integer, invoice_payload: String, shipping_option_id: String, order_info: Declared(docName=OrderInfo), telegram_payment_charge_id: String, provider_payment_charge_id: String)
+    ShippingQuery(id: String, from: Declared(docName=User), invoice_payload: String, shipping_address: Declared(docName=ShippingAddress))
+    PreCheckoutQuery(id: String, from: Declared(docName=User), currency: String, total_amount: Integer, invoice_payload: String, shipping_option_id: String, order_info: Declared(docName=OrderInfo))
 
 ### Methods
-    sendInvoice(chat_id: Integer, title: String, description: String, payload: String, provider_token: String, start_parameter: String, currency: String, prices: List<LabeledPrice>, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup)
-    answerShippingQuery(shipping_query_id: String, ok: Boolean, shipping_options: List<ShippingOption>, error_message: String)
+    sendInvoice(chat_id: Integer, title: String, description: String, payload: String, provider_token: String, start_parameter: String, currency: String, prices: ListType(elementType=Declared(docName=LabeledPrice)), provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: Declared(docName=InlineKeyboardMarkup))
+    answerShippingQuery(shipping_query_id: String, ok: Boolean, shipping_options: ListType(elementType=Declared(docName=ShippingOption)), error_message: String)
     answerPreCheckoutQuery(pre_checkout_query_id: String, ok: Boolean, error_message: String)
 
 
 ## Telegram Passport
 
 ### Data Types
-    PassportData(data: List<EncryptedPassportElement>, credentials: EncryptedCredentials)
+    PassportData(data: ListType(elementType=Declared(docName=EncryptedPassportElement)), credentials: Declared(docName=EncryptedCredentials))
     PassportFile(file_id: String, file_size: Integer, file_date: Integer)
-    EncryptedPassportElement(type: String, data: String, phone_number: String, email: String, files: List<PassportFile>, front_side: PassportFile, reverse_side: PassportFile, selfie: PassportFile, translation: List<PassportFile>, hash: String)
+    EncryptedPassportElement(type: String, data: String, phone_number: String, email: String, files: ListType(elementType=Declared(docName=PassportFile)), front_side: Declared(docName=PassportFile), reverse_side: Declared(docName=PassportFile), selfie: Declared(docName=PassportFile), translation: ListType(elementType=Declared(docName=PassportFile)), hash: String)
     EncryptedCredentials(data: String, hash: String, secret: String)
     PassportElementErrorDataField(source: String, type: String, field_name: String, data_hash: String, message: String)
     PassportElementErrorFrontSide(source: String, type: String, file_hash: String, message: String)
     PassportElementErrorReverseSide(source: String, type: String, file_hash: String, message: String)
     PassportElementErrorSelfie(source: String, type: String, file_hash: String, message: String)
     PassportElementErrorFile(source: String, type: String, file_hash: String, message: String)
-    PassportElementErrorFiles(source: String, type: String, file_hashes: List<String>, message: String)
+    PassportElementErrorFiles(source: String, type: String, file_hashes: ListType(elementType=String), message: String)
     PassportElementErrorTranslationFile(source: String, type: String, file_hash: String, message: String)
-    PassportElementErrorTranslationFiles(source: String, type: String, file_hashes: List<String>, message: String)
+    PassportElementErrorTranslationFiles(source: String, type: String, file_hashes: ListType(elementType=String), message: String)
     PassportElementErrorUnspecified(source: String, type: String, element_hash: String, message: String)
 
 ### Methods
-    setPassportDataErrors(user_id: Integer, errors: List<PassportElementError>)
+    setPassportDataErrors(user_id: Integer, errors: ListType(elementType=PassportElementError))
 
 
 ## Games
 
 ### Data Types
-    Game(title: String, description: String, photo: List<PhotoSize>, text: String, text_entities: List<MessageEntity>, animation: Animation)
-    GameHighScore(position: Integer, user: User, score: Integer)
+    Game(title: String, description: String, photo: ListType(elementType=Declared(docName=PhotoSize)), text: String, text_entities: ListType(elementType=Declared(docName=MessageEntity)), animation: Declared(docName=Animation))
+    GameHighScore(position: Integer, user: Declared(docName=User), score: Integer)
 
 ### Methods
-    sendGame(chat_id: Integer, game_short_name: String, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup)
+    sendGame(chat_id: Integer, game_short_name: String, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: Declared(docName=InlineKeyboardMarkup))
     setGameScore(user_id: Integer, score: Integer, force: Boolean, disable_edit_message: Boolean, chat_id: Integer, message_id: Integer, inline_message_id: String)
     getGameHighScores(user_id: Integer, chat_id: Integer, message_id: Integer, inline_message_id: String)
