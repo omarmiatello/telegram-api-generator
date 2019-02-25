@@ -1,11 +1,10 @@
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
-sealed class DocContent
 data class DocSection(val name: String, val description: String, val docTypes: List<DocType>, val docMethods: List<DocMethod>)
-data class DocType(val name: String, val description: String, val docFields: List<DocField>) : DocContent()
+data class DocType(val name: String, val description: String, val docFields: List<DocField>)
 data class DocField(val name: String, val description: String, val type: String, val required: Boolean)
-data class DocMethod(val name: String, val description: String, val docParameters: List<DocParameter>) : DocContent()
+data class DocMethod(val name: String, val description: String, val docParameters: List<DocParameter>)
 data class DocParameter(val name: String, val description: String, val type: String, val required: Boolean)
 
 fun Document.toSection(): List<DocSection> {

@@ -1,10 +1,6 @@
-import com.google.gson.Gson
-import java.io.File
+import com.google.gson.GsonBuilder
 
-fun List<DocSection>.toJson() {
-    File("out/telegram.json").writer().apply {
-        write(Gson().newBuilder().setPrettyPrinting().create().toJson(this@toJson))
-        close()
-    }
-}
+private val gson = GsonBuilder().setPrettyPrinting().create()
+
+fun List<DocSection>.toJson(): String = gson.toJson(this@toJson)
 

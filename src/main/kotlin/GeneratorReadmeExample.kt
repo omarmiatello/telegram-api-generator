@@ -1,25 +1,20 @@
-import java.io.File
-
-fun List<DocSection>.toReadmeExample() {
-    File("out/example.md").writer().apply {
-        write("NOTE: You should handle also types:\n")
-        write(findUnknownTypes().joinToString("\n") { "`$it`" })
-        forEach { section ->
-            write("\n\n## ${section.name}\n")
-            if (section.docTypes.isNotEmpty()) {
-                write("\n### Data Types\n")
-                section.docTypes.forEach { dataType ->
-                    write("    ${dataType.name}(${dataType.docFields.map { f -> "${f.name}: ${f.type}" }.joinToString()})\n")
-                }
-            }
-            if (section.docMethods.isNotEmpty()) {
-                write("\n### Methods\n")
-                section.docMethods.forEach { method ->
-                    write("    ${method.name}(${method.docParameters.map { p -> "${p.name}: ${p.type}" }.joinToString()})\n")
-                }
+fun List<DocSection>.toReadmeExample() = buildString {
+    appendln("NOTE: You should handle also types:")
+    appendln(findUnknownTypes().joinToString("\n") { "`$it`" })
+    this@toReadmeExample.forEach { section ->
+        appendln("\n\n## ${section.name}")
+        if (section.docTypes.isNotEmpty()) {
+            appendln("\n### Data Types")
+            section.docTypes.forEach { dataType ->
+                appendln("    ${dataType.name}(${dataType.docFields.map { f -> "${f.name}: ${f.type}" }.joinToString()})")
             }
         }
-        close()
+        if (section.docMethods.isNotEmpty()) {
+            appendln("\n### Methods")
+            section.docMethods.forEach { method ->
+                appendln("    ${method.name}(${method.docParameters.map { p -> "${p.name}: ${p.type}" }.joinToString()})")
+            }
+        }
     }
 }
 
