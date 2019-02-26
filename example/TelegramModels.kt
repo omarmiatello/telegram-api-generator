@@ -4,6 +4,10 @@ import kotlinx.serialization.Optional
 import kotlinx.serialization.Serializable
 
 sealed class TelegramModel
+sealed class InputMedia : TelegramModel()
+sealed class InputMessageContent : TelegramModel()
+sealed class InlineQueryResult : TelegramModel()
+sealed class PassportElementError : TelegramModel()
 
 
 // Getting updates
@@ -317,7 +321,7 @@ data class InputMediaPhoto(
     val media: String,
     @Optional val caption: String? = null,
     @Optional val parse_mode: String? = null
-) : TelegramModel()
+) : InputMedia()
 
 @Serializable
 data class InputMediaVideo(
@@ -330,7 +334,7 @@ data class InputMediaVideo(
     @Optional val height: Int? = null,
     @Optional val duration: Int? = null,
     @Optional val supports_streaming: Boolean? = null
-) : TelegramModel()
+) : InputMedia()
 
 @Serializable
 data class InputMediaAnimation(
@@ -342,7 +346,7 @@ data class InputMediaAnimation(
     @Optional val width: Int? = null,
     @Optional val height: Int? = null,
     @Optional val duration: Int? = null
-) : TelegramModel()
+) : InputMedia()
 
 @Serializable
 data class InputMediaAudio(
@@ -354,7 +358,7 @@ data class InputMediaAudio(
     @Optional val duration: Int? = null,
     @Optional val performer: String? = null,
     @Optional val title: String? = null
-) : TelegramModel()
+) : InputMedia()
 
 @Serializable
 data class InputMediaDocument(
@@ -363,7 +367,7 @@ data class InputMediaDocument(
     @Optional val thumb: Any? = null,
     @Optional val caption: String? = null,
     @Optional val parse_mode: String? = null
-) : TelegramModel()
+) : InputMedia()
 
 
 // Stickers
@@ -413,7 +417,7 @@ data class InlineQueryResultArticle(
     val type: String,
     val id: String,
     val title: String,
-    val input_message_content: Any,
+    val input_message_content: InputMessageContent,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
     @Optional val url: String? = null,
     @Optional val hide_url: Boolean? = null,
@@ -421,7 +425,7 @@ data class InlineQueryResultArticle(
     @Optional val thumb_url: String? = null,
     @Optional val thumb_width: Int? = null,
     @Optional val thumb_height: Int? = null
-) : TelegramModel()
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultPhoto(
@@ -436,8 +440,8 @@ data class InlineQueryResultPhoto(
     @Optional val caption: String? = null,
     @Optional val parse_mode: String? = null,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null
-) : TelegramModel()
+    @Optional val input_message_content: InputMessageContent? = null
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultGif(
@@ -452,8 +456,8 @@ data class InlineQueryResultGif(
     @Optional val caption: String? = null,
     @Optional val parse_mode: String? = null,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null
-) : TelegramModel()
+    @Optional val input_message_content: InputMessageContent? = null
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultMpeg4Gif(
@@ -468,8 +472,8 @@ data class InlineQueryResultMpeg4Gif(
     @Optional val caption: String? = null,
     @Optional val parse_mode: String? = null,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null
-) : TelegramModel()
+    @Optional val input_message_content: InputMessageContent? = null
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultVideo(
@@ -486,8 +490,8 @@ data class InlineQueryResultVideo(
     @Optional val video_duration: Int? = null,
     @Optional val description: String? = null,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null
-) : TelegramModel()
+    @Optional val input_message_content: InputMessageContent? = null
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultAudio(
@@ -500,8 +504,8 @@ data class InlineQueryResultAudio(
     @Optional val performer: String? = null,
     @Optional val audio_duration: Int? = null,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null
-) : TelegramModel()
+    @Optional val input_message_content: InputMessageContent? = null
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultVoice(
@@ -513,8 +517,8 @@ data class InlineQueryResultVoice(
     @Optional val parse_mode: String? = null,
     @Optional val voice_duration: Int? = null,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null
-) : TelegramModel()
+    @Optional val input_message_content: InputMessageContent? = null
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultDocument(
@@ -527,11 +531,11 @@ data class InlineQueryResultDocument(
     val mime_type: String,
     @Optional val description: String? = null,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null,
+    @Optional val input_message_content: InputMessageContent? = null,
     @Optional val thumb_url: String? = null,
     @Optional val thumb_width: Int? = null,
     @Optional val thumb_height: Int? = null
-) : TelegramModel()
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultLocation(
@@ -542,11 +546,11 @@ data class InlineQueryResultLocation(
     val title: String,
     @Optional val live_period: Int? = null,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null,
+    @Optional val input_message_content: InputMessageContent? = null,
     @Optional val thumb_url: String? = null,
     @Optional val thumb_width: Int? = null,
     @Optional val thumb_height: Int? = null
-) : TelegramModel()
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultVenue(
@@ -559,11 +563,11 @@ data class InlineQueryResultVenue(
     @Optional val foursquare_id: String? = null,
     @Optional val foursquare_type: String? = null,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null,
+    @Optional val input_message_content: InputMessageContent? = null,
     @Optional val thumb_url: String? = null,
     @Optional val thumb_width: Int? = null,
     @Optional val thumb_height: Int? = null
-) : TelegramModel()
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultContact(
@@ -574,11 +578,11 @@ data class InlineQueryResultContact(
     @Optional val last_name: String? = null,
     @Optional val vcard: String? = null,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null,
+    @Optional val input_message_content: InputMessageContent? = null,
     @Optional val thumb_url: String? = null,
     @Optional val thumb_width: Int? = null,
     @Optional val thumb_height: Int? = null
-) : TelegramModel()
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultGame(
@@ -586,7 +590,7 @@ data class InlineQueryResultGame(
     val id: String,
     val game_short_name: String,
     @Optional val reply_markup: InlineKeyboardMarkup? = null
-) : TelegramModel()
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultCachedPhoto(
@@ -598,8 +602,8 @@ data class InlineQueryResultCachedPhoto(
     @Optional val caption: String? = null,
     @Optional val parse_mode: String? = null,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null
-) : TelegramModel()
+    @Optional val input_message_content: InputMessageContent? = null
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultCachedGif(
@@ -610,8 +614,8 @@ data class InlineQueryResultCachedGif(
     @Optional val caption: String? = null,
     @Optional val parse_mode: String? = null,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null
-) : TelegramModel()
+    @Optional val input_message_content: InputMessageContent? = null
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultCachedMpeg4Gif(
@@ -622,8 +626,8 @@ data class InlineQueryResultCachedMpeg4Gif(
     @Optional val caption: String? = null,
     @Optional val parse_mode: String? = null,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null
-) : TelegramModel()
+    @Optional val input_message_content: InputMessageContent? = null
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultCachedSticker(
@@ -631,8 +635,8 @@ data class InlineQueryResultCachedSticker(
     val id: String,
     val sticker_file_id: String,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null
-) : TelegramModel()
+    @Optional val input_message_content: InputMessageContent? = null
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultCachedDocument(
@@ -644,8 +648,8 @@ data class InlineQueryResultCachedDocument(
     @Optional val caption: String? = null,
     @Optional val parse_mode: String? = null,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null
-) : TelegramModel()
+    @Optional val input_message_content: InputMessageContent? = null
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultCachedVideo(
@@ -657,8 +661,8 @@ data class InlineQueryResultCachedVideo(
     @Optional val caption: String? = null,
     @Optional val parse_mode: String? = null,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null
-) : TelegramModel()
+    @Optional val input_message_content: InputMessageContent? = null
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultCachedVoice(
@@ -669,8 +673,8 @@ data class InlineQueryResultCachedVoice(
     @Optional val caption: String? = null,
     @Optional val parse_mode: String? = null,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null
-) : TelegramModel()
+    @Optional val input_message_content: InputMessageContent? = null
+) : InlineQueryResult()
 
 @Serializable
 data class InlineQueryResultCachedAudio(
@@ -680,8 +684,8 @@ data class InlineQueryResultCachedAudio(
     @Optional val caption: String? = null,
     @Optional val parse_mode: String? = null,
     @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: Any? = null
-) : TelegramModel()
+    @Optional val input_message_content: InputMessageContent? = null
+) : InlineQueryResult()
 
 @Serializable
 data class InputTextMessageContent(
@@ -841,7 +845,7 @@ data class PassportElementErrorDataField(
     val field_name: String,
     val data_hash: String,
     val message: String
-) : TelegramModel()
+) : PassportElementError()
 
 @Serializable
 data class PassportElementErrorFrontSide(
@@ -849,7 +853,7 @@ data class PassportElementErrorFrontSide(
     val type: String,
     val file_hash: String,
     val message: String
-) : TelegramModel()
+) : PassportElementError()
 
 @Serializable
 data class PassportElementErrorReverseSide(
@@ -857,7 +861,7 @@ data class PassportElementErrorReverseSide(
     val type: String,
     val file_hash: String,
     val message: String
-) : TelegramModel()
+) : PassportElementError()
 
 @Serializable
 data class PassportElementErrorSelfie(
@@ -865,7 +869,7 @@ data class PassportElementErrorSelfie(
     val type: String,
     val file_hash: String,
     val message: String
-) : TelegramModel()
+) : PassportElementError()
 
 @Serializable
 data class PassportElementErrorFile(
@@ -873,7 +877,7 @@ data class PassportElementErrorFile(
     val type: String,
     val file_hash: String,
     val message: String
-) : TelegramModel()
+) : PassportElementError()
 
 @Serializable
 data class PassportElementErrorFiles(
@@ -881,7 +885,7 @@ data class PassportElementErrorFiles(
     val type: String,
     val file_hashes: List<String>,
     val message: String
-) : TelegramModel()
+) : PassportElementError()
 
 @Serializable
 data class PassportElementErrorTranslationFile(
@@ -889,7 +893,7 @@ data class PassportElementErrorTranslationFile(
     val type: String,
     val file_hash: String,
     val message: String
-) : TelegramModel()
+) : PassportElementError()
 
 @Serializable
 data class PassportElementErrorTranslationFiles(
@@ -897,7 +901,7 @@ data class PassportElementErrorTranslationFiles(
     val type: String,
     val file_hashes: List<String>,
     val message: String
-) : TelegramModel()
+) : PassportElementError()
 
 @Serializable
 data class PassportElementErrorUnspecified(
@@ -905,7 +909,7 @@ data class PassportElementErrorUnspecified(
     val type: String,
     val element_hash: String,
     val message: String
-) : TelegramModel()
+) : PassportElementError()
 
 
 // Games

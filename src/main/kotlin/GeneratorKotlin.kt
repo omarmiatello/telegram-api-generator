@@ -5,14 +5,13 @@ import kotlinx.serialization.Serializable
 
 sealed class TelegramModel"""
     )
+    allSuper.forEach { dataType ->
+        appendln("sealed class ${dataType.name} : TelegramModel()")
+    }
+
     this@toKotlinModels.forEach { section ->
         if (section.docTypes.isNotEmpty()) {
             appendln("\n\n// ${section.name}\n")
-            allSuper.forEach { dataType ->
-                appendln("sealed class ${dataType.name} : TelegramModel()")
-            }
-
-            appendln()
 
             section.docTypes.forEach { dataType ->
                 val telegramType = TelegramType.from(dataType.name) as TelegramType.Declared

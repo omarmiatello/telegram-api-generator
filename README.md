@@ -2,10 +2,13 @@
 Parse https://core.telegram.org/bots/api page and generate a Kotlin class "DocSection" with "DocType" and "DocMethod"
 
 Example in:
-- Kotlin: [TelegramModels.kt](example/TelegramModels.kt)
-- Json: [telegram.json](example/telegram.json)
-- Markdown: [telegram.md](example/telegram.md)
-- Build your own ...
+
+| Format | Generator | Output |
+| --- | --- | --- |
+| Kotlin | [GeneratorKotlin.kt](src/main/kotlin/GeneratorKotlin.kt) | [TelegramModels.kt](example/TelegramModels.kt) | 
+| Json | [GeneratorJson.kt](src/main/kotlin/GeneratorJson.kt) | [telegram.json](example/telegram.json) |
+| Markdown | [GeneratorReadmeExample.kt](src/main/kotlin/GeneratorReadmeExample.kt) | [telegram.md](example/telegram.md) |
+| Build your own ... |
 
 
 Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/GeneratorReadmeExample.kt)
