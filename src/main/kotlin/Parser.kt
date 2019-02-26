@@ -105,7 +105,7 @@ fun Document.toSection(): List<DocSection> {
         }
 }
 
-fun String.fixTypeStrig() = when (this) {
+private fun String.fixTypeStrig() = when (this) {
     "Float number" -> "Float"
     "True" -> "Boolean"
     else -> this

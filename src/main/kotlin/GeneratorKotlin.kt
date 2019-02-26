@@ -8,10 +8,18 @@ sealed class TelegramModel"""
     this@toKotlinModels.forEach { section ->
         if (section.docTypes.isNotEmpty()) {
             appendln("\n\n// ${section.name}\n")
+            allSuper.forEach { dataType ->
+                appendln("sealed class ${dataType.name} : TelegramModel()")
+            }
+
+            appendln()
+
             section.docTypes.forEach { dataType ->
+                val telegramType = TelegramType.from(dataType.name) as TelegramType.Declared
+                val superType = telegramType.superType ?: "TelegramModel"
                 appendln("@Serializable\ndata class ${dataType.name}(\n${dataType.docFields.map { f ->
                     "${if (f.required) "" else "@Optional "}val ${f.name}: ${f.toKotlinType()}"
-                }.joinToString(",\n")}\n) : TelegramModel()")
+                }.joinToString(",\n")}\n) : $superType()")
             }
         }
     }
@@ -42,14 +50,18 @@ private fun TelegramType.toKotlinType(): String = when (this) {
     TelegramType.Boolean -> "Boolean"
     TelegramType.Float -> "Float"
     TelegramType.CallbackGame,
-    TelegramType.InputMedia,
-    TelegramType.InputFile,
-    TelegramType.InputMessageContent,
-    TelegramType.InlineQueryResult,
-    TelegramType.PassportElementError -> "Any"
+    TelegramType.InputFile -> "Any"
+    is TelegramType.Super -> {
+        when (this) {
+            TelegramType.Super.InputMedia,
+            TelegramType.Super.InputMessageContent,
+            TelegramType.Super.InlineQueryResult,
+            TelegramType.Super.PassportElementError -> name
+        }
+    }
     is TelegramType.WithAlternative -> {
         when (this) {
-            // Example: TelegramType.WithAlternative.InputFileOrString -> if (alternative.isEmpty()) "v1" else "v2"
+            // Example: TelegramType.WithAlternative.InputFileOrString -> if (validTypes.isEmpty()) "v1" else "v2"
             TelegramType.WithAlternative.InputFileOrString,
             TelegramType.WithAlternative.IntegerOrString,
             TelegramType.WithAlternative.KeyboardOption,

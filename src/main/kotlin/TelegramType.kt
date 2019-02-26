@@ -1,7 +1,16 @@
-sealed class TelegramType(val name: String) {
-    override fun toString() = name
+val allSuper = listOf(
+    TelegramType.Super.InputMedia,
+    TelegramType.Super.InputMessageContent,
+    TelegramType.Super.InlineQueryResult,
+    TelegramType.Super.PassportElementError
+)
 
-    class Declared(docName: String) : TelegramType(docName)
+sealed class TelegramType(val name: String) {
+
+    class Declared(docName: String) : TelegramType(docName) {
+        val superType = allSuper.firstOrNull { docName.startsWith(it.name) }
+    }
+
     class ListType<T : TelegramType>(val elementType: T) : TelegramType("List<$elementType>")
 
     object Integer : TelegramType("Integer")
@@ -9,13 +18,16 @@ sealed class TelegramType(val name: String) {
     object Boolean : TelegramType("Boolean")
     object Float : TelegramType("Float")
     object CallbackGame : TelegramType("CallbackGame")
-    object InputMedia : TelegramType("InputMedia")
     object InputFile : TelegramType("InputFile")
-    object InputMessageContent : TelegramType("InputMessageContent")
-    object InlineQueryResult : TelegramType("InlineQueryResult")
-    object PassportElementError : TelegramType("PassportElementError")
 
-    sealed class WithAlternative(name: String, val alternative: List<TelegramType>) : TelegramType(name) {
+    sealed class Super(name: String) : TelegramType(name) {
+        object InputMedia : Super("InputMedia")
+        object InputMessageContent : Super("InputMessageContent")
+        object InlineQueryResult : Super("InlineQueryResult")
+        object PassportElementError : Super("PassportElementError")
+    }
+
+    sealed class WithAlternative(name: String, val validTypes: List<TelegramType>) : TelegramType(name) {
         object InputFileOrString : WithAlternative(
             "InputFile or String",
             listOf(
@@ -51,6 +63,8 @@ sealed class TelegramType(val name: String) {
         )
     }
 
+    override fun toString() = name
+
     fun getTypeWithoutGenerics(): TelegramType = if (this is ListType<*>) elementType.getTypeWithoutGenerics() else this
 
     companion object {
@@ -60,11 +74,11 @@ sealed class TelegramType(val name: String) {
             "Boolean" -> TelegramType.Boolean
             "Float" -> TelegramType.Float
             "CallbackGame" -> TelegramType.CallbackGame
-            "InputMedia" -> TelegramType.InputMedia
+            "InputMedia" -> TelegramType.Super.InputMedia
             "InputFile" -> TelegramType.InputFile
-            "InputMessageContent" -> TelegramType.InputMessageContent
-            "InlineQueryResult" -> TelegramType.InlineQueryResult
-            "PassportElementError" -> TelegramType.PassportElementError
+            "InputMessageContent" -> TelegramType.Super.InputMessageContent
+            "InlineQueryResult" -> TelegramType.Super.InlineQueryResult
+            "PassportElementError" -> TelegramType.Super.PassportElementError
             "InputFile or String" -> TelegramType.WithAlternative.InputFileOrString
             "Integer or String" -> TelegramType.WithAlternative.IntegerOrString
             "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply" -> TelegramType.WithAlternative.KeyboardOption

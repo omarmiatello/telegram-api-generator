@@ -1873,7 +1873,7 @@
             "name": "thumb",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -1959,7 +1959,7 @@
             "name": "thumb",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -2037,7 +2037,7 @@
             "name": "thumb",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -2115,7 +2115,7 @@
             "name": "thumb",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -2161,7 +2161,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -2217,7 +2217,7 @@
             "name": "reply_markup",
             "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove reply keyboard or to force a reply from the user.",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InlineKeyboardMarkup"
                 },
@@ -2245,7 +2245,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -2261,7 +2261,7 @@
             "name": "from_chat_id",
             "description": "Unique identifier for the chat where the original message was sent (or channel username in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -2299,7 +2299,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -2315,7 +2315,7 @@
             "name": "photo",
             "description": "Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -2363,7 +2363,7 @@
             "name": "reply_markup",
             "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove reply keyboard or to force a reply from the user.",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InlineKeyboardMarkup"
                 },
@@ -2391,7 +2391,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -2407,7 +2407,7 @@
             "name": "audio",
             "description": "Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -2463,7 +2463,7 @@
             "name": "thumb",
             "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -2495,7 +2495,7 @@
             "name": "reply_markup",
             "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove reply keyboard or to force a reply from the user.",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InlineKeyboardMarkup"
                 },
@@ -2523,7 +2523,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -2539,7 +2539,7 @@
             "name": "document",
             "description": "File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -2555,7 +2555,7 @@
             "name": "thumb",
             "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -2603,7 +2603,7 @@
             "name": "reply_markup",
             "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove reply keyboard or to force a reply from the user.",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InlineKeyboardMarkup"
                 },
@@ -2631,7 +2631,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -2647,7 +2647,7 @@
             "name": "video",
             "description": "Video to send. Pass a file_id as String to send a video that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a video from the Internet, or upload a new video using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -2687,7 +2687,7 @@
             "name": "thumb",
             "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -2743,7 +2743,7 @@
             "name": "reply_markup",
             "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove reply keyboard or to force a reply from the user.",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InlineKeyboardMarkup"
                 },
@@ -2771,7 +2771,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -2787,7 +2787,7 @@
             "name": "animation",
             "description": "Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -2827,7 +2827,7 @@
             "name": "thumb",
             "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -2875,7 +2875,7 @@
             "name": "reply_markup",
             "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove reply keyboard or to force a reply from the user.",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InlineKeyboardMarkup"
                 },
@@ -2903,7 +2903,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -2919,7 +2919,7 @@
             "name": "voice",
             "description": "Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -2975,7 +2975,7 @@
             "name": "reply_markup",
             "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove reply keyboard or to force a reply from the user.",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InlineKeyboardMarkup"
                 },
@@ -3003,7 +3003,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -3019,7 +3019,7 @@
             "name": "video_note",
             "description": "Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e. Sending video notes by a URL is currently unsupported",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -3051,7 +3051,7 @@
             "name": "thumb",
             "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -3083,7 +3083,7 @@
             "name": "reply_markup",
             "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove reply keyboard or to force a reply from the user.",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InlineKeyboardMarkup"
                 },
@@ -3111,7 +3111,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -3128,11 +3128,17 @@
             "description": "A JSON-serialized array describing photos and videos to be sent, must include 2–10 items",
             "type": {
               "elementType": {
-                "alternative": [
+                "validTypes": [
                   {
+                    "superType": {
+                      "name": "InputMedia"
+                    },
                     "name": "InputMediaPhoto"
                   },
                   {
+                    "superType": {
+                      "name": "InputMedia"
+                    },
                     "name": "InputMediaVideo"
                   }
                 ],
@@ -3168,7 +3174,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -3224,7 +3230,7 @@
             "name": "reply_markup",
             "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove reply keyboard or to force a reply from the user.",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InlineKeyboardMarkup"
                 },
@@ -3252,7 +3258,7 @@
             "name": "chat_id",
             "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -3314,7 +3320,7 @@
             "name": "chat_id",
             "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -3360,7 +3366,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -3440,7 +3446,7 @@
             "name": "reply_markup",
             "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove reply keyboard or to force a reply from the user.",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InlineKeyboardMarkup"
                 },
@@ -3468,7 +3474,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -3532,7 +3538,7 @@
             "name": "reply_markup",
             "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove keyboard or to force a reply from the user.",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InlineKeyboardMarkup"
                 },
@@ -3560,7 +3566,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -3634,7 +3640,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target group or username of the target supergroup or channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -3672,7 +3678,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target group or username of the target supergroup or channel (in the format \u003ccode\u003e@username\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -3702,7 +3708,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target supergroup (in the format \u003ccode\u003e@supergroupusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -3772,7 +3778,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -3866,7 +3872,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -3888,7 +3894,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -3918,7 +3924,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -3940,7 +3946,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -3970,7 +3976,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -4000,7 +4006,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -4038,7 +4044,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -4060,7 +4066,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -4082,7 +4088,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -4104,7 +4110,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -4126,7 +4132,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -4148,7 +4154,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -4178,7 +4184,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target supergroup (in the format \u003ccode\u003e@supergroupusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -4208,7 +4214,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target supergroup (in the format \u003ccode\u003e@supergroupusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -4283,7 +4289,7 @@
             "name": "chat_id",
             "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -4353,7 +4359,7 @@
             "name": "chat_id",
             "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -4415,7 +4421,7 @@
             "name": "chat_id",
             "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -4469,7 +4475,7 @@
             "name": "chat_id",
             "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -4515,7 +4521,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -4702,7 +4708,7 @@
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "Integer"
                 },
@@ -4718,7 +4724,7 @@
             "name": "sticker",
             "description": "Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .webp file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -4750,7 +4756,7 @@
             "name": "reply_markup",
             "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove reply keyboard or to force a reply from the user.",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InlineKeyboardMarkup"
                 },
@@ -4838,7 +4844,7 @@
             "name": "png_sticker",
             "description": "\u003cstrong\u003ePng\u003c/strong\u003e image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a \u003cem\u003efile_id\u003c/em\u003e as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
@@ -4900,7 +4906,7 @@
             "name": "png_sticker",
             "description": "\u003cstrong\u003ePng\u003c/strong\u003e image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a \u003cem\u003efile_id\u003c/em\u003e as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
-              "alternative": [
+              "validTypes": [
                 {
                   "name": "InputFile"
                 },
