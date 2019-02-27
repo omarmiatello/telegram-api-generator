@@ -195,7 +195,13 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "elementType": {
+            "name": "Update"
+          },
+          "name": "List\u003cUpdate\u003e"
+        }
       },
       {
         "name": "setWebhook",
@@ -236,17 +242,26 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "deleteWebhook",
         "description": "\u003cp\u003eUse this method to remove webhook integration if you decide to switch back to \u003ca href\u003d\"#getupdates\"\u003egetUpdates\u003c/a\u003e. Returns \u003cem\u003eTrue\u003c/em\u003e on success. Requires no parameters. \u003c/p\u003e",
-        "docParameters": []
+        "docParameters": [],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "getWebhookInfo",
         "description": "\u003cp\u003eUse this method to get current webhook status. Requires no parameters. On success, returns a \u003ca href\u003d\"#webhookinfo\"\u003eWebhookInfo\u003c/a\u003e object. If the bot is using \u003ca href\u003d\"#getupdates\"\u003egetUpdates\u003c/a\u003e, will return an object with the \u003cem\u003eurl\u003c/em\u003e field empty.\u003c/p\u003e",
-        "docParameters": []
+        "docParameters": [],
+        "returns": {
+          "name": "WebhookInfo"
+        }
       }
     ]
   },
@@ -2235,7 +2250,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "forwardMessage",
@@ -2289,7 +2307,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "sendPhoto",
@@ -2381,7 +2402,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "sendAudio",
@@ -2513,7 +2537,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "sendDocument",
@@ -2621,7 +2648,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "sendVideo",
@@ -2761,7 +2791,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "sendAnimation",
@@ -2893,7 +2926,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "sendVoice",
@@ -2993,7 +3029,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "sendVideoNote",
@@ -3101,7 +3140,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "sendMediaGroup",
@@ -3164,7 +3206,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Messages"
+        }
       },
       {
         "name": "sendLocation",
@@ -3248,7 +3293,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "editMessageLiveLocation",
@@ -3310,7 +3358,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "stopMessageLiveLocation",
@@ -3356,7 +3407,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "sendVenue",
@@ -3464,7 +3518,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "sendContact",
@@ -3556,7 +3613,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "sendChatAction",
@@ -3586,7 +3646,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "getUserProfilePhotos",
@@ -3616,7 +3679,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "UserProfilePhotos"
+        }
       },
       {
         "name": "getFile",
@@ -3630,7 +3696,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "File"
+        }
       },
       {
         "name": "kickChatMember",
@@ -3668,7 +3737,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "unbanChatMember",
@@ -3698,7 +3770,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "restrictChatMember",
@@ -3768,7 +3843,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "promoteChatMember",
@@ -3862,7 +3940,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "exportChatInviteLink",
@@ -3884,7 +3965,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "String"
+        }
       },
       {
         "name": "setChatPhoto",
@@ -3914,7 +3998,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "deleteChatPhoto",
@@ -3936,7 +4023,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "setChatTitle",
@@ -3966,7 +4056,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "setChatDescription",
@@ -3996,7 +4089,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "pinChatMessage",
@@ -4034,7 +4130,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "unpinChatMessage",
@@ -4056,7 +4155,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "leaveChat",
@@ -4078,7 +4180,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "getChat",
@@ -4100,7 +4205,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "Chat"
+        }
       },
       {
         "name": "getChatAdministrators",
@@ -4122,7 +4230,13 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "elementType": {
+            "name": "ChatMember"
+          },
+          "name": "List\u003cChatMember\u003e"
+        }
       },
       {
         "name": "getChatMembersCount",
@@ -4144,7 +4258,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "Int"
+        }
       },
       {
         "name": "getChatMember",
@@ -4174,7 +4291,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "ChatMember"
+        }
       },
       {
         "name": "setChatStickerSet",
@@ -4204,7 +4324,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "deleteChatStickerSet",
@@ -4226,7 +4349,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "answerCallbackQuery",
@@ -4272,7 +4398,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       }
     ]
   },
@@ -4349,7 +4478,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "editMessageCaption",
@@ -4411,7 +4543,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "editMessageMedia",
@@ -4465,7 +4600,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "editMessageReplyMarkup",
@@ -4511,7 +4649,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "deleteMessage",
@@ -4541,7 +4682,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       }
     ]
   },
@@ -4774,7 +4918,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "getStickerSet",
@@ -4788,7 +4935,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "StickerSet"
+        }
       },
       {
         "name": "uploadStickerFile",
@@ -4810,7 +4960,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "File"
+        }
       },
       {
         "name": "createNewStickerSet",
@@ -4880,7 +5033,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "addStickerToSet",
@@ -4934,7 +5090,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "setStickerPositionInSet",
@@ -4956,7 +5115,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "deleteStickerFromSet",
@@ -4970,7 +5132,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       }
     ]
   },
@@ -6967,7 +7132,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       }
     ]
   },
@@ -7523,7 +7691,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "answerShippingQuery",
@@ -7564,7 +7735,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       },
       {
         "name": "answerPreCheckoutQuery",
@@ -7594,7 +7768,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       }
     ]
   },
@@ -8160,7 +8337,10 @@
             },
             "required": true
           }
-        ]
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       }
     ]
   },
@@ -8304,7 +8484,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "setGameScore",
@@ -8366,7 +8549,10 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "name": "Message"
+        }
       },
       {
         "name": "getGameHighScores",
@@ -8404,7 +8590,13 @@
             },
             "required": false
           }
-        ]
+        ],
+        "returns": {
+          "elementType": {
+            "name": "GameHighScore"
+          },
+          "name": "List\u003cGameHighScore\u003e"
+        }
       }
     ]
   }

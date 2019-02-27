@@ -8,12 +8,38 @@ data class DocSection(
     val docMethods: List<DocMethod>
 )
 
-data class DocType(val name: String, val description: String, val docFields: List<DocField>)
-data class DocField(val name: String, val description: String, val type: TelegramType, val required: Boolean)
-data class DocMethod(val name: String, val description: String, val docParameters: List<DocParameter>)
-data class DocParameter(val name: String, val description: String, val type: TelegramType, val required: Boolean)
+data class DocType(
+    val name: String,
+    val description: String,
+    val docFields: List<DocField>
+)
+
+data class DocField(
+    val name: String,
+    val description: String,
+    val type: TelegramType,
+    val required: Boolean
+)
+
+data class DocMethod(
+    val name: String,
+    val description: String,
+    val docParameters: List<DocParameter>,
+    val returns: TelegramType
+)
+
+data class DocParameter(
+    val name: String,
+    val description: String,
+    val type: TelegramType,
+    val required: Boolean
+)
 
 fun Document.toSection(): List<DocSection> {
+    val returnsRegex = listOf(
+        "((?:Array of )?\\S+) (?:objects? )?is returned".toRegex(),
+        "[Rr]eturns .*?((?:Array of )?[A-Z]\\w+)".toRegex()
+    )
     val content = select("#dev_page_content").first()
     var splitBy = ""
     return content.children()
@@ -33,12 +59,20 @@ fun Document.toSection(): List<DocSection> {
                 var h4Desc = ""
                 var docFields: List<DocField>? = null
                 var docParameters: List<DocParameter>? = null
+                var docReturns: TelegramType? = null
                 h4content.forEach {
                     when (it.tag().name) {
                         "p" -> {
                             h4Desc += it.toString()
                             val text = it.text()
                             if ("Use this method" in text) docParameters = emptyList()
+                            returnsRegex.firstOrNull {
+                                val find = it.find(text)
+                                if (find != null) {
+                                    docReturns = TelegramType.from(find.groups[1]!!.value.fixTypeStrig())
+                                }
+                                find != null
+                            }
                         }
                         "table" -> {
                             val tableHead = it.child(0).text()
@@ -82,7 +116,8 @@ fun Document.toSection(): List<DocSection> {
                 }
 
                 val docType = docFields?.let { DocType(h4, h4Desc, it) }
-                val docMethod = docParameters?.let { DocMethod(h4, h4Desc, it) }
+                val docMethod =
+                    docParameters?.let { DocMethod(h4, h4Desc, it, docReturns ?: error("Missing returns for $h4")) }
                 if (docType != null && docMethod != null) error("hasTypes and hasMethods: $h4")
                 docType ?: docMethod
             }
