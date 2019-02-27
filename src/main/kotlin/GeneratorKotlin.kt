@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 sealed class TelegramModel"""
     )
-    allSuper.forEach { dataType ->
+    TelegramType.allSuper.forEach { dataType ->
         appendln("sealed class ${dataType.name} : TelegramModel()")
     }
 

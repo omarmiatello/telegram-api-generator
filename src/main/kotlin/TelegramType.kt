@@ -1,14 +1,7 @@
-val allSuper = listOf(
-    TelegramType.Super.InputMedia,
-    TelegramType.Super.InputMessageContent,
-    TelegramType.Super.InlineQueryResult,
-    TelegramType.Super.PassportElementError
-)
-
 sealed class TelegramType(val name: String) {
 
     class Declared(docName: String) : TelegramType(docName) {
-        val superType = allSuper.firstOrNull { docName.startsWith(it.name) }
+        val superType = TelegramType.allSuper.firstOrNull { docName.startsWith(it.name) }
     }
 
     class ListType<T : TelegramType>(val elementType: T) : TelegramType("List<$elementType>")
@@ -68,6 +61,13 @@ sealed class TelegramType(val name: String) {
     fun getTypeWithoutGenerics(): TelegramType = if (this is ListType<*>) elementType.getTypeWithoutGenerics() else this
 
     companion object {
+        val allSuper = listOf(
+            TelegramType.Super.InputMedia,
+            TelegramType.Super.InputMessageContent,
+            TelegramType.Super.InlineQueryResult,
+            TelegramType.Super.PassportElementError
+        )
+
         fun from(type: String): TelegramType = when (type) {
             "Integer" -> TelegramType.Integer
             "String" -> TelegramType.StringType
