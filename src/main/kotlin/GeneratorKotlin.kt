@@ -16,9 +16,14 @@ sealed class TelegramModel"""
             section.docTypes.forEach { dataType ->
                 val telegramType = TelegramType.from(dataType.name) as TelegramType.Declared
                 val superType = telegramType.superType ?: "TelegramModel"
-                appendln("@Serializable\ndata class ${dataType.name}(\n${dataType.docFields.map { f ->
+                val docsParam = "\n" + dataType.docFields.map { " * @property ${it.name} ${it.description}" }.joinToString("\n")
+                val docs = """/**
+ * ${dataType.description}$docsParam
+ * */"""
+                val parameters = dataType.docFields.map { f ->
                     "${if (f.required) "" else "@Optional "}val ${f.name}: ${f.toKotlinType()}"
-                }.joinToString(",\n")}\n) : $superType()")
+                }.joinToString(",\n")
+                appendln("$docs\n@Serializable\ndata class ${dataType.name}(\n$parameters\n) : $superType()")
             }
         }
     }
