@@ -16,9 +16,12 @@ sealed class TelegramModel"""
             section.docTypes.forEach { dataType ->
                 val telegramType = TelegramType.from(dataType.name) as TelegramType.Declared
                 val superType = telegramType.superType ?: "TelegramModel"
-                val docsParam = "\n" + dataType.docFields.map { " * @property ${it.name} ${it.description}" }.joinToString("\n")
+                val docsParam =
+                    "\n *\n" + dataType.docFields.map { " * @property ${it.name} ${it.description}" }.joinToString("\n")
                 val docs = """/**
  * ${dataType.description}$docsParam
+ *
+ * @constructor Creates a: ${dataType.name}.
  * */"""
                 val parameters = dataType.docFields.map { f ->
                     "${if (f.required) "" else "@Optional "}val ${f.name}: ${f.toKotlinType()}"
@@ -29,22 +32,69 @@ sealed class TelegramModel"""
     }
 }
 
-fun List<DocSection>.toKotlinApi() = buildString {
-    this@toKotlinApi.forEach { section ->
+fun List<DocSection>.toKotlinMethods() = buildString {
+    appendln(
+        """import kotlinx.serialization.Optional
+import kotlinx.serialization.Serializable
+
+sealed class TelegramRequest {"""
+    )
+    this@toKotlinMethods.forEach { section ->
         if (section.docMethods.isNotEmpty()) {
-            appendln("\n\n// ${section.name}\n")
-            section.docMethods.forEach { method ->
-                appendln("fun ${method.name}(\n${method.docParameters.map { p ->
-                    "${p.name}: ${p.toKotlinType()}"
-                }.joinToString(",\n")}\n) = telegram()")
+            appendln("\n\n    // ${section.name}\n")
+            section.docMethods.forEach methods@{ method ->
+                if (method.docParameters.isEmpty()) return@methods
+                val parameters = method.docParameters.map { f ->
+                    "${if (f.required) "" else "@Optional "}val ${f.name}: ${f.toKotlinType()}"
+                }.joinToString(",\n")
+                appendln("@Serializable\ndata class ${method.name.capitalize()}Request(\n$parameters\n) : TelegramRequest()")
+
             }
         }
     }
+    appendln("}\n")
+    appendln("object TelegramMethod {")
+    this@toKotlinMethods.forEach { section ->
+        if (section.docMethods.isNotEmpty()) {
+            appendln("\n\n    // ${section.name}\n")
+            section.docMethods.forEach { method ->
+                val docsParam =
+                    "\n *\n" + method.docParameters.map { " * @property ${it.name} ${it.description}" }.joinToString("\n")
+                val docs = """/**
+ * ${method.description}$docsParam
+ *
+ * @return [${method.returns.toKotlinType()}]
+ * */"""
+                val parameters = method.docParameters.map { f -> f.name }.joinToString(",\n")
+                if (parameters.isEmpty()) {
+                    appendln(
+                        "fun ${method.name}() = telegram(\n" +
+                                "\"\$basePath/${method.name}\",\n" +
+                                "${method.returns.toKotlinType()}.serializer()\n)"
+                    )
+                } else {
+                    appendln(
+                        """$docs
+    fun ${method.name}(
+${method.docParameters.map { p ->
+                            "${p.name}: ${p.toKotlinType()}"
+                        }.joinToString(",\n")}
+    ) = telegram(
+        "${"$"}basePath/${method.name}",
+        TelegramRequest.${method.name.capitalize()}Request($parameters).toJsonContent(TelegramRequest.${method.name.capitalize()}Request.serializer()),
+        ${method.returns.toKotlinType()}.serializer()
+    )"""
+                    )
+                }
+            }
+        }
+    }
+    appendln("}")
 }
 
 private fun DocField.toKotlinType() = type.toKotlinType() + if (required) "" else "? = null"
 
-private fun DocParameter.toKotlinType() = type.toKotlinType() + if (required) "" else "?"
+private fun DocParameter.toKotlinType() = type.toKotlinType() + if (required) "" else "? = null"
 
 private fun TelegramType.toKotlinType(): String = when (this) {
     is TelegramType.Declared -> name

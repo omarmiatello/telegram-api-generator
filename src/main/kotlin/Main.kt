@@ -6,6 +6,7 @@ fun main() {
 
     File("example/telegram.md").writeText(docs.toReadmeExample())
     File("example/telegram.json").writeText(docs.toJson())
-    File("out/models.kt").writeText(docs.toKotlinModels())
-    File("out/api.kt").writeText(docs.toKotlinApi())
+    File("out/TelegramModels.kt").writeText(docs.toKotlinModels())
+    File("out/TelegramMethods.kt").writeText(docs.toKotlinMethods())
+    File("out/api.kt").writeText(docs.toKotlinMethods())
 }

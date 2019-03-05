@@ -5,7 +5,7 @@ Example in:
 
 | Format | Generator | Output |
 | --- | --- | --- |
-| Kotlin | [GeneratorKotlin.kt](src/main/kotlin/GeneratorKotlin.kt) | [TelegramModels.kt](example/TelegramModels.kt) | 
+| Kotlin | [GeneratorKotlin.kt](src/main/kotlin/GeneratorKotlin.kt) | [TelegramModels.kt](example/TelegramModels.kt) + [TelegramMethods.kt](example/TelegramMethods.kt) | 
 | Json | [GeneratorJson.kt](src/main/kotlin/GeneratorJson.kt) | [telegram.json](example/telegram.json) |
 | Markdown | [GeneratorReadmeExample.kt](src/main/kotlin/GeneratorReadmeExample.kt) | [telegram.md](example/telegram.md) |
 | Build your own ... |
