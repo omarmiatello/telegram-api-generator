@@ -3,7 +3,7 @@
 ## Getting updates
 
 ### Data Types
-    Update(update_id: Integer, message: Message, edited_message: Message, channel_post: Message, edited_channel_post: Message, inline_query: InlineQuery, chosen_inline_result: ChosenInlineResult, callback_query: CallbackQuery, shipping_query: ShippingQuery, pre_checkout_query: PreCheckoutQuery)
+    Update(update_id: Integer, message: Message, edited_message: Message, channel_post: Message, edited_channel_post: Message, inline_query: InlineQuery, chosen_inline_result: ChosenInlineResult, callback_query: CallbackQuery, shipping_query: ShippingQuery, pre_checkout_query: PreCheckoutQuery, poll: Poll)
     WebhookInfo(url: String, has_custom_certificate: Boolean, pending_update_count: Integer, last_error_date: Integer, last_error_message: String, max_connections: Integer, allowed_updates: List<String>)
 
 ### Methods
@@ -18,7 +18,7 @@
 ### Data Types
     User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String)
     Chat(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, all_members_are_administrators: Boolean, photo: ChatPhoto, description: String, invite_link: String, pinned_message: Message, sticker_set_name: String, can_set_sticker_set: Boolean)
-    Message(message_id: Integer, from: User, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_date: Integer, reply_to_message: Message, edit_date: Integer, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, caption_entities: List<MessageEntity>, audio: Audio, document: Document, animation: Animation, game: Game, photo: List<PhotoSize>, sticker: Sticker, video: Video, voice: Voice, video_note: VideoNote, caption: String, contact: Contact, location: Location, venue: Venue, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData)
+    Message(message_id: Integer, from: User, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_sender_name: String, forward_date: Integer, reply_to_message: Message, edit_date: Integer, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, caption_entities: List<MessageEntity>, audio: Audio, document: Document, animation: Animation, game: Game, photo: List<PhotoSize>, sticker: Sticker, video: Video, voice: Voice, video_note: VideoNote, caption: String, contact: Contact, location: Location, venue: Venue, poll: Poll, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData, reply_markup: InlineKeyboardMarkup)
     MessageEntity(type: String, offset: Integer, length: Integer, url: String, user: User)
     PhotoSize(file_id: String, width: Integer, height: Integer, file_size: Integer)
     Audio(file_id: String, duration: Integer, performer: String, title: String, mime_type: String, file_size: Integer, thumb: PhotoSize)
@@ -30,17 +30,20 @@
     Contact(phone_number: String, first_name: String, last_name: String, user_id: Integer, vcard: String)
     Location(longitude: Float, latitude: Float)
     Venue(location: Location, title: String, address: String, foursquare_id: String, foursquare_type: String)
+    PollOption(text: String, voter_count: Integer)
+    Poll(id: String, question: String, options: List<PollOption>, is_closed: Boolean)
     UserProfilePhotos(total_count: Integer, photos: List<List<PhotoSize>>)
     File(file_id: String, file_size: Integer, file_path: String)
     ReplyKeyboardMarkup(keyboard: List<List<KeyboardButton>>, resize_keyboard: Boolean, one_time_keyboard: Boolean, selective: Boolean)
     KeyboardButton(text: String, request_contact: Boolean, request_location: Boolean)
     ReplyKeyboardRemove(remove_keyboard: Boolean, selective: Boolean)
     InlineKeyboardMarkup(inline_keyboard: List<List<InlineKeyboardButton>>)
-    InlineKeyboardButton(text: String, url: String, callback_data: String, switch_inline_query: String, switch_inline_query_current_chat: String, callback_game: CallbackGame, pay: Boolean)
+    InlineKeyboardButton(text: String, url: String, login_url: LoginUrl, callback_data: String, switch_inline_query: String, switch_inline_query_current_chat: String, callback_game: CallbackGame, pay: Boolean)
+    LoginUrl(url: String, forward_text: String, bot_username: String, request_write_access: Boolean)
     CallbackQuery(id: String, from: User, message: Message, inline_message_id: String, chat_instance: String, data: String, game_short_name: String)
     ForceReply(force_reply: Boolean, selective: Boolean)
     ChatPhoto(small_file_id: String, big_file_id: String)
-    ChatMember(user: User, status: String, until_date: Integer, can_be_edited: Boolean, can_change_info: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_delete_messages: Boolean, can_invite_users: Boolean, can_restrict_members: Boolean, can_pin_messages: Boolean, can_promote_members: Boolean, can_send_messages: Boolean, can_send_media_messages: Boolean, can_send_other_messages: Boolean, can_add_web_page_previews: Boolean)
+    ChatMember(user: User, status: String, until_date: Integer, can_be_edited: Boolean, can_change_info: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_delete_messages: Boolean, can_invite_users: Boolean, can_restrict_members: Boolean, can_pin_messages: Boolean, can_promote_members: Boolean, is_member: Boolean, can_send_messages: Boolean, can_send_media_messages: Boolean, can_send_other_messages: Boolean, can_add_web_page_previews: Boolean)
     ResponseParameters(migrate_to_chat_id: Integer, retry_after: Integer)
     InputMediaPhoto(type: String, media: String, caption: String, parse_mode: String)
     InputMediaVideo(type: String, media: String, thumb: InputFile or String, caption: String, parse_mode: String, width: Integer, height: Integer, duration: Integer, supports_streaming: Boolean)
@@ -67,6 +70,7 @@
     stopMessageLiveLocation(chat_id: Integer or String, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
     sendVenue(chat_id: Integer or String, latitude: Float, longitude: Float, title: String, address: String, foursquare_id: String, foursquare_type: String, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply)
     sendContact(chat_id: Integer or String, phone_number: String, first_name: String, last_name: String, vcard: String, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply)
+    sendPoll(chat_id: Integer or String, question: String, options: List<String>, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply)
     sendChatAction(chat_id: Integer or String, action: String)
     getUserProfilePhotos(user_id: Integer, offset: Integer, limit: Integer)
     getFile(file_id: String)
@@ -98,6 +102,7 @@
     editMessageCaption(chat_id: Integer or String, message_id: Integer, inline_message_id: String, caption: String, parse_mode: String, reply_markup: InlineKeyboardMarkup)
     editMessageMedia(chat_id: Integer or String, message_id: Integer, inline_message_id: String, media: InputMedia, reply_markup: InlineKeyboardMarkup)
     editMessageReplyMarkup(chat_id: Integer or String, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
+    stopPoll(chat_id: Integer or String, message_id: Integer, reply_markup: InlineKeyboardMarkup)
     deleteMessage(chat_id: Integer or String, message_id: Integer)
 
 

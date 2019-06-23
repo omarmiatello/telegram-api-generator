@@ -24,7 +24,7 @@ sealed class TelegramModel"""
  * @constructor Creates a: ${dataType.name}.
  * */"""
                 val parameters = dataType.docFields.map { f ->
-                    "${if (f.required) "" else "@Optional "}val ${f.name}: ${f.toKotlinType()}"
+                    "val ${f.name}: ${f.toKotlinType()}"
                 }.joinToString(",\n")
                 appendln("$docs\n@Serializable\ndata class ${dataType.name}(\n$parameters\n) : $superType()")
             }
@@ -45,7 +45,7 @@ sealed class TelegramRequest {"""
             section.docMethods.forEach methods@{ method ->
                 if (method.docParameters.isEmpty()) return@methods
                 val parameters = method.docParameters.map { f ->
-                    "${if (f.required) "" else "@Optional "}val ${f.name}: ${f.toKotlinType()}"
+                    "val ${f.name}: ${f.toKotlinType()}"
                 }.joinToString(",\n")
                 appendln("@Serializable\ndata class ${method.name.capitalize()}Request(\n$parameters\n) : TelegramRequest()")
 

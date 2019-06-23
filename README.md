@@ -11,6 +11,113 @@ Example in:
 | Build your own ... |
 
 
+## Kotlin Example
+
+[TelegramMethods.kt](example/TelegramMethods.kt)
+```kotlin
+sealed class TelegramRequest {
+
+    // Getting updates
+    
+    @Serializable
+    data class GetUpdatesRequest(
+        val offset: Int? = null,
+        val limit: Int? = null,
+        val timeout: Int? = null,
+        val allowed_updates: List<String>? = null
+    ) : TelegramRequest()
+    
+    @Serializable
+    data class SetWebhookRequest(
+        val url: String,
+        val certificate: Any? = null,
+        val max_connections: Int? = null,
+        val allowed_updates: List<String>? = null
+    ) : TelegramRequest()
+    
+    
+    // Available methods
+    // ...
+}
+
+object TelegramMethod {
+
+
+    // Getting updates
+
+    /**
+     * <p>Use this method to receive incoming updates using long polling (<a href="http://en.wikipedia.org/wiki/Push_technology#Long_polling">wiki</a>). An Array of <a href="#update">Update</a> objects is returned.</p><blockquote>
+    <p><strong>Notes</strong><br><strong>1.</strong> This method will not work if an outgoing webhook is set up.<br><strong>2.</strong> In order to avoid getting duplicate updates, recalculate <em>offset</em> after each server response.</p>
+    </blockquote>
+     *
+     * @property offset Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as <a href="#getupdates">getUpdates</a> is called with an <em>offset</em> higher than its <em>update_id</em>. The negative offset can be specified to retrieve updates starting from <em>-offset</em> update from the end of the updates queue. All previous updates will forgotten.
+     * @property limit Limits the number of updates to be retrieved. Values between 1—100 are accepted. Defaults to 100.
+     * @property timeout Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only.
+     * @property allowed_updates List the types of updates you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.
+     *
+     * @return [List<Update>]
+     * */
+    fun getUpdates(
+        offset: Int? = null,
+        limit: Int? = null,
+        timeout: Int? = null,
+        allowed_updates: List<String>? = null
+    ) = telegram(
+        "$basePath/getUpdates",
+        TelegramRequest.GetUpdatesRequest(
+            offset,
+            limit,
+            timeout,
+            allowed_updates
+        ).toJsonContent(TelegramRequest.GetUpdatesRequest.serializer()),
+        Update.serializer().list
+    )
+
+    // ...
+}
+```
+
+[TelegramModels.kt](example/TelegramModels.kt)
+```kotlin
+// Getting updates
+
+/**
+ * <p>This <a href="#available-types">object</a> represents an incoming update.<br>At most <strong>one</strong> of the optional parameters can be present in any given update.</p>
+ *
+ * @property update_id The update‘s unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you’re using <a href="#setwebhook">Webhooks</a>, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.
+ * @property message <em>Optional</em>. New incoming message of any kind — text, photo, sticker, etc.
+ * @property edited_message <em>Optional</em>. New version of a message that is known to the bot and was edited
+ * @property channel_post <em>Optional</em>. New incoming channel post of any kind — text, photo, sticker, etc.
+ * @property edited_channel_post <em>Optional</em>. New version of a channel post that is known to the bot and was edited
+ * @property inline_query <em>Optional</em>. New incoming <a href="#inline-mode">inline</a> query
+ * @property chosen_inline_result <em>Optional</em>. The result of an <a href="#inline-mode">inline</a> query that was chosen by a user and sent to their chat partner. Please see our documentation on the <a href="/bots/inline#collecting-feedback">feedback collecting</a> for details on how to enable these updates for your bot.
+ * @property callback_query <em>Optional</em>. New incoming callback query
+ * @property shipping_query <em>Optional</em>. New incoming shipping query. Only for invoices with flexible price
+ * @property pre_checkout_query <em>Optional</em>. New incoming pre-checkout query. Contains full information about checkout
+ * @property poll <em>Optional</em>. New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot
+ *
+ * @constructor Creates a: Update.
+ * */
+@Serializable
+data class Update(
+    val update_id: Int,
+    val message: Message? = null,
+    val edited_message: Message? = null,
+    val channel_post: Message? = null,
+    val edited_channel_post: Message? = null,
+    val inline_query: InlineQuery? = null,
+    val chosen_inline_result: ChosenInlineResult? = null,
+    val callback_query: CallbackQuery? = null,
+    val shipping_query: ShippingQuery? = null,
+    val pre_checkout_query: PreCheckoutQuery? = null,
+    val poll: Poll? = null
+) : TelegramModel()
+
+// ...
+```
+
+## Example Markdown
+
 Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/GeneratorReadmeExample.kt)
 
 ---

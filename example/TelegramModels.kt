@@ -1,5 +1,3 @@
-package com.github.jacklt.gae.ktor.tg.appengine.telegram
-
 import kotlinx.serialization.Optional
 import kotlinx.serialization.Serializable
 
@@ -25,21 +23,23 @@ sealed class PassportElementError : TelegramModel()
  * @property callback_query <em>Optional</em>. New incoming callback query
  * @property shipping_query <em>Optional</em>. New incoming shipping query. Only for invoices with flexible price
  * @property pre_checkout_query <em>Optional</em>. New incoming pre-checkout query. Contains full information about checkout
+ * @property poll <em>Optional</em>. New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot
  *
  * @constructor Creates a: Update.
  * */
 @Serializable
 data class Update(
     val update_id: Int,
-    @Optional val message: Message? = null,
-    @Optional val edited_message: Message? = null,
-    @Optional val channel_post: Message? = null,
-    @Optional val edited_channel_post: Message? = null,
-    @Optional val inline_query: InlineQuery? = null,
-    @Optional val chosen_inline_result: ChosenInlineResult? = null,
-    @Optional val callback_query: CallbackQuery? = null,
-    @Optional val shipping_query: ShippingQuery? = null,
-    @Optional val pre_checkout_query: PreCheckoutQuery? = null
+    val message: Message? = null,
+    val edited_message: Message? = null,
+    val channel_post: Message? = null,
+    val edited_channel_post: Message? = null,
+    val inline_query: InlineQuery? = null,
+    val chosen_inline_result: ChosenInlineResult? = null,
+    val callback_query: CallbackQuery? = null,
+    val shipping_query: ShippingQuery? = null,
+    val pre_checkout_query: PreCheckoutQuery? = null,
+    val poll: Poll? = null
 ) : TelegramModel()
 
 /**
@@ -60,10 +60,10 @@ data class WebhookInfo(
     val url: String,
     val has_custom_certificate: Boolean,
     val pending_update_count: Int,
-    @Optional val last_error_date: Int? = null,
-    @Optional val last_error_message: String? = null,
-    @Optional val max_connections: Int? = null,
-    @Optional val allowed_updates: List<String>? = null
+    val last_error_date: Int? = null,
+    val last_error_message: String? = null,
+    val max_connections: Int? = null,
+    val allowed_updates: List<String>? = null
 ) : TelegramModel()
 
 
@@ -86,9 +86,9 @@ data class User(
     val id: Int,
     val is_bot: Boolean,
     val first_name: String,
-    @Optional val last_name: String? = null,
-    @Optional val username: String? = null,
-    @Optional val language_code: String? = null
+    val last_name: String? = null,
+    val username: String? = null,
+    val language_code: String? = null
 ) : TelegramModel()
 
 /**
@@ -104,7 +104,7 @@ data class User(
  * @property photo <em>Optional</em>. Chat photo. Returned only in <a href="#getchat">getChat</a>.
  * @property description <em>Optional</em>. Description, for supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>.
  * @property invite_link <em>Optional</em>. Chat invite link, for supergroups and channel chats. Each administrator in a chat generates their own invite links, so the bot must first generate the link using <a href="#exportchatinvitelink">exportChatInviteLink</a>. Returned only in <a href="#getchat">getChat</a>.
- * @property pinned_message <em>Optional</em>. Pinned message, for supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>.
+ * @property pinned_message <em>Optional</em>. Pinned message, for groups, supergroups and channels. Returned only in <a href="#getchat">getChat</a>.
  * @property sticker_set_name <em>Optional</em>. For supergroups, name of group sticker set. Returned only in <a href="#getchat">getChat</a>.
  * @property can_set_sticker_set <em>Optional</em>. True, if the bot can change the group sticker set. Returned only in <a href="#getchat">getChat</a>.
  *
@@ -114,17 +114,17 @@ data class User(
 data class Chat(
     val id: Int,
     val type: String,
-    @Optional val title: String? = null,
-    @Optional val username: String? = null,
-    @Optional val first_name: String? = null,
-    @Optional val last_name: String? = null,
-    @Optional val all_members_are_administrators: Boolean? = null,
-    @Optional val photo: ChatPhoto? = null,
-    @Optional val description: String? = null,
-    @Optional val invite_link: String? = null,
-    @Optional val pinned_message: Message? = null,
-    @Optional val sticker_set_name: String? = null,
-    @Optional val can_set_sticker_set: Boolean? = null
+    val title: String? = null,
+    val username: String? = null,
+    val first_name: String? = null,
+    val last_name: String? = null,
+    val all_members_are_administrators: Boolean? = null,
+    val photo: ChatPhoto? = null,
+    val description: String? = null,
+    val invite_link: String? = null,
+    val pinned_message: Message? = null,
+    val sticker_set_name: String? = null,
+    val can_set_sticker_set: Boolean? = null
 ) : TelegramModel()
 
 /**
@@ -138,6 +138,7 @@ data class Chat(
  * @property forward_from_chat <em>Optional</em>. For messages forwarded from channels, information about the original channel
  * @property forward_from_message_id <em>Optional</em>. For messages forwarded from channels, identifier of the original message in the channel
  * @property forward_signature <em>Optional</em>. For messages forwarded from channels, signature of the post author if present
+ * @property forward_sender_name <em>Optional</em>. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages
  * @property forward_date <em>Optional</em>. For forwarded messages, date the original message was sent in Unix time
  * @property reply_to_message <em>Optional</em>. For replies, the original message. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply.
  * @property edit_date <em>Optional</em>. Date the message was last edited in Unix time
@@ -159,6 +160,7 @@ data class Chat(
  * @property contact <em>Optional</em>. Message is a shared contact, information about the contact
  * @property location <em>Optional</em>. Message is a shared location, information about the location
  * @property venue <em>Optional</em>. Message is a venue, information about the venue
+ * @property poll <em>Optional</em>. Message is a native poll, information about the poll
  * @property new_chat_members <em>Optional</em>. New members that were added to the group or supergroup and information about them (the bot itself may be one of these members)
  * @property left_chat_member <em>Optional</em>. A member was removed from the group, information about them (this member may be the bot itself)
  * @property new_chat_title <em>Optional</em>. A chat title was changed to this value
@@ -174,59 +176,63 @@ data class Chat(
  * @property successful_payment <em>Optional</em>. Message is a service message about a successful payment, information about the payment. <a href="#payments">More about payments »</a>
  * @property connected_website <em>Optional</em>. The domain name of the website on which the user has logged in. <a href="/widgets/login">More about Telegram Login »</a>
  * @property passport_data <em>Optional</em>. Telegram Passport data
+ * @property reply_markup <em>Optional</em>. Inline keyboard attached to the message. <code>login_url</code> buttons are represented as ordinary <code>url</code> buttons.
  *
  * @constructor Creates a: Message.
  * */
 @Serializable
 data class Message(
     val message_id: Int,
-    @Optional val from: User? = null,
+    val from: User? = null,
     val date: Int,
     val chat: Chat,
-    @Optional val forward_from: User? = null,
-    @Optional val forward_from_chat: Chat? = null,
-    @Optional val forward_from_message_id: Int? = null,
-    @Optional val forward_signature: String? = null,
-    @Optional val forward_date: Int? = null,
-    @Optional val reply_to_message: Message? = null,
-    @Optional val edit_date: Int? = null,
-    @Optional val media_group_id: String? = null,
-    @Optional val author_signature: String? = null,
-    @Optional val text: String? = null,
-    @Optional val entities: List<MessageEntity>? = null,
-    @Optional val caption_entities: List<MessageEntity>? = null,
-    @Optional val audio: Audio? = null,
-    @Optional val document: Document? = null,
-    @Optional val animation: Animation? = null,
-    @Optional val game: Game? = null,
-    @Optional val photo: List<PhotoSize>? = null,
-    @Optional val sticker: Sticker? = null,
-    @Optional val video: Video? = null,
-    @Optional val voice: Voice? = null,
-    @Optional val video_note: VideoNote? = null,
-    @Optional val caption: String? = null,
-    @Optional val contact: Contact? = null,
-    @Optional val location: Location? = null,
-    @Optional val venue: Venue? = null,
-    @Optional val new_chat_members: List<User>? = null,
-    @Optional val left_chat_member: User? = null,
-    @Optional val new_chat_title: String? = null,
-    @Optional val new_chat_photo: List<PhotoSize>? = null,
-    @Optional val delete_chat_photo: Boolean? = null,
-    @Optional val group_chat_created: Boolean? = null,
-    @Optional val supergroup_chat_created: Boolean? = null,
-    @Optional val channel_chat_created: Boolean? = null,
-    @Optional val migrate_to_chat_id: Int? = null,
-    @Optional val migrate_from_chat_id: Int? = null,
-    @Optional val pinned_message: Message? = null,
-    @Optional val invoice: Invoice? = null,
-    @Optional val successful_payment: SuccessfulPayment? = null,
-    @Optional val connected_website: String? = null,
-    @Optional val passport_data: PassportData? = null
+    val forward_from: User? = null,
+    val forward_from_chat: Chat? = null,
+    val forward_from_message_id: Int? = null,
+    val forward_signature: String? = null,
+    val forward_sender_name: String? = null,
+    val forward_date: Int? = null,
+    val reply_to_message: Message? = null,
+    val edit_date: Int? = null,
+    val media_group_id: String? = null,
+    val author_signature: String? = null,
+    val text: String? = null,
+    val entities: List<MessageEntity>? = null,
+    val caption_entities: List<MessageEntity>? = null,
+    val audio: Audio? = null,
+    val document: Document? = null,
+    val animation: Animation? = null,
+    val game: Game? = null,
+    val photo: List<PhotoSize>? = null,
+    val sticker: Sticker? = null,
+    val video: Video? = null,
+    val voice: Voice? = null,
+    val video_note: VideoNote? = null,
+    val caption: String? = null,
+    val contact: Contact? = null,
+    val location: Location? = null,
+    val venue: Venue? = null,
+    val poll: Poll? = null,
+    val new_chat_members: List<User>? = null,
+    val left_chat_member: User? = null,
+    val new_chat_title: String? = null,
+    val new_chat_photo: List<PhotoSize>? = null,
+    val delete_chat_photo: Boolean? = null,
+    val group_chat_created: Boolean? = null,
+    val supergroup_chat_created: Boolean? = null,
+    val channel_chat_created: Boolean? = null,
+    val migrate_to_chat_id: Int? = null,
+    val migrate_from_chat_id: Int? = null,
+    val pinned_message: Message? = null,
+    val invoice: Invoice? = null,
+    val successful_payment: SuccessfulPayment? = null,
+    val connected_website: String? = null,
+    val passport_data: PassportData? = null,
+    val reply_markup: InlineKeyboardMarkup? = null
 ) : TelegramModel()
 
 /**
- * <p>This object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc. </p>
+ * <p>This object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc.</p>
  *
  * @property type Type of the entity. Can be <em>mention</em> (<code>@username</code>), <em>hashtag</em>, <em>cashtag</em>, <em>bot_command</em>, <em>url</em>, <em>email</em>, <em>phone_number</em>, <em>bold</em> (bold text), <em>italic</em> (italic text), <em>code</em> (monowidth string), <em>pre</em> (monowidth block), <em>text_link</em> (for clickable text URLs), <em>text_mention</em> (for users <a href="https://telegram.org/blog/edit#new-mentions">without usernames</a>)
  * @property offset Offset in UTF-16 code units to the start of the entity
@@ -241,8 +247,8 @@ data class MessageEntity(
     val type: String,
     val offset: Int,
     val length: Int,
-    @Optional val url: String? = null,
-    @Optional val user: User? = null
+    val url: String? = null,
+    val user: User? = null
 ) : TelegramModel()
 
 /**
@@ -260,7 +266,7 @@ data class PhotoSize(
     val file_id: String,
     val width: Int,
     val height: Int,
-    @Optional val file_size: Int? = null
+    val file_size: Int? = null
 ) : TelegramModel()
 
 /**
@@ -280,11 +286,11 @@ data class PhotoSize(
 data class Audio(
     val file_id: String,
     val duration: Int,
-    @Optional val performer: String? = null,
-    @Optional val title: String? = null,
-    @Optional val mime_type: String? = null,
-    @Optional val file_size: Int? = null,
-    @Optional val thumb: PhotoSize? = null
+    val performer: String? = null,
+    val title: String? = null,
+    val mime_type: String? = null,
+    val file_size: Int? = null,
+    val thumb: PhotoSize? = null
 ) : TelegramModel()
 
 /**
@@ -301,10 +307,10 @@ data class Audio(
 @Serializable
 data class Document(
     val file_id: String,
-    @Optional val thumb: PhotoSize? = null,
-    @Optional val file_name: String? = null,
-    @Optional val mime_type: String? = null,
-    @Optional val file_size: Int? = null
+    val thumb: PhotoSize? = null,
+    val file_name: String? = null,
+    val mime_type: String? = null,
+    val file_size: Int? = null
 ) : TelegramModel()
 
 /**
@@ -326,9 +332,9 @@ data class Video(
     val width: Int,
     val height: Int,
     val duration: Int,
-    @Optional val thumb: PhotoSize? = null,
-    @Optional val mime_type: String? = null,
-    @Optional val file_size: Int? = null
+    val thumb: PhotoSize? = null,
+    val mime_type: String? = null,
+    val file_size: Int? = null
 ) : TelegramModel()
 
 /**
@@ -351,10 +357,10 @@ data class Animation(
     val width: Int,
     val height: Int,
     val duration: Int,
-    @Optional val thumb: PhotoSize? = null,
-    @Optional val file_name: String? = null,
-    @Optional val mime_type: String? = null,
-    @Optional val file_size: Int? = null
+    val thumb: PhotoSize? = null,
+    val file_name: String? = null,
+    val mime_type: String? = null,
+    val file_size: Int? = null
 ) : TelegramModel()
 
 /**
@@ -371,8 +377,8 @@ data class Animation(
 data class Voice(
     val file_id: String,
     val duration: Int,
-    @Optional val mime_type: String? = null,
-    @Optional val file_size: Int? = null
+    val mime_type: String? = null,
+    val file_size: Int? = null
 ) : TelegramModel()
 
 /**
@@ -391,8 +397,8 @@ data class VideoNote(
     val file_id: String,
     val length: Int,
     val duration: Int,
-    @Optional val thumb: PhotoSize? = null,
-    @Optional val file_size: Int? = null
+    val thumb: PhotoSize? = null,
+    val file_size: Int? = null
 ) : TelegramModel()
 
 /**
@@ -410,9 +416,9 @@ data class VideoNote(
 data class Contact(
     val phone_number: String,
     val first_name: String,
-    @Optional val last_name: String? = null,
-    @Optional val user_id: Int? = null,
-    @Optional val vcard: String? = null
+    val last_name: String? = null,
+    val user_id: Int? = null,
+    val vcard: String? = null
 ) : TelegramModel()
 
 /**
@@ -445,8 +451,40 @@ data class Venue(
     val location: Location,
     val title: String,
     val address: String,
-    @Optional val foursquare_id: String? = null,
-    @Optional val foursquare_type: String? = null
+    val foursquare_id: String? = null,
+    val foursquare_type: String? = null
+) : TelegramModel()
+
+/**
+ * <p>This object contains information about one answer option in a poll.</p>
+ *
+ * @property text Option text, 1-100 characters
+ * @property voter_count Number of users that voted for this option
+ *
+ * @constructor Creates a: PollOption.
+ * */
+@Serializable
+data class PollOption(
+    val text: String,
+    val voter_count: Int
+) : TelegramModel()
+
+/**
+ * <p>This object contains information about a poll.</p>
+ *
+ * @property id Unique poll identifier
+ * @property question Poll question, 1-255 characters
+ * @property options List of poll options
+ * @property is_closed True, if the poll is closed
+ *
+ * @constructor Creates a: Poll.
+ * */
+@Serializable
+data class Poll(
+    val id: String,
+    val question: String,
+    val options: List<PollOption>,
+    val is_closed: Boolean
 ) : TelegramModel()
 
 /**
@@ -477,8 +515,8 @@ data class UserProfilePhotos(
 @Serializable
 data class File(
     val file_id: String,
-    @Optional val file_size: Int? = null,
-    @Optional val file_path: String? = null
+    val file_size: Int? = null,
+    val file_path: String? = null
 ) : TelegramModel()
 
 /**
@@ -494,9 +532,9 @@ data class File(
 @Serializable
 data class ReplyKeyboardMarkup(
     val keyboard: List<List<KeyboardButton>>,
-    @Optional val resize_keyboard: Boolean? = null,
-    @Optional val one_time_keyboard: Boolean? = null,
-    @Optional val selective: Boolean? = null
+    val resize_keyboard: Boolean? = null,
+    val one_time_keyboard: Boolean? = null,
+    val selective: Boolean? = null
 ) : TelegramModel()
 
 /**
@@ -511,8 +549,8 @@ data class ReplyKeyboardMarkup(
 @Serializable
 data class KeyboardButton(
     val text: String,
-    @Optional val request_contact: Boolean? = null,
-    @Optional val request_location: Boolean? = null
+    val request_contact: Boolean? = null,
+    val request_location: Boolean? = null
 ) : TelegramModel()
 
 /**
@@ -526,7 +564,7 @@ data class KeyboardButton(
 @Serializable
 data class ReplyKeyboardRemove(
     val remove_keyboard: Boolean,
-    @Optional val selective: Boolean? = null
+    val selective: Boolean? = null
 ) : TelegramModel()
 
 /**
@@ -546,6 +584,7 @@ data class InlineKeyboardMarkup(
  *
  * @property text Label text on the button
  * @property url <em>Optional</em>. HTTP or tg:// url to be opened when button is pressed
+ * @property login_url <em>Optional</em>. An HTTP URL used to automatically authorize the user. Can be used as a replacement for the <a href="https://core.telegram.org/widgets/login">Telegram Login Widget</a>.
  * @property callback_data <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when button is pressed, 1-64 bytes
  * @property switch_inline_query <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot‘s username and the specified inline query in the input field. Can be empty, in which case just the bot’s username will be inserted.<br><br><strong>Note:</strong> This offers an easy way for users to start using your bot in <a href="/bots/inline">inline mode</a> when they are currently in a private chat with it. Especially useful when combined with <a href="#answerinlinequery"><em>switch_pm…</em></a> actions – in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen.
  * @property switch_inline_query_current_chat <em>Optional</em>. If set, pressing the button will insert the bot‘s username and the specified inline query in the current chat's input field. Can be empty, in which case only the bot’s username will be inserted.<br><br>This offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options.
@@ -557,12 +596,33 @@ data class InlineKeyboardMarkup(
 @Serializable
 data class InlineKeyboardButton(
     val text: String,
-    @Optional val url: String? = null,
-    @Optional val callback_data: String? = null,
-    @Optional val switch_inline_query: String? = null,
-    @Optional val switch_inline_query_current_chat: String? = null,
-    @Optional val callback_game: Any? = null,
-    @Optional val pay: Boolean? = null
+    val url: String? = null,
+    val login_url: LoginUrl? = null,
+    val callback_data: String? = null,
+    val switch_inline_query: String? = null,
+    val switch_inline_query_current_chat: String? = null,
+    val callback_game: Any? = null,
+    val pay: Boolean? = null
+) : TelegramModel()
+
+/**
+ * <p>This object represents a parameter of the inline keyboard button used to automatically authorize a user. Serves as a great replacement for the <a href="https://core.telegram.org/widgets/login">Telegram Login Widget</a> when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:</p><p>Telegram apps support these buttons as of <a href="https://telegram.org/blog/privacy-discussions-web-bots#meet-seamless-web-bots">version 5.7</a>.</p><blockquote>
+<p>Sample bot: <a href="https://t.me/discussbot">@discussbot</a></p>
+</blockquote>
+ *
+ * @property url An HTTP URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in <a href="https://core.telegram.org/widgets/login#receiving-authorization-data">Receiving authorization data</a>.<br><br><strong>NOTE:</strong> You <strong>must</strong> always check the hash of the received data to verify the authentication and the integrity of the data as described in <a href="https://core.telegram.org/widgets/login#checking-authorization">Checking authorization</a>.
+ * @property forward_text <em>Optional</em>. New text of the button in forwarded messages.
+ * @property bot_username <em>Optional</em>. Username of a bot, which will be used for user authorization. See <a href="https://core.telegram.org/widgets/login#setting-up-a-bot">Setting up a bot</a> for more details. If not specified, the current bot's username will be assumed. The <em>url</em>'s domain must be the same as the domain linked with the bot. See <a href="https://core.telegram.org/widgets/login#linking-your-domain-to-the-bot">Linking your domain to the bot</a> for more details.
+ * @property request_write_access <em>Optional</em>. Pass True to request the permission for your bot to send messages to the user.
+ *
+ * @constructor Creates a: LoginUrl.
+ * */
+@Serializable
+data class LoginUrl(
+    val url: String,
+    val forward_text: String? = null,
+    val bot_username: String? = null,
+    val request_write_access: Boolean? = null
 ) : TelegramModel()
 
 /**
@@ -584,11 +644,11 @@ data class InlineKeyboardButton(
 data class CallbackQuery(
     val id: String,
     val from: User,
-    @Optional val message: Message? = null,
-    @Optional val inline_message_id: String? = null,
+    val message: Message? = null,
+    val inline_message_id: String? = null,
     val chat_instance: String,
-    @Optional val data: String? = null,
-    @Optional val game_short_name: String? = null
+    val data: String? = null,
+    val game_short_name: String? = null
 ) : TelegramModel()
 
 /**
@@ -607,7 +667,7 @@ data class CallbackQuery(
 @Serializable
 data class ForceReply(
     val force_reply: Boolean,
-    @Optional val selective: Boolean? = null
+    val selective: Boolean? = null
 ) : TelegramModel()
 
 /**
@@ -637,8 +697,9 @@ data class ChatPhoto(
  * @property can_delete_messages <em>Optional</em>. Administrators only. True, if the administrator can delete messages of other users
  * @property can_invite_users <em>Optional</em>. Administrators only. True, if the administrator can invite new users to the chat
  * @property can_restrict_members <em>Optional</em>. Administrators only. True, if the administrator can restrict, ban or unban chat members
- * @property can_pin_messages <em>Optional</em>. Administrators only. True, if the administrator can pin messages, supergroups only
+ * @property can_pin_messages <em>Optional</em>. Administrators only. True, if the administrator can pin messages, groups and supergroups only
  * @property can_promote_members <em>Optional</em>. Administrators only. True, if the administrator can add new administrators with a subset of his own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)
+ * @property is_member <em>Optional</em>. Restricted only. True, if the user is a member of the chat at the moment of the request
  * @property can_send_messages <em>Optional</em>. Restricted only. True, if the user can send text messages, contacts, locations and venues
  * @property can_send_media_messages <em>Optional</em>. Restricted only. True, if the user can send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages
  * @property can_send_other_messages <em>Optional</em>. Restricted only. True, if the user can send animations, games, stickers and use inline bots, implies can_send_media_messages
@@ -650,20 +711,21 @@ data class ChatPhoto(
 data class ChatMember(
     val user: User,
     val status: String,
-    @Optional val until_date: Int? = null,
-    @Optional val can_be_edited: Boolean? = null,
-    @Optional val can_change_info: Boolean? = null,
-    @Optional val can_post_messages: Boolean? = null,
-    @Optional val can_edit_messages: Boolean? = null,
-    @Optional val can_delete_messages: Boolean? = null,
-    @Optional val can_invite_users: Boolean? = null,
-    @Optional val can_restrict_members: Boolean? = null,
-    @Optional val can_pin_messages: Boolean? = null,
-    @Optional val can_promote_members: Boolean? = null,
-    @Optional val can_send_messages: Boolean? = null,
-    @Optional val can_send_media_messages: Boolean? = null,
-    @Optional val can_send_other_messages: Boolean? = null,
-    @Optional val can_add_web_page_previews: Boolean? = null
+    val until_date: Int? = null,
+    val can_be_edited: Boolean? = null,
+    val can_change_info: Boolean? = null,
+    val can_post_messages: Boolean? = null,
+    val can_edit_messages: Boolean? = null,
+    val can_delete_messages: Boolean? = null,
+    val can_invite_users: Boolean? = null,
+    val can_restrict_members: Boolean? = null,
+    val can_pin_messages: Boolean? = null,
+    val can_promote_members: Boolean? = null,
+    val is_member: Boolean? = null,
+    val can_send_messages: Boolean? = null,
+    val can_send_media_messages: Boolean? = null,
+    val can_send_other_messages: Boolean? = null,
+    val can_add_web_page_previews: Boolean? = null
 ) : TelegramModel()
 
 /**
@@ -676,8 +738,8 @@ data class ChatMember(
  * */
 @Serializable
 data class ResponseParameters(
-    @Optional val migrate_to_chat_id: Int? = null,
-    @Optional val retry_after: Int? = null
+    val migrate_to_chat_id: Int? = null,
+    val retry_after: Int? = null
 ) : TelegramModel()
 
 /**
@@ -694,8 +756,8 @@ data class ResponseParameters(
 data class InputMediaPhoto(
     val type: String,
     val media: String,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null
+    val caption: String? = null,
+    val parse_mode: String? = null
 ) : InputMedia()
 
 /**
@@ -703,7 +765,7 @@ data class InputMediaPhoto(
  *
  * @property type Type of the result, must be <em>video</em>
  * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a>
- * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+ * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the video to be sent, 0-1024 characters
  * @property parse_mode <em>Optional</em>. Send <a href="#markdown-style"><em>Markdown</em></a> or <a href="#html-style"><em>HTML</em></a>, if you want Telegram apps to show <a href="#formatting-options">bold, italic, fixed-width text or inline URLs</a> in the media caption.
  * @property width <em>Optional</em>. Video width
@@ -717,13 +779,13 @@ data class InputMediaPhoto(
 data class InputMediaVideo(
     val type: String,
     val media: String,
-    @Optional val thumb: Any? = null,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null,
-    @Optional val width: Int? = null,
-    @Optional val height: Int? = null,
-    @Optional val duration: Int? = null,
-    @Optional val supports_streaming: Boolean? = null
+    val thumb: Any? = null,
+    val caption: String? = null,
+    val parse_mode: String? = null,
+    val width: Int? = null,
+    val height: Int? = null,
+    val duration: Int? = null,
+    val supports_streaming: Boolean? = null
 ) : InputMedia()
 
 /**
@@ -731,7 +793,7 @@ data class InputMediaVideo(
  *
  * @property type Type of the result, must be <em>animation</em>
  * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a>
- * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+ * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the animation to be sent, 0-1024 characters
  * @property parse_mode <em>Optional</em>. Send <a href="#markdown-style"><em>Markdown</em></a> or <a href="#html-style"><em>HTML</em></a>, if you want Telegram apps to show <a href="#formatting-options">bold, italic, fixed-width text or inline URLs</a> in the media caption.
  * @property width <em>Optional</em>. Animation width
@@ -744,12 +806,12 @@ data class InputMediaVideo(
 data class InputMediaAnimation(
     val type: String,
     val media: String,
-    @Optional val thumb: Any? = null,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null,
-    @Optional val width: Int? = null,
-    @Optional val height: Int? = null,
-    @Optional val duration: Int? = null
+    val thumb: Any? = null,
+    val caption: String? = null,
+    val parse_mode: String? = null,
+    val width: Int? = null,
+    val height: Int? = null,
+    val duration: Int? = null
 ) : InputMedia()
 
 /**
@@ -757,7 +819,7 @@ data class InputMediaAnimation(
  *
  * @property type Type of the result, must be <em>audio</em>
  * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a>
- * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+ * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the audio to be sent, 0-1024 characters
  * @property parse_mode <em>Optional</em>. Send <a href="#markdown-style"><em>Markdown</em></a> or <a href="#html-style"><em>HTML</em></a>, if you want Telegram apps to show <a href="#formatting-options">bold, italic, fixed-width text or inline URLs</a> in the media caption.
  * @property duration <em>Optional</em>. Duration of the audio in seconds
@@ -770,12 +832,12 @@ data class InputMediaAnimation(
 data class InputMediaAudio(
     val type: String,
     val media: String,
-    @Optional val thumb: Any? = null,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null,
-    @Optional val duration: Int? = null,
-    @Optional val performer: String? = null,
-    @Optional val title: String? = null
+    val thumb: Any? = null,
+    val caption: String? = null,
+    val parse_mode: String? = null,
+    val duration: Int? = null,
+    val performer: String? = null,
+    val title: String? = null
 ) : InputMedia()
 
 /**
@@ -783,7 +845,7 @@ data class InputMediaAudio(
  *
  * @property type Type of the result, must be <em>document</em>
  * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a>
- * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+ * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the document to be sent, 0-1024 characters
  * @property parse_mode <em>Optional</em>. Send <a href="#markdown-style"><em>Markdown</em></a> or <a href="#html-style"><em>HTML</em></a>, if you want Telegram apps to show <a href="#formatting-options">bold, italic, fixed-width text or inline URLs</a> in the media caption.
  *
@@ -793,9 +855,9 @@ data class InputMediaAudio(
 data class InputMediaDocument(
     val type: String,
     val media: String,
-    @Optional val thumb: Any? = null,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null
+    val thumb: Any? = null,
+    val caption: String? = null,
+    val parse_mode: String? = null
 ) : InputMedia()
 
 
@@ -820,11 +882,11 @@ data class Sticker(
     val file_id: String,
     val width: Int,
     val height: Int,
-    @Optional val thumb: PhotoSize? = null,
-    @Optional val emoji: String? = null,
-    @Optional val set_name: String? = null,
-    @Optional val mask_position: MaskPosition? = null,
-    @Optional val file_size: Int? = null
+    val thumb: PhotoSize? = null,
+    val emoji: String? = null,
+    val set_name: String? = null,
+    val mask_position: MaskPosition? = null,
+    val file_size: Int? = null
 ) : TelegramModel()
 
 /**
@@ -881,7 +943,7 @@ data class MaskPosition(
 data class InlineQuery(
     val id: String,
     val from: User,
-    @Optional val location: Location? = null,
+    val location: Location? = null,
     val query: String,
     val offset: String
 ) : TelegramModel()
@@ -909,13 +971,13 @@ data class InlineQueryResultArticle(
     val id: String,
     val title: String,
     val input_message_content: InputMessageContent,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val url: String? = null,
-    @Optional val hide_url: Boolean? = null,
-    @Optional val description: String? = null,
-    @Optional val thumb_url: String? = null,
-    @Optional val thumb_width: Int? = null,
-    @Optional val thumb_height: Int? = null
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val url: String? = null,
+    val hide_url: Boolean? = null,
+    val description: String? = null,
+    val thumb_url: String? = null,
+    val thumb_width: Int? = null,
+    val thumb_height: Int? = null
 ) : InlineQueryResult()
 
 /**
@@ -942,14 +1004,14 @@ data class InlineQueryResultPhoto(
     val id: String,
     val photo_url: String,
     val thumb_url: String,
-    @Optional val photo_width: Int? = null,
-    @Optional val photo_height: Int? = null,
-    @Optional val title: String? = null,
-    @Optional val description: String? = null,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null
+    val photo_width: Int? = null,
+    val photo_height: Int? = null,
+    val title: String? = null,
+    val description: String? = null,
+    val caption: String? = null,
+    val parse_mode: String? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null
 ) : InlineQueryResult()
 
 /**
@@ -975,15 +1037,15 @@ data class InlineQueryResultGif(
     val type: String,
     val id: String,
     val gif_url: String,
-    @Optional val gif_width: Int? = null,
-    @Optional val gif_height: Int? = null,
-    @Optional val gif_duration: Int? = null,
+    val gif_width: Int? = null,
+    val gif_height: Int? = null,
+    val gif_duration: Int? = null,
     val thumb_url: String,
-    @Optional val title: String? = null,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null
+    val title: String? = null,
+    val caption: String? = null,
+    val parse_mode: String? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null
 ) : InlineQueryResult()
 
 /**
@@ -1009,15 +1071,15 @@ data class InlineQueryResultMpeg4Gif(
     val type: String,
     val id: String,
     val mpeg4_url: String,
-    @Optional val mpeg4_width: Int? = null,
-    @Optional val mpeg4_height: Int? = null,
-    @Optional val mpeg4_duration: Int? = null,
+    val mpeg4_width: Int? = null,
+    val mpeg4_height: Int? = null,
+    val mpeg4_duration: Int? = null,
     val thumb_url: String,
-    @Optional val title: String? = null,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null
+    val title: String? = null,
+    val caption: String? = null,
+    val parse_mode: String? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null
 ) : InlineQueryResult()
 
 /**
@@ -1050,14 +1112,14 @@ data class InlineQueryResultVideo(
     val mime_type: String,
     val thumb_url: String,
     val title: String,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null,
-    @Optional val video_width: Int? = null,
-    @Optional val video_height: Int? = null,
-    @Optional val video_duration: Int? = null,
-    @Optional val description: String? = null,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null
+    val caption: String? = null,
+    val parse_mode: String? = null,
+    val video_width: Int? = null,
+    val video_height: Int? = null,
+    val video_duration: Int? = null,
+    val description: String? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null
 ) : InlineQueryResult()
 
 /**
@@ -1082,12 +1144,12 @@ data class InlineQueryResultAudio(
     val id: String,
     val audio_url: String,
     val title: String,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null,
-    @Optional val performer: String? = null,
-    @Optional val audio_duration: Int? = null,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null
+    val caption: String? = null,
+    val parse_mode: String? = null,
+    val performer: String? = null,
+    val audio_duration: Int? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null
 ) : InlineQueryResult()
 
 /**
@@ -1111,11 +1173,11 @@ data class InlineQueryResultVoice(
     val id: String,
     val voice_url: String,
     val title: String,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null,
-    @Optional val voice_duration: Int? = null,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null
+    val caption: String? = null,
+    val parse_mode: String? = null,
+    val voice_duration: Int? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null
 ) : InlineQueryResult()
 
 /**
@@ -1142,16 +1204,16 @@ data class InlineQueryResultDocument(
     val type: String,
     val id: String,
     val title: String,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null,
+    val caption: String? = null,
+    val parse_mode: String? = null,
     val document_url: String,
     val mime_type: String,
-    @Optional val description: String? = null,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null,
-    @Optional val thumb_url: String? = null,
-    @Optional val thumb_width: Int? = null,
-    @Optional val thumb_height: Int? = null
+    val description: String? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null,
+    val thumb_url: String? = null,
+    val thumb_width: Int? = null,
+    val thumb_height: Int? = null
 ) : InlineQueryResult()
 
 /**
@@ -1178,12 +1240,12 @@ data class InlineQueryResultLocation(
     val latitude: Float,
     val longitude: Float,
     val title: String,
-    @Optional val live_period: Int? = null,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null,
-    @Optional val thumb_url: String? = null,
-    @Optional val thumb_width: Int? = null,
-    @Optional val thumb_height: Int? = null
+    val live_period: Int? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null,
+    val thumb_url: String? = null,
+    val thumb_width: Int? = null,
+    val thumb_height: Int? = null
 ) : InlineQueryResult()
 
 /**
@@ -1213,13 +1275,13 @@ data class InlineQueryResultVenue(
     val longitude: Float,
     val title: String,
     val address: String,
-    @Optional val foursquare_id: String? = null,
-    @Optional val foursquare_type: String? = null,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null,
-    @Optional val thumb_url: String? = null,
-    @Optional val thumb_width: Int? = null,
-    @Optional val thumb_height: Int? = null
+    val foursquare_id: String? = null,
+    val foursquare_type: String? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null,
+    val thumb_url: String? = null,
+    val thumb_width: Int? = null,
+    val thumb_height: Int? = null
 ) : InlineQueryResult()
 
 /**
@@ -1245,13 +1307,13 @@ data class InlineQueryResultContact(
     val id: String,
     val phone_number: String,
     val first_name: String,
-    @Optional val last_name: String? = null,
-    @Optional val vcard: String? = null,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null,
-    @Optional val thumb_url: String? = null,
-    @Optional val thumb_width: Int? = null,
-    @Optional val thumb_height: Int? = null
+    val last_name: String? = null,
+    val vcard: String? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null,
+    val thumb_url: String? = null,
+    val thumb_width: Int? = null,
+    val thumb_height: Int? = null
 ) : InlineQueryResult()
 
 /**
@@ -1269,7 +1331,7 @@ data class InlineQueryResultGame(
     val type: String,
     val id: String,
     val game_short_name: String,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null
+    val reply_markup: InlineKeyboardMarkup? = null
 ) : InlineQueryResult()
 
 /**
@@ -1292,12 +1354,12 @@ data class InlineQueryResultCachedPhoto(
     val type: String,
     val id: String,
     val photo_file_id: String,
-    @Optional val title: String? = null,
-    @Optional val description: String? = null,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null
+    val title: String? = null,
+    val description: String? = null,
+    val caption: String? = null,
+    val parse_mode: String? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null
 ) : InlineQueryResult()
 
 /**
@@ -1319,11 +1381,11 @@ data class InlineQueryResultCachedGif(
     val type: String,
     val id: String,
     val gif_file_id: String,
-    @Optional val title: String? = null,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null
+    val title: String? = null,
+    val caption: String? = null,
+    val parse_mode: String? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null
 ) : InlineQueryResult()
 
 /**
@@ -1345,11 +1407,11 @@ data class InlineQueryResultCachedMpeg4Gif(
     val type: String,
     val id: String,
     val mpeg4_file_id: String,
-    @Optional val title: String? = null,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null
+    val title: String? = null,
+    val caption: String? = null,
+    val parse_mode: String? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null
 ) : InlineQueryResult()
 
 /**
@@ -1368,8 +1430,8 @@ data class InlineQueryResultCachedSticker(
     val type: String,
     val id: String,
     val sticker_file_id: String,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null
 ) : InlineQueryResult()
 
 /**
@@ -1393,11 +1455,11 @@ data class InlineQueryResultCachedDocument(
     val id: String,
     val title: String,
     val document_file_id: String,
-    @Optional val description: String? = null,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null
+    val description: String? = null,
+    val caption: String? = null,
+    val parse_mode: String? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null
 ) : InlineQueryResult()
 
 /**
@@ -1421,11 +1483,11 @@ data class InlineQueryResultCachedVideo(
     val id: String,
     val video_file_id: String,
     val title: String,
-    @Optional val description: String? = null,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null
+    val description: String? = null,
+    val caption: String? = null,
+    val parse_mode: String? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null
 ) : InlineQueryResult()
 
 /**
@@ -1448,10 +1510,10 @@ data class InlineQueryResultCachedVoice(
     val id: String,
     val voice_file_id: String,
     val title: String,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null
+    val caption: String? = null,
+    val parse_mode: String? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null
 ) : InlineQueryResult()
 
 /**
@@ -1472,14 +1534,14 @@ data class InlineQueryResultCachedAudio(
     val type: String,
     val id: String,
     val audio_file_id: String,
-    @Optional val caption: String? = null,
-    @Optional val parse_mode: String? = null,
-    @Optional val reply_markup: InlineKeyboardMarkup? = null,
-    @Optional val input_message_content: InputMessageContent? = null
+    val caption: String? = null,
+    val parse_mode: String? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
+    val input_message_content: InputMessageContent? = null
 ) : InlineQueryResult()
 
 /**
- * <p>Represents the <a href="#inputmessagecontent">content</a> of a text message to be sent as the result of an inline query. </p>
+ * <p>Represents the <a href="#inputmessagecontent">content</a> of a text message to be sent as the result of an inline query.</p>
  *
  * @property message_text Text of the message to be sent, 1-4096 characters
  * @property parse_mode <em>Optional</em>. Send <a href="#markdown-style"><em>Markdown</em></a> or <a href="#html-style"><em>HTML</em></a>, if you want Telegram apps to show <a href="#formatting-options">bold, italic, fixed-width text or inline URLs</a> in your bot's message.
@@ -1490,12 +1552,12 @@ data class InlineQueryResultCachedAudio(
 @Serializable
 data class InputTextMessageContent(
     val message_text: String,
-    @Optional val parse_mode: String? = null,
-    @Optional val disable_web_page_preview: Boolean? = null
+    val parse_mode: String? = null,
+    val disable_web_page_preview: Boolean? = null
 ) : TelegramModel()
 
 /**
- * <p>Represents the <a href="#inputmessagecontent">content</a> of a location message to be sent as the result of an inline query. </p>
+ * <p>Represents the <a href="#inputmessagecontent">content</a> of a location message to be sent as the result of an inline query.</p>
  *
  * @property latitude Latitude of the location in degrees
  * @property longitude Longitude of the location in degrees
@@ -1507,11 +1569,11 @@ data class InputTextMessageContent(
 data class InputLocationMessageContent(
     val latitude: Float,
     val longitude: Float,
-    @Optional val live_period: Int? = null
+    val live_period: Int? = null
 ) : TelegramModel()
 
 /**
- * <p>Represents the <a href="#inputmessagecontent">content</a> of a venue message to be sent as the result of an inline query. </p>
+ * <p>Represents the <a href="#inputmessagecontent">content</a> of a venue message to be sent as the result of an inline query.</p>
  *
  * @property latitude Latitude of the venue in degrees
  * @property longitude Longitude of the venue in degrees
@@ -1528,12 +1590,12 @@ data class InputVenueMessageContent(
     val longitude: Float,
     val title: String,
     val address: String,
-    @Optional val foursquare_id: String? = null,
-    @Optional val foursquare_type: String? = null
+    val foursquare_id: String? = null,
+    val foursquare_type: String? = null
 ) : TelegramModel()
 
 /**
- * <p>Represents the <a href="#inputmessagecontent">content</a> of a contact message to be sent as the result of an inline query. </p>
+ * <p>Represents the <a href="#inputmessagecontent">content</a> of a contact message to be sent as the result of an inline query.</p>
  *
  * @property phone_number Contact's phone number
  * @property first_name Contact's first name
@@ -1546,12 +1608,12 @@ data class InputVenueMessageContent(
 data class InputContactMessageContent(
     val phone_number: String,
     val first_name: String,
-    @Optional val last_name: String? = null,
-    @Optional val vcard: String? = null
+    val last_name: String? = null,
+    val vcard: String? = null
 ) : TelegramModel()
 
 /**
- * <p>Represents a <a href="#inlinequeryresult">result</a> of an inline query that was chosen by the user and sent to their chat partner. </p><p><strong>Note:</strong> It is necessary to enable <a href="/bots/inline#collecting-feedback">inline feedback</a> via <a href="https://t.me/botfather">@Botfather</a> in order to receive these objects in updates.</p>
+ * <p>Represents a <a href="#inlinequeryresult">result</a> of an inline query that was chosen by the user and sent to their chat partner.</p><p><strong>Note:</strong> It is necessary to enable <a href="/bots/inline#collecting-feedback">inline feedback</a> via <a href="https://t.me/botfather">@Botfather</a> in order to receive these objects in updates.</p>
  *
  * @property result_id The unique identifier for the result that was chosen
  * @property from The user that chose the result
@@ -1565,8 +1627,8 @@ data class InputContactMessageContent(
 data class ChosenInlineResult(
     val result_id: String,
     val from: User,
-    @Optional val location: Location? = null,
-    @Optional val inline_message_id: String? = null,
+    val location: Location? = null,
+    val inline_message_id: String? = null,
     val query: String
 ) : TelegramModel()
 
@@ -1641,10 +1703,10 @@ data class ShippingAddress(
  * */
 @Serializable
 data class OrderInfo(
-    @Optional val name: String? = null,
-    @Optional val phone_number: String? = null,
-    @Optional val email: String? = null,
-    @Optional val shipping_address: ShippingAddress? = null
+    val name: String? = null,
+    val phone_number: String? = null,
+    val email: String? = null,
+    val shipping_address: ShippingAddress? = null
 ) : TelegramModel()
 
 /**
@@ -1681,8 +1743,8 @@ data class SuccessfulPayment(
     val currency: String,
     val total_amount: Int,
     val invoice_payload: String,
-    @Optional val shipping_option_id: String? = null,
-    @Optional val order_info: OrderInfo? = null,
+    val shipping_option_id: String? = null,
+    val order_info: OrderInfo? = null,
     val telegram_payment_charge_id: String,
     val provider_payment_charge_id: String
 ) : TelegramModel()
@@ -1725,8 +1787,8 @@ data class PreCheckoutQuery(
     val currency: String,
     val total_amount: Int,
     val invoice_payload: String,
-    @Optional val shipping_option_id: String? = null,
-    @Optional val order_info: OrderInfo? = null
+    val shipping_option_id: String? = null,
+    val order_info: OrderInfo? = null
 ) : TelegramModel()
 
 
@@ -1781,14 +1843,14 @@ data class PassportFile(
 @Serializable
 data class EncryptedPassportElement(
     val type: String,
-    @Optional val data: String? = null,
-    @Optional val phone_number: String? = null,
-    @Optional val email: String? = null,
-    @Optional val files: List<PassportFile>? = null,
-    @Optional val front_side: PassportFile? = null,
-    @Optional val reverse_side: PassportFile? = null,
-    @Optional val selfie: PassportFile? = null,
-    @Optional val translation: List<PassportFile>? = null,
+    val data: String? = null,
+    val phone_number: String? = null,
+    val email: String? = null,
+    val files: List<PassportFile>? = null,
+    val front_side: PassportFile? = null,
+    val reverse_side: PassportFile? = null,
+    val selfie: PassportFile? = null,
+    val translation: List<PassportFile>? = null,
     val hash: String
 ) : TelegramModel()
 
@@ -1992,9 +2054,9 @@ data class Game(
     val title: String,
     val description: String,
     val photo: List<PhotoSize>,
-    @Optional val text: String? = null,
-    @Optional val text_entities: List<MessageEntity>? = null,
-    @Optional val animation: Animation? = null
+    val text: String? = null,
+    val text_entities: List<MessageEntity>? = null,
+    val animation: Animation? = null
 ) : TelegramModel()
 
 /**

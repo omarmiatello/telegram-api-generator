@@ -86,6 +86,14 @@
               "name": "PreCheckoutQuery"
             },
             "required": false
+          },
+          {
+            "name": "poll",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot",
+            "type": {
+              "name": "Poll"
+            },
+            "required": false
           }
         ]
       },
@@ -409,7 +417,7 @@
           },
           {
             "name": "pinned_message",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pinned message, for supergroups and channel chats. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pinned message, for groups, supergroups and channels. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
               "name": "Message"
             },
@@ -496,6 +504,14 @@
           {
             "name": "forward_signature",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. For messages forwarded from channels, signature of the post author if present",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "forward_sender_name",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Sender\u0027s name for messages forwarded from users who disallow adding a link to their account in forwarded messages",
             "type": {
               "name": "String"
             },
@@ -679,6 +695,14 @@
             "required": false
           },
           {
+            "name": "poll",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a native poll, information about the poll",
+            "type": {
+              "name": "Poll"
+            },
+            "required": false
+          },
+          {
             "name": "new_chat_members",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. New members that were added to the group or supergroup and information about them (the bot itself may be one of these members)",
             "type": {
@@ -803,12 +827,20 @@
               "name": "PassportData"
             },
             "required": false
+          },
+          {
+            "name": "reply_markup",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Inline keyboard attached to the message. \u003ccode\u003elogin_url\u003c/code\u003e buttons are represented as ordinary \u003ccode\u003eurl\u003c/code\u003e buttons.",
+            "type": {
+              "name": "InlineKeyboardMarkup"
+            },
+            "required": false
           }
         ]
       },
       {
         "name": "MessageEntity",
-        "description": "\u003cp\u003eThis object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc. \u003c/p\u003e",
+        "description": "\u003cp\u003eThis object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc.\u003c/p\u003e",
         "docFields": [
           {
             "name": "type",
@@ -1329,6 +1361,69 @@
         ]
       },
       {
+        "name": "PollOption",
+        "description": "\u003cp\u003eThis object contains information about one answer option in a poll.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "text",
+            "description": "Option text, 1-100 characters",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "voter_count",
+            "description": "Number of users that voted for this option",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "Poll",
+        "description": "\u003cp\u003eThis object contains information about a poll.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "id",
+            "description": "Unique poll identifier",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "question",
+            "description": "Poll question, 1-255 characters",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "options",
+            "description": "List of poll options",
+            "type": {
+              "elementType": {
+                "name": "PollOption"
+              },
+              "name": "List\u003cPollOption\u003e"
+            },
+            "required": true
+          },
+          {
+            "name": "is_closed",
+            "description": "True, if the poll is closed",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
         "name": "UserProfilePhotos",
         "description": "\u003cp\u003eThis object represent a user\u0027s profile pictures.\u003c/p\u003e",
         "docFields": [
@@ -1523,6 +1618,14 @@
             "required": false
           },
           {
+            "name": "login_url",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. An HTTP URL used to automatically authorize the user. Can be used as a replacement for the \u003ca href\u003d\"https://core.telegram.org/widgets/login\"\u003eTelegram Login Widget\u003c/a\u003e.",
+            "type": {
+              "name": "LoginUrl"
+            },
+            "required": false
+          },
+          {
             "name": "callback_data",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Data to be sent in a \u003ca href\u003d\"#callbackquery\"\u003ecallback query\u003c/a\u003e to the bot when button is pressed, 1-64 bytes",
             "type": {
@@ -1557,6 +1660,44 @@
           {
             "name": "pay",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Specify True, to send a \u003ca href\u003d\"#payments\"\u003ePay button\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e\u003cstrong\u003eNOTE:\u003c/strong\u003e This type of button \u003cstrong\u003emust\u003c/strong\u003e always be the first button in the first row.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          }
+        ]
+      },
+      {
+        "name": "LoginUrl",
+        "description": "\u003cp\u003eThis object represents a parameter of the inline keyboard button used to automatically authorize a user. Serves as a great replacement for the \u003ca href\u003d\"https://core.telegram.org/widgets/login\"\u003eTelegram Login Widget\u003c/a\u003e when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:\u003c/p\u003e\u003cp\u003eTelegram apps support these buttons as of \u003ca href\u003d\"https://telegram.org/blog/privacy-discussions-web-bots#meet-seamless-web-bots\"\u003eversion 5.7\u003c/a\u003e.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eSample bot: \u003ca href\u003d\"https://t.me/discussbot\"\u003e@discussbot\u003c/a\u003e\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "docFields": [
+          {
+            "name": "url",
+            "description": "An HTTP URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in \u003ca href\u003d\"https://core.telegram.org/widgets/login#receiving-authorization-data\"\u003eReceiving authorization data\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e\u003cstrong\u003eNOTE:\u003c/strong\u003e You \u003cstrong\u003emust\u003c/strong\u003e always check the hash of the received data to verify the authentication and the integrity of the data as described in \u003ca href\u003d\"https://core.telegram.org/widgets/login#checking-authorization\"\u003eChecking authorization\u003c/a\u003e.",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "forward_text",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. New text of the button in forwarded messages.",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "bot_username",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Username of a bot, which will be used for user authorization. See \u003ca href\u003d\"https://core.telegram.org/widgets/login#setting-up-a-bot\"\u003eSetting up a bot\u003c/a\u003e for more details. If not specified, the current bot\u0027s username will be assumed. The \u003cem\u003eurl\u003c/em\u003e\u0027s domain must be the same as the domain linked with the bot. See \u003ca href\u003d\"https://core.telegram.org/widgets/login#linking-your-domain-to-the-bot\"\u003eLinking your domain to the bot\u003c/a\u003e for more details.",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "request_write_access",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass True to request the permission for your bot to send messages to the user.",
             "type": {
               "name": "Boolean"
             },
@@ -1756,7 +1897,7 @@
           },
           {
             "name": "can_pin_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can pin messages, supergroups only",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can pin messages, groups and supergroups only",
             "type": {
               "name": "Boolean"
             },
@@ -1765,6 +1906,14 @@
           {
             "name": "can_promote_members",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can add new administrators with a subset of his own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "is_member",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted only. True, if the user is a member of the chat at the moment of the request",
             "type": {
               "name": "Boolean"
             },
@@ -1886,7 +2035,7 @@
           },
           {
             "name": "thumb",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -1972,7 +2121,7 @@
           },
           {
             "name": "thumb",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -2050,7 +2199,7 @@
           },
           {
             "name": "thumb",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -2128,7 +2277,7 @@
           },
           {
             "name": "thumb",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -2165,7 +2314,7 @@
   },
   {
     "name": "Available methods",
-    "description": "\u003cblockquote\u003e \n \u003cp\u003eAll methods in the Bot API are case-insensitive. We support \u003cstrong\u003eGET\u003c/strong\u003e and \u003cstrong\u003ePOST\u003c/strong\u003e HTTP methods. Use either \u003ca href\u003d\"https://en.wikipedia.org/wiki/Query_string\"\u003eURL query string\u003c/a\u003e or \u003cem\u003eapplication/json\u003c/em\u003e or \u003cem\u003eapplication/x-www-form-urlencoded\u003c/em\u003e or \u003cem\u003emultipart/form-data\u003c/em\u003e for passing parameters in Bot API requests.\u003cbr\u003eOn successful call, a JSON-object containing the result will be returned. \u003c/p\u003e \n\u003c/blockquote\u003e",
+    "description": "\u003cblockquote\u003e \n \u003cp\u003eAll methods in the Bot API are case-insensitive. We support \u003cstrong\u003eGET\u003c/strong\u003e and \u003cstrong\u003ePOST\u003c/strong\u003e HTTP methods. Use either \u003ca href\u003d\"https://en.wikipedia.org/wiki/Query_string\"\u003eURL query string\u003c/a\u003e or \u003cem\u003eapplication/json\u003c/em\u003e or \u003cem\u003eapplication/x-www-form-urlencoded\u003c/em\u003e or \u003cem\u003emultipart/form-data\u003c/em\u003e for passing parameters in Bot API requests.\u003cbr\u003eOn successful call, a JSON-object containing the result will be returned.\u003c/p\u003e \n\u003c/blockquote\u003e",
     "docTypes": [],
     "docMethods": [
       {
@@ -2485,7 +2634,7 @@
           },
           {
             "name": "thumb",
-            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -2580,7 +2729,7 @@
           },
           {
             "name": "thumb",
-            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -2715,7 +2864,7 @@
           },
           {
             "name": "thumb",
-            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -2858,7 +3007,7 @@
           },
           {
             "name": "thumb",
-            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -3088,7 +3237,7 @@
           },
           {
             "name": "thumb",
-            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -3300,7 +3449,7 @@
       },
       {
         "name": "editMessageLiveLocation",
-        "description": "\u003cp\u003eUse this method to edit live location messages sent by the bot or via the bot (for \u003ca href\u003d\"#inline-mode\"\u003einline bots\u003c/a\u003e). A location can be edited until its \u003cem\u003elive_period\u003c/em\u003e expires or editing is explicitly disabled by a call to \u003ca href\u003d\"#stopmessagelivelocation\"\u003estopMessageLiveLocation\u003c/a\u003e. On success, if the edited message was sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to edit live location messages. A location can be edited until its \u003cem\u003elive_period\u003c/em\u003e expires or editing is explicitly disabled by a call to \u003ca href\u003d\"#stopmessagelivelocation\"\u003estopMessageLiveLocation\u003c/a\u003e. On success, if the edited message was sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -3320,7 +3469,7 @@
           },
           {
             "name": "message_id",
-            "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Identifier of the sent message",
+            "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Identifier of the message to edit",
             "type": {
               "name": "Integer"
             },
@@ -3365,7 +3514,7 @@
       },
       {
         "name": "stopMessageLiveLocation",
-        "description": "\u003cp\u003eUse this method to stop updating a live location message sent by the bot or via the bot (for \u003ca href\u003d\"#inline-mode\"\u003einline bots\u003c/a\u003e) before \u003cem\u003elive_period\u003c/em\u003e expires. On success, if the message was sent by the bot, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to stop updating a live location message before \u003cem\u003elive_period\u003c/em\u003e expires. On success, if the message was sent by the bot, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -3385,7 +3534,7 @@
           },
           {
             "name": "message_id",
-            "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Identifier of the sent message",
+            "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Identifier of the message with live location to stop",
             "type": {
               "name": "Integer"
             },
@@ -3594,6 +3743,88 @@
           {
             "name": "reply_markup",
             "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove keyboard or to force a reply from the user.",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "InlineKeyboardMarkup"
+                },
+                {
+                  "name": "ReplyKeyboardMarkup"
+                },
+                {
+                  "name": "ReplyKeyboardRemove"
+                },
+                {
+                  "name": "ForceReply"
+                }
+              ],
+              "name": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "name": "Message"
+        }
+      },
+      {
+        "name": "sendPoll",
+        "description": "\u003cp\u003eUse this method to send a native poll. A native poll can\u0027t be sent to a private chat. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e). A native poll can\u0027t be sent to a private chat.",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "Integer or String"
+            },
+            "required": true
+          },
+          {
+            "name": "question",
+            "description": "Poll question, 1-255 characters",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "options",
+            "description": "List of answer options, 2-10 strings 1-100 characters each",
+            "type": {
+              "elementType": {
+                "name": "String"
+              },
+              "name": "List\u003cString\u003e"
+            },
+            "required": true
+          },
+          {
+            "name": "disable_notification",
+            "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "reply_to_message_id",
+            "description": "If the message is a reply, ID of the original message",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "reply_markup",
+            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove reply keyboard or to force a reply from the user.",
             "type": {
               "validTypes": [
                 {
@@ -3972,7 +4203,7 @@
       },
       {
         "name": "setChatPhoto",
-        "description": "\u003cp\u003eUse this method to set a new profile photo for the chat. Photos can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success. \u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUse this method to set a new profile photo for the chat. Photos can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.\u003c/p\u003e \n\u003c/blockquote\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4005,7 +4236,7 @@
       },
       {
         "name": "deleteChatPhoto",
-        "description": "\u003cp\u003eUse this method to delete a chat photo. Photos can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success. \u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUse this method to delete a chat photo. Photos can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.\u003c/p\u003e \n\u003c/blockquote\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4030,7 +4261,7 @@
       },
       {
         "name": "setChatTitle",
-        "description": "\u003cp\u003eUse this method to change the title of a chat. Titles can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success. \u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUse this method to change the title of a chat. Titles can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.\u003c/p\u003e \n\u003c/blockquote\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4063,7 +4294,7 @@
       },
       {
         "name": "setChatDescription",
-        "description": "\u003cp\u003eUse this method to change the description of a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success. \u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to change the description of a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4096,7 +4327,7 @@
       },
       {
         "name": "pinChatMessage",
-        "description": "\u003cp\u003eUse this method to pin a message in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to pin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4137,7 +4368,7 @@
       },
       {
         "name": "unpinChatMessage",
-        "description": "\u003cp\u003eUse this method to unpin a message in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success. \u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to unpin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4412,7 +4643,7 @@
     "docMethods": [
       {
         "name": "editMessageText",
-        "description": "\u003cp\u003eUse this method to edit text and \u003ca href\u003d\"#games\"\u003egame\u003c/a\u003e messages sent by the bot or via the bot (for \u003ca href\u003d\"#inline-mode\"\u003einline bots\u003c/a\u003e). On success, if edited message is sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned. \u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to edit text and \u003ca href\u003d\"#games\"\u003egame\u003c/a\u003e messages. On success, if edited message is sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4432,7 +4663,7 @@
           },
           {
             "name": "message_id",
-            "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Identifier of the sent message",
+            "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Identifier of the message to edit",
             "type": {
               "name": "Integer"
             },
@@ -4485,7 +4716,7 @@
       },
       {
         "name": "editMessageCaption",
-        "description": "\u003cp\u003eUse this method to edit captions of messages sent by the bot or via the bot (for \u003ca href\u003d\"#inline-mode\"\u003einline bots\u003c/a\u003e). On success, if edited message is sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to edit captions of messages. On success, if edited message is sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4505,7 +4736,7 @@
           },
           {
             "name": "message_id",
-            "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Identifier of the sent message",
+            "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Identifier of the message to edit",
             "type": {
               "name": "Integer"
             },
@@ -4570,7 +4801,7 @@
           },
           {
             "name": "message_id",
-            "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Identifier of the sent message",
+            "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Identifier of the message to edit",
             "type": {
               "name": "Integer"
             },
@@ -4607,7 +4838,7 @@
       },
       {
         "name": "editMessageReplyMarkup",
-        "description": "\u003cp\u003eUse this method to edit only the reply markup of messages sent by the bot or via the bot (for \u003ca href\u003d\"#inline-mode\"\u003einline bots\u003c/a\u003e). On success, if edited message is sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to edit only the reply markup of messages. On success, if edited message is sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4627,7 +4858,7 @@
           },
           {
             "name": "message_id",
-            "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Identifier of the sent message",
+            "description": "Required if \u003cem\u003einline_message_id\u003c/em\u003e is not specified. Identifier of the message to edit",
             "type": {
               "name": "Integer"
             },
@@ -4655,8 +4886,49 @@
         }
       },
       {
+        "name": "stopPoll",
+        "description": "\u003cp\u003eUse this method to stop a poll which was sent by the bot. On success, the stopped \u003ca href\u003d\"#poll\"\u003ePoll\u003c/a\u003e with the final results is returned.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "Integer or String"
+            },
+            "required": true
+          },
+          {
+            "name": "message_id",
+            "description": "Identifier of the original message with the poll",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          },
+          {
+            "name": "reply_markup",
+            "description": "A JSON-serialized object for a new message \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e.",
+            "type": {
+              "name": "InlineKeyboardMarkup"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "name": "results"
+        }
+      },
+      {
         "name": "deleteMessage",
-        "description": "\u003cp\u003eUse this method to delete a message, including service messages, with the following limitations:\u003cbr\u003e- A message can only be deleted if it was sent less than 48 hours ago.\u003cbr\u003e- Bots can delete outgoing messages in private chats, groups, and supergroups.\u003cbr\u003e- Bots granted \u003cem\u003ecan_post_messages\u003c/em\u003e permissions can delete outgoing messages in channels.\u003cbr\u003e- If the bot is an administrator of a group, it can delete any message there.\u003cbr\u003e- If the bot has \u003cem\u003ecan_delete_messages\u003c/em\u003e permission in a supergroup or a channel, it can delete any message there.\u003cbr\u003eReturns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to delete a message, including service messages, with the following limitations:\u003cbr\u003e- A message can only be deleted if it was sent less than 48 hours ago.\u003cbr\u003e- Bots can delete outgoing messages in private chats, groups, and supergroups.\u003cbr\u003e- Bots can delete incoming messages in private chats.\u003cbr\u003e- Bots granted \u003cem\u003ecan_post_messages\u003c/em\u003e permissions can delete outgoing messages in channels.\u003cbr\u003e- If the bot is an administrator of a group, it can delete any message there.\u003cbr\u003e- If the bot has \u003cem\u003ecan_delete_messages\u003c/em\u003e permission in a supergroup or a channel, it can delete any message there.\u003cbr\u003eReturns \u003cem\u003eTrue\u003c/em\u003e on success. \u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6871,7 +7143,7 @@
       },
       {
         "name": "InputTextMessageContent",
-        "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#inputmessagecontent\"\u003econtent\u003c/a\u003e of a text message to be sent as the result of an inline query. \u003c/p\u003e",
+        "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#inputmessagecontent\"\u003econtent\u003c/a\u003e of a text message to be sent as the result of an inline query.\u003c/p\u003e",
         "docFields": [
           {
             "name": "message_text",
@@ -6901,7 +7173,7 @@
       },
       {
         "name": "InputLocationMessageContent",
-        "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#inputmessagecontent\"\u003econtent\u003c/a\u003e of a location message to be sent as the result of an inline query. \u003c/p\u003e",
+        "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#inputmessagecontent\"\u003econtent\u003c/a\u003e of a location message to be sent as the result of an inline query.\u003c/p\u003e",
         "docFields": [
           {
             "name": "latitude",
@@ -6931,7 +7203,7 @@
       },
       {
         "name": "InputVenueMessageContent",
-        "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#inputmessagecontent\"\u003econtent\u003c/a\u003e of a venue message to be sent as the result of an inline query. \u003c/p\u003e",
+        "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#inputmessagecontent\"\u003econtent\u003c/a\u003e of a venue message to be sent as the result of an inline query.\u003c/p\u003e",
         "docFields": [
           {
             "name": "latitude",
@@ -6985,7 +7257,7 @@
       },
       {
         "name": "InputContactMessageContent",
-        "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#inputmessagecontent\"\u003econtent\u003c/a\u003e of a contact message to be sent as the result of an inline query. \u003c/p\u003e",
+        "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#inputmessagecontent\"\u003econtent\u003c/a\u003e of a contact message to be sent as the result of an inline query.\u003c/p\u003e",
         "docFields": [
           {
             "name": "phone_number",
@@ -7023,7 +7295,7 @@
       },
       {
         "name": "ChosenInlineResult",
-        "description": "\u003cp\u003eRepresents a \u003ca href\u003d\"#inlinequeryresult\"\u003eresult\u003c/a\u003e of an inline query that was chosen by the user and sent to their chat partner. \u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e It is necessary to enable \u003ca href\u003d\"/bots/inline#collecting-feedback\"\u003einline feedback\u003c/a\u003e via \u003ca href\u003d\"https://t.me/botfather\"\u003e@Botfather\u003c/a\u003e in order to receive these objects in updates.\u003c/p\u003e",
+        "description": "\u003cp\u003eRepresents a \u003ca href\u003d\"#inlinequeryresult\"\u003eresult\u003c/a\u003e of an inline query that was chosen by the user and sent to their chat partner.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e It is necessary to enable \u003ca href\u003d\"/bots/inline#collecting-feedback\"\u003einline feedback\u003c/a\u003e via \u003ca href\u003d\"https://t.me/botfather\"\u003e@Botfather\u003c/a\u003e in order to receive these objects in updates.\u003c/p\u003e",
         "docFields": [
           {
             "name": "result_id",
