@@ -17,15 +17,17 @@ sealed class TelegramModel"""
                 val telegramType = TelegramType.from(dataType.name) as TelegramType.Declared
                 val superType = telegramType.superType ?: "TelegramModel"
                 val docsParam =
-                    "\n *\n" + dataType.docFields.map { " * @property ${it.name} ${it.description}" }.joinToString("\n")
+                    "\n *\n" + dataType.docFields.joinToString("\n") { " * @property ${it.name} ${it.description}" }
                 val docs = """/**
  * ${dataType.description}$docsParam
  *
  * @constructor Creates a: ${dataType.name}.
  * */"""
-                val parameters = dataType.docFields.map { f ->
-                    "val ${f.name}: ${f.toKotlinType()}"
-                }.joinToString(",\n")
+                val parameters = dataType.docFields.joinToString(",\n") { f ->
+                    val type = f.toKotlinType()
+                    val needContextualSerialization = type == "Any" || type == "Any?"
+                    if (needContextualSerialization) "@ContextualSerialization val ${f.name}: $type" else "val ${f.name}: $type"
+                }
                 appendln("$docs\n@Serializable\ndata class ${dataType.name}(\n$parameters\n) : $superType()")
             }
         }
@@ -44,9 +46,11 @@ sealed class TelegramRequest {"""
             appendln("\n\n    // ${section.name}\n")
             section.docMethods.forEach methods@{ method ->
                 if (method.docParameters.isEmpty()) return@methods
-                val parameters = method.docParameters.map { f ->
-                    "val ${f.name}: ${f.toKotlinType()}"
-                }.joinToString(",\n")
+                val parameters = method.docParameters.joinToString(",\n") { f ->
+                    val type = f.toKotlinType()
+                    val needContextualSerialization = type == "Any" || type == "Any? = null"
+                    if (needContextualSerialization) "@ContextualSerialization val ${f.name}: $type" else "val ${f.name}: $type"
+                }
                 appendln("@Serializable\ndata class ${method.name.capitalize()}Request(\n$parameters\n) : TelegramRequest()")
 
             }
@@ -76,9 +80,9 @@ sealed class TelegramRequest {"""
                     appendln(
                         """$docs
     fun ${method.name}(
-${method.docParameters.map { p ->
+${method.docParameters.joinToString(",\n") { p ->
                             "${p.name}: ${p.toKotlinType()}"
-                        }.joinToString(",\n")}
+                        }}
     ) = telegram(
         "${"$"}basePath/${method.name}",
         TelegramRequest.${method.name.capitalize()}Request($parameters).toJsonContent(TelegramRequest.${method.name.capitalize()}Request.serializer()),

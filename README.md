@@ -30,7 +30,7 @@ sealed class TelegramRequest {
     @Serializable
     data class SetWebhookRequest(
         val url: String,
-        val certificate: Any? = null,
+        @ContextualSerialization val certificate: Any? = null,
         val max_connections: Int? = null,
         val allowed_updates: List<String>? = null
     ) : TelegramRequest()

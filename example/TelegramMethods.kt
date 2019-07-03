@@ -17,7 +17,7 @@ sealed class TelegramRequest {
     @Serializable
     data class SetWebhookRequest(
         val url: String,
-        val certificate: Any? = null,
+        @ContextualSerialization val certificate: Any? = null,
         val max_connections: Int? = null,
         val allowed_updates: List<String>? = null
     ) : TelegramRequest()
@@ -27,119 +27,119 @@ sealed class TelegramRequest {
 
     @Serializable
     data class SendMessageRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val text: String,
         val parse_mode: String? = null,
         val disable_web_page_preview: Boolean? = null,
         val disable_notification: Boolean? = null,
         val reply_to_message_id: Int? = null,
-        val reply_markup: Any? = null
+        @ContextualSerialization val reply_markup: Any? = null
     ) : TelegramRequest()
 
     @Serializable
     data class ForwardMessageRequest(
-        val chat_id: Any,
-        val from_chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
+        @ContextualSerialization val from_chat_id: Any,
         val disable_notification: Boolean? = null,
         val message_id: Int
     ) : TelegramRequest()
 
     @Serializable
     data class SendPhotoRequest(
-        val chat_id: Any,
-        val photo: Any,
+        @ContextualSerialization val chat_id: Any,
+        @ContextualSerialization val photo: Any,
         val caption: String? = null,
         val parse_mode: String? = null,
         val disable_notification: Boolean? = null,
         val reply_to_message_id: Int? = null,
-        val reply_markup: Any? = null
+        @ContextualSerialization val reply_markup: Any? = null
     ) : TelegramRequest()
 
     @Serializable
     data class SendAudioRequest(
-        val chat_id: Any,
-        val audio: Any,
+        @ContextualSerialization val chat_id: Any,
+        @ContextualSerialization val audio: Any,
         val caption: String? = null,
         val parse_mode: String? = null,
         val duration: Int? = null,
         val performer: String? = null,
         val title: String? = null,
-        val thumb: Any? = null,
+        @ContextualSerialization val thumb: Any? = null,
         val disable_notification: Boolean? = null,
         val reply_to_message_id: Int? = null,
-        val reply_markup: Any? = null
+        @ContextualSerialization val reply_markup: Any? = null
     ) : TelegramRequest()
 
     @Serializable
     data class SendDocumentRequest(
-        val chat_id: Any,
-        val document: Any,
-        val thumb: Any? = null,
+        @ContextualSerialization val chat_id: Any,
+        @ContextualSerialization val document: Any,
+        @ContextualSerialization val thumb: Any? = null,
         val caption: String? = null,
         val parse_mode: String? = null,
         val disable_notification: Boolean? = null,
         val reply_to_message_id: Int? = null,
-        val reply_markup: Any? = null
+        @ContextualSerialization val reply_markup: Any? = null
     ) : TelegramRequest()
 
     @Serializable
     data class SendVideoRequest(
-        val chat_id: Any,
-        val video: Any,
+        @ContextualSerialization val chat_id: Any,
+        @ContextualSerialization val video: Any,
         val duration: Int? = null,
         val width: Int? = null,
         val height: Int? = null,
-        val thumb: Any? = null,
+        @ContextualSerialization val thumb: Any? = null,
         val caption: String? = null,
         val parse_mode: String? = null,
         val supports_streaming: Boolean? = null,
         val disable_notification: Boolean? = null,
         val reply_to_message_id: Int? = null,
-        val reply_markup: Any? = null
+        @ContextualSerialization val reply_markup: Any? = null
     ) : TelegramRequest()
 
     @Serializable
     data class SendAnimationRequest(
-        val chat_id: Any,
-        val animation: Any,
+        @ContextualSerialization val chat_id: Any,
+        @ContextualSerialization val animation: Any,
         val duration: Int? = null,
         val width: Int? = null,
         val height: Int? = null,
-        val thumb: Any? = null,
+        @ContextualSerialization val thumb: Any? = null,
         val caption: String? = null,
         val parse_mode: String? = null,
         val disable_notification: Boolean? = null,
         val reply_to_message_id: Int? = null,
-        val reply_markup: Any? = null
+        @ContextualSerialization val reply_markup: Any? = null
     ) : TelegramRequest()
 
     @Serializable
     data class SendVoiceRequest(
-        val chat_id: Any,
-        val voice: Any,
+        @ContextualSerialization val chat_id: Any,
+        @ContextualSerialization val voice: Any,
         val caption: String? = null,
         val parse_mode: String? = null,
         val duration: Int? = null,
         val disable_notification: Boolean? = null,
         val reply_to_message_id: Int? = null,
-        val reply_markup: Any? = null
+        @ContextualSerialization val reply_markup: Any? = null
     ) : TelegramRequest()
 
     @Serializable
     data class SendVideoNoteRequest(
-        val chat_id: Any,
-        val video_note: Any,
+        @ContextualSerialization val chat_id: Any,
+        @ContextualSerialization val video_note: Any,
         val duration: Int? = null,
         val length: Int? = null,
-        val thumb: Any? = null,
+        @ContextualSerialization val thumb: Any? = null,
         val disable_notification: Boolean? = null,
         val reply_to_message_id: Int? = null,
-        val reply_markup: Any? = null
+        @ContextualSerialization val reply_markup: Any? = null
     ) : TelegramRequest()
 
     @Serializable
     data class SendMediaGroupRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val media: List<Any>,
         val disable_notification: Boolean? = null,
         val reply_to_message_id: Int? = null
@@ -147,18 +147,18 @@ sealed class TelegramRequest {
 
     @Serializable
     data class SendLocationRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val latitude: Float,
         val longitude: Float,
         val live_period: Int? = null,
         val disable_notification: Boolean? = null,
         val reply_to_message_id: Int? = null,
-        val reply_markup: Any? = null
+        @ContextualSerialization val reply_markup: Any? = null
     ) : TelegramRequest()
 
     @Serializable
     data class EditMessageLiveLocationRequest(
-        val chat_id: Any? = null,
+        @ContextualSerialization val chat_id: Any? = null,
         val message_id: Int? = null,
         val inline_message_id: String? = null,
         val latitude: Float,
@@ -168,7 +168,7 @@ sealed class TelegramRequest {
 
     @Serializable
     data class StopMessageLiveLocationRequest(
-        val chat_id: Any? = null,
+        @ContextualSerialization val chat_id: Any? = null,
         val message_id: Int? = null,
         val inline_message_id: String? = null,
         val reply_markup: InlineKeyboardMarkup? = null
@@ -176,7 +176,7 @@ sealed class TelegramRequest {
 
     @Serializable
     data class SendVenueRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val latitude: Float,
         val longitude: Float,
         val title: String,
@@ -185,34 +185,34 @@ sealed class TelegramRequest {
         val foursquare_type: String? = null,
         val disable_notification: Boolean? = null,
         val reply_to_message_id: Int? = null,
-        val reply_markup: Any? = null
+        @ContextualSerialization val reply_markup: Any? = null
     ) : TelegramRequest()
 
     @Serializable
     data class SendContactRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val phone_number: String,
         val first_name: String,
         val last_name: String? = null,
         val vcard: String? = null,
         val disable_notification: Boolean? = null,
         val reply_to_message_id: Int? = null,
-        val reply_markup: Any? = null
+        @ContextualSerialization val reply_markup: Any? = null
     ) : TelegramRequest()
 
     @Serializable
     data class SendPollRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val question: String,
         val options: List<String>,
         val disable_notification: Boolean? = null,
         val reply_to_message_id: Int? = null,
-        val reply_markup: Any? = null
+        @ContextualSerialization val reply_markup: Any? = null
     ) : TelegramRequest()
 
     @Serializable
     data class SendChatActionRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val action: String
     ) : TelegramRequest()
 
@@ -230,20 +230,20 @@ sealed class TelegramRequest {
 
     @Serializable
     data class KickChatMemberRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val user_id: Int,
         val until_date: Int? = null
     ) : TelegramRequest()
 
     @Serializable
     data class UnbanChatMemberRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val user_id: Int
     ) : TelegramRequest()
 
     @Serializable
     data class RestrictChatMemberRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val user_id: Int,
         val until_date: Int? = null,
         val can_send_messages: Boolean? = null,
@@ -254,7 +254,7 @@ sealed class TelegramRequest {
 
     @Serializable
     data class PromoteChatMemberRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val user_id: Int,
         val can_change_info: Boolean? = null,
         val can_post_messages: Boolean? = null,
@@ -268,79 +268,79 @@ sealed class TelegramRequest {
 
     @Serializable
     data class ExportChatInviteLinkRequest(
-        val chat_id: Any
+        @ContextualSerialization val chat_id: Any
     ) : TelegramRequest()
 
     @Serializable
     data class SetChatPhotoRequest(
-        val chat_id: Any,
-        val photo: Any
+        @ContextualSerialization val chat_id: Any,
+        @ContextualSerialization val photo: Any
     ) : TelegramRequest()
 
     @Serializable
     data class DeleteChatPhotoRequest(
-        val chat_id: Any
+        @ContextualSerialization val chat_id: Any
     ) : TelegramRequest()
 
     @Serializable
     data class SetChatTitleRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val title: String
     ) : TelegramRequest()
 
     @Serializable
     data class SetChatDescriptionRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val description: String? = null
     ) : TelegramRequest()
 
     @Serializable
     data class PinChatMessageRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val message_id: Int,
         val disable_notification: Boolean? = null
     ) : TelegramRequest()
 
     @Serializable
     data class UnpinChatMessageRequest(
-        val chat_id: Any
+        @ContextualSerialization val chat_id: Any
     ) : TelegramRequest()
 
     @Serializable
     data class LeaveChatRequest(
-        val chat_id: Any
+        @ContextualSerialization val chat_id: Any
     ) : TelegramRequest()
 
     @Serializable
     data class GetChatRequest(
-        val chat_id: Any
+        @ContextualSerialization val chat_id: Any
     ) : TelegramRequest()
 
     @Serializable
     data class GetChatAdministratorsRequest(
-        val chat_id: Any
+        @ContextualSerialization val chat_id: Any
     ) : TelegramRequest()
 
     @Serializable
     data class GetChatMembersCountRequest(
-        val chat_id: Any
+        @ContextualSerialization val chat_id: Any
     ) : TelegramRequest()
 
     @Serializable
     data class GetChatMemberRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val user_id: Int
     ) : TelegramRequest()
 
     @Serializable
     data class SetChatStickerSetRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val sticker_set_name: String
     ) : TelegramRequest()
 
     @Serializable
     data class DeleteChatStickerSetRequest(
-        val chat_id: Any
+        @ContextualSerialization val chat_id: Any
     ) : TelegramRequest()
 
     @Serializable
@@ -357,7 +357,7 @@ sealed class TelegramRequest {
 
     @Serializable
     data class EditMessageTextRequest(
-        val chat_id: Any? = null,
+        @ContextualSerialization val chat_id: Any? = null,
         val message_id: Int? = null,
         val inline_message_id: String? = null,
         val text: String,
@@ -368,7 +368,7 @@ sealed class TelegramRequest {
 
     @Serializable
     data class EditMessageCaptionRequest(
-        val chat_id: Any? = null,
+        @ContextualSerialization val chat_id: Any? = null,
         val message_id: Int? = null,
         val inline_message_id: String? = null,
         val caption: String? = null,
@@ -378,7 +378,7 @@ sealed class TelegramRequest {
 
     @Serializable
     data class EditMessageMediaRequest(
-        val chat_id: Any? = null,
+        @ContextualSerialization val chat_id: Any? = null,
         val message_id: Int? = null,
         val inline_message_id: String? = null,
         val media: InputMedia,
@@ -387,7 +387,7 @@ sealed class TelegramRequest {
 
     @Serializable
     data class EditMessageReplyMarkupRequest(
-        val chat_id: Any? = null,
+        @ContextualSerialization val chat_id: Any? = null,
         val message_id: Int? = null,
         val inline_message_id: String? = null,
         val reply_markup: InlineKeyboardMarkup? = null
@@ -395,14 +395,14 @@ sealed class TelegramRequest {
 
     @Serializable
     data class StopPollRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val message_id: Int,
         val reply_markup: InlineKeyboardMarkup? = null
     ) : TelegramRequest()
 
     @Serializable
     data class DeleteMessageRequest(
-        val chat_id: Any,
+        @ContextualSerialization val chat_id: Any,
         val message_id: Int
     ) : TelegramRequest()
 
@@ -411,11 +411,11 @@ sealed class TelegramRequest {
 
     @Serializable
     data class SendStickerRequest(
-        val chat_id: Any,
-        val sticker: Any,
+        @ContextualSerialization val chat_id: Any,
+        @ContextualSerialization val sticker: Any,
         val disable_notification: Boolean? = null,
         val reply_to_message_id: Int? = null,
-        val reply_markup: Any? = null
+        @ContextualSerialization val reply_markup: Any? = null
     ) : TelegramRequest()
 
     @Serializable
@@ -426,7 +426,7 @@ sealed class TelegramRequest {
     @Serializable
     data class UploadStickerFileRequest(
         val user_id: Int,
-        val png_sticker: Any
+        @ContextualSerialization val png_sticker: Any
     ) : TelegramRequest()
 
     @Serializable
@@ -434,7 +434,7 @@ sealed class TelegramRequest {
         val user_id: Int,
         val name: String,
         val title: String,
-        val png_sticker: Any,
+        @ContextualSerialization val png_sticker: Any,
         val emojis: String,
         val contains_masks: Boolean? = null,
         val mask_position: MaskPosition? = null
@@ -444,7 +444,7 @@ sealed class TelegramRequest {
     data class AddStickerToSetRequest(
         val user_id: Int,
         val name: String,
-        val png_sticker: Any,
+        @ContextualSerialization val png_sticker: Any,
         val emojis: String,
         val mask_position: MaskPosition? = null
     ) : TelegramRequest()
@@ -697,7 +697,7 @@ object TelegramMethod {
     )
 
     /**
-     * <p>Use this method to send photos. On success, the sent <a href="#message">Message</a> is returned. </p>
+     * <p>Use this method to send photos. On success, the sent <a href="#message">Message</a> is returned.</p>
      *
      * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
      * @property photo Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
@@ -1268,7 +1268,7 @@ object TelegramMethod {
     )
 
     /**
-     * <p>Use this method to get basic info about a file and prepare it for downloading. For the moment, bots can download files of up to 20MB in size. On success, a <a href="#file">File</a> object is returned. The file can then be downloaded via the link <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code>, where <code>&lt;file_path&gt;</code> is taken from the response. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling <a href="#getfile">getFile</a> again.</p><p><strong>Note:</strong> This function may not preserve the original file name and MIME type. You should save the file's MIME type and name (if available) when the File object is received. </p>
+     * <p>Use this method to get basic info about a file and prepare it for downloading. For the moment, bots can download files of up to 20MB in size. On success, a <a href="#file">File</a> object is returned. The file can then be downloaded via the link <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code>, where <code>&lt;file_path&gt;</code> is taken from the response. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling <a href="#getfile">getFile</a> again.</p><p><strong>Note:</strong> This function may not preserve the original file name and MIME type. You should save the file's MIME type and name (if available) when the File object is received.</p>
      *
      * @property file_id File identifier to get info about
      *
@@ -1308,7 +1308,7 @@ object TelegramMethod {
     )
 
     /**
-     * <p>Use this method to unban a previously kicked user in a supergroup or channel. The user will <strong>not</strong> return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. Returns <em>True</em> on success. </p>
+     * <p>Use this method to unban a previously kicked user in a supergroup or channel. The user will <strong>not</strong> return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. Returns <em>True</em> on success.</p>
      *
      * @property chat_id Unique identifier for the target group or username of the target supergroup or channel (in the format <code>@username</code>)
      * @property user_id Unique identifier of the target user
@@ -1837,7 +1837,7 @@ object TelegramMethod {
     )
 
     /**
-     * <p>Use this method to delete a message, including service messages, with the following limitations:<br>- A message can only be deleted if it was sent less than 48 hours ago.<br>- Bots can delete outgoing messages in private chats, groups, and supergroups.<br>- Bots can delete incoming messages in private chats.<br>- Bots granted <em>can_post_messages</em> permissions can delete outgoing messages in channels.<br>- If the bot is an administrator of a group, it can delete any message there.<br>- If the bot has <em>can_delete_messages</em> permission in a supergroup or a channel, it can delete any message there.<br>Returns <em>True</em> on success. </p>
+     * <p>Use this method to delete a message, including service messages, with the following limitations:<br>- A message can only be deleted if it was sent less than 48 hours ago.<br>- Bots can delete outgoing messages in private chats, groups, and supergroups.<br>- Bots can delete incoming messages in private chats.<br>- Bots granted <em>can_post_messages</em> permissions can delete outgoing messages in channels.<br>- If the bot is an administrator of a group, it can delete any message there.<br>- If the bot has <em>can_delete_messages</em> permission in a supergroup or a channel, it can delete any message there.<br>Returns <em>True</em> on success.</p>
      *
      * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
      * @property message_id Identifier of the message to delete
@@ -2147,7 +2147,7 @@ object TelegramMethod {
     )
 
     /**
-     * <p>If you sent an invoice requesting a shipping address and the parameter <em>is_flexible</em> was specified, the Bot API will send an <a href="#update">Update</a> with a <em>shipping_query</em> field to the bot. Use this method to reply to shipping queries. On success, True is returned. </p>
+     * <p>If you sent an invoice requesting a shipping address and the parameter <em>is_flexible</em> was specified, the Bot API will send an <a href="#update">Update</a> with a <em>shipping_query</em> field to the bot. Use this method to reply to shipping queries. On success, True is returned.</p>
      *
      * @property shipping_query_id Unique identifier for the query to be answered
      * @property ok Specify True if delivery to the specified address is possible and False if there are any problems (for example, if delivery to the specified address is not possible)
@@ -2222,7 +2222,7 @@ object TelegramMethod {
     // Games
 
     /**
-     * <p>Use this method to send a game. On success, the sent <a href="#message">Message</a> is returned. </p>
+     * <p>Use this method to send a game. On success, the sent <a href="#message">Message</a> is returned.</p>
      *
      * @property chat_id Unique identifier for the target chat
      * @property game_short_name Short name of the game, serves as the unique identifier for the game. Set up your games via <a href="https://t.me/botfather">Botfather</a>.
