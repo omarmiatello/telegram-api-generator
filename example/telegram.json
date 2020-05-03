@@ -94,6 +94,14 @@
               "name": "Poll"
             },
             "required": false
+          },
+          {
+            "name": "poll_answer",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.",
+            "type": {
+              "name": "PollAnswer"
+            },
+            "required": false
           }
         ]
       },
@@ -166,7 +174,7 @@
     "docMethods": [
       {
         "name": "getUpdates",
-        "description": "\u003cp\u003eUse this method to receive incoming updates using long polling (\u003ca href\u003d\"http://en.wikipedia.org/wiki/Push_technology#Long_polling\"\u003ewiki\u003c/a\u003e). An Array of \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e objects is returned.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003e\u003cstrong\u003eNotes\u003c/strong\u003e\u003cbr\u003e\u003cstrong\u003e1.\u003c/strong\u003e This method will not work if an outgoing webhook is set up.\u003cbr\u003e\u003cstrong\u003e2.\u003c/strong\u003e In order to avoid getting duplicate updates, recalculate \u003cem\u003eoffset\u003c/em\u003e after each server response.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUse this method to receive incoming updates using long polling (\u003ca href\u003d\"https://en.wikipedia.org/wiki/Push_technology#Long_polling\"\u003ewiki\u003c/a\u003e). An Array of \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e objects is returned.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003e\u003cstrong\u003eNotes\u003c/strong\u003e\u003cbr\u003e\u003cstrong\u003e1.\u003c/strong\u003e This method will not work if an outgoing webhook is set up.\u003cbr\u003e\u003cstrong\u003e2.\u003c/strong\u003e In order to avoid getting duplicate updates, recalculate \u003cem\u003eoffset\u003c/em\u003e after each server response.\u003c/p\u003e \n\u003c/blockquote\u003e",
         "docParameters": [
           {
             "name": "offset",
@@ -178,7 +186,7 @@
           },
           {
             "name": "limit",
-            "description": "Limits the number of updates to be retrieved. Values between 1—100 are accepted. Defaults to 100.",
+            "description": "Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults to 100.",
             "type": {
               "name": "Integer"
             },
@@ -194,7 +202,7 @@
           },
           {
             "name": "allowed_updates",
-            "description": "List the types of updates you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.\u003cbr\u003e\u003cbr\u003ePlease note that this parameter doesn\u0027t affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.",
+            "description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.\u003cbr\u003e\u003cbr\u003ePlease note that this parameter doesn\u0027t affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.",
             "type": {
               "elementType": {
                 "name": "String"
@@ -241,7 +249,7 @@
           },
           {
             "name": "allowed_updates",
-            "description": "List the types of updates you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.\u003cbr\u003e\u003cbr\u003ePlease note that this parameter doesn\u0027t affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.",
+            "description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.\u003cbr\u003e\u003cbr\u003ePlease note that this parameter doesn\u0027t affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.",
             "type": {
               "elementType": {
                 "name": "String"
@@ -328,6 +336,30 @@
               "name": "String"
             },
             "required": false
+          },
+          {
+            "name": "can_join_groups",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the bot can be invited to groups. Returned only in \u003ca href\u003d\"#getme\"\u003egetMe\u003c/a\u003e.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_read_all_group_messages",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if \u003ca href\u003d\"https://core.telegram.org/bots#privacy-mode\"\u003eprivacy mode\u003c/a\u003e is disabled for the bot. Returned only in \u003ca href\u003d\"#getme\"\u003egetMe\u003c/a\u003e.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "supports_inline_queries",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the bot supports inline queries. Returned only in \u003ca href\u003d\"#getme\"\u003egetMe\u003c/a\u003e.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
           }
         ]
       },
@@ -384,14 +416,6 @@
             "required": false
           },
           {
-            "name": "all_members_are_administrators",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True if a group has ‘All Members Are Admins’ enabled.",
-            "type": {
-              "name": "Boolean"
-            },
-            "required": false
-          },
-          {
             "name": "photo",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Chat photo. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
@@ -401,7 +425,7 @@
           },
           {
             "name": "description",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Description, for supergroups and channel chats. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Description, for groups, supergroups and channel chats. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
               "name": "String"
             },
@@ -409,7 +433,7 @@
           },
           {
             "name": "invite_link",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Chat invite link, for supergroups and channel chats. Each administrator in a chat generates their own invite links, so the bot must first generate the link using \u003ca href\u003d\"#exportchatinvitelink\"\u003eexportChatInviteLink\u003c/a\u003e. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Chat invite link, for groups, supergroups and channel chats. Each administrator in a chat generates their own invite links, so the bot must first generate the link using \u003ca href\u003d\"#exportchatinvitelink\"\u003eexportChatInviteLink\u003c/a\u003e. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
               "name": "String"
             },
@@ -420,6 +444,22 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Pinned message, for groups, supergroups and channels. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
               "name": "Message"
+            },
+            "required": false
+          },
+          {
+            "name": "permissions",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Default chat member permissions, for groups and supergroups. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "type": {
+              "name": "ChatPermissions"
+            },
+            "required": false
+          },
+          {
+            "name": "slow_mode_delay",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "type": {
+              "name": "Integer"
             },
             "required": false
           },
@@ -559,7 +599,7 @@
           },
           {
             "name": "text",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. For text messages, the actual UTF-8 text of the message, 0-4096 characters.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. For text messages, the actual UTF-8 text of the message, 0-4096 characters",
             "type": {
               "name": "String"
             },
@@ -703,6 +743,14 @@
             "required": false
           },
           {
+            "name": "dice",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a dice with random value from 1 to 6",
+            "type": {
+              "name": "Dice"
+            },
+            "required": false
+          },
+          {
             "name": "new_chat_members",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. New members that were added to the group or supergroup and information about them (the bot itself may be one of these members)",
             "type": {
@@ -832,7 +880,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Inline keyboard attached to the message. \u003ccode\u003elogin_url\u003c/code\u003e buttons are represented as ordinary \u003ccode\u003eurl\u003c/code\u003e buttons.",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           }
@@ -844,7 +909,7 @@
         "docFields": [
           {
             "name": "type",
-            "description": "Type of the entity. Can be \u003cem\u003emention\u003c/em\u003e (\u003ccode\u003e@username\u003c/code\u003e), \u003cem\u003ehashtag\u003c/em\u003e, \u003cem\u003ecashtag\u003c/em\u003e, \u003cem\u003ebot_command\u003c/em\u003e, \u003cem\u003eurl\u003c/em\u003e, \u003cem\u003eemail\u003c/em\u003e, \u003cem\u003ephone_number\u003c/em\u003e, \u003cem\u003ebold\u003c/em\u003e (bold text), \u003cem\u003eitalic\u003c/em\u003e (italic text), \u003cem\u003ecode\u003c/em\u003e (monowidth string), \u003cem\u003epre\u003c/em\u003e (monowidth block), \u003cem\u003etext_link\u003c/em\u003e (for clickable text URLs), \u003cem\u003etext_mention\u003c/em\u003e (for users \u003ca href\u003d\"https://telegram.org/blog/edit#new-mentions\"\u003ewithout usernames\u003c/a\u003e)",
+            "description": "Type of the entity. Can be “mention” (\u003ccode\u003e@username\u003c/code\u003e), “hashtag” (\u003ccode\u003e#hashtag\u003c/code\u003e), “cashtag” (\u003ccode\u003e$USD\u003c/code\u003e), “bot_command” (\u003ccode\u003e/start@jobs_bot\u003c/code\u003e), “url” (\u003ccode\u003ehttps://telegram.org\u003c/code\u003e), “email” (\u003ccode\u003edo-not-reply@telegram.org\u003c/code\u003e), “phone_number” (\u003ccode\u003e+1-212-555-0123\u003c/code\u003e), “bold” (\u003cstrong\u003ebold text\u003c/strong\u003e), “italic” (\u003cem\u003eitalic text\u003c/em\u003e), “underline” (underlined text), “strikethrough” (strikethrough text), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users \u003ca href\u003d\"https://telegram.org/blog/edit#new-mentions\"\u003ewithout usernames\u003c/a\u003e)",
             "type": {
               "name": "String"
             },
@@ -881,6 +946,14 @@
               "name": "User"
             },
             "required": false
+          },
+          {
+            "name": "language",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. For “pre” only, the programming language of the entity text",
+            "type": {
+              "name": "String"
+            },
+            "required": false
           }
         ]
       },
@@ -890,7 +963,15 @@
         "docFields": [
           {
             "name": "file_id",
-            "description": "Unique identifier for this file",
+            "description": "Identifier for this file, which can be used to download or reuse the file",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "file_unique_id",
+            "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can\u0027t be used to download or reuse the file.",
             "type": {
               "name": "String"
             },
@@ -928,7 +1009,15 @@
         "docFields": [
           {
             "name": "file_id",
-            "description": "Unique identifier for this file",
+            "description": "Identifier for this file, which can be used to download or reuse the file",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "file_unique_id",
+            "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can\u0027t be used to download or reuse the file.",
             "type": {
               "name": "String"
             },
@@ -990,7 +1079,15 @@
         "docFields": [
           {
             "name": "file_id",
-            "description": "Unique file identifier",
+            "description": "Identifier for this file, which can be used to download or reuse the file",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "file_unique_id",
+            "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can\u0027t be used to download or reuse the file.",
             "type": {
               "name": "String"
             },
@@ -1036,7 +1133,15 @@
         "docFields": [
           {
             "name": "file_id",
-            "description": "Unique identifier for this file",
+            "description": "Identifier for this file, which can be used to download or reuse the file",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "file_unique_id",
+            "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can\u0027t be used to download or reuse the file.",
             "type": {
               "name": "String"
             },
@@ -1098,7 +1203,15 @@
         "docFields": [
           {
             "name": "file_id",
-            "description": "Unique file identifier",
+            "description": "Identifier for this file, which can be used to download or reuse the file",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "file_unique_id",
+            "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can\u0027t be used to download or reuse the file.",
             "type": {
               "name": "String"
             },
@@ -1168,7 +1281,15 @@
         "docFields": [
           {
             "name": "file_id",
-            "description": "Unique identifier for this file",
+            "description": "Identifier for this file, which can be used to download or reuse the file",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "file_unique_id",
+            "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can\u0027t be used to download or reuse the file.",
             "type": {
               "name": "String"
             },
@@ -1206,7 +1327,15 @@
         "docFields": [
           {
             "name": "file_id",
-            "description": "Unique identifier for this file",
+            "description": "Identifier for this file, which can be used to download or reuse the file",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "file_unique_id",
+            "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can\u0027t be used to download or reuse the file.",
             "type": {
               "name": "String"
             },
@@ -1383,6 +1512,39 @@
         ]
       },
       {
+        "name": "PollAnswer",
+        "description": "\u003cp\u003eThis object represents an answer of a user in a non-anonymous poll.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "poll_id",
+            "description": "Unique poll identifier",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "user",
+            "description": "The user, who changed the answer to the poll",
+            "type": {
+              "name": "User"
+            },
+            "required": true
+          },
+          {
+            "name": "option_ids",
+            "description": "0-based identifiers of answer options, chosen by the user. May be empty if the user retracted their vote.",
+            "type": {
+              "elementType": {
+                "name": "Integer"
+              },
+              "name": "List\u003cInteger\u003e"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
         "name": "Poll",
         "description": "\u003cp\u003eThis object contains information about a poll.\u003c/p\u003e",
         "docFields": [
@@ -1414,10 +1576,107 @@
             "required": true
           },
           {
+            "name": "total_voter_count",
+            "description": "Total number of users that voted in the poll",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          },
+          {
             "name": "is_closed",
             "description": "True, if the poll is closed",
             "type": {
               "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "is_anonymous",
+            "description": "True, if the poll is anonymous",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "type",
+            "description": "Poll type, currently can be “regular” or “quiz”",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "allows_multiple_answers",
+            "description": "True, if the poll allows multiple answers",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "correct_option_id",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. 0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot.",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "explanation",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "explanation_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Special entities like usernames, URLs, bot commands, etc. that appear in the \u003cem\u003eexplanation\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
+            "name": "open_period",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Amount of time in seconds the poll will be active after creation",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "close_date",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Point in time (Unix timestamp) when the poll will be automatically closed",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          }
+        ]
+      },
+      {
+        "name": "Dice",
+        "description": "\u003cp\u003eThis object represents a dice with a random value from 1 to 6 for currently supported base emoji. (Yes, we\u0027re aware of the \u003cem\u003e“proper”\u003c/em\u003e singular of \u003cem\u003edie\u003c/em\u003e. But it\u0027s awkward, and we decided to help it change. One dice at a time!)\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "emoji",
+            "description": "Emoji on which the dice throw animation is based",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "value",
+            "description": "Value of the dice, 1-6 for currently supported base emoji",
+            "type": {
+              "name": "Integer"
             },
             "required": true
           }
@@ -1457,7 +1716,15 @@
         "docFields": [
           {
             "name": "file_id",
-            "description": "Unique identifier for this file",
+            "description": "Identifier for this file, which can be used to download or reuse the file",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "file_unique_id",
+            "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can\u0027t be used to download or reuse the file.",
             "type": {
               "name": "String"
             },
@@ -1527,7 +1794,7 @@
       },
       {
         "name": "KeyboardButton",
-        "description": "\u003cp\u003eThis object represents one button of the reply keyboard. For simple text buttons \u003cem\u003eString\u003c/em\u003e can be used instead of this object to specify text of the button. Optional fields are mutually exclusive.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e \u003cem\u003erequest_contact\u003c/em\u003e and \u003cem\u003erequest_location\u003c/em\u003e options will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
+        "description": "\u003cp\u003eThis object represents one button of the reply keyboard. For simple text buttons \u003cem\u003eString\u003c/em\u003e can be used instead of this object to specify text of the button. Optional fields \u003cem\u003erequest_contact\u003c/em\u003e, \u003cem\u003erequest_location\u003c/em\u003e, and \u003cem\u003erequest_poll\u003c/em\u003e are mutually exclusive.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e \u003cem\u003erequest_contact\u003c/em\u003e and \u003cem\u003erequest_location\u003c/em\u003e options will only work in Telegram versions released after 9 April, 2016. Older clients will display \u003cem\u003eunsupported message\u003c/em\u003e.\u003cbr\u003e\u003cstrong\u003eNote:\u003c/strong\u003e \u003cem\u003erequest_poll\u003c/em\u003e option will only work in Telegram versions released after 23 January, 2020. Older clients will display \u003cem\u003eunsupported message\u003c/em\u003e.\u003c/p\u003e",
         "docFields": [
           {
             "name": "text",
@@ -1550,6 +1817,28 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. If \u003cem\u003eTrue\u003c/em\u003e, the user\u0027s current location will be sent when the button is pressed. Available in private chats only",
             "type": {
               "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "request_poll",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only",
+            "type": {
+              "name": "KeyboardButtonPollType"
+            },
+            "required": false
+          }
+        ]
+      },
+      {
+        "name": "KeyboardButtonPollType",
+        "description": "\u003cp\u003eThis object represents type of a poll, which is allowed to be created and sent when the corresponding button is pressed.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. If \u003cem\u003equiz\u003c/em\u003e is passed, the user will be allowed to create only polls in the quiz mode. If \u003cem\u003eregular\u003c/em\u003e is passed, only regular polls will be allowed. Otherwise, the user will be allowed to create a poll of any type.",
+            "type": {
+              "name": "String"
             },
             "required": false
           }
@@ -1643,7 +1932,7 @@
           },
           {
             "name": "switch_inline_query_current_chat",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. If set, pressing the button will insert the bot‘s username and the specified inline query in the current chat\u0027s input field. Can be empty, in which case only the bot’s username will be inserted.\u003cbr\u003e\u003cbr\u003eThis offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. If set, pressing the button will insert the bot‘s username and the specified inline query in the current chat’s input field. Can be empty, in which case only the bot\u0027s username will be inserted.\u003cbr\u003e\u003cbr\u003eThis offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options.",
             "type": {
               "name": "String"
             },
@@ -1769,7 +2058,7 @@
       },
       {
         "name": "ForceReply",
-        "description": "\u003cp\u003eUpon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot‘s message and tapped ’Reply\u0027). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice \u003ca href\u003d\"/bots#privacy-mode\"\u003eprivacy mode\u003c/a\u003e.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003e\u003cstrong\u003eExample:\u003c/strong\u003e A \u003ca href\u003d\"https://t.me/PollBot\"\u003epoll bot\u003c/a\u003e for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:\u003c/p\u003e \n\u003c/blockquote\u003e\u003cul\u003e \n \u003cli\u003eExplain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.\u003c/li\u003e \n \u003cli\u003eGuide the user through a step-by-step process. ‘Please send me your question’, ‘Cool, now let’s add the first answer option‘, ’Great. Keep adding answer options, then send /done when you‘re ready’.\u003c/li\u003e \n\u003c/ul\u003e\u003cp\u003eThe last option is definitely more attractive. And if you use \u003ca href\u003d\"#forcereply\"\u003eForceReply\u003c/a\u003e in your bot‘s questions, it will receive the user’s answers even if it only receives replies, commands and mentions — without any extra work for the user.\u003c/p\u003e",
+        "description": "\u003cp\u003eUpon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot‘s message and tapped ’Reply\u0027). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice \u003ca href\u003d\"/bots#privacy-mode\"\u003eprivacy mode\u003c/a\u003e.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003e\u003cstrong\u003eExample:\u003c/strong\u003e A \u003ca href\u003d\"https://t.me/PollBot\"\u003epoll bot\u003c/a\u003e for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:\u003c/p\u003e \n \u003cul\u003e \n  \u003cli\u003eExplain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.\u003c/li\u003e \n  \u003cli\u003eGuide the user through a step-by-step process. ‘Please send me your question’, ‘Cool, now let’s add the first answer option‘, ’Great. Keep adding answer options, then send /done when you‘re ready’.\u003c/li\u003e \n \u003c/ul\u003e \n \u003cp\u003eThe last option is definitely more attractive. And if you use \u003ca href\u003d\"#forcereply\"\u003eForceReply\u003c/a\u003e in your bot‘s questions, it will receive the user’s answers even if it only receives replies, commands and mentions — without any extra work for the user.\u003c/p\u003e \n\u003c/blockquote\u003e",
         "docFields": [
           {
             "name": "force_reply",
@@ -1795,7 +2084,15 @@
         "docFields": [
           {
             "name": "small_file_id",
-            "description": "Unique file identifier of small (160x160) chat photo. This file_id can be used only for photo download.",
+            "description": "File identifier of small (160x160) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "small_file_unique_id",
+            "description": "Unique file identifier of small (160x160) chat photo, which is supposed to be the same over time and for different bots. Can\u0027t be used to download or reuse the file.",
             "type": {
               "name": "String"
             },
@@ -1803,7 +2100,15 @@
           },
           {
             "name": "big_file_id",
-            "description": "Unique file identifier of big (640x640) chat photo. This file_id can be used only for photo download.",
+            "description": "File identifier of big (640x640) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "big_file_unique_id",
+            "description": "Unique file identifier of big (640x640) chat photo, which is supposed to be the same over time and for different bots. Can\u0027t be used to download or reuse the file.",
             "type": {
               "name": "String"
             },
@@ -1832,8 +2137,16 @@
             "required": true
           },
           {
+            "name": "custom_title",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Owner and administrators only. Custom title for this user",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
             "name": "until_date",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted and kicked only. Date when restrictions will be lifted for this user, unix time",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time",
             "type": {
               "name": "Integer"
             },
@@ -1848,16 +2161,8 @@
             "required": false
           },
           {
-            "name": "can_change_info",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can change the chat title, photo and other settings",
-            "type": {
-              "name": "Boolean"
-            },
-            "required": false
-          },
-          {
             "name": "can_post_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can post in the channel, channels only",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can post in the channel; channels only",
             "type": {
               "name": "Boolean"
             },
@@ -1865,7 +2170,7 @@
           },
           {
             "name": "can_edit_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can edit messages of other users and can pin messages, channels only",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can edit messages of other users and can pin messages; channels only",
             "type": {
               "name": "Boolean"
             },
@@ -1880,14 +2185,6 @@
             "required": false
           },
           {
-            "name": "can_invite_users",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can invite new users to the chat",
-            "type": {
-              "name": "Boolean"
-            },
-            "required": false
-          },
-          {
             "name": "can_restrict_members",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can restrict, ban or unban chat members",
             "type": {
@@ -1896,16 +2193,32 @@
             "required": false
           },
           {
-            "name": "can_pin_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can pin messages, groups and supergroups only",
+            "name": "can_promote_members",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)",
             "type": {
               "name": "Boolean"
             },
             "required": false
           },
           {
-            "name": "can_promote_members",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can add new administrators with a subset of his own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)",
+            "name": "can_change_info",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators and restricted only. True, if the user is allowed to change the chat title, photo and other settings",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_invite_users",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators and restricted only. True, if the user is allowed to invite new users to the chat",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_pin_messages",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators and restricted only. True, if the user is allowed to pin messages; groups and supergroups only",
             "type": {
               "name": "Boolean"
             },
@@ -1921,7 +2234,7 @@
           },
           {
             "name": "can_send_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted only. True, if the user can send text messages, contacts, locations and venues",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted only. True, if the user is allowed to send text messages, contacts, locations and venues",
             "type": {
               "name": "Boolean"
             },
@@ -1929,7 +2242,15 @@
           },
           {
             "name": "can_send_media_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted only. True, if the user can send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted only. True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_send_polls",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted only. True, if the user is allowed to send polls",
             "type": {
               "name": "Boolean"
             },
@@ -1937,7 +2258,7 @@
           },
           {
             "name": "can_send_other_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted only. True, if the user can send animations, games, stickers and use inline bots, implies can_send_media_messages",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted only. True, if the user is allowed to send animations, games, stickers and use inline bots",
             "type": {
               "name": "Boolean"
             },
@@ -1945,11 +2266,103 @@
           },
           {
             "name": "can_add_web_page_previews",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted only. True, if user may add web page previews to his messages, implies can_send_media_messages",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted only. True, if the user is allowed to add web page previews to their messages",
             "type": {
               "name": "Boolean"
             },
             "required": false
+          }
+        ]
+      },
+      {
+        "name": "ChatPermissions",
+        "description": "\u003cp\u003eDescribes actions that a non-administrator user is allowed to take in a chat.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "can_send_messages",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to send text messages, contacts, locations and venues",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_send_media_messages",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_send_polls",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to send polls, implies can_send_messages",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_send_other_messages",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_add_web_page_previews",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to add web page previews to their messages, implies can_send_media_messages",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_change_info",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_invite_users",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to invite new users to the chat",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_pin_messages",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to pin messages. Ignored in public supergroups",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          }
+        ]
+      },
+      {
+        "name": "BotCommand",
+        "description": "\u003cp\u003eThis object represents a bot command.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "command",
+            "description": "Text of the command, 1-32 characters. Can contain only lowercase English letters, digits and underscores.",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "description",
+            "description": "Description of the command, 3-256 characters.",
+            "type": {
+              "name": "String"
+            },
+            "required": true
           }
         ]
       },
@@ -1997,7 +2410,7 @@
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the photo to be sent, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the photo to be sent, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -2005,9 +2418,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the photo caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           }
@@ -2045,13 +2458,13 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": false
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the video to be sent, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the video to be sent, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -2059,9 +2472,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the video caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -2131,13 +2544,13 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": false
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the animation to be sent, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the animation to be sent, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -2145,9 +2558,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the animation caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -2209,13 +2622,13 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": false
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the audio to be sent, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the audio to be sent, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -2223,9 +2636,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the audio caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -2287,13 +2700,13 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": false
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the document to be sent, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the document to be sent, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -2301,9 +2714,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the document caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           }
@@ -2333,13 +2746,13 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
           {
             "name": "text",
-            "description": "Text of the message to be sent",
+            "description": "Text of the message to be sent, 1-4096 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -2347,9 +2760,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in your bot\u0027s message.",
+            "description": "Mode for parsing entities in the message text. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -2395,7 +2808,7 @@
                   "name": "ForceReply"
                 }
               ],
-              "name": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply"
+              "name": "KeyboardOption"
             },
             "required": false
           }
@@ -2420,7 +2833,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -2436,7 +2849,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -2477,7 +2890,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -2493,13 +2906,13 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": true
           },
           {
             "name": "caption",
-            "description": "Photo caption (may also be used when resending photos by \u003cem\u003efile_id\u003c/em\u003e), 0-1024 characters",
+            "description": "Photo caption (may also be used when resending photos by \u003cem\u003efile_id\u003c/em\u003e), 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -2507,9 +2920,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "Mode for parsing entities in the photo caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -2547,7 +2960,7 @@
                   "name": "ForceReply"
                 }
               ],
-              "name": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply"
+              "name": "KeyboardOption"
             },
             "required": false
           }
@@ -2558,7 +2971,7 @@
       },
       {
         "name": "sendAudio",
-        "description": "\u003cp\u003eUse this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .mp3 format. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.\u003c/p\u003e\u003cp\u003eFor sending voice messages, use the \u003ca href\u003d\"#sendvoice\"\u003esendVoice\u003c/a\u003e method instead.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.\u003c/p\u003e\u003cp\u003eFor sending voice messages, use the \u003ca href\u003d\"#sendvoice\"\u003esendVoice\u003c/a\u003e method instead.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -2572,7 +2985,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -2588,13 +3001,13 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": true
           },
           {
             "name": "caption",
-            "description": "Audio caption, 0-1024 characters",
+            "description": "Audio caption, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -2602,9 +3015,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "Mode for parsing entities in the audio caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -2644,7 +3057,7 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": false
           },
@@ -2682,7 +3095,7 @@
                   "name": "ForceReply"
                 }
               ],
-              "name": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply"
+              "name": "KeyboardOption"
             },
             "required": false
           }
@@ -2707,7 +3120,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -2723,7 +3136,7 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": true
           },
@@ -2739,13 +3152,13 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": false
           },
           {
             "name": "caption",
-            "description": "Document caption (may also be used when resending documents by \u003cem\u003efile_id\u003c/em\u003e), 0-1024 characters",
+            "description": "Document caption (may also be used when resending documents by \u003cem\u003efile_id\u003c/em\u003e), 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -2753,9 +3166,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "Mode for parsing entities in the document caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -2793,7 +3206,7 @@
                   "name": "ForceReply"
                 }
               ],
-              "name": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply"
+              "name": "KeyboardOption"
             },
             "required": false
           }
@@ -2818,7 +3231,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -2834,7 +3247,7 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": true
           },
@@ -2874,13 +3287,13 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": false
           },
           {
             "name": "caption",
-            "description": "Video caption (may also be used when resending videos by \u003cem\u003efile_id\u003c/em\u003e), 0-1024 characters",
+            "description": "Video caption (may also be used when resending videos by \u003cem\u003efile_id\u003c/em\u003e), 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -2888,9 +3301,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "Mode for parsing entities in the video caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -2936,7 +3349,7 @@
                   "name": "ForceReply"
                 }
               ],
-              "name": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply"
+              "name": "KeyboardOption"
             },
             "required": false
           }
@@ -2961,7 +3374,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -2977,7 +3390,7 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": true
           },
@@ -3017,13 +3430,13 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": false
           },
           {
             "name": "caption",
-            "description": "Animation caption (may also be used when resending animation by \u003cem\u003efile_id\u003c/em\u003e), 0-1024 characters",
+            "description": "Animation caption (may also be used when resending animation by \u003cem\u003efile_id\u003c/em\u003e), 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -3031,9 +3444,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "Mode for parsing entities in the animation caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -3071,7 +3484,7 @@
                   "name": "ForceReply"
                 }
               ],
-              "name": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply"
+              "name": "KeyboardOption"
             },
             "required": false
           }
@@ -3082,7 +3495,7 @@
       },
       {
         "name": "sendVoice",
-        "description": "\u003cp\u003eUse this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .ogg file encoded with OPUS (other formats may be sent as \u003ca href\u003d\"#audio\"\u003eAudio\u003c/a\u003e or \u003ca href\u003d\"#document\"\u003eDocument\u003c/a\u003e). On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as \u003ca href\u003d\"#audio\"\u003eAudio\u003c/a\u003e or \u003ca href\u003d\"#document\"\u003eDocument\u003c/a\u003e). On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -3096,7 +3509,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -3112,13 +3525,13 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": true
           },
           {
             "name": "caption",
-            "description": "Voice message caption, 0-1024 characters",
+            "description": "Voice message caption, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -3126,9 +3539,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "Mode for parsing entities in the voice message caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -3174,7 +3587,7 @@
                   "name": "ForceReply"
                 }
               ],
-              "name": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply"
+              "name": "KeyboardOption"
             },
             "required": false
           }
@@ -3199,7 +3612,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -3215,7 +3628,7 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": true
           },
@@ -3247,7 +3660,7 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": false
           },
@@ -3285,7 +3698,7 @@
                   "name": "ForceReply"
                 }
               ],
-              "name": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply"
+              "name": "KeyboardOption"
             },
             "required": false
           }
@@ -3310,32 +3723,29 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
           {
             "name": "media",
-            "description": "A JSON-serialized array describing photos and videos to be sent, must include 2–10 items",
+            "description": "A JSON-serialized array describing photos and videos to be sent, must include 2-10 items",
             "type": {
               "elementType": {
                 "validTypes": [
                   {
-                    "superType": {
-                      "name": "InputMedia"
-                    },
                     "name": "InputMediaPhoto"
                   },
                   {
-                    "superType": {
-                      "name": "InputMedia"
-                    },
                     "name": "InputMediaVideo"
                   }
                 ],
-                "name": "InputMediaPhoto and InputMediaVideo"
+                "name": "InputMediaPhotoOrVideo",
+                "superType": {
+                  "name": "InputMedia"
+                }
               },
-              "name": "List\u003cInputMediaPhoto and InputMediaVideo\u003e"
+              "name": "List\u003cInputMediaPhotoOrVideo\u003e"
             },
             "required": true
           },
@@ -3357,7 +3767,10 @@
           }
         ],
         "returns": {
-          "name": "Messages"
+          "elementType": {
+            "name": "Message"
+          },
+          "name": "List\u003cMessage\u003e"
         }
       },
       {
@@ -3376,7 +3789,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -3438,7 +3851,7 @@
                   "name": "ForceReply"
                 }
               ],
-              "name": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply"
+              "name": "KeyboardOption"
             },
             "required": false
           }
@@ -3463,7 +3876,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": false
           },
@@ -3503,7 +3916,24 @@
             "name": "reply_markup",
             "description": "A JSON-serialized object for a new \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e.",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           }
@@ -3528,7 +3958,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": false
           },
@@ -3552,7 +3982,24 @@
             "name": "reply_markup",
             "description": "A JSON-serialized object for a new \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e.",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           }
@@ -3577,7 +4024,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -3663,7 +4110,7 @@
                   "name": "ForceReply"
                 }
               ],
-              "name": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply"
+              "name": "KeyboardOption"
             },
             "required": false
           }
@@ -3688,7 +4135,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -3758,7 +4205,7 @@
                   "name": "ForceReply"
                 }
               ],
-              "name": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply"
+              "name": "KeyboardOption"
             },
             "required": false
           }
@@ -3769,11 +4216,11 @@
       },
       {
         "name": "sendPoll",
-        "description": "\u003cp\u003eUse this method to send a native poll. A native poll can\u0027t be sent to a private chat. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to send a native poll. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
-            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e). A native poll can\u0027t be sent to a private chat.",
+            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
               "validTypes": [
                 {
@@ -3783,7 +4230,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -3797,7 +4244,7 @@
           },
           {
             "name": "options",
-            "description": "List of answer options, 2-10 strings 1-100 characters each",
+            "description": "A JSON-serialized list of answer options, 2-10 strings 1-100 characters each",
             "type": {
               "elementType": {
                 "name": "String"
@@ -3805,6 +4252,78 @@
               "name": "List\u003cString\u003e"
             },
             "required": true
+          },
+          {
+            "name": "is_anonymous",
+            "description": "True, if the poll needs to be anonymous, defaults to \u003cem\u003eTrue\u003c/em\u003e",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "type",
+            "description": "Poll type, “quiz” or “regular”, defaults to “regular”",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "allows_multiple_answers",
+            "description": "True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to \u003cem\u003eFalse\u003c/em\u003e",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "correct_option_id",
+            "description": "0-based identifier of the correct answer option, required for polls in quiz mode",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "explanation",
+            "description": "Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "explanation_parse_mode",
+            "description": "Mode for parsing entities in the explanation. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "open_period",
+            "description": "Amount of time in seconds the poll will be active after creation, 5-600. Can\u0027t be used together with \u003cem\u003eclose_date\u003c/em\u003e.",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "close_date",
+            "description": "Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can\u0027t be used together with \u003cem\u003eopen_period\u003c/em\u003e.",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "is_closed",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the poll needs to be immediately closed. This can be useful for poll preview.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
           },
           {
             "name": "disable_notification",
@@ -3840,7 +4359,78 @@
                   "name": "ForceReply"
                 }
               ],
-              "name": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply"
+              "name": "KeyboardOption"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "name": "Message"
+        }
+      },
+      {
+        "name": "sendDice",
+        "description": "\u003cp\u003eUse this method to send a dice, which will have a random value from 1 to 6. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned. (Yes, we\u0027re aware of the \u003cem\u003e“proper”\u003c/em\u003e singular of \u003cem\u003edie\u003c/em\u003e. But it\u0027s awkward, and we decided to help it change. One dice at a time!)\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          },
+          {
+            "name": "emoji",
+            "description": "Emoji on which the dice throw animation is based. Currently, must be one of “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB2.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎲\"\u003e” or “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EAF.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎯\"\u003e”. Defauts to “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB2.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎲\"\u003e”",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "disable_notification",
+            "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "reply_to_message_id",
+            "description": "If the message is a reply, ID of the original message",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "reply_markup",
+            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove reply keyboard or to force a reply from the user.",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "InlineKeyboardMarkup"
+                },
+                {
+                  "name": "ReplyKeyboardMarkup"
+                },
+                {
+                  "name": "ReplyKeyboardRemove"
+                },
+                {
+                  "name": "ForceReply"
+                }
+              ],
+              "name": "KeyboardOption"
             },
             "required": false
           }
@@ -3865,7 +4455,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -3904,7 +4494,7 @@
           },
           {
             "name": "limit",
-            "description": "Limits the number of photos to be retrieved. Values between 1—100 are accepted. Defaults to 100.",
+            "description": "Limits the number of photos to be retrieved. Values between 1-100 are accepted. Defaults to 100.",
             "type": {
               "name": "Integer"
             },
@@ -3934,7 +4524,7 @@
       },
       {
         "name": "kickChatMember",
-        "description": "\u003cp\u003eUse this method to kick a user from a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the group on their own using invite links, etc., unless \u003ca href\u003d\"#unbanchatmember\"\u003eunbanned\u003c/a\u003e first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group. Otherwise members may only be removed by the group\u0027s creator or by the member that added them.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUse this method to kick a user from a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the group on their own using invite links, etc., unless \u003ca href\u003d\"#unbanchatmember\"\u003eunbanned\u003c/a\u003e first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -3948,7 +4538,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -3989,7 +4579,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -4008,7 +4598,7 @@
       },
       {
         "name": "restrictChatMember",
-        "description": "\u003cp\u003eUse this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights. Pass \u003cem\u003eTrue\u003c/em\u003e for all boolean parameters to lift restrictions from a user. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights. Pass \u003cem\u003eTrue\u003c/em\u003e for all permissions to lift restrictions from a user. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4022,7 +4612,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -4035,42 +4625,18 @@
             "required": true
           },
           {
+            "name": "permissions",
+            "description": "New user permissions",
+            "type": {
+              "name": "ChatPermissions"
+            },
+            "required": true
+          },
+          {
             "name": "until_date",
             "description": "Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever",
             "type": {
               "name": "Integer"
-            },
-            "required": false
-          },
-          {
-            "name": "can_send_messages",
-            "description": "Pass True, if the user can send text messages, contacts, locations and venues",
-            "type": {
-              "name": "Boolean"
-            },
-            "required": false
-          },
-          {
-            "name": "can_send_media_messages",
-            "description": "Pass True, if the user can send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages",
-            "type": {
-              "name": "Boolean"
-            },
-            "required": false
-          },
-          {
-            "name": "can_send_other_messages",
-            "description": "Pass True, if the user can send animations, games, stickers and use inline bots, implies can_send_media_messages",
-            "type": {
-              "name": "Boolean"
-            },
-            "required": false
-          },
-          {
-            "name": "can_add_web_page_previews",
-            "description": "Pass True, if the user may add web page previews to their messages, implies can_send_media_messages",
-            "type": {
-              "name": "Boolean"
             },
             "required": false
           }
@@ -4095,7 +4661,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -4165,7 +4731,7 @@
           },
           {
             "name": "can_promote_members",
-            "description": "Pass True, if the administrator can add new administrators with a subset of his own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)",
+            "description": "Pass True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)",
             "type": {
               "name": "Boolean"
             },
@@ -4177,8 +4743,82 @@
         }
       },
       {
+        "name": "setChatAdministratorCustomTitle",
+        "description": "\u003cp\u003eUse this method to set a custom title for an administrator in a supergroup promoted by the bot. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target supergroup (in the format \u003ccode\u003e@supergroupusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          },
+          {
+            "name": "user_id",
+            "description": "Unique identifier of the target user",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          },
+          {
+            "name": "custom_title",
+            "description": "New custom title for the administrator; 0-16 characters, emoji are not allowed",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          }
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
+      },
+      {
+        "name": "setChatPermissions",
+        "description": "\u003cp\u003eUse this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the \u003cem\u003ecan_restrict_members\u003c/em\u003e admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target supergroup (in the format \u003ccode\u003e@supergroupusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          },
+          {
+            "name": "permissions",
+            "description": "New default chat permissions",
+            "type": {
+              "name": "ChatPermissions"
+            },
+            "required": true
+          }
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
+      },
+      {
         "name": "exportChatInviteLink",
-        "description": "\u003cp\u003eUse this method to generate a new invite link for a chat; any previously generated link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as \u003cem\u003eString\u003c/em\u003e on success.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: Each administrator in a chat generates their own invite links. Bots can\u0027t use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using \u003ca href\u003d\"#exportchatinvitelink\"\u003eexportChatInviteLink\u003c/a\u003e – after this the link will become available to the bot via the \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e method. If your bot needs to generate a new invite link replacing its previous one, use \u003ca href\u003d\"#exportchatinvitelink\"\u003eexportChatInviteLink\u003c/a\u003e again.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUse this method to generate a new invite link for a chat; any previously generated link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as \u003cem\u003eString\u003c/em\u003e on success.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: Each administrator in a chat generates their own invite links. Bots can\u0027t use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using \u003ca href\u003d\"#exportchatinvitelink\"\u003eexportChatInviteLink\u003c/a\u003e — after this the link will become available to the bot via the \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e method. If your bot needs to generate a new invite link replacing its previous one, use \u003ca href\u003d\"#exportchatinvitelink\"\u003eexportChatInviteLink\u003c/a\u003e again.\u003c/p\u003e \n\u003c/blockquote\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4192,7 +4832,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           }
@@ -4203,7 +4843,7 @@
       },
       {
         "name": "setChatPhoto",
-        "description": "\u003cp\u003eUse this method to set a new profile photo for the chat. Photos can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUse this method to set a new profile photo for the chat. Photos can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4217,7 +4857,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -4236,7 +4876,7 @@
       },
       {
         "name": "deleteChatPhoto",
-        "description": "\u003cp\u003eUse this method to delete a chat photo. Photos can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUse this method to delete a chat photo. Photos can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4250,7 +4890,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           }
@@ -4261,7 +4901,7 @@
       },
       {
         "name": "setChatTitle",
-        "description": "\u003cp\u003eUse this method to change the title of a chat. Titles can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUse this method to change the title of a chat. Titles can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4275,7 +4915,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -4294,7 +4934,7 @@
       },
       {
         "name": "setChatDescription",
-        "description": "\u003cp\u003eUse this method to change the description of a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to change the description of a group, a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4308,7 +4948,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -4341,7 +4981,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -4382,7 +5022,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           }
@@ -4407,7 +5047,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           }
@@ -4432,7 +5072,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           }
@@ -4457,7 +5097,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           }
@@ -4485,7 +5125,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           }
@@ -4510,7 +5150,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -4543,7 +5183,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -4576,7 +5216,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           }
@@ -4615,7 +5255,7 @@
           },
           {
             "name": "url",
-            "description": "URL that will be opened by the user\u0027s client. If you have created a \u003ca href\u003d\"#game\"\u003eGame\u003c/a\u003e and accepted the conditions via \u003ca href\u003d\"https://t.me/botfather\"\u003e@Botfather\u003c/a\u003e, specify the URL that opens your game – note that this will only work if the query comes from a \u003ca href\u003d\"#inlinekeyboardbutton\"\u003e\u003cem\u003ecallback_game\u003c/em\u003e\u003c/a\u003e button.\u003cbr\u003e\u003cbr\u003eOtherwise, you may use links like \u003ccode\u003et.me/your_bot?start\u003dXXXX\u003c/code\u003e that open your bot with a parameter.",
+            "description": "URL that will be opened by the user\u0027s client. If you have created a \u003ca href\u003d\"#game\"\u003eGame\u003c/a\u003e and accepted the conditions via \u003ca href\u003d\"https://t.me/botfather\"\u003e@Botfather\u003c/a\u003e, specify the URL that opens your game — note that this will only work if the query comes from a \u003ca href\u003d\"#inlinekeyboardbutton\"\u003e\u003cem\u003ecallback_game\u003c/em\u003e\u003c/a\u003e button.\u003cbr\u003e\u003cbr\u003eOtherwise, you may use links like \u003ccode\u003et.me/your_bot?start\u003dXXXX\u003c/code\u003e that open your bot with a parameter.",
             "type": {
               "name": "String"
             },
@@ -4632,6 +5272,37 @@
         ],
         "returns": {
           "name": "Boolean"
+        }
+      },
+      {
+        "name": "setMyCommands",
+        "description": "\u003cp\u003eUse this method to change the list of the bot\u0027s commands. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "commands",
+            "description": "A JSON-serialized list of bot commands to be set as the list of the bot\u0027s commands. At most 100 commands can be specified.",
+            "type": {
+              "elementType": {
+                "name": "BotCommand"
+              },
+              "name": "List\u003cBotCommand\u003e"
+            },
+            "required": true
+          }
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
+      },
+      {
+        "name": "getMyCommands",
+        "description": "\u003cp\u003eUse this method to get the current list of the bot\u0027s commands. Requires no parameters. Returns Array of \u003ca href\u003d\"#botcommand\"\u003eBotCommand\u003c/a\u003e on success.\u003c/p\u003e",
+        "docParameters": [],
+        "returns": {
+          "elementType": {
+            "name": "BotCommand"
+          },
+          "name": "List\u003cBotCommand\u003e"
         }
       }
     ]
@@ -4657,7 +5328,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": false
           },
@@ -4679,7 +5350,7 @@
           },
           {
             "name": "text",
-            "description": "New text of the message",
+            "description": "New text of the message, 1-4096 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -4687,9 +5358,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in your bot\u0027s message.",
+            "description": "Mode for parsing entities in the message text. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -4705,7 +5376,24 @@
             "name": "reply_markup",
             "description": "A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e.",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           }
@@ -4730,7 +5418,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": false
           },
@@ -4752,7 +5440,7 @@
           },
           {
             "name": "caption",
-            "description": "New caption of the message",
+            "description": "New caption of the message, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -4760,9 +5448,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "Mode for parsing entities in the message caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -4770,7 +5458,24 @@
             "name": "reply_markup",
             "description": "A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e.",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           }
@@ -4795,7 +5500,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": false
           },
@@ -4827,7 +5532,24 @@
             "name": "reply_markup",
             "description": "A JSON-serialized object for a new \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e.",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           }
@@ -4852,7 +5574,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": false
           },
@@ -4876,7 +5598,24 @@
             "name": "reply_markup",
             "description": "A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e.",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           }
@@ -4901,7 +5640,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -4917,18 +5656,35 @@
             "name": "reply_markup",
             "description": "A JSON-serialized object for a new message \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e.",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           }
         ],
         "returns": {
-          "name": "results"
+          "name": "Poll"
         }
       },
       {
         "name": "deleteMessage",
-        "description": "\u003cp\u003eUse this method to delete a message, including service messages, with the following limitations:\u003cbr\u003e- A message can only be deleted if it was sent less than 48 hours ago.\u003cbr\u003e- Bots can delete outgoing messages in private chats, groups, and supergroups.\u003cbr\u003e- Bots can delete incoming messages in private chats.\u003cbr\u003e- Bots granted \u003cem\u003ecan_post_messages\u003c/em\u003e permissions can delete outgoing messages in channels.\u003cbr\u003e- If the bot is an administrator of a group, it can delete any message there.\u003cbr\u003e- If the bot has \u003cem\u003ecan_delete_messages\u003c/em\u003e permission in a supergroup or a channel, it can delete any message there.\u003cbr\u003eReturns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to delete a message, including service messages, with the following limitations:\u003cbr\u003e- A message can only be deleted if it was sent less than 48 hours ago.\u003cbr\u003e- A dice message in a private chat can only be deleted if it was sent more than 24 hours ago.\u003cbr\u003e- Bots can delete outgoing messages in private chats, groups, and supergroups.\u003cbr\u003e- Bots can delete incoming messages in private chats.\u003cbr\u003e- Bots granted \u003cem\u003ecan_post_messages\u003c/em\u003e permissions can delete outgoing messages in channels.\u003cbr\u003e- If the bot is an administrator of a group, it can delete any message there.\u003cbr\u003e- If the bot has \u003cem\u003ecan_delete_messages\u003c/em\u003e permission in a supergroup or a channel, it can delete any message there.\u003cbr\u003eReturns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4942,7 +5698,7 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -4971,7 +5727,15 @@
         "docFields": [
           {
             "name": "file_id",
-            "description": "Unique identifier for this file",
+            "description": "Identifier for this file, which can be used to download or reuse the file",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "file_unique_id",
+            "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can\u0027t be used to download or reuse the file.",
             "type": {
               "name": "String"
             },
@@ -4994,8 +5758,16 @@
             "required": true
           },
           {
+            "name": "is_animated",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the sticker is \u003ca href\u003d\"https://telegram.org/blog/animated-stickers\"\u003eanimated\u003c/a\u003e",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
             "name": "thumb",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Sticker thumbnail in the .webp or .jpg format",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Sticker thumbnail in the .WEBP or .JPG format",
             "type": {
               "name": "PhotoSize"
             },
@@ -5056,6 +5828,14 @@
             "required": true
           },
           {
+            "name": "is_animated",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the sticker set contains \u003ca href\u003d\"https://telegram.org/blog/animated-stickers\"\u003eanimated stickers\u003c/a\u003e",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
             "name": "contains_masks",
             "description": "\u003cem\u003eTrue\u003c/em\u003e, if the sticker set contains masks",
             "type": {
@@ -5073,6 +5853,14 @@
               "name": "List\u003cSticker\u003e"
             },
             "required": true
+          },
+          {
+            "name": "thumb",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Sticker set thumbnail in the .WEBP or .TGS format",
+            "type": {
+              "name": "PhotoSize"
+            },
+            "required": false
           }
         ]
       },
@@ -5118,7 +5906,7 @@
     "docMethods": [
       {
         "name": "sendSticker",
-        "description": "\u003cp\u003eUse this method to send .webp stickers. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to send static .WEBP or \u003ca href\u003d\"https://telegram.org/blog/animated-stickers\"\u003eanimated\u003c/a\u003e .TGS stickers. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -5132,13 +5920,13 @@
                   "name": "String"
                 }
               ],
-              "name": "Integer or String"
+              "name": "IntegerOrString"
             },
             "required": true
           },
           {
             "name": "sticker",
-            "description": "Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .webp file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -5148,7 +5936,7 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": true
           },
@@ -5186,7 +5974,7 @@
                   "name": "ForceReply"
                 }
               ],
-              "name": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply"
+              "name": "KeyboardOption"
             },
             "required": false
           }
@@ -5214,7 +6002,7 @@
       },
       {
         "name": "uploadStickerFile",
-        "description": "\u003cp\u003eUse this method to upload a .png file with a sticker for later use in \u003cem\u003ecreateNewStickerSet\u003c/em\u003e and \u003cem\u003eaddStickerToSet\u003c/em\u003e methods (can be used multiple times). Returns the uploaded \u003ca href\u003d\"#file\"\u003eFile\u003c/a\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to upload a .PNG file with a sticker for later use in \u003cem\u003ecreateNewStickerSet\u003c/em\u003e and \u003cem\u003eaddStickerToSet\u003c/em\u003e methods (can be used multiple times). Returns the uploaded \u003ca href\u003d\"#file\"\u003eFile\u003c/a\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "user_id",
@@ -5226,7 +6014,7 @@
           },
           {
             "name": "png_sticker",
-            "description": "\u003cstrong\u003ePng\u003c/strong\u003e image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cstrong\u003ePNG\u003c/strong\u003e image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "name": "InputFile"
             },
@@ -5239,7 +6027,7 @@
       },
       {
         "name": "createNewStickerSet",
-        "description": "\u003cp\u003eUse this method to create new sticker set owned by a user. The bot will be able to edit the created sticker set. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You \u003cstrong\u003emust\u003c/strong\u003e use exactly one of the fields \u003cem\u003epng_sticker\u003c/em\u003e or \u003cem\u003etgs_sticker\u003c/em\u003e. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "user_id",
@@ -5267,7 +6055,7 @@
           },
           {
             "name": "png_sticker",
-            "description": "\u003cstrong\u003ePng\u003c/strong\u003e image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a \u003cem\u003efile_id\u003c/em\u003e as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cstrong\u003ePNG\u003c/strong\u003e image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a \u003cem\u003efile_id\u003c/em\u003e as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -5277,9 +6065,17 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
-            "required": true
+            "required": false
+          },
+          {
+            "name": "tgs_sticker",
+            "description": "\u003cstrong\u003eTGS\u003c/strong\u003e animation with the sticker, uploaded using multipart/form-data. See \u003ca href\u003d\"https://core.telegram.org/animated_stickers#technical-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/animated_stickers#technical-requirements\"\u003ehttps://core.telegram.org/animated_stickers#technical-requirements\u003c/a\u003e for technical requirements",
+            "type": {
+              "name": "InputFile"
+            },
+            "required": false
           },
           {
             "name": "emojis",
@@ -5312,7 +6108,7 @@
       },
       {
         "name": "addStickerToSet",
-        "description": "\u003cp\u003eUse this method to add a new sticker to a set created by the bot. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to add a new sticker to a set created by the bot. You \u003cstrong\u003emust\u003c/strong\u003e use exactly one of the fields \u003cem\u003epng_sticker\u003c/em\u003e or \u003cem\u003etgs_sticker\u003c/em\u003e. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "user_id",
@@ -5332,7 +6128,7 @@
           },
           {
             "name": "png_sticker",
-            "description": "\u003cstrong\u003ePng\u003c/strong\u003e image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a \u003cem\u003efile_id\u003c/em\u003e as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cstrong\u003ePNG\u003c/strong\u003e image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a \u003cem\u003efile_id\u003c/em\u003e as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -5342,9 +6138,17 @@
                   "name": "String"
                 }
               ],
-              "name": "InputFile or String"
+              "name": "InputFileOrString"
             },
             "required": true
+          },
+          {
+            "name": "tgs_sticker",
+            "description": "\u003cstrong\u003eTGS\u003c/strong\u003e animation with the sticker, uploaded using multipart/form-data. See \u003ca href\u003d\"https://core.telegram.org/animated_stickers#technical-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/animated_stickers#technical-requirements\"\u003ehttps://core.telegram.org/animated_stickers#technical-requirements\u003c/a\u003e for technical requirements",
+            "type": {
+              "name": "InputFile"
+            },
+            "required": false
           },
           {
             "name": "emojis",
@@ -5369,7 +6173,7 @@
       },
       {
         "name": "setStickerPositionInSet",
-        "description": "\u003cp\u003eUse this method to move a sticker in a set created by the bot to a specific position . Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to move a sticker in a set created by the bot to a specific position. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "sticker",
@@ -5408,12 +6212,53 @@
         "returns": {
           "name": "Boolean"
         }
+      },
+      {
+        "name": "setStickerSetThumb",
+        "description": "\u003cp\u003eUse this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "name",
+            "description": "Sticker set name",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "user_id",
+            "description": "User identifier of the sticker set owner",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          },
+          {
+            "name": "thumb",
+            "description": "A \u003cstrong\u003ePNG\u003c/strong\u003e image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a \u003cstrong\u003eTGS\u003c/strong\u003e animation with the thumbnail up to 32 kilobytes in size; see \u003ca href\u003d\"https://core.telegram.org/animated_stickers#technical-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/animated_stickers#technical-requirements\"\u003ehttps://core.telegram.org/animated_stickers#technical-requirements\u003c/a\u003e for animated sticker technical requirements. Pass a \u003cem\u003efile_id\u003c/em\u003e as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e. Animated sticker set thumbnail can\u0027t be uploaded via HTTP URL.",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "InputFile"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "InputFileOrString"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
       }
     ]
   },
   {
     "name": "Inline mode",
-    "description": "\u003cp\u003eThe following methods and objects allow your bot to work in \u003ca href\u003d\"/bots/inline\"\u003einline mode\u003c/a\u003e.\u003cbr\u003ePlease see our \u003ca href\u003d\"/bots/inline\"\u003eIntroduction to Inline bots\u003c/a\u003e for more details.\u003c/p\u003e\n\u003cp\u003eTo enable this option, send the \u003ccode\u003e/setinline\u003c/code\u003e command to \u003ca href\u003d\"https://t.me/botfather\"\u003e@BotFather\u003c/a\u003e and provide the placeholder text that the user will see in the input field after typing your bot’s name.\u003c/p\u003e",
+    "description": "\u003cp\u003eThe following methods and objects allow your bot to work in \u003ca href\u003d\"/bots/inline\"\u003einline mode\u003c/a\u003e.\u003cbr\u003ePlease see our \u003ca href\u003d\"/bots/inline\"\u003eIntroduction to Inline bots\u003c/a\u003e for more details.\u003c/p\u003e\n\u003cp\u003eTo enable this option, send the \u003ccode\u003e/setinline\u003c/code\u003e command to \u003ca href\u003d\"https://t.me/botfather\"\u003e@BotFather\u003c/a\u003e and provide the placeholder text that the user will see in the input field after typing your bot\u0027s name.\u003c/p\u003e",
     "docTypes": [
       {
         "name": "InlineQuery",
@@ -5445,7 +6290,7 @@
           },
           {
             "name": "query",
-            "description": "Text of the query (up to 512 characters)",
+            "description": "Text of the query (up to 256 characters)",
             "type": {
               "name": "String"
             },
@@ -5501,7 +6346,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -5625,7 +6487,7 @@
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the photo to be sent, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the photo to be sent, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -5633,9 +6495,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the photo caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -5643,7 +6505,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -5727,7 +6606,7 @@
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the GIF file to be sent, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the GIF file to be sent, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -5735,9 +6614,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -5745,7 +6624,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -5829,7 +6725,7 @@
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the MPEG-4 file to be sent, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the MPEG-4 file to be sent, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -5837,9 +6733,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -5847,7 +6743,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -5915,7 +6828,7 @@
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the video to be sent, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the video to be sent, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -5923,9 +6836,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the video caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -5965,7 +6878,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -5981,7 +6911,7 @@
       },
       {
         "name": "InlineQueryResultAudio",
-        "description": "\u003cp\u003eRepresents a link to an mp3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the audio.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
+        "description": "\u003cp\u003eRepresents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the audio.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
         "docFields": [
           {
             "name": "type",
@@ -6017,7 +6947,7 @@
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -6025,9 +6955,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the audio caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -6051,7 +6981,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -6067,7 +7014,7 @@
       },
       {
         "name": "InlineQueryResultVoice",
-        "description": "\u003cp\u003eRepresents a link to a voice recording in an .ogg container encoded with OPUS. By default, this voice recording will be sent by the user. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the the voice message.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
+        "description": "\u003cp\u003eRepresents a link to a voice recording in an .OGG container encoded with OPUS. By default, this voice recording will be sent by the user. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the the voice message.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
         "docFields": [
           {
             "name": "type",
@@ -6103,7 +7050,7 @@
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -6111,9 +7058,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the voice message caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -6129,7 +7076,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -6173,7 +7137,7 @@
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the document to be sent, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the document to be sent, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -6181,9 +7145,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the document caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -6215,7 +7179,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Inline keyboard attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -6309,7 +7290,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -6419,7 +7417,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -6513,7 +7528,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -6583,7 +7615,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           }
@@ -6635,7 +7684,7 @@
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the photo to be sent, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the photo to be sent, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -6643,9 +7692,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the photo caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -6653,7 +7702,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -6705,7 +7771,7 @@
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the GIF file to be sent, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the GIF file to be sent, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -6713,9 +7779,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -6723,7 +7789,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -6775,7 +7858,7 @@
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the MPEG-4 file to be sent, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the MPEG-4 file to be sent, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -6783,9 +7866,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -6793,7 +7876,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -6809,7 +7909,7 @@
       },
       {
         "name": "InlineQueryResultCachedSticker",
-        "description": "\u003cp\u003eRepresents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the sticker.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
+        "description": "\u003cp\u003eRepresents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the sticker.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016 for static stickers and after 06 July, 2019 for \u003ca href\u003d\"https://telegram.org/blog/animated-stickers\"\u003eanimated stickers\u003c/a\u003e. Older clients will ignore them.\u003c/p\u003e",
         "docFields": [
           {
             "name": "type",
@@ -6839,7 +7939,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -6899,7 +8016,7 @@
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the document to be sent, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the document to be sent, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -6907,9 +8024,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the document caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -6917,7 +8034,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -6977,7 +8111,7 @@
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the video to be sent, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption of the video to be sent, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -6985,9 +8119,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the video caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -6995,7 +8129,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -7047,7 +8198,7 @@
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -7055,9 +8206,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the voice message caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -7065,7 +8216,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -7081,7 +8249,7 @@
       },
       {
         "name": "InlineQueryResultCachedAudio",
-        "description": "\u003cp\u003eRepresents a link to an mp3 audio file stored on the Telegram servers. By default, this audio file will be sent by the user. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the audio.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
+        "description": "\u003cp\u003eRepresents a link to an MP3 audio file stored on the Telegram servers. By default, this audio file will be sent by the user. Alternatively, you can use \u003cem\u003einput_message_content\u003c/em\u003e to send a message with the specified content instead of the audio.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.\u003c/p\u003e",
         "docFields": [
           {
             "name": "type",
@@ -7109,7 +8277,7 @@
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption, 0-1024 characters after entities parsing",
             "type": {
               "name": "String"
             },
@@ -7117,9 +8285,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in the media caption.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the audio caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -7127,7 +8295,24 @@
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           },
@@ -7155,9 +8340,9 @@
           },
           {
             "name": "parse_mode",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Send \u003ca href\u003d\"#markdown-style\"\u003e\u003cem\u003eMarkdown\u003c/em\u003e\u003c/a\u003e or \u003ca href\u003d\"#html-style\"\u003e\u003cem\u003eHTML\u003c/em\u003e\u003c/a\u003e, if you want Telegram apps to show \u003ca href\u003d\"#formatting-options\"\u003ebold, italic, fixed-width text or inline URLs\u003c/a\u003e in your bot\u0027s message.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the message text. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
-              "name": "String"
+              "name": "ParseMode"
             },
             "required": false
           },
@@ -7834,7 +9019,7 @@
           },
           {
             "name": "prices",
-            "description": "Price breakdown, a list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)",
+            "description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)",
             "type": {
               "elementType": {
                 "name": "LabeledPrice"
@@ -7959,7 +9144,24 @@
             "name": "reply_markup",
             "description": "A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e. If empty, one \u0027Pay \u003ccode\u003etotal price\u003c/code\u003e\u0027 button will be shown. If not empty, the first button must be a Pay button.",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           }
@@ -8082,7 +9284,15 @@
         "docFields": [
           {
             "name": "file_id",
-            "description": "Unique identifier for this file",
+            "description": "Identifier for this file, which can be used to download or reuse the file",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "file_unique_id",
+            "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can\u0027t be used to download or reuse the file.",
             "type": {
               "name": "String"
             },
@@ -8618,7 +9828,7 @@
   },
   {
     "name": "Games",
-    "description": "\u003cp\u003eYour bot can offer users \u003cstrong\u003eHTML5 games\u003c/strong\u003e to play solo or to compete against each other in groups and one-on-one chats. Create games via \u003ca href\u003d\"https://tme/botfather\"\u003e@BotFather\u003c/a\u003e using the \u003cem\u003e/newgame\u003c/em\u003e command. Please note that this kind of power requires responsibility: you will need to accept the terms for each game that your bots will be offering.\u003c/p\u003e\n\u003cul\u003e \n \u003cli\u003eGames are a new type of content on Telegram, represented by the \u003ca href\u003d\"#game\"\u003eGame\u003c/a\u003e and \u003ca href\u003d\"#inlinequeryresultgame\"\u003eInlineQueryResultGame\u003c/a\u003e objects.\u003c/li\u003e \n \u003cli\u003eOnce you\u0027ve created a game via \u003ca href\u003d\"https://t.me/botfather\"\u003eBotFather\u003c/a\u003e, you can send games to chats as regular messages using the \u003ca href\u003d\"#sendgame\"\u003esendGame\u003c/a\u003e method, or use \u003ca href\u003d\"#inline-mode\"\u003einline mode\u003c/a\u003e with \u003ca href\u003d\"#inlinequeryresultgame\"\u003eInlineQueryResultGame\u003c/a\u003e.\u003c/li\u003e \n \u003cli\u003eIf you send the game message without any buttons, it will automatically have a \u0027Play \u003cem\u003eGameName\u003c/em\u003e\u0027 button. When this button is pressed, your bot gets a \u003ca href\u003d\"#callbackquery\"\u003eCallbackQuery\u003c/a\u003e with the \u003cem\u003egame_short_name\u003c/em\u003e of the requested game. You provide the correct URL for this particular user and the app opens the game in the in-app browser.\u003c/li\u003e \n \u003cli\u003eYou can manually add multiple buttons to your game message. Please note that the first button in the first row \u003cstrong\u003emust always\u003c/strong\u003e launch the game, using the field \u003cem\u003ecallback_game\u003c/em\u003e in \u003ca href\u003d\"#inlinekeyboardbutton\"\u003eInlineKeyboardButton\u003c/a\u003e. You can add extra buttons according to taste: e.g., for a description of the rules, or to open the game\u0027s official community.\u003c/li\u003e \n \u003cli\u003eTo make your game more attractive, you can upload a GIF animation that demostrates the game to the users via \u003ca href\u003d\"https://t.me/botfather\"\u003eBotFather\u003c/a\u003e (see \u003ca href\u003d\"https://t.me/gamebot?game\u003dlumberjack\"\u003eLumberjack\u003c/a\u003e for example).\u003c/li\u003e \n \u003cli\u003eA game message will also display high scores for the current chat. Use \u003ca href\u003d\"#setgamescore\"\u003esetGameScore\u003c/a\u003e to post high scores to the chat with the game, add the \u003cem\u003eedit_message\u003c/em\u003e parameter to automatically update the message with the current scoreboard.\u003c/li\u003e \n \u003cli\u003eUse \u003ca href\u003d\"#getgamehighscores\"\u003egetGameHighScores\u003c/a\u003e to get data for in-game high score tables.\u003c/li\u003e \n \u003cli\u003eYou can also add an extra \u003ca href\u003d\"/bots/games#sharing-your-game-to-telegram-chats\"\u003esharing button\u003c/a\u003e for users to share their best score to different chats.\u003c/li\u003e \n \u003cli\u003eFor examples of what can be done using this new stuff, check the \u003ca href\u003d\"https://t.me/gamebot\"\u003e@gamebot\u003c/a\u003e and \u003ca href\u003d\"https://t.me/gamee\"\u003e@gamee\u003c/a\u003e bots.\u003c/li\u003e \n\u003c/ul\u003e",
+    "description": "\u003cp\u003eYour bot can offer users \u003cstrong\u003eHTML5 games\u003c/strong\u003e to play solo or to compete against each other in groups and one-on-one chats. Create games via \u003ca href\u003d\"https://t.me/botfather\"\u003e@BotFather\u003c/a\u003e using the \u003cem\u003e/newgame\u003c/em\u003e command. Please note that this kind of power requires responsibility: you will need to accept the terms for each game that your bots will be offering.\u003c/p\u003e\n\u003cul\u003e \n \u003cli\u003eGames are a new type of content on Telegram, represented by the \u003ca href\u003d\"#game\"\u003eGame\u003c/a\u003e and \u003ca href\u003d\"#inlinequeryresultgame\"\u003eInlineQueryResultGame\u003c/a\u003e objects.\u003c/li\u003e \n \u003cli\u003eOnce you\u0027ve created a game via \u003ca href\u003d\"https://t.me/botfather\"\u003eBotFather\u003c/a\u003e, you can send games to chats as regular messages using the \u003ca href\u003d\"#sendgame\"\u003esendGame\u003c/a\u003e method, or use \u003ca href\u003d\"#inline-mode\"\u003einline mode\u003c/a\u003e with \u003ca href\u003d\"#inlinequeryresultgame\"\u003eInlineQueryResultGame\u003c/a\u003e.\u003c/li\u003e \n \u003cli\u003eIf you send the game message without any buttons, it will automatically have a \u0027Play \u003cem\u003eGameName\u003c/em\u003e\u0027 button. When this button is pressed, your bot gets a \u003ca href\u003d\"#callbackquery\"\u003eCallbackQuery\u003c/a\u003e with the \u003cem\u003egame_short_name\u003c/em\u003e of the requested game. You provide the correct URL for this particular user and the app opens the game in the in-app browser.\u003c/li\u003e \n \u003cli\u003eYou can manually add multiple buttons to your game message. Please note that the first button in the first row \u003cstrong\u003emust always\u003c/strong\u003e launch the game, using the field \u003cem\u003ecallback_game\u003c/em\u003e in \u003ca href\u003d\"#inlinekeyboardbutton\"\u003eInlineKeyboardButton\u003c/a\u003e. You can add extra buttons according to taste: e.g., for a description of the rules, or to open the game\u0027s official community.\u003c/li\u003e \n \u003cli\u003eTo make your game more attractive, you can upload a GIF animation that demostrates the game to the users via \u003ca href\u003d\"https://t.me/botfather\"\u003eBotFather\u003c/a\u003e (see \u003ca href\u003d\"https://t.me/gamebot?game\u003dlumberjack\"\u003eLumberjack\u003c/a\u003e for example).\u003c/li\u003e \n \u003cli\u003eA game message will also display high scores for the current chat. Use \u003ca href\u003d\"#setgamescore\"\u003esetGameScore\u003c/a\u003e to post high scores to the chat with the game, add the \u003cem\u003eedit_message\u003c/em\u003e parameter to automatically update the message with the current scoreboard.\u003c/li\u003e \n \u003cli\u003eUse \u003ca href\u003d\"#getgamehighscores\"\u003egetGameHighScores\u003c/a\u003e to get data for in-game high score tables.\u003c/li\u003e \n \u003cli\u003eYou can also add an extra \u003ca href\u003d\"/bots/games#sharing-your-game-to-telegram-chats\"\u003esharing button\u003c/a\u003e for users to share their best score to different chats.\u003c/li\u003e \n \u003cli\u003eFor examples of what can be done using this new stuff, check the \u003ca href\u003d\"https://t.me/gamebot\"\u003e@gamebot\u003c/a\u003e and \u003ca href\u003d\"https://t.me/gamee\"\u003e@gamee\u003c/a\u003e bots.\u003c/li\u003e \n\u003c/ul\u003e",
     "docTypes": [
       {
         "name": "Game",
@@ -8752,7 +9962,24 @@
             "name": "reply_markup",
             "description": "A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e. If empty, one ‘Play game_title’ button will be shown. If not empty, the first button must launch the game.",
             "type": {
-              "name": "InlineKeyboardMarkup"
+              "name": "InlineKeyboardMarkup",
+              "superType": {
+                "validTypes": [
+                  {
+                    "name": "InlineKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardMarkup"
+                  },
+                  {
+                    "name": "ReplyKeyboardRemove"
+                  },
+                  {
+                    "name": "ForceReply"
+                  }
+                ],
+                "name": "KeyboardOption"
+              }
             },
             "required": false
           }
@@ -8828,7 +10055,7 @@
       },
       {
         "name": "getGameHighScores",
-        "description": "\u003cp\u003eUse this method to get data for high score tables. Will return the score of the specified user and several of his neighbors in a game. On success, returns an \u003cem\u003eArray\u003c/em\u003e of \u003ca href\u003d\"#gamehighscore\"\u003eGameHighScore\u003c/a\u003e objects.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eThis method will currently return scores for the target user, plus two of his closest neighbors on each side. Will also return the top three users if the user and his neighbors are not among them. Please note that this behavior is subject to change.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUse this method to get data for high score tables. Will return the score of the specified user and several of their neighbors in a game. On success, returns an \u003cem\u003eArray\u003c/em\u003e of \u003ca href\u003d\"#gamehighscore\"\u003eGameHighScore\u003c/a\u003e objects.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eThis method will currently return scores for the target user, plus two of their closest neighbors on each side. Will also return the top three users if the user and his neighbors are not among them. Please note that this behavior is subject to change.\u003c/p\u003e \n\u003c/blockquote\u003e",
         "docParameters": [
           {
             "name": "user_id",

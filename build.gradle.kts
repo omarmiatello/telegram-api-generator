@@ -1,10 +1,8 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    kotlin("jvm") version "1.3.40"
+    kotlin("jvm") version "1.3.72"
 }
 
-group = "com.github.jacklt.kt"
+group = "com.github.omarmiatello.kt"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -17,6 +15,8 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.5")
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+tasks {
+    compileKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
 }

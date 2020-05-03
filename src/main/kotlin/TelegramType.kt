@@ -1,58 +1,61 @@
-sealed class TelegramType(val name: String) {
+sealed class TelegramType(val name: String, val superType: TelegramType? = findSuper(name)) {
 
-    class Declared(docName: String) : TelegramType(docName) {
-        val superType = TelegramType.allSuper.firstOrNull { docName.startsWith(it.name) }
-    }
+    class Declared(docName: String, superType: TelegramType? = findSuper(docName)) : TelegramType(docName, superType)
 
-    class ListType<T : TelegramType>(val elementType: T) : TelegramType("List<$elementType>")
+    class ListType<T : TelegramType>(val elementType: T) : TelegramType("List<$elementType>", superType = null)
 
-    object Integer : TelegramType("Integer")
-    object StringType : TelegramType("String")
-    object Boolean : TelegramType("Boolean")
-    object Float : TelegramType("Float")
-    object CallbackGame : TelegramType("CallbackGame")
-    object InputFile : TelegramType("InputFile")
+    object Integer : TelegramType("Integer", superType = null)
+    object StringType : TelegramType("String", superType = null)
+    object Boolean : TelegramType("Boolean", superType = null)
+    object Float : TelegramType("Float", superType = null)
+    object CallbackGame : TelegramType("CallbackGame", superType = null)
+    object InputFile : TelegramType("InputFile", superType = null)
+    object ParseMode : TelegramType("ParseMode", superType = null)
 
-    sealed class Super(name: String) : TelegramType(name) {
+    sealed class Super(name: String) : TelegramType(name, superType = null) {
         object InputMedia : Super("InputMedia")
         object InputMessageContent : Super("InputMessageContent")
         object InlineQueryResult : Super("InlineQueryResult")
         object PassportElementError : Super("PassportElementError")
     }
 
-    sealed class WithAlternative(name: String, val validTypes: List<TelegramType>) : TelegramType(name) {
+    sealed class WithAlternative(name: String, val validTypes: List<TelegramType>, superType: TelegramType?) : TelegramType(name, superType) {
         object InputFileOrString : WithAlternative(
-            "InputFile or String",
-            listOf(
-                TelegramType.InputFile,
-                TelegramType.StringType
-            )
+            name = "InputFileOrString",
+            validTypes = listOf(
+                InputFile,
+                StringType
+            ),
+            superType = null
         )
 
         object IntegerOrString : WithAlternative(
-            "Integer or String",
-            listOf(
-                TelegramType.Integer,
-                TelegramType.StringType
-            )
+            name = "IntegerOrString",
+            validTypes = listOf(
+                Integer,
+                StringType
+            ),
+            superType = null
         )
 
         object KeyboardOption : WithAlternative(
-            "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply",
-            listOf(
-                Declared("InlineKeyboardMarkup"),
-                Declared("ReplyKeyboardMarkup"),
-                Declared("ReplyKeyboardRemove"),
-                Declared("ForceReply")
-            )
+            name = "KeyboardOption",
+            validTypes = listOf(
+                Declared("InlineKeyboardMarkup", KeyboardOption),
+                Declared("ReplyKeyboardMarkup", KeyboardOption),
+                Declared("ReplyKeyboardRemove", KeyboardOption),
+                Declared("ForceReply", KeyboardOption)
+            ),
+            superType = null
         )
 
         object InputMediaPhotoOrVideo : WithAlternative(
-            "InputMediaPhoto and InputMediaVideo",
-            listOf(
-                Declared("InputMediaPhoto"),
-                Declared("InputMediaVideo")
-            )
+            name = "InputMediaPhotoOrVideo",
+            validTypes = listOf(
+                Declared("InputMediaPhoto", InputMediaPhotoOrVideo),
+                Declared("InputMediaVideo", InputMediaPhotoOrVideo)
+            ),
+            superType = Super.InputMedia
         )
     }
 
@@ -62,30 +65,37 @@ sealed class TelegramType(val name: String) {
 
     companion object {
         val allSuper = listOf(
-            TelegramType.Super.InputMedia,
-            TelegramType.Super.InputMessageContent,
-            TelegramType.Super.InlineQueryResult,
-            TelegramType.Super.PassportElementError
+            Super.InputMedia,
+            Super.InputMessageContent,
+            Super.InlineQueryResult,
+            Super.PassportElementError,
+            WithAlternative.KeyboardOption,
+            WithAlternative.InputMediaPhotoOrVideo
         )
 
+        private fun findSuper(docName: String) = allSuper.filterIsInstance(WithAlternative::class.java)
+            .firstOrNull { docName in it.validTypes.map { it.name } }
+            ?: allSuper.firstOrNull { docName.startsWith(it.name) }
+
         fun from(type: String): TelegramType = when (type) {
-            "Integer" -> TelegramType.Integer
-            "String" -> TelegramType.StringType
-            "Boolean" -> TelegramType.Boolean
-            "Float" -> TelegramType.Float
-            "CallbackGame" -> TelegramType.CallbackGame
-            "InputMedia" -> TelegramType.Super.InputMedia
-            "InputFile" -> TelegramType.InputFile
-            "InputMessageContent" -> TelegramType.Super.InputMessageContent
-            "InlineQueryResult" -> TelegramType.Super.InlineQueryResult
-            "PassportElementError" -> TelegramType.Super.PassportElementError
-            "InputFile or String" -> TelegramType.WithAlternative.InputFileOrString
-            "Integer or String" -> TelegramType.WithAlternative.IntegerOrString
-            "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply" -> TelegramType.WithAlternative.KeyboardOption
-            "InputMediaPhoto and InputMediaVideo" -> TelegramType.WithAlternative.InputMediaPhotoOrVideo
+            "Integer" -> Integer
+            "String" -> StringType
+            "Boolean" -> Boolean
+            "Float" -> Float
+            "CallbackGame" -> CallbackGame
+            "InputMedia" -> Super.InputMedia
+            "InputFile" -> InputFile
+            "ParseMode" -> ParseMode
+            "InputMessageContent" -> Super.InputMessageContent
+            "InlineQueryResult" -> Super.InlineQueryResult
+            "PassportElementError" -> Super.PassportElementError
+            "InputFileOrString" -> WithAlternative.InputFileOrString
+            "IntegerOrString" -> WithAlternative.IntegerOrString
+            "KeyboardOption" -> WithAlternative.KeyboardOption
+            "InputMediaPhotoOrVideo" -> WithAlternative.InputMediaPhotoOrVideo
             else -> {
                 if (type.startsWith("Array of ")) {
-                    TelegramType.ListType(from(type.removePrefix("Array of ")))
+                    ListType(from(type.removePrefix("Array of ")))
                 } else {
                     Declared(type)
                 }

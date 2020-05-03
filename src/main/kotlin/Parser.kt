@@ -83,12 +83,16 @@ fun Document.toSection(): List<DocSection> {
                                     docFields = tableData.children().map {
                                         it.getElementsByTag("td").let {
                                             val fieldDesc = it[2].html()
-                                            val type = it[1].text().fixTypeStrig()
+                                            val name = it[0].text()
+                                            var type = it[1].text().fixTypeStrig()
+                                            if (name == "parse_mode" && type == "String") {
+                                                type = "ParseMode"
+                                            }
                                             DocField(
-                                                it[0].text(),
-                                                fieldDesc,
-                                                TelegramType.from(type),
-                                                "Optional" !in fieldDesc
+                                                name = name,
+                                                description = fieldDesc,
+                                                type = TelegramType.from(type),
+                                                required = "Optional" !in fieldDesc
                                             )
                                         }
                                     }
@@ -98,12 +102,16 @@ fun Document.toSection(): List<DocSection> {
                                     docParameters = tableData.children().map {
                                         it.getElementsByTag("td").let {
                                             val fieldDesc = it[3].html()
-                                            val type = it[1].text().fixTypeStrig()
+                                            val name = it[0].text()
+                                            var type = it[1].text().fixTypeStrig()
+                                            if (name == "parse_mode" && type == "String") {
+                                                type = "ParseMode"
+                                            }
                                             DocParameter(
-                                                it[0].text(),
-                                                fieldDesc,
-                                                TelegramType.from(type),
-                                                "Yes" == it[2].text()
+                                                name = name,
+                                                description = fieldDesc,
+                                                type = TelegramType.from(type),
+                                                required = "Yes" == it[2].text()
                                             )
                                         }
                                     }
@@ -128,38 +136,44 @@ fun Document.toSection(): List<DocSection> {
                 docMethods = validData.filterIsInstance(DocMethod::class.java)
             )
         }
-        .filterNot {
-            val hasTypes = it.docTypes.isNotEmpty()
-            val hasMethods = it.docMethods.isNotEmpty()
+        .filterNot { section ->
+            val hasTypes = section.docTypes.isNotEmpty()
+            val hasMethods = section.docMethods.isNotEmpty()
             !hasTypes && !hasMethods
         }
-        .also { docSections ->
+        .also { sections ->
             // validate result
-            val unknownTypes = docSections.findUnknownTypes()
+            val unknownTypes = sections.findUnknownTypes()
             if (unknownTypes.isNotEmpty()) error("found unknownTypes: $unknownTypes")
         }
 }
 
 private fun String.fixTypeStrig() = when (this) {
+    "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply" -> "KeyboardOption"
+    "Array of InputMediaPhoto and InputMediaVideo" -> "Array of InputMediaPhotoOrVideo"
+    "InputFile or String" -> "InputFileOrString"
+    "Integer or String" -> "IntegerOrString"
+    "Messages" -> "Array of Message"
     "Float number" -> "Float"
+    "results" -> "Poll"
     "True" -> "Boolean"
     else -> this
 }
 
 private fun List<DocSection>.findUnknownTypes(): List<String> {
-    val declaredTypeMap = this@findUnknownTypes.flatMap { it.docTypes }.associateBy { it.name }
+    val declaredTypeMap = flatMap { section -> section.docTypes }.associateBy { type -> type.name }
     val unknownTypeInDocFields = declaredTypeMap.values.flatMap { type ->
-        type.docFields.mapNotNull {
-            it.type.getTypeWithoutGenerics().name.takeIf {
-                it !in declaredTypeMap && TelegramType.from(it) is TelegramType.Declared
+        type.docFields.mapNotNull { field ->
+            field.type.getTypeWithoutGenerics().name.takeIf { typeName ->
+                typeName !in declaredTypeMap && TelegramType.from(typeName) is TelegramType.Declared
             }
         }
     }
-    val unknownTypeInDocMethods = this@findUnknownTypes.flatMap {
-        it.docMethods.flatMap {
-            it.docParameters.mapNotNull {
-                it.type.getTypeWithoutGenerics().name.takeIf {
-                    it !in declaredTypeMap && TelegramType.from(it) is TelegramType.Declared
+    val unknownTypeInDocMethods = flatMap { section ->
+        section.docMethods.flatMap { method ->
+            method.docParameters.mapNotNull { parameter ->
+                parameter.type.getTypeWithoutGenerics().name.takeIf { typeName ->
+                    typeName !in declaredTypeMap && TelegramType.from(typeName) is TelegramType.Declared
                 }
             }
         }
