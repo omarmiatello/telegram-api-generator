@@ -69,3 +69,20 @@ fun List<DocSection>.toReadmeSmallExample() = buildString {
         }
     }
 }
+
+fun List<DocSection>.toReadmeTinyExample() = buildString {
+    appendln("### Data Types")
+    this@toReadmeTinyExample.forEach { section ->
+            section.docTypes.forEach { dataType ->
+                val parameters = dataType.docFields.map { f -> "${f.name}: ${f.type}" }.joinToString()
+                appendln("    ${dataType.name}($parameters)")
+            }
+    }
+    appendln("\n### Methods")
+    this@toReadmeTinyExample.forEach { section ->
+            section.docMethods.forEach { method ->
+                val parameters = method.docParameters.map { p -> "${p.name}: ${p.type}" }.joinToString()
+                appendln("    ${method.name}($parameters)")
+            }
+    }
+}
