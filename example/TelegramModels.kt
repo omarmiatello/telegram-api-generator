@@ -29,7 +29,7 @@ fun String.parseTelegramRequest() = Update.fromJson(this)
 /**
  * <p>This <a href="#available-types">object</a> represents an incoming update.<br>At most <strong>one</strong> of the optional parameters can be present in any given update.</p>
  *
- * @property update_id The update‘s unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you’re using <a href="#setwebhook">Webhooks</a>, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.
+ * @property update_id The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you're using <a href="#setwebhook">Webhooks</a>, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.
  * @property message <em>Optional</em>. New incoming message of any kind — text, photo, sticker, etc.
  * @property edited_message <em>Optional</em>. New version of a message that is known to the bot and was edited
  * @property channel_post <em>Optional</em>. New incoming channel post of any kind — text, photo, sticker, etc.
@@ -102,9 +102,9 @@ data class WebhookInfo(
  *
  * @property id Unique identifier for this user or bot
  * @property is_bot True, if this user is a bot
- * @property first_name User‘s or bot’s first name
- * @property last_name <em>Optional</em>. User‘s or bot’s last name
- * @property username <em>Optional</em>. User‘s or bot’s username
+ * @property first_name User's or bot's first name
+ * @property last_name <em>Optional</em>. User's or bot's last name
+ * @property username <em>Optional</em>. User's or bot's username
  * @property language_code <em>Optional</em>. <a href="https://en.wikipedia.org/wiki/IETF_language_tag">IETF language tag</a> of the user's language
  * @property can_join_groups <em>Optional</em>. True, if the bot can be invited to groups. Returned only in <a href="#getme">getMe</a>.
  * @property can_read_all_group_messages <em>Optional</em>. True, if <a href="https://core.telegram.org/bots#privacy-mode">privacy mode</a> is disabled for the bot. Returned only in <a href="#getme">getMe</a>.
@@ -187,35 +187,36 @@ data class Chat(
  * @property forward_sender_name <em>Optional</em>. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages
  * @property forward_date <em>Optional</em>. For forwarded messages, date the original message was sent in Unix time
  * @property reply_to_message <em>Optional</em>. For replies, the original message. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply.
+ * @property via_bot <em>Optional</em>. Bot through which the message was sent
  * @property edit_date <em>Optional</em>. Date the message was last edited in Unix time
  * @property media_group_id <em>Optional</em>. The unique identifier of a media message group this message belongs to
  * @property author_signature <em>Optional</em>. Signature of the post author for messages in channels
  * @property text <em>Optional</em>. For text messages, the actual UTF-8 text of the message, 0-4096 characters
  * @property entities <em>Optional</em>. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text
- * @property caption_entities <em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption
+ * @property animation <em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set
  * @property audio <em>Optional</em>. Message is an audio file, information about the file
  * @property document <em>Optional</em>. Message is a general file, information about the file
- * @property animation <em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set
- * @property game <em>Optional</em>. Message is a game, information about the game. <a href="#games">More about games »</a>
  * @property photo <em>Optional</em>. Message is a photo, available sizes of the photo
  * @property sticker <em>Optional</em>. Message is a sticker, information about the sticker
  * @property video <em>Optional</em>. Message is a video, information about the video
- * @property voice <em>Optional</em>. Message is a voice message, information about the file
  * @property video_note <em>Optional</em>. Message is a <a href="https://telegram.org/blog/video-messages-and-telescope">video note</a>, information about the video message
+ * @property voice <em>Optional</em>. Message is a voice message, information about the file
  * @property caption <em>Optional</em>. Caption for the animation, audio, document, photo, video or voice, 0-1024 characters
+ * @property caption_entities <em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption
  * @property contact <em>Optional</em>. Message is a shared contact, information about the contact
- * @property location <em>Optional</em>. Message is a shared location, information about the location
- * @property venue <em>Optional</em>. Message is a venue, information about the venue
- * @property poll <em>Optional</em>. Message is a native poll, information about the poll
  * @property dice <em>Optional</em>. Message is a dice with random value from 1 to 6
+ * @property game <em>Optional</em>. Message is a game, information about the game. <a href="#games">More about games »</a>
+ * @property poll <em>Optional</em>. Message is a native poll, information about the poll
+ * @property venue <em>Optional</em>. Message is a venue, information about the venue. For backward compatibility, when this field is set, the <em>location</em> field will also be set
+ * @property location <em>Optional</em>. Message is a shared location, information about the location
  * @property new_chat_members <em>Optional</em>. New members that were added to the group or supergroup and information about them (the bot itself may be one of these members)
  * @property left_chat_member <em>Optional</em>. A member was removed from the group, information about them (this member may be the bot itself)
  * @property new_chat_title <em>Optional</em>. A chat title was changed to this value
  * @property new_chat_photo <em>Optional</em>. A chat photo was change to this value
  * @property delete_chat_photo <em>Optional</em>. Service message: the chat photo was deleted
  * @property group_chat_created <em>Optional</em>. Service message: the group has been created
- * @property supergroup_chat_created <em>Optional</em>. Service message: the supergroup has been created. This field can‘t be received in a message coming through updates, because bot can’t be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup.
- * @property channel_chat_created <em>Optional</em>. Service message: the channel has been created. This field can‘t be received in a message coming through updates, because bot can’t be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel.
+ * @property supergroup_chat_created <em>Optional</em>. Service message: the supergroup has been created. This field can't be received in a message coming through updates, because bot can't be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup.
+ * @property channel_chat_created <em>Optional</em>. Service message: the channel has been created. This field can't be received in a message coming through updates, because bot can't be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel.
  * @property migrate_to_chat_id <em>Optional</em>. The group has been migrated to a supergroup with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
  * @property migrate_from_chat_id <em>Optional</em>. The supergroup has been migrated from a group with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
  * @property pinned_message <em>Optional</em>. Specified message was pinned. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it is itself a reply.
@@ -240,27 +241,28 @@ data class Message(
     val forward_sender_name: String? = null,
     val forward_date: Int? = null,
     val reply_to_message: Message? = null,
+    val via_bot: User? = null,
     val edit_date: Int? = null,
     val media_group_id: String? = null,
     val author_signature: String? = null,
     val text: String? = null,
     val entities: List<MessageEntity>? = null,
-    val caption_entities: List<MessageEntity>? = null,
+    val animation: Animation? = null,
     val audio: Audio? = null,
     val document: Document? = null,
-    val animation: Animation? = null,
-    val game: Game? = null,
     val photo: List<PhotoSize>? = null,
     val sticker: Sticker? = null,
     val video: Video? = null,
-    val voice: Voice? = null,
     val video_note: VideoNote? = null,
+    val voice: Voice? = null,
     val caption: String? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val contact: Contact? = null,
-    val location: Location? = null,
-    val venue: Venue? = null,
-    val poll: Poll? = null,
     val dice: Dice? = null,
+    val game: Game? = null,
+    val poll: Poll? = null,
+    val venue: Venue? = null,
+    val location: Location? = null,
     val new_chat_members: List<User>? = null,
     val left_chat_member: User? = null,
     val new_chat_title: String? = null,
@@ -328,6 +330,39 @@ data class PhotoSize(
     val file_unique_id: String,
     val width: Int,
     val height: Int,
+    val file_size: Int? = null
+) : TelegramModel() {
+    override fun toJson() = json.stringify(serializer(), this)
+    companion object {
+        fun fromJson(string: String) = json.parse(serializer(), string)
+    }
+}
+
+/**
+ * <p>This object represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).</p>
+ *
+ * @property file_id Identifier for this file, which can be used to download or reuse the file
+ * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+ * @property width Video width as defined by sender
+ * @property height Video height as defined by sender
+ * @property duration Duration of the video in seconds as defined by sender
+ * @property thumb <em>Optional</em>. Animation thumbnail as defined by sender
+ * @property file_name <em>Optional</em>. Original animation filename as defined by sender
+ * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
+ * @property file_size <em>Optional</em>. File size
+ *
+ * @constructor Creates a [Animation].
+ * */
+@Serializable
+data class Animation(
+    val file_id: String,
+    val file_unique_id: String,
+    val width: Int,
+    val height: Int,
+    val duration: Int,
+    val thumb: PhotoSize? = null,
+    val file_name: String? = null,
+    val mime_type: String? = null,
     val file_size: Int? = null
 ) : TelegramModel() {
     override fun toJson() = json.stringify(serializer(), this)
@@ -426,30 +461,24 @@ data class Video(
 }
 
 /**
- * <p>This object represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).</p>
+ * <p>This object represents a <a href="https://telegram.org/blog/video-messages-and-telescope">video message</a> (available in Telegram apps as of <a href="https://telegram.org/blog/video-messages-and-telescope">v.4.0</a>).</p>
  *
  * @property file_id Identifier for this file, which can be used to download or reuse the file
  * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property width Video width as defined by sender
- * @property height Video height as defined by sender
+ * @property length Video width and height (diameter of the video message) as defined by sender
  * @property duration Duration of the video in seconds as defined by sender
- * @property thumb <em>Optional</em>. Animation thumbnail as defined by sender
- * @property file_name <em>Optional</em>. Original animation filename as defined by sender
- * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
+ * @property thumb <em>Optional</em>. Video thumbnail
  * @property file_size <em>Optional</em>. File size
  *
- * @constructor Creates a [Animation].
+ * @constructor Creates a [VideoNote].
  * */
 @Serializable
-data class Animation(
+data class VideoNote(
     val file_id: String,
     val file_unique_id: String,
-    val width: Int,
-    val height: Int,
+    val length: Int,
     val duration: Int,
     val thumb: PhotoSize? = null,
-    val file_name: String? = null,
-    val mime_type: String? = null,
     val file_size: Int? = null
 ) : TelegramModel() {
     override fun toJson() = json.stringify(serializer(), this)
@@ -484,33 +513,6 @@ data class Voice(
 }
 
 /**
- * <p>This object represents a <a href="https://telegram.org/blog/video-messages-and-telescope">video message</a> (available in Telegram apps as of <a href="https://telegram.org/blog/video-messages-and-telescope">v.4.0</a>).</p>
- *
- * @property file_id Identifier for this file, which can be used to download or reuse the file
- * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property length Video width and height (diameter of the video message) as defined by sender
- * @property duration Duration of the video in seconds as defined by sender
- * @property thumb <em>Optional</em>. Video thumbnail
- * @property file_size <em>Optional</em>. File size
- *
- * @constructor Creates a [VideoNote].
- * */
-@Serializable
-data class VideoNote(
-    val file_id: String,
-    val file_unique_id: String,
-    val length: Int,
-    val duration: Int,
-    val thumb: PhotoSize? = null,
-    val file_size: Int? = null
-) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
-
-/**
  * <p>This object represents a phone contact.</p>
  *
  * @property phone_number Contact's phone number
@@ -536,42 +538,17 @@ data class Contact(
 }
 
 /**
- * <p>This object represents a point on the map.</p>
+ * <p>This object represents an animated emoji that displays a random value.</p>
  *
- * @property longitude Longitude as defined by sender
- * @property latitude Latitude as defined by sender
+ * @property emoji Emoji on which the dice throw animation is based
+ * @property value Value of the dice, 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” base emoji, 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” base emoji
  *
- * @constructor Creates a [Location].
+ * @constructor Creates a [Dice].
  * */
 @Serializable
-data class Location(
-    val longitude: Float,
-    val latitude: Float
-) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
-
-/**
- * <p>This object represents a venue.</p>
- *
- * @property location Venue location
- * @property title Name of the venue
- * @property address Address of the venue
- * @property foursquare_id <em>Optional</em>. Foursquare identifier of the venue
- * @property foursquare_type <em>Optional</em>. Foursquare type of the venue. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
- *
- * @constructor Creates a [Venue].
- * */
-@Serializable
-data class Venue(
-    val location: Location,
-    val title: String,
-    val address: String,
-    val foursquare_id: String? = null,
-    val foursquare_type: String? = null
+data class Dice(
+    val emoji: String,
+    val value: Int
 ) : TelegramModel() {
     override fun toJson() = json.stringify(serializer(), this)
     companion object {
@@ -661,17 +638,42 @@ data class Poll(
 }
 
 /**
- * <p>This object represents a dice with a random value from 1 to 6 for currently supported base emoji. (Yes, we're aware of the <em>“proper”</em> singular of <em>die</em>. But it's awkward, and we decided to help it change. One dice at a time!)</p>
+ * <p>This object represents a point on the map.</p>
  *
- * @property emoji Emoji on which the dice throw animation is based
- * @property value Value of the dice, 1-6 for currently supported base emoji
+ * @property longitude Longitude as defined by sender
+ * @property latitude Latitude as defined by sender
  *
- * @constructor Creates a [Dice].
+ * @constructor Creates a [Location].
  * */
 @Serializable
-data class Dice(
-    val emoji: String,
-    val value: Int
+data class Location(
+    val longitude: Float,
+    val latitude: Float
+) : TelegramModel() {
+    override fun toJson() = json.stringify(serializer(), this)
+    companion object {
+        fun fromJson(string: String) = json.parse(serializer(), string)
+    }
+}
+
+/**
+ * <p>This object represents a venue.</p>
+ *
+ * @property location Venue location
+ * @property title Name of the venue
+ * @property address Address of the venue
+ * @property foursquare_id <em>Optional</em>. Foursquare identifier of the venue
+ * @property foursquare_type <em>Optional</em>. Foursquare type of the venue. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
+ *
+ * @constructor Creates a [Venue].
+ * */
+@Serializable
+data class Venue(
+    val location: Location,
+    val title: String,
+    val address: String,
+    val foursquare_id: String? = null,
+    val foursquare_type: String? = null
 ) : TelegramModel() {
     override fun toJson() = json.stringify(serializer(), this)
     companion object {
@@ -729,7 +731,7 @@ data class File(
  * @property keyboard Array of button rows, each represented by an Array of <a href="#keyboardbutton">KeyboardButton</a> objects
  * @property resize_keyboard <em>Optional</em>. Requests clients to resize the keyboard vertically for optimal fit (e.g., make the keyboard smaller if there are just two rows of buttons). Defaults to <em>false</em>, in which case the custom keyboard is always of the same height as the app's standard keyboard.
  * @property one_time_keyboard <em>Optional</em>. Requests clients to hide the keyboard as soon as it's been used. The keyboard will still be available, but clients will automatically display the usual letter-keyboard in the chat – the user can press a special button in the input field to see the custom keyboard again. Defaults to <em>false</em>.
- * @property selective <em>Optional</em>. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the <em>text</em> of the <a href="#message">Message</a> object; 2) if the bot's message is a reply (has <em>reply_to_message_id</em>), sender of the original message.<br><br><em>Example:</em> A user requests to change the bot‘s language, bot replies to the request with a keyboard to select the new language. Other users in the group don’t see the keyboard.
+ * @property selective <em>Optional</em>. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the <em>text</em> of the <a href="#message">Message</a> object; 2) if the bot's message is a reply (has <em>reply_to_message_id</em>), sender of the original message.<br><br><em>Example:</em> A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.
  *
  * @constructor Creates a [ReplyKeyboardMarkup].
  * */
@@ -829,8 +831,8 @@ data class InlineKeyboardMarkup(
  * @property url <em>Optional</em>. HTTP or tg:// url to be opened when button is pressed
  * @property login_url <em>Optional</em>. An HTTP URL used to automatically authorize the user. Can be used as a replacement for the <a href="https://core.telegram.org/widgets/login">Telegram Login Widget</a>.
  * @property callback_data <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when button is pressed, 1-64 bytes
- * @property switch_inline_query <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot‘s username and the specified inline query in the input field. Can be empty, in which case just the bot’s username will be inserted.<br><br><strong>Note:</strong> This offers an easy way for users to start using your bot in <a href="/bots/inline">inline mode</a> when they are currently in a private chat with it. Especially useful when combined with <a href="#answerinlinequery"><em>switch_pm…</em></a> actions – in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen.
- * @property switch_inline_query_current_chat <em>Optional</em>. If set, pressing the button will insert the bot‘s username and the specified inline query in the current chat’s input field. Can be empty, in which case only the bot's username will be inserted.<br><br>This offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options.
+ * @property switch_inline_query <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. Can be empty, in which case just the bot's username will be inserted.<br><br><strong>Note:</strong> This offers an easy way for users to start using your bot in <a href="/bots/inline">inline mode</a> when they are currently in a private chat with it. Especially useful when combined with <a href="#answerinlinequery"><em>switch_pm…</em></a> actions – in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen.
+ * @property switch_inline_query_current_chat <em>Optional</em>. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. Can be empty, in which case only the bot's username will be inserted.<br><br>This offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options.
  * @property callback_game <em>Optional</em>. Description of the game that will be launched when the user presses the button.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row.
  * @property pay <em>Optional</em>. Specify True, to send a <a href="#payments">Pay button</a>.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row.
  *
@@ -910,16 +912,16 @@ data class CallbackQuery(
 }
 
 /**
- * <p>Upon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot‘s message and tapped ’Reply'). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice <a href="/bots#privacy-mode">privacy mode</a>.</p><blockquote> 
+ * <p>Upon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot's message and tapped 'Reply'). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice <a href="/bots#privacy-mode">privacy mode</a>.</p><blockquote> 
  *  <p><strong>Example:</strong> A <a href="https://t.me/PollBot">poll bot</a> for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:</p> 
  *  <ul> 
  *   <li>Explain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.</li> 
- *   <li>Guide the user through a step-by-step process. ‘Please send me your question’, ‘Cool, now let’s add the first answer option‘, ’Great. Keep adding answer options, then send /done when you‘re ready’.</li> 
+ *   <li>Guide the user through a step-by-step process. 'Please send me your question', 'Cool, now let's add the first answer option', 'Great. Keep adding answer options, then send /done when you're ready'.</li> 
  *  </ul> 
- *  <p>The last option is definitely more attractive. And if you use <a href="#forcereply">ForceReply</a> in your bot‘s questions, it will receive the user’s answers even if it only receives replies, commands and mentions — without any extra work for the user.</p> 
+ *  <p>The last option is definitely more attractive. And if you use <a href="#forcereply">ForceReply</a> in your bot's questions, it will receive the user's answers even if it only receives replies, commands and mentions — without any extra work for the user.</p> 
  * </blockquote>
  *
- * @property force_reply Shows reply interface to the user, as if they manually selected the bot‘s message and tapped ’Reply'
+ * @property force_reply Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply'
  * @property selective <em>Optional</em>. Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the <em>text</em> of the <a href="#message">Message</a> object; 2) if the bot's message is a reply (has <em>reply_to_message_id</em>), sender of the original message.
  *
  * @constructor Creates a [ForceReply].
@@ -1108,7 +1110,7 @@ data class InputMediaPhoto(
  *
  * @property type Type of the result, must be <em>video</em>
  * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a>
- * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+ * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
  * @property width <em>Optional</em>. Video width
@@ -1141,7 +1143,7 @@ data class InputMediaVideo(
  *
  * @property type Type of the result, must be <em>animation</em>
  * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a>
- * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+ * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the animation to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details.
  * @property width <em>Optional</em>. Animation width
@@ -1172,7 +1174,7 @@ data class InputMediaAnimation(
  *
  * @property type Type of the result, must be <em>audio</em>
  * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a>
- * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+ * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the audio to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details.
  * @property duration <em>Optional</em>. Duration of the audio in seconds
@@ -1203,7 +1205,7 @@ data class InputMediaAudio(
  *
  * @property type Type of the result, must be <em>document</em>
  * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a>
- * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+ * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the document to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
  *
@@ -1424,7 +1426,8 @@ data class InlineQueryResultPhoto(
  * @property gif_width <em>Optional</em>. Width of the GIF
  * @property gif_height <em>Optional</em>. Height of the GIF
  * @property gif_duration <em>Optional</em>. Duration of the GIF
- * @property thumb_url URL of the static thumbnail for the result (jpeg or gif)
+ * @property thumb_url URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result
+ * @property thumb_mime_type <em>Optional</em>. MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or “video/mp4”. Defaults to “image/jpeg”
  * @property title <em>Optional</em>. Title for the result
  * @property caption <em>Optional</em>. Caption of the GIF file to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details.
@@ -1442,6 +1445,7 @@ data class InlineQueryResultGif(
     val gif_height: Int? = null,
     val gif_duration: Int? = null,
     val thumb_url: String,
+    val thumb_mime_type: String? = null,
     val title: String? = null,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
@@ -1463,7 +1467,8 @@ data class InlineQueryResultGif(
  * @property mpeg4_width <em>Optional</em>. Video width
  * @property mpeg4_height <em>Optional</em>. Video height
  * @property mpeg4_duration <em>Optional</em>. Video duration
- * @property thumb_url URL of the static thumbnail (jpeg or gif) for the result
+ * @property thumb_url URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result
+ * @property thumb_mime_type <em>Optional</em>. MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or “video/mp4”. Defaults to “image/jpeg”
  * @property title <em>Optional</em>. Title for the result
  * @property caption <em>Optional</em>. Caption of the MPEG-4 file to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details.
@@ -1481,6 +1486,7 @@ data class InlineQueryResultMpeg4Gif(
     val mpeg4_height: Int? = null,
     val mpeg4_duration: Int? = null,
     val thumb_url: String,
+    val thumb_mime_type: String? = null,
     val title: String? = null,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
@@ -2688,7 +2694,7 @@ data class Game(
 }
 
 /**
- * <p>This object represents one row of the high scores table for a game.</p><p>And that‘s about all we’ve got for now.<br>If you've got any questions, please check out our <a href="/bots/faq"><strong>Bot FAQ »</strong></a></p>
+ * <p>This object represents one row of the high scores table for a game.</p><p>And that's about all we've got for now.<br>If you've got any questions, please check out our <a href="/bots/faq"><strong>Bot FAQ »</strong></a></p>
  *
  * @property position Position in high score table for the game
  * @property user User
@@ -2744,14 +2750,14 @@ data class GetUpdatesRequest(
 }
 
 /**
- * <p>Use this method to specify a url and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the Webhook request comes from Telegram, we recommend using a secret path in the URL, e.g. <code>https://www.example.com/&lt;token&gt;</code>. Since nobody else knows your bot‘s token, you can be pretty sure it’s us.</p><blockquote> 
+ * <p>Use this method to specify a url and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the Webhook request comes from Telegram, we recommend using a secret path in the URL, e.g. <code>https://www.example.com/&lt;token&gt;</code>. Since nobody else knows your bot's token, you can be pretty sure it's us.</p><blockquote> 
  *  <p><strong>Notes</strong><br><strong>1.</strong> You will not be able to receive updates using <a href="#getupdates">getUpdates</a> for as long as an outgoing webhook is set up.<br><strong>2.</strong> To use a self-signed certificate, you need to upload your <a href="/bots/self-signed">public key certificate</a> using <em>certificate</em> parameter. Please upload as InputFile, sending a String will not work.<br><strong>3.</strong> Ports currently supported <em>for Webhooks</em>: <strong>443, 80, 88, 8443</strong>.</p> 
  *  <p><strong>NEW!</strong> If you're having any trouble setting up webhooks, please check out this <a href="/bots/webhooks">amazing guide to Webhooks</a>.</p> 
  * </blockquote>
  *
  * @property url HTTPS url to send updates to. Use an empty string to remove webhook integration
  * @property certificate Upload your public key certificate so that the root certificate in use can be checked. See our <a href="/bots/self-signed">self-signed guide</a> for details.
- * @property max_connections Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to <em>40</em>. Use lower values to limit the load on your bot‘s server, and higher values to increase your bot’s throughput.
+ * @property max_connections Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to <em>40</em>. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.
  * @property allowed_updates A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.
  * */
 @Serializable
@@ -2867,7 +2873,7 @@ data class SendPhotoRequest(
  * @property duration Duration of the audio in seconds
  * @property performer Performer
  * @property title Track name
- * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+ * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
@@ -2900,7 +2906,7 @@ data class SendAudioRequest(
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property document File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
- * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+ * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption Document caption (may also be used when resending documents by <em>file_id</em>), 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
@@ -2935,7 +2941,7 @@ data class SendDocumentRequest(
  * @property duration Duration of sent video in seconds
  * @property width Video width
  * @property height Video height
- * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+ * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption Video caption (may also be used when resending videos by <em>file_id</em>), 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
  * @property supports_streaming Pass <em>True</em>, if the uploaded video is suitable for streaming
@@ -2975,7 +2981,7 @@ data class SendVideoRequest(
  * @property duration Duration of sent animation in seconds
  * @property width Animation width
  * @property height Animation height
- * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+ * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption Animation caption (may also be used when resending animation by <em>file_id</em>), 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details.
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
@@ -3044,7 +3050,7 @@ data class SendVoiceRequest(
  * @property video_note Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>. Sending video notes by a URL is currently unsupported
  * @property duration Duration of sent video in seconds
  * @property length Video width and height, i.e. diameter of the video message
- * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+ * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
@@ -3290,10 +3296,10 @@ data class SendPollRequest(
 }
 
 /**
- * <p>Use this method to send a dice, which will have a random value from 1 to 6. On success, the sent <a href="#message">Message</a> is returned. (Yes, we're aware of the <em>“proper”</em> singular of <em>die</em>. But it's awkward, and we decided to help it change. One dice at a time!)</p>
+ * <p>Use this method to send an animated emoji that will display a random value. On success, the sent <a href="#message">Message</a> is returned.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property emoji Emoji on which the dice throw animation is based. Currently, must be one of “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” or “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”. Defauts to “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”
+ * @property emoji Emoji on which the dice throw animation is based. Currently, must be one of “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, or “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”. Dice can have values 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, and values 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”. Defaults to “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
@@ -3424,7 +3430,7 @@ data class UnbanChatMemberRequest(
  *
  * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
  * @property user_id Unique identifier of the target user
- * @property permissions New user permissions
+ * @property permissions A JSON-serialized object for new user permissions
  * @property until_date Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever
  * */
 @Serializable
@@ -3620,7 +3626,7 @@ data class SetChatDescriptionRequest(
 }
 
 /**
- * <p>Use this method to pin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns <em>True</em> on success.</p>
+ * <p>Use this method to pin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in the supergroup or 'can_edit_messages' admin right in the channel. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Identifier of a message to pin
@@ -3642,7 +3648,7 @@ data class PinChatMessageRequest(
 }
 
 /**
- * <p>Use this method to unpin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns <em>True</em> on success.</p>
+ * <p>Use this method to unpin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in the supergroup or 'can_edit_messages' admin right in the channel. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * */
@@ -4101,7 +4107,7 @@ data class CreateNewStickerSetRequest(
 data class AddStickerToSetRequest(
     val user_id: Int,
     val name: String,
-    val png_sticker: String,
+    val png_sticker: String? = null,
     val tgs_sticker: @ContextualSerialization Any? = null,
     val emojis: String,
     val mask_position: MaskPosition? = null
@@ -4185,9 +4191,9 @@ data class SetStickerSetThumbRequest(
  * @property results A JSON-serialized array of results for the inline query
  * @property cache_time The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300.
  * @property is_personal Pass <em>True</em>, if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query
- * @property next_offset Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don‘t support pagination. Offset length can’t exceed 64 bytes.
+ * @property next_offset Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes.
  * @property switch_pm_text If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter <em>switch_pm_parameter</em>
- * @property switch_pm_parameter <a href="/bots#deep-linking">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br><br><em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a ‘Connect your YouTube account’ button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an oauth link. Once done, the bot can offer a <a href="#inlinekeyboardmarkup"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.
+ * @property switch_pm_parameter <a href="/bots#deep-linking">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br><br><em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an oauth link. Once done, the bot can offer a <a href="#inlinekeyboardmarkup"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.
  * */
 @Serializable
 data class AnswerInlineQueryRequest(
@@ -4222,7 +4228,7 @@ data class AnswerInlineQueryRequest(
  * @property start_parameter Unique deep-linking parameter that can be used to generate this invoice when used as a start parameter
  * @property currency Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>
  * @property prices Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
- * @property provider_data JSON-encoded data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
+ * @property provider_data A JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
  * @property photo_url URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for.
  * @property photo_size Photo size
  * @property photo_width Photo width
@@ -4352,7 +4358,7 @@ data class SetPassportDataErrorsRequest(
  * @property game_short_name Short name of the game, serves as the unique identifier for the game. Set up your games via <a href="https://t.me/botfather">Botfather</a>.
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
- * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If empty, one ‘Play game_title’ button will be shown. If not empty, the first button must launch the game.
+ * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.
  * */
 @Serializable
 data class SendGameRequest(

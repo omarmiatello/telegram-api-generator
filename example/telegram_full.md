@@ -11,7 +11,7 @@
 
 | name | type | required | description |
 |---|---|---|---|
-| update_id | Integer | true | The update‘s unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you’re using <a href="#setwebhook">Webhooks</a>, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially. |
+| update_id | Integer | true | The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you're using <a href="#setwebhook">Webhooks</a>, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially. |
 | message | Message | false | <em>Optional</em>. New incoming message of any kind — text, photo, sticker, etc. |
 | edited_message | Message | false | <em>Optional</em>. New version of a message that is known to the bot and was edited |
 | channel_post | Message | false | <em>Optional</em>. New incoming channel post of any kind — text, photo, sticker, etc. |
@@ -61,7 +61,7 @@
 
     setWebhook(url: String, certificate: InputFile, max_connections: Integer, allowed_updates: List<String>)
 
-<p>Use this method to specify a url and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the Webhook request comes from Telegram, we recommend using a secret path in the URL, e.g. <code>https://www.example.com/&lt;token&gt;</code>. Since nobody else knows your bot‘s token, you can be pretty sure it’s us.</p><blockquote> 
+<p>Use this method to specify a url and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the Webhook request comes from Telegram, we recommend using a secret path in the URL, e.g. <code>https://www.example.com/&lt;token&gt;</code>. Since nobody else knows your bot's token, you can be pretty sure it's us.</p><blockquote> 
  <p><strong>Notes</strong><br><strong>1.</strong> You will not be able to receive updates using <a href="#getupdates">getUpdates</a> for as long as an outgoing webhook is set up.<br><strong>2.</strong> To use a self-signed certificate, you need to upload your <a href="/bots/self-signed">public key certificate</a> using <em>certificate</em> parameter. Please upload as InputFile, sending a String will not work.<br><strong>3.</strong> Ports currently supported <em>for Webhooks</em>: <strong>443, 80, 88, 8443</strong>.</p> 
  <p><strong>NEW!</strong> If you're having any trouble setting up webhooks, please check out this <a href="/bots/webhooks">amazing guide to Webhooks</a>.</p> 
 </blockquote>
@@ -70,7 +70,7 @@
 |---|---|---|---|
 | url | String | true | HTTPS url to send updates to. Use an empty string to remove webhook integration |
 | certificate | InputFile | false | Upload your public key certificate so that the root certificate in use can be checked. See our <a href="/bots/self-signed">self-signed guide</a> for details. |
-| max_connections | Integer | false | Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to <em>40</em>. Use lower values to limit the load on your bot‘s server, and higher values to increase your bot’s throughput. |
+| max_connections | Integer | false | Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to <em>40</em>. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput. |
 | allowed_updates | List<String> | false | A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time. |
 
 #### deleteWebhook
@@ -100,9 +100,9 @@
 |---|---|---|---|
 | id | Integer | true | Unique identifier for this user or bot |
 | is_bot | Boolean | true | True, if this user is a bot |
-| first_name | String | true | User‘s or bot’s first name |
-| last_name | String | false | <em>Optional</em>. User‘s or bot’s last name |
-| username | String | false | <em>Optional</em>. User‘s or bot’s username |
+| first_name | String | true | User's or bot's first name |
+| last_name | String | false | <em>Optional</em>. User's or bot's last name |
+| username | String | false | <em>Optional</em>. User's or bot's username |
 | language_code | String | false | <em>Optional</em>. <a href="https://en.wikipedia.org/wiki/IETF_language_tag">IETF language tag</a> of the user's language |
 | can_join_groups | Boolean | false | <em>Optional</em>. True, if the bot can be invited to groups. Returned only in <a href="#getme">getMe</a>. |
 | can_read_all_group_messages | Boolean | false | <em>Optional</em>. True, if <a href="https://core.telegram.org/bots#privacy-mode">privacy mode</a> is disabled for the bot. Returned only in <a href="#getme">getMe</a>. |
@@ -133,7 +133,7 @@
 
 #### Message
 
-    Message(message_id: Integer, from: User, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_sender_name: String, forward_date: Integer, reply_to_message: Message, edit_date: Integer, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, caption_entities: List<MessageEntity>, audio: Audio, document: Document, animation: Animation, game: Game, photo: List<PhotoSize>, sticker: Sticker, video: Video, voice: Voice, video_note: VideoNote, caption: String, contact: Contact, location: Location, venue: Venue, poll: Poll, dice: Dice, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData, reply_markup: InlineKeyboardMarkup)
+    Message(message_id: Integer, from: User, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_sender_name: String, forward_date: Integer, reply_to_message: Message, via_bot: User, edit_date: Integer, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData, reply_markup: InlineKeyboardMarkup)
 
 <p>This object represents a message.</p>
 
@@ -150,35 +150,36 @@
 | forward_sender_name | String | false | <em>Optional</em>. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages |
 | forward_date | Integer | false | <em>Optional</em>. For forwarded messages, date the original message was sent in Unix time |
 | reply_to_message | Message | false | <em>Optional</em>. For replies, the original message. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply. |
+| via_bot | User | false | <em>Optional</em>. Bot through which the message was sent |
 | edit_date | Integer | false | <em>Optional</em>. Date the message was last edited in Unix time |
 | media_group_id | String | false | <em>Optional</em>. The unique identifier of a media message group this message belongs to |
 | author_signature | String | false | <em>Optional</em>. Signature of the post author for messages in channels |
 | text | String | false | <em>Optional</em>. For text messages, the actual UTF-8 text of the message, 0-4096 characters |
 | entities | List<MessageEntity> | false | <em>Optional</em>. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text |
-| caption_entities | List<MessageEntity> | false | <em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption |
+| animation | Animation | false | <em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set |
 | audio | Audio | false | <em>Optional</em>. Message is an audio file, information about the file |
 | document | Document | false | <em>Optional</em>. Message is a general file, information about the file |
-| animation | Animation | false | <em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set |
-| game | Game | false | <em>Optional</em>. Message is a game, information about the game. <a href="#games">More about games »</a> |
 | photo | List<PhotoSize> | false | <em>Optional</em>. Message is a photo, available sizes of the photo |
 | sticker | Sticker | false | <em>Optional</em>. Message is a sticker, information about the sticker |
 | video | Video | false | <em>Optional</em>. Message is a video, information about the video |
-| voice | Voice | false | <em>Optional</em>. Message is a voice message, information about the file |
 | video_note | VideoNote | false | <em>Optional</em>. Message is a <a href="https://telegram.org/blog/video-messages-and-telescope">video note</a>, information about the video message |
+| voice | Voice | false | <em>Optional</em>. Message is a voice message, information about the file |
 | caption | String | false | <em>Optional</em>. Caption for the animation, audio, document, photo, video or voice, 0-1024 characters |
+| caption_entities | List<MessageEntity> | false | <em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption |
 | contact | Contact | false | <em>Optional</em>. Message is a shared contact, information about the contact |
-| location | Location | false | <em>Optional</em>. Message is a shared location, information about the location |
-| venue | Venue | false | <em>Optional</em>. Message is a venue, information about the venue |
-| poll | Poll | false | <em>Optional</em>. Message is a native poll, information about the poll |
 | dice | Dice | false | <em>Optional</em>. Message is a dice with random value from 1 to 6 |
+| game | Game | false | <em>Optional</em>. Message is a game, information about the game. <a href="#games">More about games »</a> |
+| poll | Poll | false | <em>Optional</em>. Message is a native poll, information about the poll |
+| venue | Venue | false | <em>Optional</em>. Message is a venue, information about the venue. For backward compatibility, when this field is set, the <em>location</em> field will also be set |
+| location | Location | false | <em>Optional</em>. Message is a shared location, information about the location |
 | new_chat_members | List<User> | false | <em>Optional</em>. New members that were added to the group or supergroup and information about them (the bot itself may be one of these members) |
 | left_chat_member | User | false | <em>Optional</em>. A member was removed from the group, information about them (this member may be the bot itself) |
 | new_chat_title | String | false | <em>Optional</em>. A chat title was changed to this value |
 | new_chat_photo | List<PhotoSize> | false | <em>Optional</em>. A chat photo was change to this value |
 | delete_chat_photo | Boolean | false | <em>Optional</em>. Service message: the chat photo was deleted |
 | group_chat_created | Boolean | false | <em>Optional</em>. Service message: the group has been created |
-| supergroup_chat_created | Boolean | false | <em>Optional</em>. Service message: the supergroup has been created. This field can‘t be received in a message coming through updates, because bot can’t be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup. |
-| channel_chat_created | Boolean | false | <em>Optional</em>. Service message: the channel has been created. This field can‘t be received in a message coming through updates, because bot can’t be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel. |
+| supergroup_chat_created | Boolean | false | <em>Optional</em>. Service message: the supergroup has been created. This field can't be received in a message coming through updates, because bot can't be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup. |
+| channel_chat_created | Boolean | false | <em>Optional</em>. Service message: the channel has been created. This field can't be received in a message coming through updates, because bot can't be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel. |
 | migrate_to_chat_id | Integer | false | <em>Optional</em>. The group has been migrated to a supergroup with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. |
 | migrate_from_chat_id | Integer | false | <em>Optional</em>. The supergroup has been migrated from a group with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. |
 | pinned_message | Message | false | <em>Optional</em>. Specified message was pinned. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it is itself a reply. |
@@ -215,6 +216,24 @@
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
 | width | Integer | true | Photo width |
 | height | Integer | true | Photo height |
+| file_size | Integer | false | <em>Optional</em>. File size |
+
+#### Animation
+
+    Animation(file_id: String, file_unique_id: String, width: Integer, height: Integer, duration: Integer, thumb: PhotoSize, file_name: String, mime_type: String, file_size: Integer)
+
+<p>This object represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
+| file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
+| width | Integer | true | Video width as defined by sender |
+| height | Integer | true | Video height as defined by sender |
+| duration | Integer | true | Duration of the video in seconds as defined by sender |
+| thumb | PhotoSize | false | <em>Optional</em>. Animation thumbnail as defined by sender |
+| file_name | String | false | <em>Optional</em>. Original animation filename as defined by sender |
+| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
 | file_size | Integer | false | <em>Optional</em>. File size |
 
 #### Audio
@@ -266,22 +285,19 @@
 | mime_type | String | false | <em>Optional</em>. Mime type of a file as defined by sender |
 | file_size | Integer | false | <em>Optional</em>. File size |
 
-#### Animation
+#### VideoNote
 
-    Animation(file_id: String, file_unique_id: String, width: Integer, height: Integer, duration: Integer, thumb: PhotoSize, file_name: String, mime_type: String, file_size: Integer)
+    VideoNote(file_id: String, file_unique_id: String, length: Integer, duration: Integer, thumb: PhotoSize, file_size: Integer)
 
-<p>This object represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).</p>
+<p>This object represents a <a href="https://telegram.org/blog/video-messages-and-telescope">video message</a> (available in Telegram apps as of <a href="https://telegram.org/blog/video-messages-and-telescope">v.4.0</a>).</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| width | Integer | true | Video width as defined by sender |
-| height | Integer | true | Video height as defined by sender |
+| length | Integer | true | Video width and height (diameter of the video message) as defined by sender |
 | duration | Integer | true | Duration of the video in seconds as defined by sender |
-| thumb | PhotoSize | false | <em>Optional</em>. Animation thumbnail as defined by sender |
-| file_name | String | false | <em>Optional</em>. Original animation filename as defined by sender |
-| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
+| thumb | PhotoSize | false | <em>Optional</em>. Video thumbnail |
 | file_size | Integer | false | <em>Optional</em>. File size |
 
 #### Voice
@@ -298,21 +314,6 @@
 | mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
 | file_size | Integer | false | <em>Optional</em>. File size |
 
-#### VideoNote
-
-    VideoNote(file_id: String, file_unique_id: String, length: Integer, duration: Integer, thumb: PhotoSize, file_size: Integer)
-
-<p>This object represents a <a href="https://telegram.org/blog/video-messages-and-telescope">video message</a> (available in Telegram apps as of <a href="https://telegram.org/blog/video-messages-and-telescope">v.4.0</a>).</p>
-
-| name | type | required | description |
-|---|---|---|---|
-| file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
-| file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| length | Integer | true | Video width and height (diameter of the video message) as defined by sender |
-| duration | Integer | true | Duration of the video in seconds as defined by sender |
-| thumb | PhotoSize | false | <em>Optional</em>. Video thumbnail |
-| file_size | Integer | false | <em>Optional</em>. File size |
-
 #### Contact
 
     Contact(phone_number: String, first_name: String, last_name: String, user_id: Integer, vcard: String)
@@ -327,30 +328,16 @@
 | user_id | Integer | false | <em>Optional</em>. Contact's user identifier in Telegram |
 | vcard | String | false | <em>Optional</em>. Additional data about the contact in the form of a <a href="https://en.wikipedia.org/wiki/VCard">vCard</a> |
 
-#### Location
+#### Dice
 
-    Location(longitude: Float, latitude: Float)
+    Dice(emoji: String, value: Integer)
 
-<p>This object represents a point on the map.</p>
-
-| name | type | required | description |
-|---|---|---|---|
-| longitude | Float | true | Longitude as defined by sender |
-| latitude | Float | true | Latitude as defined by sender |
-
-#### Venue
-
-    Venue(location: Location, title: String, address: String, foursquare_id: String, foursquare_type: String)
-
-<p>This object represents a venue.</p>
+<p>This object represents an animated emoji that displays a random value.</p>
 
 | name | type | required | description |
 |---|---|---|---|
-| location | Location | true | Venue location |
-| title | String | true | Name of the venue |
-| address | String | true | Address of the venue |
-| foursquare_id | String | false | <em>Optional</em>. Foursquare identifier of the venue |
-| foursquare_type | String | false | <em>Optional</em>. Foursquare type of the venue. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.) |
+| emoji | String | true | Emoji on which the dice throw animation is based |
+| value | Integer | true | Value of the dice, 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” base emoji, 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” base emoji |
 
 #### PollOption
 
@@ -397,16 +384,30 @@
 | open_period | Integer | false | <em>Optional</em>. Amount of time in seconds the poll will be active after creation |
 | close_date | Integer | false | <em>Optional</em>. Point in time (Unix timestamp) when the poll will be automatically closed |
 
-#### Dice
+#### Location
 
-    Dice(emoji: String, value: Integer)
+    Location(longitude: Float, latitude: Float)
 
-<p>This object represents a dice with a random value from 1 to 6 for currently supported base emoji. (Yes, we're aware of the <em>“proper”</em> singular of <em>die</em>. But it's awkward, and we decided to help it change. One dice at a time!)</p>
+<p>This object represents a point on the map.</p>
 
 | name | type | required | description |
 |---|---|---|---|
-| emoji | String | true | Emoji on which the dice throw animation is based |
-| value | Integer | true | Value of the dice, 1-6 for currently supported base emoji |
+| longitude | Float | true | Longitude as defined by sender |
+| latitude | Float | true | Latitude as defined by sender |
+
+#### Venue
+
+    Venue(location: Location, title: String, address: String, foursquare_id: String, foursquare_type: String)
+
+<p>This object represents a venue.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| location | Location | true | Venue location |
+| title | String | true | Name of the venue |
+| address | String | true | Address of the venue |
+| foursquare_id | String | false | <em>Optional</em>. Foursquare identifier of the venue |
+| foursquare_type | String | false | <em>Optional</em>. Foursquare type of the venue. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.) |
 
 #### UserProfilePhotos
 
@@ -445,7 +446,7 @@
 | keyboard | List<List<KeyboardButton>> | true | Array of button rows, each represented by an Array of <a href="#keyboardbutton">KeyboardButton</a> objects |
 | resize_keyboard | Boolean | false | <em>Optional</em>. Requests clients to resize the keyboard vertically for optimal fit (e.g., make the keyboard smaller if there are just two rows of buttons). Defaults to <em>false</em>, in which case the custom keyboard is always of the same height as the app's standard keyboard. |
 | one_time_keyboard | Boolean | false | <em>Optional</em>. Requests clients to hide the keyboard as soon as it's been used. The keyboard will still be available, but clients will automatically display the usual letter-keyboard in the chat – the user can press a special button in the input field to see the custom keyboard again. Defaults to <em>false</em>. |
-| selective | Boolean | false | <em>Optional</em>. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the <em>text</em> of the <a href="#message">Message</a> object; 2) if the bot's message is a reply (has <em>reply_to_message_id</em>), sender of the original message.<br><br><em>Example:</em> A user requests to change the bot‘s language, bot replies to the request with a keyboard to select the new language. Other users in the group don’t see the keyboard. |
+| selective | Boolean | false | <em>Optional</em>. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the <em>text</em> of the <a href="#message">Message</a> object; 2) if the bot's message is a reply (has <em>reply_to_message_id</em>), sender of the original message.<br><br><em>Example:</em> A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard. |
 
 #### KeyboardButton
 
@@ -503,8 +504,8 @@
 | url | String | false | <em>Optional</em>. HTTP or tg:// url to be opened when button is pressed |
 | login_url | LoginUrl | false | <em>Optional</em>. An HTTP URL used to automatically authorize the user. Can be used as a replacement for the <a href="https://core.telegram.org/widgets/login">Telegram Login Widget</a>. |
 | callback_data | String | false | <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when button is pressed, 1-64 bytes |
-| switch_inline_query | String | false | <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot‘s username and the specified inline query in the input field. Can be empty, in which case just the bot’s username will be inserted.<br><br><strong>Note:</strong> This offers an easy way for users to start using your bot in <a href="/bots/inline">inline mode</a> when they are currently in a private chat with it. Especially useful when combined with <a href="#answerinlinequery"><em>switch_pm…</em></a> actions – in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen. |
-| switch_inline_query_current_chat | String | false | <em>Optional</em>. If set, pressing the button will insert the bot‘s username and the specified inline query in the current chat’s input field. Can be empty, in which case only the bot's username will be inserted.<br><br>This offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options. |
+| switch_inline_query | String | false | <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. Can be empty, in which case just the bot's username will be inserted.<br><br><strong>Note:</strong> This offers an easy way for users to start using your bot in <a href="/bots/inline">inline mode</a> when they are currently in a private chat with it. Especially useful when combined with <a href="#answerinlinequery"><em>switch_pm…</em></a> actions – in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen. |
+| switch_inline_query_current_chat | String | false | <em>Optional</em>. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. Can be empty, in which case only the bot's username will be inserted.<br><br>This offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options. |
 | callback_game | CallbackGame | false | <em>Optional</em>. Description of the game that will be launched when the user presses the button.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row. |
 | pay | Boolean | false | <em>Optional</em>. Specify True, to send a <a href="#payments">Pay button</a>.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row. |
 
@@ -545,18 +546,18 @@
 
     ForceReply(force_reply: Boolean, selective: Boolean)
 
-<p>Upon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot‘s message and tapped ’Reply'). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice <a href="/bots#privacy-mode">privacy mode</a>.</p><blockquote> 
+<p>Upon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot's message and tapped 'Reply'). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice <a href="/bots#privacy-mode">privacy mode</a>.</p><blockquote> 
  <p><strong>Example:</strong> A <a href="https://t.me/PollBot">poll bot</a> for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:</p> 
  <ul> 
   <li>Explain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.</li> 
-  <li>Guide the user through a step-by-step process. ‘Please send me your question’, ‘Cool, now let’s add the first answer option‘, ’Great. Keep adding answer options, then send /done when you‘re ready’.</li> 
+  <li>Guide the user through a step-by-step process. 'Please send me your question', 'Cool, now let's add the first answer option', 'Great. Keep adding answer options, then send /done when you're ready'.</li> 
  </ul> 
- <p>The last option is definitely more attractive. And if you use <a href="#forcereply">ForceReply</a> in your bot‘s questions, it will receive the user’s answers even if it only receives replies, commands and mentions — without any extra work for the user.</p> 
+ <p>The last option is definitely more attractive. And if you use <a href="#forcereply">ForceReply</a> in your bot's questions, it will receive the user's answers even if it only receives replies, commands and mentions — without any extra work for the user.</p> 
 </blockquote>
 
 | name | type | required | description |
 |---|---|---|---|
-| force_reply | Boolean | true | Shows reply interface to the user, as if they manually selected the bot‘s message and tapped ’Reply' |
+| force_reply | Boolean | true | Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply' |
 | selective | Boolean | false | <em>Optional</em>. Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the <em>text</em> of the <a href="#message">Message</a> object; 2) if the bot's message is a reply (has <em>reply_to_message_id</em>), sender of the original message. |
 
 #### ChatPhoto
@@ -662,7 +663,7 @@
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>video</em> |
 | media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a> |
-| thumb | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| thumb | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | width | Integer | false | <em>Optional</em>. Video width |
@@ -680,7 +681,7 @@
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>animation</em> |
 | media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a> |
-| thumb | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| thumb | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | <em>Optional</em>. Caption of the animation to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | width | Integer | false | <em>Optional</em>. Animation width |
@@ -697,7 +698,7 @@
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>audio</em> |
 | media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a> |
-| thumb | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| thumb | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | <em>Optional</em>. Caption of the audio to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | duration | Integer | false | <em>Optional</em>. Duration of the audio in seconds |
@@ -714,7 +715,7 @@
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>document</em> |
 | media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a> |
-| thumb | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| thumb | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | <em>Optional</em>. Caption of the document to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details. |
 
@@ -783,7 +784,7 @@
 | duration | Integer | false | Duration of the audio in seconds |
 | performer | String | false | Performer |
 | title | String | false | Track name |
-| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
@@ -798,7 +799,7 @@
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | document | InputFileOrString | true | File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
-| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | Document caption (may also be used when resending documents by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
@@ -818,7 +819,7 @@
 | duration | Integer | false | Duration of sent video in seconds |
 | width | Integer | false | Video width |
 | height | Integer | false | Video height |
-| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | Video caption (may also be used when resending videos by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | supports_streaming | Boolean | false | Pass <em>True</em>, if the uploaded video is suitable for streaming |
@@ -839,7 +840,7 @@
 | duration | Integer | false | Duration of sent animation in seconds |
 | width | Integer | false | Animation width |
 | height | Integer | false | Animation height |
-| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | Animation caption (may also be used when resending animation by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
@@ -875,7 +876,7 @@
 | video_note | InputFileOrString | true | Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>. Sending video notes by a URL is currently unsupported |
 | duration | Integer | false | Duration of sent video in seconds |
 | length | Integer | false | Video width and height, i.e. diameter of the video message |
-| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
@@ -1001,12 +1002,12 @@
 
     sendDice(chat_id: IntegerOrString, emoji: String, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: KeyboardOption)
 
-<p>Use this method to send a dice, which will have a random value from 1 to 6. On success, the sent <a href="#message">Message</a> is returned. (Yes, we're aware of the <em>“proper”</em> singular of <em>die</em>. But it's awkward, and we decided to help it change. One dice at a time!)</p>
+<p>Use this method to send an animated emoji that will display a random value. On success, the sent <a href="#message">Message</a> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| emoji | String | false | Emoji on which the dice throw animation is based. Currently, must be one of “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” or “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”. Defauts to “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” |
+| emoji | String | false | Emoji on which the dice throw animation is based. Currently, must be one of “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, or “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”. Dice can have values 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, and values 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”. Defaults to “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
@@ -1079,7 +1080,7 @@
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>) |
 | user_id | Integer | true | Unique identifier of the target user |
-| permissions | ChatPermissions | true | New user permissions |
+| permissions | ChatPermissions | true | A JSON-serialized object for new user permissions |
 | until_date | Integer | false | Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever |
 
 #### promoteChatMember
@@ -1183,7 +1184,7 @@
 
     pinChatMessage(chat_id: IntegerOrString, message_id: Integer, disable_notification: Boolean)
 
-<p>Use this method to pin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns <em>True</em> on success.</p>
+<p>Use this method to pin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in the supergroup or 'can_edit_messages' admin right in the channel. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1195,7 +1196,7 @@
 
     unpinChatMessage(chat_id: IntegerOrString)
 
-<p>Use this method to unpin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns <em>True</em> on success.</p>
+<p>Use this method to unpin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in the supergroup or 'can_edit_messages' admin right in the channel. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1507,7 +1508,7 @@
 |---|---|---|---|
 | user_id | Integer | true | User identifier of sticker set owner |
 | name | String | true | Sticker set name |
-| png_sticker | InputFileOrString | true | <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
+| png_sticker | InputFileOrString | false | <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
 | tgs_sticker | InputFile | false | <strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/animated_stickers#technical-requirements"></a><a href="https://core.telegram.org/animated_stickers#technical-requirements">https://core.telegram.org/animated_stickers#technical-requirements</a> for technical requirements |
 | emojis | String | true | One or more emoji corresponding to the sticker |
 | mask_position | MaskPosition | false | A JSON-serialized object for position where the mask should be placed on faces |
@@ -1607,7 +1608,7 @@
 
 #### InlineQueryResultGif
 
-    InlineQueryResultGif(type: String, id: String, gif_url: String, gif_width: Integer, gif_height: Integer, gif_duration: Integer, thumb_url: String, title: String, caption: String, parse_mode: ParseMode, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
+    InlineQueryResultGif(type: String, id: String, gif_url: String, gif_width: Integer, gif_height: Integer, gif_duration: Integer, thumb_url: String, thumb_mime_type: String, title: String, caption: String, parse_mode: ParseMode, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
 
 <p>Represents a link to an animated GIF file. By default, this animated GIF file will be sent by the user with optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the animation.</p>
 
@@ -1619,7 +1620,8 @@
 | gif_width | Integer | false | <em>Optional</em>. Width of the GIF |
 | gif_height | Integer | false | <em>Optional</em>. Height of the GIF |
 | gif_duration | Integer | false | <em>Optional</em>. Duration of the GIF |
-| thumb_url | String | true | URL of the static thumbnail for the result (jpeg or gif) |
+| thumb_url | String | true | URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result |
+| thumb_mime_type | String | false | <em>Optional</em>. MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or “video/mp4”. Defaults to “image/jpeg” |
 | title | String | false | <em>Optional</em>. Title for the result |
 | caption | String | false | <em>Optional</em>. Caption of the GIF file to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details. |
@@ -1628,7 +1630,7 @@
 
 #### InlineQueryResultMpeg4Gif
 
-    InlineQueryResultMpeg4Gif(type: String, id: String, mpeg4_url: String, mpeg4_width: Integer, mpeg4_height: Integer, mpeg4_duration: Integer, thumb_url: String, title: String, caption: String, parse_mode: ParseMode, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
+    InlineQueryResultMpeg4Gif(type: String, id: String, mpeg4_url: String, mpeg4_width: Integer, mpeg4_height: Integer, mpeg4_duration: Integer, thumb_url: String, thumb_mime_type: String, title: String, caption: String, parse_mode: ParseMode, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
 
 <p>Represents a link to a video animation (H.264/MPEG-4 AVC video without sound). By default, this animated MPEG-4 file will be sent by the user with optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the animation.</p>
 
@@ -1640,7 +1642,8 @@
 | mpeg4_width | Integer | false | <em>Optional</em>. Video width |
 | mpeg4_height | Integer | false | <em>Optional</em>. Video height |
 | mpeg4_duration | Integer | false | <em>Optional</em>. Video duration |
-| thumb_url | String | true | URL of the static thumbnail (jpeg or gif) for the result |
+| thumb_url | String | true | URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result |
+| thumb_mime_type | String | false | <em>Optional</em>. MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or “video/mp4”. Defaults to “image/jpeg” |
 | title | String | false | <em>Optional</em>. Title for the result |
 | caption | String | false | <em>Optional</em>. Caption of the MPEG-4 file to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details. |
@@ -2021,9 +2024,9 @@
 | results | List<InlineQueryResult> | true | A JSON-serialized array of results for the inline query |
 | cache_time | Integer | false | The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300. |
 | is_personal | Boolean | false | Pass <em>True</em>, if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query |
-| next_offset | String | false | Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don‘t support pagination. Offset length can’t exceed 64 bytes. |
+| next_offset | String | false | Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes. |
 | switch_pm_text | String | false | If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter <em>switch_pm_parameter</em> |
-| switch_pm_parameter | String | false | <a href="/bots#deep-linking">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br><br><em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a ‘Connect your YouTube account’ button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an oauth link. Once done, the bot can offer a <a href="#inlinekeyboardmarkup"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities. |
+| switch_pm_parameter | String | false | <a href="/bots#deep-linking">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br><br><em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an oauth link. Once done, the bot can offer a <a href="#inlinekeyboardmarkup"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities. |
 
 
 
@@ -2158,7 +2161,7 @@
 | start_parameter | String | true | Unique deep-linking parameter that can be used to generate this invoice when used as a start parameter |
 | currency | String | true | Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a> |
 | prices | List<LabeledPrice> | true | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.) |
-| provider_data | String | false | JSON-encoded data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider. |
+| provider_data | String | false | A JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider. |
 | photo_url | String | false | URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for. |
 | photo_size | Integer | false | Photo size |
 | photo_width | Integer | false | Photo width |
@@ -2414,7 +2417,7 @@
 
     GameHighScore(position: Integer, user: User, score: Integer)
 
-<p>This object represents one row of the high scores table for a game.</p><p>And that‘s about all we’ve got for now.<br>If you've got any questions, please check out our <a href="/bots/faq"><strong>Bot FAQ »</strong></a></p>
+<p>This object represents one row of the high scores table for a game.</p><p>And that's about all we've got for now.<br>If you've got any questions, please check out our <a href="/bots/faq"><strong>Bot FAQ »</strong></a></p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -2436,7 +2439,7 @@
 | game_short_name | String | true | Short name of the game, serves as the unique identifier for the game. Set up your games via <a href="https://t.me/botfather">Botfather</a>. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
-| reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If empty, one ‘Play game_title’ button will be shown. If not empty, the first button must launch the game. |
+| reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game. |
 
 #### setGameScore
 

@@ -93,7 +93,7 @@ fun List<DocSection>.toKotlinMethods() = buildString {
     appendln("}")
 }
 
-fun comment(text: String) = buildString {
+private fun comment(text: String) = buildString {
     appendln()
     appendln("// $text")
 }

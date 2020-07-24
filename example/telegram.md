@@ -19,7 +19,7 @@
 
     getUpdates(offset: Integer, limit: Integer, timeout: Integer, allowed_updates: List<String>)
 
-<p>Use this method to specify a url and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the Webhook request comes from Telegram, we recommend using a secret path in the URL, e.g. <code>https://www.example.com/&lt;token&gt;</code>. Since nobody else knows your bot‘s token, you can be pretty sure it’s us.</p><blockquote> 
+<p>Use this method to specify a url and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the Webhook request comes from Telegram, we recommend using a secret path in the URL, e.g. <code>https://www.example.com/&lt;token&gt;</code>. Since nobody else knows your bot's token, you can be pretty sure it's us.</p><blockquote> 
  <p><strong>Notes</strong><br><strong>1.</strong> You will not be able to receive updates using <a href="#getupdates">getUpdates</a> for as long as an outgoing webhook is set up.<br><strong>2.</strong> To use a self-signed certificate, you need to upload your <a href="/bots/self-signed">public key certificate</a> using <em>certificate</em> parameter. Please upload as InputFile, sending a String will not work.<br><strong>3.</strong> Ports currently supported <em>for Webhooks</em>: <strong>443, 80, 88, 8443</strong>.</p> 
  <p><strong>NEW!</strong> If you're having any trouble setting up webhooks, please check out this <a href="/bots/webhooks">amazing guide to Webhooks</a>.</p> 
 </blockquote>
@@ -49,7 +49,7 @@
 
 <p>This object represents a message.</p>
 
-    Message(message_id: Integer, from: User, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_sender_name: String, forward_date: Integer, reply_to_message: Message, edit_date: Integer, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, caption_entities: List<MessageEntity>, audio: Audio, document: Document, animation: Animation, game: Game, photo: List<PhotoSize>, sticker: Sticker, video: Video, voice: Voice, video_note: VideoNote, caption: String, contact: Contact, location: Location, venue: Venue, poll: Poll, dice: Dice, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData, reply_markup: InlineKeyboardMarkup)
+    Message(message_id: Integer, from: User, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_sender_name: String, forward_date: Integer, reply_to_message: Message, via_bot: User, edit_date: Integer, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData, reply_markup: InlineKeyboardMarkup)
 
 <p>This object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc.</p>
 
@@ -58,6 +58,10 @@
 <p>This object represents one size of a photo or a <a href="#document">file</a> / <a href="#sticker">sticker</a> thumbnail.</p>
 
     PhotoSize(file_id: String, file_unique_id: String, width: Integer, height: Integer, file_size: Integer)
+
+<p>This object represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).</p>
+
+    Animation(file_id: String, file_unique_id: String, width: Integer, height: Integer, duration: Integer, thumb: PhotoSize, file_name: String, mime_type: String, file_size: Integer)
 
 <p>This object represents an audio file to be treated as music by the Telegram clients.</p>
 
@@ -71,29 +75,21 @@
 
     Video(file_id: String, file_unique_id: String, width: Integer, height: Integer, duration: Integer, thumb: PhotoSize, mime_type: String, file_size: Integer)
 
-<p>This object represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).</p>
+<p>This object represents a <a href="https://telegram.org/blog/video-messages-and-telescope">video message</a> (available in Telegram apps as of <a href="https://telegram.org/blog/video-messages-and-telescope">v.4.0</a>).</p>
 
-    Animation(file_id: String, file_unique_id: String, width: Integer, height: Integer, duration: Integer, thumb: PhotoSize, file_name: String, mime_type: String, file_size: Integer)
+    VideoNote(file_id: String, file_unique_id: String, length: Integer, duration: Integer, thumb: PhotoSize, file_size: Integer)
 
 <p>This object represents a voice note.</p>
 
     Voice(file_id: String, file_unique_id: String, duration: Integer, mime_type: String, file_size: Integer)
 
-<p>This object represents a <a href="https://telegram.org/blog/video-messages-and-telescope">video message</a> (available in Telegram apps as of <a href="https://telegram.org/blog/video-messages-and-telescope">v.4.0</a>).</p>
-
-    VideoNote(file_id: String, file_unique_id: String, length: Integer, duration: Integer, thumb: PhotoSize, file_size: Integer)
-
 <p>This object represents a phone contact.</p>
 
     Contact(phone_number: String, first_name: String, last_name: String, user_id: Integer, vcard: String)
 
-<p>This object represents a point on the map.</p>
+<p>This object represents an animated emoji that displays a random value.</p>
 
-    Location(longitude: Float, latitude: Float)
-
-<p>This object represents a venue.</p>
-
-    Venue(location: Location, title: String, address: String, foursquare_id: String, foursquare_type: String)
+    Dice(emoji: String, value: Integer)
 
 <p>This object contains information about one answer option in a poll.</p>
 
@@ -107,9 +103,13 @@
 
     Poll(id: String, question: String, options: List<PollOption>, total_voter_count: Integer, is_closed: Boolean, is_anonymous: Boolean, type: String, allows_multiple_answers: Boolean, correct_option_id: Integer, explanation: String, explanation_entities: List<MessageEntity>, open_period: Integer, close_date: Integer)
 
-<p>This object represents a dice with a random value from 1 to 6 for currently supported base emoji. (Yes, we're aware of the <em>“proper”</em> singular of <em>die</em>. But it's awkward, and we decided to help it change. One dice at a time!)</p>
+<p>This object represents a point on the map.</p>
 
-    Dice(emoji: String, value: Integer)
+    Location(longitude: Float, latitude: Float)
+
+<p>This object represents a venue.</p>
+
+    Venue(location: Location, title: String, address: String, foursquare_id: String, foursquare_type: String)
 
 <p>This object represent a user's profile pictures.</p>
 
@@ -157,13 +157,13 @@
 
     CallbackQuery(id: String, from: User, message: Message, inline_message_id: String, chat_instance: String, data: String, game_short_name: String)
 
-<p>Upon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot‘s message and tapped ’Reply'). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice <a href="/bots#privacy-mode">privacy mode</a>.</p><blockquote> 
+<p>Upon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot's message and tapped 'Reply'). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice <a href="/bots#privacy-mode">privacy mode</a>.</p><blockquote> 
  <p><strong>Example:</strong> A <a href="https://t.me/PollBot">poll bot</a> for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:</p> 
  <ul> 
   <li>Explain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.</li> 
-  <li>Guide the user through a step-by-step process. ‘Please send me your question’, ‘Cool, now let’s add the first answer option‘, ’Great. Keep adding answer options, then send /done when you‘re ready’.</li> 
+  <li>Guide the user through a step-by-step process. 'Please send me your question', 'Cool, now let's add the first answer option', 'Great. Keep adding answer options, then send /done when you're ready'.</li> 
  </ul> 
- <p>The last option is definitely more attractive. And if you use <a href="#forcereply">ForceReply</a> in your bot‘s questions, it will receive the user’s answers even if it only receives replies, commands and mentions — without any extra work for the user.</p> 
+ <p>The last option is definitely more attractive. And if you use <a href="#forcereply">ForceReply</a> in your bot's questions, it will receive the user's answers even if it only receives replies, commands and mentions — without any extra work for the user.</p> 
 </blockquote>
 
     ForceReply(force_reply: Boolean, selective: Boolean)
@@ -277,7 +277,7 @@
 
     sendPoll(chat_id: IntegerOrString, question: String, options: List<String>, is_anonymous: Boolean, type: String, allows_multiple_answers: Boolean, correct_option_id: Integer, explanation: String, explanation_parse_mode: String, open_period: Integer, close_date: Integer, is_closed: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: KeyboardOption)
 
-<p>Use this method to send a dice, which will have a random value from 1 to 6. On success, the sent <a href="#message">Message</a> is returned. (Yes, we're aware of the <em>“proper”</em> singular of <em>die</em>. But it's awkward, and we decided to help it change. One dice at a time!)</p>
+<p>Use this method to send an animated emoji that will display a random value. On success, the sent <a href="#message">Message</a> is returned.</p>
 
     sendDice(chat_id: IntegerOrString, emoji: String, disable_notification: Boolean, reply_to_message_id: Integer, reply_markup: KeyboardOption)
 
@@ -341,11 +341,11 @@
 
     setChatDescription(chat_id: IntegerOrString, description: String)
 
-<p>Use this method to pin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns <em>True</em> on success.</p>
+<p>Use this method to pin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in the supergroup or 'can_edit_messages' admin right in the channel. Returns <em>True</em> on success.</p>
 
     pinChatMessage(chat_id: IntegerOrString, message_id: Integer, disable_notification: Boolean)
 
-<p>Use this method to unpin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns <em>True</em> on success.</p>
+<p>Use this method to unpin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in the supergroup or 'can_edit_messages' admin right in the channel. Returns <em>True</em> on success.</p>
 
     unpinChatMessage(chat_id: IntegerOrString)
 
@@ -490,11 +490,11 @@
 
 <p>Represents a link to an animated GIF file. By default, this animated GIF file will be sent by the user with optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the animation.</p>
 
-    InlineQueryResultGif(type: String, id: String, gif_url: String, gif_width: Integer, gif_height: Integer, gif_duration: Integer, thumb_url: String, title: String, caption: String, parse_mode: ParseMode, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
+    InlineQueryResultGif(type: String, id: String, gif_url: String, gif_width: Integer, gif_height: Integer, gif_duration: Integer, thumb_url: String, thumb_mime_type: String, title: String, caption: String, parse_mode: ParseMode, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
 
 <p>Represents a link to a video animation (H.264/MPEG-4 AVC video without sound). By default, this animated MPEG-4 file will be sent by the user with optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the animation.</p>
 
-    InlineQueryResultMpeg4Gif(type: String, id: String, mpeg4_url: String, mpeg4_width: Integer, mpeg4_height: Integer, mpeg4_duration: Integer, thumb_url: String, title: String, caption: String, parse_mode: ParseMode, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
+    InlineQueryResultMpeg4Gif(type: String, id: String, mpeg4_url: String, mpeg4_width: Integer, mpeg4_height: Integer, mpeg4_duration: Integer, thumb_url: String, thumb_mime_type: String, title: String, caption: String, parse_mode: ParseMode, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
 
 <p>Represents a link to a page containing an embedded video player or a video file. By default, this video file will be sent by the user with an optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the video.</p><blockquote> 
  <p>If an InlineQueryResultVideo message contains an embedded video (e.g., YouTube), you <strong>must</strong> replace its content using <em>input_message_content</em>.</p> 
@@ -711,7 +711,7 @@
 
     Game(title: String, description: String, photo: List<PhotoSize>, text: String, text_entities: List<MessageEntity>, animation: Animation)
 
-<p>This object represents one row of the high scores table for a game.</p><p>And that‘s about all we’ve got for now.<br>If you've got any questions, please check out our <a href="/bots/faq"><strong>Bot FAQ »</strong></a></p>
+<p>This object represents one row of the high scores table for a game.</p><p>And that's about all we've got for now.<br>If you've got any questions, please check out our <a href="/bots/faq"><strong>Bot FAQ »</strong></a></p>
 
     GameHighScore(position: Integer, user: User, score: Integer)
 

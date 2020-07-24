@@ -11,4 +11,5 @@ fun main() {
     File("example/TelegramModelsOnly.kt").writeText(docs.toKotlinModels(useKotlinXSerialization = false))
     File("example/TelegramModels.kt").writeText(docs.toKotlinModels(useKotlinXSerialization = true))
     File("example/TelegramClient.kt").writeText(docs.toKotlinMethods())
+    File("example/TelegramModels.rs").writeText(docs.toRustModels())
 }

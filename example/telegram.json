@@ -9,7 +9,7 @@
         "docFields": [
           {
             "name": "update_id",
-            "description": "The update‘s unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you’re using \u003ca href\u003d\"#setwebhook\"\u003eWebhooks\u003c/a\u003e, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.",
+            "description": "The update\u0027s unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you\u0027re using \u003ca href\u003d\"#setwebhook\"\u003eWebhooks\u003c/a\u003e, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.",
             "type": {
               "name": "Integer"
             },
@@ -221,7 +221,7 @@
       },
       {
         "name": "setWebhook",
-        "description": "\u003cp\u003eUse this method to specify a url and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e\u003cp\u003eIf you\u0027d like to make sure that the Webhook request comes from Telegram, we recommend using a secret path in the URL, e.g. \u003ccode\u003ehttps://www.example.com/\u0026lt;token\u0026gt;\u003c/code\u003e. Since nobody else knows your bot‘s token, you can be pretty sure it’s us.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003e\u003cstrong\u003eNotes\u003c/strong\u003e\u003cbr\u003e\u003cstrong\u003e1.\u003c/strong\u003e You will not be able to receive updates using \u003ca href\u003d\"#getupdates\"\u003egetUpdates\u003c/a\u003e for as long as an outgoing webhook is set up.\u003cbr\u003e\u003cstrong\u003e2.\u003c/strong\u003e To use a self-signed certificate, you need to upload your \u003ca href\u003d\"/bots/self-signed\"\u003epublic key certificate\u003c/a\u003e using \u003cem\u003ecertificate\u003c/em\u003e parameter. Please upload as InputFile, sending a String will not work.\u003cbr\u003e\u003cstrong\u003e3.\u003c/strong\u003e Ports currently supported \u003cem\u003efor Webhooks\u003c/em\u003e: \u003cstrong\u003e443, 80, 88, 8443\u003c/strong\u003e.\u003c/p\u003e \n \u003cp\u003e\u003cstrong\u003eNEW!\u003c/strong\u003e If you\u0027re having any trouble setting up webhooks, please check out this \u003ca href\u003d\"/bots/webhooks\"\u003eamazing guide to Webhooks\u003c/a\u003e.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUse this method to specify a url and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e\u003cp\u003eIf you\u0027d like to make sure that the Webhook request comes from Telegram, we recommend using a secret path in the URL, e.g. \u003ccode\u003ehttps://www.example.com/\u0026lt;token\u0026gt;\u003c/code\u003e. Since nobody else knows your bot\u0027s token, you can be pretty sure it\u0027s us.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003e\u003cstrong\u003eNotes\u003c/strong\u003e\u003cbr\u003e\u003cstrong\u003e1.\u003c/strong\u003e You will not be able to receive updates using \u003ca href\u003d\"#getupdates\"\u003egetUpdates\u003c/a\u003e for as long as an outgoing webhook is set up.\u003cbr\u003e\u003cstrong\u003e2.\u003c/strong\u003e To use a self-signed certificate, you need to upload your \u003ca href\u003d\"/bots/self-signed\"\u003epublic key certificate\u003c/a\u003e using \u003cem\u003ecertificate\u003c/em\u003e parameter. Please upload as InputFile, sending a String will not work.\u003cbr\u003e\u003cstrong\u003e3.\u003c/strong\u003e Ports currently supported \u003cem\u003efor Webhooks\u003c/em\u003e: \u003cstrong\u003e443, 80, 88, 8443\u003c/strong\u003e.\u003c/p\u003e \n \u003cp\u003e\u003cstrong\u003eNEW!\u003c/strong\u003e If you\u0027re having any trouble setting up webhooks, please check out this \u003ca href\u003d\"/bots/webhooks\"\u003eamazing guide to Webhooks\u003c/a\u003e.\u003c/p\u003e \n\u003c/blockquote\u003e",
         "docParameters": [
           {
             "name": "url",
@@ -241,7 +241,7 @@
           },
           {
             "name": "max_connections",
-            "description": "Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to \u003cem\u003e40\u003c/em\u003e. Use lower values to limit the load on your bot‘s server, and higher values to increase your bot’s throughput.",
+            "description": "Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to \u003cem\u003e40\u003c/em\u003e. Use lower values to limit the load on your bot\u0027s server, and higher values to increase your bot\u0027s throughput.",
             "type": {
               "name": "Integer"
             },
@@ -307,7 +307,7 @@
           },
           {
             "name": "first_name",
-            "description": "User‘s or bot’s first name",
+            "description": "User\u0027s or bot\u0027s first name",
             "type": {
               "name": "String"
             },
@@ -315,7 +315,7 @@
           },
           {
             "name": "last_name",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. User‘s or bot’s last name",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. User\u0027s or bot\u0027s last name",
             "type": {
               "name": "String"
             },
@@ -323,7 +323,7 @@
           },
           {
             "name": "username",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. User‘s or bot’s username",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. User\u0027s or bot\u0027s username",
             "type": {
               "name": "String"
             },
@@ -574,6 +574,14 @@
             "required": false
           },
           {
+            "name": "via_bot",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Bot through which the message was sent",
+            "type": {
+              "name": "User"
+            },
+            "required": false
+          },
+          {
             "name": "edit_date",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Date the message was last edited in Unix time",
             "type": {
@@ -617,13 +625,10 @@
             "required": false
           },
           {
-            "name": "caption_entities",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption",
+            "name": "animation",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is an animation, information about the animation. For backward compatibility, when this field is set, the \u003cem\u003edocument\u003c/em\u003e field will also be set",
             "type": {
-              "elementType": {
-                "name": "MessageEntity"
-              },
-              "name": "List\u003cMessageEntity\u003e"
+              "name": "Animation"
             },
             "required": false
           },
@@ -640,22 +645,6 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a general file, information about the file",
             "type": {
               "name": "Document"
-            },
-            "required": false
-          },
-          {
-            "name": "animation",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is an animation, information about the animation. For backward compatibility, when this field is set, the \u003cem\u003edocument\u003c/em\u003e field will also be set",
-            "type": {
-              "name": "Animation"
-            },
-            "required": false
-          },
-          {
-            "name": "game",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a game, information about the game. \u003ca href\u003d\"#games\"\u003eMore about games »\u003c/a\u003e",
-            "type": {
-              "name": "Game"
             },
             "required": false
           },
@@ -687,18 +676,18 @@
             "required": false
           },
           {
-            "name": "voice",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a voice message, information about the file",
-            "type": {
-              "name": "Voice"
-            },
-            "required": false
-          },
-          {
             "name": "video_note",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a \u003ca href\u003d\"https://telegram.org/blog/video-messages-and-telescope\"\u003evideo note\u003c/a\u003e, information about the video message",
             "type": {
               "name": "VideoNote"
+            },
+            "required": false
+          },
+          {
+            "name": "voice",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a voice message, information about the file",
+            "type": {
+              "name": "Voice"
             },
             "required": false
           },
@@ -711,6 +700,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "contact",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a shared contact, information about the contact",
             "type": {
@@ -719,18 +719,18 @@
             "required": false
           },
           {
-            "name": "location",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a shared location, information about the location",
+            "name": "dice",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a dice with random value from 1 to 6",
             "type": {
-              "name": "Location"
+              "name": "Dice"
             },
             "required": false
           },
           {
-            "name": "venue",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a venue, information about the venue",
+            "name": "game",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a game, information about the game. \u003ca href\u003d\"#games\"\u003eMore about games »\u003c/a\u003e",
             "type": {
-              "name": "Venue"
+              "name": "Game"
             },
             "required": false
           },
@@ -743,10 +743,18 @@
             "required": false
           },
           {
-            "name": "dice",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a dice with random value from 1 to 6",
+            "name": "venue",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a venue, information about the venue. For backward compatibility, when this field is set, the \u003cem\u003elocation\u003c/em\u003e field will also be set",
             "type": {
-              "name": "Dice"
+              "name": "Venue"
+            },
+            "required": false
+          },
+          {
+            "name": "location",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a shared location, information about the location",
+            "type": {
+              "name": "Location"
             },
             "required": false
           },
@@ -806,7 +814,7 @@
           },
           {
             "name": "supergroup_chat_created",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: the supergroup has been created. This field can‘t be received in a message coming through updates, because bot can’t be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: the supergroup has been created. This field can\u0027t be received in a message coming through updates, because bot can\u0027t be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup.",
             "type": {
               "name": "Boolean"
             },
@@ -814,7 +822,7 @@
           },
           {
             "name": "channel_chat_created",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: the channel has been created. This field can‘t be received in a message coming through updates, because bot can’t be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: the channel has been created. This field can\u0027t be received in a message coming through updates, because bot can\u0027t be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel.",
             "type": {
               "name": "Boolean"
             },
@@ -992,6 +1000,84 @@
               "name": "Integer"
             },
             "required": true
+          },
+          {
+            "name": "file_size",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          }
+        ]
+      },
+      {
+        "name": "Animation",
+        "description": "\u003cp\u003eThis object represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "file_id",
+            "description": "Identifier for this file, which can be used to download or reuse the file",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "file_unique_id",
+            "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can\u0027t be used to download or reuse the file.",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "width",
+            "description": "Video width as defined by sender",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          },
+          {
+            "name": "height",
+            "description": "Video height as defined by sender",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          },
+          {
+            "name": "duration",
+            "description": "Duration of the video in seconds as defined by sender",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          },
+          {
+            "name": "thumb",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Animation thumbnail as defined by sender",
+            "type": {
+              "name": "PhotoSize"
+            },
+            "required": false
+          },
+          {
+            "name": "file_name",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Original animation filename as defined by sender",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "mime_type",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. MIME type of the file as defined by sender",
+            "type": {
+              "name": "String"
+            },
+            "required": false
           },
           {
             "name": "file_size",
@@ -1198,8 +1284,8 @@
         ]
       },
       {
-        "name": "Animation",
-        "description": "\u003cp\u003eThis object represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).\u003c/p\u003e",
+        "name": "VideoNote",
+        "description": "\u003cp\u003eThis object represents a \u003ca href\u003d\"https://telegram.org/blog/video-messages-and-telescope\"\u003evideo message\u003c/a\u003e (available in Telegram apps as of \u003ca href\u003d\"https://telegram.org/blog/video-messages-and-telescope\"\u003ev.4.0\u003c/a\u003e).\u003c/p\u003e",
         "docFields": [
           {
             "name": "file_id",
@@ -1218,16 +1304,8 @@
             "required": true
           },
           {
-            "name": "width",
-            "description": "Video width as defined by sender",
-            "type": {
-              "name": "Integer"
-            },
-            "required": true
-          },
-          {
-            "name": "height",
-            "description": "Video height as defined by sender",
+            "name": "length",
+            "description": "Video width and height (diameter of the video message) as defined by sender",
             "type": {
               "name": "Integer"
             },
@@ -1243,25 +1321,9 @@
           },
           {
             "name": "thumb",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Animation thumbnail as defined by sender",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Video thumbnail",
             "type": {
               "name": "PhotoSize"
-            },
-            "required": false
-          },
-          {
-            "name": "file_name",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Original animation filename as defined by sender",
-            "type": {
-              "name": "String"
-            },
-            "required": false
-          },
-          {
-            "name": "mime_type",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. MIME type of the file as defined by sender",
-            "type": {
-              "name": "String"
             },
             "required": false
           },
@@ -1322,60 +1384,6 @@
         ]
       },
       {
-        "name": "VideoNote",
-        "description": "\u003cp\u003eThis object represents a \u003ca href\u003d\"https://telegram.org/blog/video-messages-and-telescope\"\u003evideo message\u003c/a\u003e (available in Telegram apps as of \u003ca href\u003d\"https://telegram.org/blog/video-messages-and-telescope\"\u003ev.4.0\u003c/a\u003e).\u003c/p\u003e",
-        "docFields": [
-          {
-            "name": "file_id",
-            "description": "Identifier for this file, which can be used to download or reuse the file",
-            "type": {
-              "name": "String"
-            },
-            "required": true
-          },
-          {
-            "name": "file_unique_id",
-            "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can\u0027t be used to download or reuse the file.",
-            "type": {
-              "name": "String"
-            },
-            "required": true
-          },
-          {
-            "name": "length",
-            "description": "Video width and height (diameter of the video message) as defined by sender",
-            "type": {
-              "name": "Integer"
-            },
-            "required": true
-          },
-          {
-            "name": "duration",
-            "description": "Duration of the video in seconds as defined by sender",
-            "type": {
-              "name": "Integer"
-            },
-            "required": true
-          },
-          {
-            "name": "thumb",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Video thumbnail",
-            "type": {
-              "name": "PhotoSize"
-            },
-            "required": false
-          },
-          {
-            "name": "file_size",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size",
-            "type": {
-              "name": "Integer"
-            },
-            "required": false
-          }
-        ]
-      },
-      {
         "name": "Contact",
         "description": "\u003cp\u003eThis object represents a phone contact.\u003c/p\u003e",
         "docFields": [
@@ -1422,70 +1430,24 @@
         ]
       },
       {
-        "name": "Location",
-        "description": "\u003cp\u003eThis object represents a point on the map.\u003c/p\u003e",
+        "name": "Dice",
+        "description": "\u003cp\u003eThis object represents an animated emoji that displays a random value.\u003c/p\u003e",
         "docFields": [
           {
-            "name": "longitude",
-            "description": "Longitude as defined by sender",
-            "type": {
-              "name": "Float"
-            },
-            "required": true
-          },
-          {
-            "name": "latitude",
-            "description": "Latitude as defined by sender",
-            "type": {
-              "name": "Float"
-            },
-            "required": true
-          }
-        ]
-      },
-      {
-        "name": "Venue",
-        "description": "\u003cp\u003eThis object represents a venue.\u003c/p\u003e",
-        "docFields": [
-          {
-            "name": "location",
-            "description": "Venue location",
-            "type": {
-              "name": "Location"
-            },
-            "required": true
-          },
-          {
-            "name": "title",
-            "description": "Name of the venue",
+            "name": "emoji",
+            "description": "Emoji on which the dice throw animation is based",
             "type": {
               "name": "String"
             },
             "required": true
           },
           {
-            "name": "address",
-            "description": "Address of the venue",
+            "name": "value",
+            "description": "Value of the dice, 1-6 for “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB2.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎲\"\u003e” and “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EAF.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎯\"\u003e” base emoji, 1-5 for “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8F80.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🏀\"\u003e” base emoji",
             "type": {
-              "name": "String"
+              "name": "Integer"
             },
             "required": true
-          },
-          {
-            "name": "foursquare_id",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Foursquare identifier of the venue",
-            "type": {
-              "name": "String"
-            },
-            "required": false
-          },
-          {
-            "name": "foursquare_type",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Foursquare type of the venue. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)",
-            "type": {
-              "name": "String"
-            },
-            "required": false
           }
         ]
       },
@@ -1661,24 +1623,70 @@
         ]
       },
       {
-        "name": "Dice",
-        "description": "\u003cp\u003eThis object represents a dice with a random value from 1 to 6 for currently supported base emoji. (Yes, we\u0027re aware of the \u003cem\u003e“proper”\u003c/em\u003e singular of \u003cem\u003edie\u003c/em\u003e. But it\u0027s awkward, and we decided to help it change. One dice at a time!)\u003c/p\u003e",
+        "name": "Location",
+        "description": "\u003cp\u003eThis object represents a point on the map.\u003c/p\u003e",
         "docFields": [
           {
-            "name": "emoji",
-            "description": "Emoji on which the dice throw animation is based",
+            "name": "longitude",
+            "description": "Longitude as defined by sender",
+            "type": {
+              "name": "Float"
+            },
+            "required": true
+          },
+          {
+            "name": "latitude",
+            "description": "Latitude as defined by sender",
+            "type": {
+              "name": "Float"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "Venue",
+        "description": "\u003cp\u003eThis object represents a venue.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "location",
+            "description": "Venue location",
+            "type": {
+              "name": "Location"
+            },
+            "required": true
+          },
+          {
+            "name": "title",
+            "description": "Name of the venue",
             "type": {
               "name": "String"
             },
             "required": true
           },
           {
-            "name": "value",
-            "description": "Value of the dice, 1-6 for currently supported base emoji",
+            "name": "address",
+            "description": "Address of the venue",
             "type": {
-              "name": "Integer"
+              "name": "String"
             },
             "required": true
+          },
+          {
+            "name": "foursquare_id",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Foursquare identifier of the venue",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "foursquare_type",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Foursquare type of the venue. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)",
+            "type": {
+              "name": "String"
+            },
+            "required": false
           }
         ]
       },
@@ -1784,7 +1792,7 @@
           },
           {
             "name": "selective",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the \u003cem\u003etext\u003c/em\u003e of the \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e object; 2) if the bot\u0027s message is a reply (has \u003cem\u003ereply_to_message_id\u003c/em\u003e), sender of the original message.\u003cbr\u003e\u003cbr\u003e\u003cem\u003eExample:\u003c/em\u003e A user requests to change the bot‘s language, bot replies to the request with a keyboard to select the new language. Other users in the group don’t see the keyboard.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the \u003cem\u003etext\u003c/em\u003e of the \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e object; 2) if the bot\u0027s message is a reply (has \u003cem\u003ereply_to_message_id\u003c/em\u003e), sender of the original message.\u003cbr\u003e\u003cbr\u003e\u003cem\u003eExample:\u003c/em\u003e A user requests to change the bot\u0027s language, bot replies to the request with a keyboard to select the new language. Other users in the group don\u0027t see the keyboard.",
             "type": {
               "name": "Boolean"
             },
@@ -1924,7 +1932,7 @@
           },
           {
             "name": "switch_inline_query",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot‘s username and the specified inline query in the input field. Can be empty, in which case just the bot’s username will be inserted.\u003cbr\u003e\u003cbr\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This offers an easy way for users to start using your bot in \u003ca href\u003d\"/bots/inline\"\u003einline mode\u003c/a\u003e when they are currently in a private chat with it. Especially useful when combined with \u003ca href\u003d\"#answerinlinequery\"\u003e\u003cem\u003eswitch_pm…\u003c/em\u003e\u003c/a\u003e actions – in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot\u0027s username and the specified inline query in the input field. Can be empty, in which case just the bot\u0027s username will be inserted.\u003cbr\u003e\u003cbr\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This offers an easy way for users to start using your bot in \u003ca href\u003d\"/bots/inline\"\u003einline mode\u003c/a\u003e when they are currently in a private chat with it. Especially useful when combined with \u003ca href\u003d\"#answerinlinequery\"\u003e\u003cem\u003eswitch_pm…\u003c/em\u003e\u003c/a\u003e actions – in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen.",
             "type": {
               "name": "String"
             },
@@ -1932,7 +1940,7 @@
           },
           {
             "name": "switch_inline_query_current_chat",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. If set, pressing the button will insert the bot‘s username and the specified inline query in the current chat’s input field. Can be empty, in which case only the bot\u0027s username will be inserted.\u003cbr\u003e\u003cbr\u003eThis offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. If set, pressing the button will insert the bot\u0027s username and the specified inline query in the current chat\u0027s input field. Can be empty, in which case only the bot\u0027s username will be inserted.\u003cbr\u003e\u003cbr\u003eThis offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options.",
             "type": {
               "name": "String"
             },
@@ -2058,11 +2066,11 @@
       },
       {
         "name": "ForceReply",
-        "description": "\u003cp\u003eUpon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot‘s message and tapped ’Reply\u0027). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice \u003ca href\u003d\"/bots#privacy-mode\"\u003eprivacy mode\u003c/a\u003e.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003e\u003cstrong\u003eExample:\u003c/strong\u003e A \u003ca href\u003d\"https://t.me/PollBot\"\u003epoll bot\u003c/a\u003e for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:\u003c/p\u003e \n \u003cul\u003e \n  \u003cli\u003eExplain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.\u003c/li\u003e \n  \u003cli\u003eGuide the user through a step-by-step process. ‘Please send me your question’, ‘Cool, now let’s add the first answer option‘, ’Great. Keep adding answer options, then send /done when you‘re ready’.\u003c/li\u003e \n \u003c/ul\u003e \n \u003cp\u003eThe last option is definitely more attractive. And if you use \u003ca href\u003d\"#forcereply\"\u003eForceReply\u003c/a\u003e in your bot‘s questions, it will receive the user’s answers even if it only receives replies, commands and mentions — without any extra work for the user.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUpon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot\u0027s message and tapped \u0027Reply\u0027). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice \u003ca href\u003d\"/bots#privacy-mode\"\u003eprivacy mode\u003c/a\u003e.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003e\u003cstrong\u003eExample:\u003c/strong\u003e A \u003ca href\u003d\"https://t.me/PollBot\"\u003epoll bot\u003c/a\u003e for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:\u003c/p\u003e \n \u003cul\u003e \n  \u003cli\u003eExplain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.\u003c/li\u003e \n  \u003cli\u003eGuide the user through a step-by-step process. \u0027Please send me your question\u0027, \u0027Cool, now let\u0027s add the first answer option\u0027, \u0027Great. Keep adding answer options, then send /done when you\u0027re ready\u0027.\u003c/li\u003e \n \u003c/ul\u003e \n \u003cp\u003eThe last option is definitely more attractive. And if you use \u003ca href\u003d\"#forcereply\"\u003eForceReply\u003c/a\u003e in your bot\u0027s questions, it will receive the user\u0027s answers even if it only receives replies, commands and mentions — without any extra work for the user.\u003c/p\u003e \n\u003c/blockquote\u003e",
         "docFields": [
           {
             "name": "force_reply",
-            "description": "Shows reply interface to the user, as if they manually selected the bot‘s message and tapped ’Reply\u0027",
+            "description": "Shows reply interface to the user, as if they manually selected the bot\u0027s message and tapped \u0027Reply\u0027",
             "type": {
               "name": "Boolean"
             },
@@ -2448,7 +2456,7 @@
           },
           {
             "name": "thumb",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -2534,7 +2542,7 @@
           },
           {
             "name": "thumb",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -2612,7 +2620,7 @@
           },
           {
             "name": "thumb",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -2690,7 +2698,7 @@
           },
           {
             "name": "thumb",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -3047,7 +3055,7 @@
           },
           {
             "name": "thumb",
-            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -3142,7 +3150,7 @@
           },
           {
             "name": "thumb",
-            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -3277,7 +3285,7 @@
           },
           {
             "name": "thumb",
-            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -3420,7 +3428,7 @@
           },
           {
             "name": "thumb",
-            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -3650,7 +3658,7 @@
           },
           {
             "name": "thumb",
-            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -4370,7 +4378,7 @@
       },
       {
         "name": "sendDice",
-        "description": "\u003cp\u003eUse this method to send a dice, which will have a random value from 1 to 6. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned. (Yes, we\u0027re aware of the \u003cem\u003e“proper”\u003c/em\u003e singular of \u003cem\u003edie\u003c/em\u003e. But it\u0027s awkward, and we decided to help it change. One dice at a time!)\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to send an animated emoji that will display a random value. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4390,7 +4398,7 @@
           },
           {
             "name": "emoji",
-            "description": "Emoji on which the dice throw animation is based. Currently, must be one of “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB2.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎲\"\u003e” or “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EAF.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎯\"\u003e”. Defauts to “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB2.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎲\"\u003e”",
+            "description": "Emoji on which the dice throw animation is based. Currently, must be one of “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB2.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎲\"\u003e”, “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EAF.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎯\"\u003e”, or “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8F80.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🏀\"\u003e”. Dice can have values 1-6 for “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB2.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎲\"\u003e” and “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EAF.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎯\"\u003e”, and values 1-5 for “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8F80.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🏀\"\u003e”. Defaults to “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB2.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎲\"\u003e”",
             "type": {
               "name": "String"
             },
@@ -4626,7 +4634,7 @@
           },
           {
             "name": "permissions",
-            "description": "New user permissions",
+            "description": "A JSON-serialized object for new user permissions",
             "type": {
               "name": "ChatPermissions"
             },
@@ -4967,7 +4975,7 @@
       },
       {
         "name": "pinChatMessage",
-        "description": "\u003cp\u003eUse this method to pin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to pin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the \u0027can_pin_messages\u0027 admin right in the supergroup or \u0027can_edit_messages\u0027 admin right in the channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -5008,7 +5016,7 @@
       },
       {
         "name": "unpinChatMessage",
-        "description": "\u003cp\u003eUse this method to unpin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to unpin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the \u0027can_pin_messages\u0027 admin right in the supergroup or \u0027can_edit_messages\u0027 admin right in the channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6140,7 +6148,7 @@
               ],
               "name": "InputFileOrString"
             },
-            "required": true
+            "required": false
           },
           {
             "name": "tgs_sticker",
@@ -6590,11 +6598,19 @@
           },
           {
             "name": "thumb_url",
-            "description": "URL of the static thumbnail for the result (jpeg or gif)",
+            "description": "URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result",
             "type": {
               "name": "String"
             },
             "required": true
+          },
+          {
+            "name": "thumb_mime_type",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or “video/mp4”. Defaults to “image/jpeg”",
+            "type": {
+              "name": "String"
+            },
+            "required": false
           },
           {
             "name": "title",
@@ -6709,11 +6725,19 @@
           },
           {
             "name": "thumb_url",
-            "description": "URL of the static thumbnail (jpeg or gif) for the result",
+            "description": "URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result",
             "type": {
               "name": "String"
             },
             "required": true
+          },
+          {
+            "name": "thumb_mime_type",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or “video/mp4”. Defaults to “image/jpeg”",
+            "type": {
+              "name": "String"
+            },
+            "required": false
           },
           {
             "name": "title",
@@ -8567,7 +8591,7 @@
           },
           {
             "name": "next_offset",
-            "description": "Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don‘t support pagination. Offset length can’t exceed 64 bytes.",
+            "description": "Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don\u0027t support pagination. Offset length can\u0027t exceed 64 bytes.",
             "type": {
               "name": "String"
             },
@@ -8583,7 +8607,7 @@
           },
           {
             "name": "switch_pm_parameter",
-            "description": "\u003ca href\u003d\"/bots#deep-linking\"\u003eDeep-linking\u003c/a\u003e parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only \u003ccode\u003eA-Z\u003c/code\u003e, \u003ccode\u003ea-z\u003c/code\u003e, \u003ccode\u003e0-9\u003c/code\u003e, \u003ccode\u003e_\u003c/code\u003e and \u003ccode\u003e-\u003c/code\u003e are allowed.\u003cbr\u003e\u003cbr\u003e\u003cem\u003eExample:\u003c/em\u003e An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a ‘Connect your YouTube account’ button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an oauth link. Once done, the bot can offer a \u003ca href\u003d\"#inlinekeyboardmarkup\"\u003e\u003cem\u003eswitch_inline\u003c/em\u003e\u003c/a\u003e button so that the user can easily return to the chat where they wanted to use the bot\u0027s inline capabilities.",
+            "description": "\u003ca href\u003d\"/bots#deep-linking\"\u003eDeep-linking\u003c/a\u003e parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only \u003ccode\u003eA-Z\u003c/code\u003e, \u003ccode\u003ea-z\u003c/code\u003e, \u003ccode\u003e0-9\u003c/code\u003e, \u003ccode\u003e_\u003c/code\u003e and \u003ccode\u003e-\u003c/code\u003e are allowed.\u003cbr\u003e\u003cbr\u003e\u003cem\u003eExample:\u003c/em\u003e An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a \u0027Connect your YouTube account\u0027 button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an oauth link. Once done, the bot can offer a \u003ca href\u003d\"#inlinekeyboardmarkup\"\u003e\u003cem\u003eswitch_inline\u003c/em\u003e\u003c/a\u003e button so that the user can easily return to the chat where they wanted to use the bot\u0027s inline capabilities.",
             "type": {
               "name": "String"
             },
@@ -9030,7 +9054,7 @@
           },
           {
             "name": "provider_data",
-            "description": "JSON-encoded data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.",
+            "description": "A JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.",
             "type": {
               "name": "String"
             },
@@ -9892,7 +9916,7 @@
       },
       {
         "name": "GameHighScore",
-        "description": "\u003cp\u003eThis object represents one row of the high scores table for a game.\u003c/p\u003e\u003cp\u003eAnd that‘s about all we’ve got for now.\u003cbr\u003eIf you\u0027ve got any questions, please check out our \u003ca href\u003d\"/bots/faq\"\u003e\u003cstrong\u003eBot FAQ »\u003c/strong\u003e\u003c/a\u003e\u003c/p\u003e",
+        "description": "\u003cp\u003eThis object represents one row of the high scores table for a game.\u003c/p\u003e\u003cp\u003eAnd that\u0027s about all we\u0027ve got for now.\u003cbr\u003eIf you\u0027ve got any questions, please check out our \u003ca href\u003d\"/bots/faq\"\u003e\u003cstrong\u003eBot FAQ »\u003c/strong\u003e\u003c/a\u003e\u003c/p\u003e",
         "docFields": [
           {
             "name": "position",
@@ -9960,7 +9984,7 @@
           },
           {
             "name": "reply_markup",
-            "description": "A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e. If empty, one ‘Play game_title’ button will be shown. If not empty, the first button must launch the game.",
+            "description": "A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e. If empty, one \u0027Play game_title\u0027 button will be shown. If not empty, the first button must launch the game.",
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
