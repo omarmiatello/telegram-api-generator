@@ -19,6 +19,8 @@
  * @property pre_checkout_query <em>Optional</em>. New incoming pre-checkout query. Contains full information about checkout
  * @property poll <em>Optional</em>. New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot
  * @property poll_answer <em>Optional</em>. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.
+ * @property my_chat_member <em>Optional</em>. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user.
+ * @property chat_member <em>Optional</em>. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify “chat_member” in the list of <em>allowed_updates</em> to receive these updates.
  *
  * @constructor Creates a [Update].
  * */
@@ -58,7 +60,13 @@ pub struct Update {
     pub poll: Option<Poll>,
     /// <em>Optional</em>. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub poll_answer: Option<PollAnswer>
+    pub poll_answer: Option<PollAnswer>,
+    /// <em>Optional</em>. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub my_chat_member: Option<ChatMemberUpdated>,
+    /// <em>Optional</em>. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify “chat_member” in the list of <em>allowed_updates</em> to receive these updates.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub chat_member: Option<ChatMemberUpdated>
 }
 
 /**
@@ -67,10 +75,11 @@ pub struct Update {
  * @property url Webhook URL, may be empty if webhook is not set up
  * @property has_custom_certificate True, if a custom certificate was provided for webhook certificate checks
  * @property pending_update_count Number of updates awaiting delivery
+ * @property ip_address <em>Optional</em>. Currently used webhook IP address
  * @property last_error_date <em>Optional</em>. Unix time for the most recent error that happened when trying to deliver an update via webhook
  * @property last_error_message <em>Optional</em>. Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook
  * @property max_connections <em>Optional</em>. Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery
- * @property allowed_updates <em>Optional</em>. A list of update types the bot is subscribed to. Defaults to all update types
+ * @property allowed_updates <em>Optional</em>. A list of update types the bot is subscribed to. Defaults to all update types except <em>chat_member</em>
  *
  * @constructor Creates a [WebhookInfo].
  * */
@@ -82,6 +91,9 @@ pub struct WebhookInfo {
     pub has_custom_certificate: bool,
     /// Number of updates awaiting delivery
     pub pending_update_count: Integer,
+    /// <em>Optional</em>. Currently used webhook IP address
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip_address: Option<String>,
     /// <em>Optional</em>. Unix time for the most recent error that happened when trying to deliver an update via webhook
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_error_date: Option<Integer>,
@@ -91,7 +103,7 @@ pub struct WebhookInfo {
     /// <em>Optional</em>. Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_connections: Option<Integer>,
-    /// <em>Optional</em>. A list of update types the bot is subscribed to. Defaults to all update types
+    /// <em>Optional</em>. A list of update types the bot is subscribed to. Defaults to all update types except <em>chat_member</em>
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_updates: Option<Vec<String>>
 }
@@ -102,7 +114,7 @@ pub struct WebhookInfo {
 /**
  * <p>This object represents a Telegram user or bot.</p>
  *
- * @property id Unique identifier for this user or bot
+ * @property id Unique identifier for this user or bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
  * @property is_bot True, if this user is a bot
  * @property first_name User's or bot's first name
  * @property last_name <em>Optional</em>. User's or bot's last name
@@ -116,7 +128,7 @@ pub struct WebhookInfo {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct User {
-    /// Unique identifier for this user or bot
+    /// Unique identifier for this user or bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
     pub id: Integer,
     /// True, if this user is a bot
     pub is_bot: bool,
@@ -145,26 +157,30 @@ pub struct User {
 /**
  * <p>This object represents a chat.</p>
  *
- * @property id Unique identifier for this chat. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
+ * @property id Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
  * @property type Type of chat, can be either “private”, “group”, “supergroup” or “channel”
  * @property title <em>Optional</em>. Title, for supergroups, channels and group chats
  * @property username <em>Optional</em>. Username, for private chats, supergroups and channels if available
  * @property first_name <em>Optional</em>. First name of the other party in a private chat
  * @property last_name <em>Optional</em>. Last name of the other party in a private chat
  * @property photo <em>Optional</em>. Chat photo. Returned only in <a href="#getchat">getChat</a>.
+ * @property bio <em>Optional</em>. Bio of the other party in a private chat. Returned only in <a href="#getchat">getChat</a>.
  * @property description <em>Optional</em>. Description, for groups, supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>.
- * @property invite_link <em>Optional</em>. Chat invite link, for groups, supergroups and channel chats. Each administrator in a chat generates their own invite links, so the bot must first generate the link using <a href="#exportchatinvitelink">exportChatInviteLink</a>. Returned only in <a href="#getchat">getChat</a>.
- * @property pinned_message <em>Optional</em>. Pinned message, for groups, supergroups and channels. Returned only in <a href="#getchat">getChat</a>.
+ * @property invite_link <em>Optional</em>. Primary invite link, for groups, supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>.
+ * @property pinned_message <em>Optional</em>. The most recent pinned message (by sending date). Returned only in <a href="#getchat">getChat</a>.
  * @property permissions <em>Optional</em>. Default chat member permissions, for groups and supergroups. Returned only in <a href="#getchat">getChat</a>.
  * @property slow_mode_delay <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user. Returned only in <a href="#getchat">getChat</a>.
+ * @property message_auto_delete_time <em>Optional</em>. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in <a href="#getchat">getChat</a>.
  * @property sticker_set_name <em>Optional</em>. For supergroups, name of group sticker set. Returned only in <a href="#getchat">getChat</a>.
  * @property can_set_sticker_set <em>Optional</em>. True, if the bot can change the group sticker set. Returned only in <a href="#getchat">getChat</a>.
+ * @property linked_chat_id <em>Optional</em>. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in <a href="#getchat">getChat</a>.
+ * @property location <em>Optional</em>. For supergroups, the location to which the supergroup is connected. Returned only in <a href="#getchat">getChat</a>.
  *
  * @constructor Creates a [Chat].
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct Chat {
-    /// Unique identifier for this chat. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
+    /// Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
     pub id: Integer,
     /// Type of chat, can be either “private”, “group”, “supergroup” or “channel”
     #[serde(rename = "type")]
@@ -184,13 +200,16 @@ pub struct Chat {
     /// <em>Optional</em>. Chat photo. Returned only in <a href="#getchat">getChat</a>.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub photo: Option<ChatPhoto>,
+    /// <em>Optional</em>. Bio of the other party in a private chat. Returned only in <a href="#getchat">getChat</a>.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bio: Option<String>,
     /// <em>Optional</em>. Description, for groups, supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// <em>Optional</em>. Chat invite link, for groups, supergroups and channel chats. Each administrator in a chat generates their own invite links, so the bot must first generate the link using <a href="#exportchatinvitelink">exportChatInviteLink</a>. Returned only in <a href="#getchat">getChat</a>.
+    /// <em>Optional</em>. Primary invite link, for groups, supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invite_link: Option<String>,
-    /// <em>Optional</em>. Pinned message, for groups, supergroups and channels. Returned only in <a href="#getchat">getChat</a>.
+    /// <em>Optional</em>. The most recent pinned message (by sending date). Returned only in <a href="#getchat">getChat</a>.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pinned_message: Option<Message>,
     /// <em>Optional</em>. Default chat member permissions, for groups and supergroups. Returned only in <a href="#getchat">getChat</a>.
@@ -199,12 +218,21 @@ pub struct Chat {
     /// <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user. Returned only in <a href="#getchat">getChat</a>.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub slow_mode_delay: Option<Integer>,
+    /// <em>Optional</em>. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in <a href="#getchat">getChat</a>.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_auto_delete_time: Option<Integer>,
     /// <em>Optional</em>. For supergroups, name of group sticker set. Returned only in <a href="#getchat">getChat</a>.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sticker_set_name: Option<String>,
     /// <em>Optional</em>. True, if the bot can change the group sticker set. Returned only in <a href="#getchat">getChat</a>.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_set_sticker_set: Option<bool>
+    pub can_set_sticker_set: Option<bool>,
+    /// <em>Optional</em>. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in <a href="#getchat">getChat</a>.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub linked_chat_id: Option<Integer>,
+    /// <em>Optional</em>. For supergroups, the location to which the supergroup is connected. Returned only in <a href="#getchat">getChat</a>.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub location: Option<ChatLocation>
 }
 
 /**
@@ -212,10 +240,11 @@ pub struct Chat {
  *
  * @property message_id Unique message identifier inside this chat
  * @property from <em>Optional</em>. Sender, empty for messages sent to channels
+ * @property sender_chat <em>Optional</em>. Sender of the message, sent on behalf of a chat. The channel itself for channel messages. The supergroup itself for messages from anonymous group administrators. The linked channel for messages automatically forwarded to the discussion group
  * @property date Date the message was sent in Unix time
  * @property chat Conversation the message belongs to
  * @property forward_from <em>Optional</em>. For forwarded messages, sender of the original message
- * @property forward_from_chat <em>Optional</em>. For messages forwarded from channels, information about the original channel
+ * @property forward_from_chat <em>Optional</em>. For messages forwarded from channels or from anonymous administrators, information about the original sender chat
  * @property forward_from_message_id <em>Optional</em>. For messages forwarded from channels, identifier of the original message in the channel
  * @property forward_signature <em>Optional</em>. For messages forwarded from channels, signature of the post author if present
  * @property forward_sender_name <em>Optional</em>. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages
@@ -224,7 +253,7 @@ pub struct Chat {
  * @property via_bot <em>Optional</em>. Bot through which the message was sent
  * @property edit_date <em>Optional</em>. Date the message was last edited in Unix time
  * @property media_group_id <em>Optional</em>. The unique identifier of a media message group this message belongs to
- * @property author_signature <em>Optional</em>. Signature of the post author for messages in channels
+ * @property author_signature <em>Optional</em>. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
  * @property text <em>Optional</em>. For text messages, the actual UTF-8 text of the message, 0-4096 characters
  * @property entities <em>Optional</em>. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text
  * @property animation <em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set
@@ -238,7 +267,7 @@ pub struct Chat {
  * @property caption <em>Optional</em>. Caption for the animation, audio, document, photo, video or voice, 0-1024 characters
  * @property caption_entities <em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption
  * @property contact <em>Optional</em>. Message is a shared contact, information about the contact
- * @property dice <em>Optional</em>. Message is a dice with random value from 1 to 6
+ * @property dice <em>Optional</em>. Message is a dice with random value
  * @property game <em>Optional</em>. Message is a game, information about the game. <a href="#games">More about games »</a>
  * @property poll <em>Optional</em>. Message is a native poll, information about the poll
  * @property venue <em>Optional</em>. Message is a venue, information about the venue. For backward compatibility, when this field is set, the <em>location</em> field will also be set
@@ -251,13 +280,18 @@ pub struct Chat {
  * @property group_chat_created <em>Optional</em>. Service message: the group has been created
  * @property supergroup_chat_created <em>Optional</em>. Service message: the supergroup has been created. This field can't be received in a message coming through updates, because bot can't be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup.
  * @property channel_chat_created <em>Optional</em>. Service message: the channel has been created. This field can't be received in a message coming through updates, because bot can't be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel.
- * @property migrate_to_chat_id <em>Optional</em>. The group has been migrated to a supergroup with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
- * @property migrate_from_chat_id <em>Optional</em>. The supergroup has been migrated from a group with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
+ * @property message_auto_delete_timer_changed <em>Optional</em>. Service message: auto-delete timer settings changed in the chat
+ * @property migrate_to_chat_id <em>Optional</em>. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
+ * @property migrate_from_chat_id <em>Optional</em>. The supergroup has been migrated from a group with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
  * @property pinned_message <em>Optional</em>. Specified message was pinned. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it is itself a reply.
  * @property invoice <em>Optional</em>. Message is an invoice for a <a href="#payments">payment</a>, information about the invoice. <a href="#payments">More about payments »</a>
  * @property successful_payment <em>Optional</em>. Message is a service message about a successful payment, information about the payment. <a href="#payments">More about payments »</a>
  * @property connected_website <em>Optional</em>. The domain name of the website on which the user has logged in. <a href="/widgets/login">More about Telegram Login »</a>
  * @property passport_data <em>Optional</em>. Telegram Passport data
+ * @property proximity_alert_triggered <em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.
+ * @property voice_chat_started <em>Optional</em>. Service message: voice chat started
+ * @property voice_chat_ended <em>Optional</em>. Service message: voice chat ended
+ * @property voice_chat_participants_invited <em>Optional</em>. Service message: new participants invited to a voice chat
  * @property reply_markup <em>Optional</em>. Inline keyboard attached to the message. <code>login_url</code> buttons are represented as ordinary <code>url</code> buttons.
  *
  * @constructor Creates a [Message].
@@ -269,6 +303,9 @@ pub struct Message {
     /// <em>Optional</em>. Sender, empty for messages sent to channels
     #[serde(skip_serializing_if = "Option::is_none")]
     pub from: Option<User>,
+    /// <em>Optional</em>. Sender of the message, sent on behalf of a chat. The channel itself for channel messages. The supergroup itself for messages from anonymous group administrators. The linked channel for messages automatically forwarded to the discussion group
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sender_chat: Option<Chat>,
     /// Date the message was sent in Unix time
     pub date: Integer,
     /// Conversation the message belongs to
@@ -276,7 +313,7 @@ pub struct Message {
     /// <em>Optional</em>. For forwarded messages, sender of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub forward_from: Option<User>,
-    /// <em>Optional</em>. For messages forwarded from channels, information about the original channel
+    /// <em>Optional</em>. For messages forwarded from channels or from anonymous administrators, information about the original sender chat
     #[serde(skip_serializing_if = "Option::is_none")]
     pub forward_from_chat: Option<Chat>,
     /// <em>Optional</em>. For messages forwarded from channels, identifier of the original message in the channel
@@ -303,7 +340,7 @@ pub struct Message {
     /// <em>Optional</em>. The unique identifier of a media message group this message belongs to
     #[serde(skip_serializing_if = "Option::is_none")]
     pub media_group_id: Option<String>,
-    /// <em>Optional</em>. Signature of the post author for messages in channels
+    /// <em>Optional</em>. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     #[serde(skip_serializing_if = "Option::is_none")]
     pub author_signature: Option<String>,
     /// <em>Optional</em>. For text messages, the actual UTF-8 text of the message, 0-4096 characters
@@ -345,7 +382,7 @@ pub struct Message {
     /// <em>Optional</em>. Message is a shared contact, information about the contact
     #[serde(skip_serializing_if = "Option::is_none")]
     pub contact: Option<Contact>,
-    /// <em>Optional</em>. Message is a dice with random value from 1 to 6
+    /// <em>Optional</em>. Message is a dice with random value
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dice: Option<Dice>,
     /// <em>Optional</em>. Message is a game, information about the game. <a href="#games">More about games »</a>
@@ -384,10 +421,13 @@ pub struct Message {
     /// <em>Optional</em>. Service message: the channel has been created. This field can't be received in a message coming through updates, because bot can't be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub channel_chat_created: Option<bool>,
-    /// <em>Optional</em>. The group has been migrated to a supergroup with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
+    /// <em>Optional</em>. Service message: auto-delete timer settings changed in the chat
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_auto_delete_timer_changed: Option<MessageAutoDeleteTimerChanged>,
+    /// <em>Optional</em>. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub migrate_to_chat_id: Option<Integer>,
-    /// <em>Optional</em>. The supergroup has been migrated from a group with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
+    /// <em>Optional</em>. The supergroup has been migrated from a group with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub migrate_from_chat_id: Option<Integer>,
     /// <em>Optional</em>. Specified message was pinned. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it is itself a reply.
@@ -405,9 +445,34 @@ pub struct Message {
     /// <em>Optional</em>. Telegram Passport data
     #[serde(skip_serializing_if = "Option::is_none")]
     pub passport_data: Option<PassportData>,
+    /// <em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proximity_alert_triggered: Option<ProximityAlertTriggered>,
+    /// <em>Optional</em>. Service message: voice chat started
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub voice_chat_started: Option<VoiceChatStarted>,
+    /// <em>Optional</em>. Service message: voice chat ended
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub voice_chat_ended: Option<VoiceChatEnded>,
+    /// <em>Optional</em>. Service message: new participants invited to a voice chat
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub voice_chat_participants_invited: Option<VoiceChatParticipantsInvited>,
     /// <em>Optional</em>. Inline keyboard attached to the message. <code>login_url</code> buttons are represented as ordinary <code>url</code> buttons.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>
+}
+
+/**
+ * <p>This object represents a unique message identifier.</p>
+ *
+ * @property message_id Unique message identifier
+ *
+ * @constructor Creates a [MessageId].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct MessageId {
+    /// Unique message identifier
+    pub message_id: Integer
 }
 
 /**
@@ -517,6 +582,7 @@ pub struct Animation {
  * @property duration Duration of the audio in seconds as defined by sender
  * @property performer <em>Optional</em>. Performer of the audio as defined by sender or by audio tags
  * @property title <em>Optional</em>. Title of the audio as defined by sender or by audio tags
+ * @property file_name <em>Optional</em>. Original filename as defined by sender
  * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
  * @property file_size <em>Optional</em>. File size
  * @property thumb <em>Optional</em>. Thumbnail of the album cover to which the music file belongs
@@ -537,6 +603,9 @@ pub struct Audio {
     /// <em>Optional</em>. Title of the audio as defined by sender or by audio tags
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
+    /// <em>Optional</em>. Original filename as defined by sender
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub file_name: Option<String>,
     /// <em>Optional</em>. MIME type of the file as defined by sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
@@ -589,6 +658,7 @@ pub struct Document {
  * @property height Video height as defined by sender
  * @property duration Duration of the video in seconds as defined by sender
  * @property thumb <em>Optional</em>. Video thumbnail
+ * @property file_name <em>Optional</em>. Original filename as defined by sender
  * @property mime_type <em>Optional</em>. Mime type of a file as defined by sender
  * @property file_size <em>Optional</em>. File size
  *
@@ -609,6 +679,9 @@ pub struct Video {
     /// <em>Optional</em>. Video thumbnail
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumb: Option<PhotoSize>,
+    /// <em>Optional</em>. Original filename as defined by sender
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub file_name: Option<String>,
     /// <em>Optional</em>. Mime type of a file as defined by sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
@@ -680,7 +753,7 @@ pub struct Voice {
  * @property phone_number Contact's phone number
  * @property first_name Contact's first name
  * @property last_name <em>Optional</em>. Contact's last name
- * @property user_id <em>Optional</em>. Contact's user identifier in Telegram
+ * @property user_id <em>Optional</em>. Contact's user identifier in Telegram. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
  * @property vcard <em>Optional</em>. Additional data about the contact in the form of a <a href="https://en.wikipedia.org/wiki/VCard">vCard</a>
  *
  * @constructor Creates a [Contact].
@@ -694,7 +767,7 @@ pub struct Contact {
     /// <em>Optional</em>. Contact's last name
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
-    /// <em>Optional</em>. Contact's user identifier in Telegram
+    /// <em>Optional</em>. Contact's user identifier in Telegram. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_id: Option<Integer>,
     /// <em>Optional</em>. Additional data about the contact in the form of a <a href="https://en.wikipedia.org/wiki/VCard">vCard</a>
@@ -706,7 +779,7 @@ pub struct Contact {
  * <p>This object represents an animated emoji that displays a random value.</p>
  *
  * @property emoji Emoji on which the dice throw animation is based
- * @property value Value of the dice, 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” base emoji, 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” base emoji
+ * @property value Value of the dice, 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">” base emoji, 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” and “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">” base emoji, 1-64 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">” base emoji
  *
  * @constructor Creates a [Dice].
  * */
@@ -714,7 +787,7 @@ pub struct Contact {
 pub struct Dice {
     /// Emoji on which the dice throw animation is based
     pub emoji: String,
-    /// Value of the dice, 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” base emoji, 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” base emoji
+    /// Value of the dice, 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">” base emoji, 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” and “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">” base emoji, 1-64 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">” base emoji
     pub value: Integer
 }
 
@@ -757,7 +830,7 @@ pub struct PollAnswer {
  * <p>This object contains information about a poll.</p>
  *
  * @property id Unique poll identifier
- * @property question Poll question, 1-255 characters
+ * @property question Poll question, 1-300 characters
  * @property options List of poll options
  * @property total_voter_count Total number of users that voted in the poll
  * @property is_closed True, if the poll is closed
@@ -776,7 +849,7 @@ pub struct PollAnswer {
 pub struct Poll {
     /// Unique poll identifier
     pub id: String,
-    /// Poll question, 1-255 characters
+    /// Poll question, 1-300 characters
     pub question: String,
     /// List of poll options
     pub options: Vec<PollOption>,
@@ -813,6 +886,10 @@ pub struct Poll {
  *
  * @property longitude Longitude as defined by sender
  * @property latitude Latitude as defined by sender
+ * @property horizontal_accuracy <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500
+ * @property live_period <em>Optional</em>. Time relative to the message sending date, during which the location can be updated, in seconds. For active live locations only.
+ * @property heading <em>Optional</em>. The direction in which user is moving, in degrees; 1-360. For active live locations only.
+ * @property proximity_alert_radius <em>Optional</em>. Maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only.
  *
  * @constructor Creates a [Location].
  * */
@@ -821,23 +898,37 @@ pub struct Location {
     /// Longitude as defined by sender
     pub longitude: Float,
     /// Latitude as defined by sender
-    pub latitude: Float
+    pub latitude: Float,
+    /// <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub horizontal_accuracy: Option<Float>,
+    /// <em>Optional</em>. Time relative to the message sending date, during which the location can be updated, in seconds. For active live locations only.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub live_period: Option<Integer>,
+    /// <em>Optional</em>. The direction in which user is moving, in degrees; 1-360. For active live locations only.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub heading: Option<Integer>,
+    /// <em>Optional</em>. Maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proximity_alert_radius: Option<Integer>
 }
 
 /**
  * <p>This object represents a venue.</p>
  *
- * @property location Venue location
+ * @property location Venue location. Can't be a live location
  * @property title Name of the venue
  * @property address Address of the venue
  * @property foursquare_id <em>Optional</em>. Foursquare identifier of the venue
  * @property foursquare_type <em>Optional</em>. Foursquare type of the venue. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
+ * @property google_place_id <em>Optional</em>. Google Places identifier of the venue
+ * @property google_place_type <em>Optional</em>. Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.)
  *
  * @constructor Creates a [Venue].
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct Venue {
-    /// Venue location
+    /// Venue location. Can't be a live location
     pub location: Location,
     /// Name of the venue
     pub title: String,
@@ -848,7 +939,72 @@ pub struct Venue {
     pub foursquare_id: Option<String>,
     /// <em>Optional</em>. Foursquare type of the venue. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub foursquare_type: Option<String>
+    pub foursquare_type: Option<String>,
+    /// <em>Optional</em>. Google Places identifier of the venue
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_place_id: Option<String>,
+    /// <em>Optional</em>. Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_place_type: Option<String>
+}
+
+/**
+ * <p>This object represents the content of a service message, sent whenever a user in the chat triggers a proximity alert set by another user.</p>
+ *
+ * @property traveler User that triggered the alert
+ * @property watcher User that set the alert
+ * @property distance The distance between the users
+ *
+ * @constructor Creates a [ProximityAlertTriggered].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ProximityAlertTriggered {
+    /// User that triggered the alert
+    pub traveler: User,
+    /// User that set the alert
+    pub watcher: User,
+    /// The distance between the users
+    pub distance: Integer
+}
+
+/**
+ * <p>This object represents a service message about a change in auto-delete timer settings.</p>
+ *
+ * @property message_auto_delete_time New auto-delete time for messages in the chat
+ *
+ * @constructor Creates a [MessageAutoDeleteTimerChanged].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct MessageAutoDeleteTimerChanged {
+    /// New auto-delete time for messages in the chat
+    pub message_auto_delete_time: Integer
+}
+
+/**
+ * <p>This object represents a service message about a voice chat ended in the chat.</p>
+ *
+ * @property duration Voice chat duration; in seconds
+ *
+ * @constructor Creates a [VoiceChatEnded].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct VoiceChatEnded {
+    /// Voice chat duration; in seconds
+    pub duration: Integer
+}
+
+/**
+ * <p>This object represents a service message about new members invited to a voice chat.</p>
+ *
+ * @property users <em>Optional</em>. New members that were invited to the voice chat
+ *
+ * @constructor Creates a [VoiceChatParticipantsInvited].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct VoiceChatParticipantsInvited {
+    /// <em>Optional</em>. New members that were invited to the voice chat
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub users: Option<Vec<User>>
 }
 
 /**
@@ -1140,16 +1296,48 @@ pub struct ChatPhoto {
 }
 
 /**
+ * <p>Represents an invite link for a chat.</p>
+ *
+ * @property invite_link The invite link. If the link was created by another chat administrator, then the second part of the link will be replaced with “…”.
+ * @property creator Creator of the link
+ * @property is_primary True, if the link is primary
+ * @property is_revoked True, if the link is revoked
+ * @property expire_date <em>Optional</em>. Point in time (Unix timestamp) when the link will expire or has been expired
+ * @property member_limit <em>Optional</em>. Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+ *
+ * @constructor Creates a [ChatInviteLink].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ChatInviteLink {
+    /// The invite link. If the link was created by another chat administrator, then the second part of the link will be replaced with “…”.
+    pub invite_link: String,
+    /// Creator of the link
+    pub creator: User,
+    /// True, if the link is primary
+    pub is_primary: bool,
+    /// True, if the link is revoked
+    pub is_revoked: bool,
+    /// <em>Optional</em>. Point in time (Unix timestamp) when the link will expire or has been expired
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expire_date: Option<Integer>,
+    /// <em>Optional</em>. Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub member_limit: Option<Integer>
+}
+
+/**
  * <p>This object contains information about one member of a chat.</p>
  *
  * @property user Information about the user
  * @property status The member's status in the chat. Can be “creator”, “administrator”, “member”, “restricted”, “left” or “kicked”
  * @property custom_title <em>Optional</em>. Owner and administrators only. Custom title for this user
- * @property until_date <em>Optional</em>. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time
+ * @property is_anonymous <em>Optional</em>. Owner and administrators only. True, if the user's presence in the chat is hidden
  * @property can_be_edited <em>Optional</em>. Administrators only. True, if the bot is allowed to edit administrator privileges of that user
+ * @property can_manage_chat <em>Optional</em>. Administrators only. True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
  * @property can_post_messages <em>Optional</em>. Administrators only. True, if the administrator can post in the channel; channels only
  * @property can_edit_messages <em>Optional</em>. Administrators only. True, if the administrator can edit messages of other users and can pin messages; channels only
  * @property can_delete_messages <em>Optional</em>. Administrators only. True, if the administrator can delete messages of other users
+ * @property can_manage_voice_chats <em>Optional</em>. Administrators only. True, if the administrator can manage voice chats
  * @property can_restrict_members <em>Optional</em>. Administrators only. True, if the administrator can restrict, ban or unban chat members
  * @property can_promote_members <em>Optional</em>. Administrators only. True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)
  * @property can_change_info <em>Optional</em>. Administrators and restricted only. True, if the user is allowed to change the chat title, photo and other settings
@@ -1161,6 +1349,7 @@ pub struct ChatPhoto {
  * @property can_send_polls <em>Optional</em>. Restricted only. True, if the user is allowed to send polls
  * @property can_send_other_messages <em>Optional</em>. Restricted only. True, if the user is allowed to send animations, games, stickers and use inline bots
  * @property can_add_web_page_previews <em>Optional</em>. Restricted only. True, if the user is allowed to add web page previews to their messages
+ * @property until_date <em>Optional</em>. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time
  *
  * @constructor Creates a [ChatMember].
  * */
@@ -1173,12 +1362,15 @@ pub struct ChatMember {
     /// <em>Optional</em>. Owner and administrators only. Custom title for this user
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_title: Option<String>,
-    /// <em>Optional</em>. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time
+    /// <em>Optional</em>. Owner and administrators only. True, if the user's presence in the chat is hidden
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub until_date: Option<Integer>,
+    pub is_anonymous: Option<bool>,
     /// <em>Optional</em>. Administrators only. True, if the bot is allowed to edit administrator privileges of that user
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_be_edited: Option<bool>,
+    /// <em>Optional</em>. Administrators only. True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_manage_chat: Option<bool>,
     /// <em>Optional</em>. Administrators only. True, if the administrator can post in the channel; channels only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_post_messages: Option<bool>,
@@ -1188,6 +1380,9 @@ pub struct ChatMember {
     /// <em>Optional</em>. Administrators only. True, if the administrator can delete messages of other users
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_delete_messages: Option<bool>,
+    /// <em>Optional</em>. Administrators only. True, if the administrator can manage voice chats
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_manage_voice_chats: Option<bool>,
     /// <em>Optional</em>. Administrators only. True, if the administrator can restrict, ban or unban chat members
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_restrict_members: Option<bool>,
@@ -1220,7 +1415,39 @@ pub struct ChatMember {
     pub can_send_other_messages: Option<bool>,
     /// <em>Optional</em>. Restricted only. True, if the user is allowed to add web page previews to their messages
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_add_web_page_previews: Option<bool>
+    pub can_add_web_page_previews: Option<bool>,
+    /// <em>Optional</em>. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub until_date: Option<Integer>
+}
+
+/**
+ * <p>This object represents changes in the status of a chat member.</p>
+ *
+ * @property chat Chat the user belongs to
+ * @property from Performer of the action, which resulted in the change
+ * @property date Date the change was done in Unix time
+ * @property old_chat_member Previous information about the chat member
+ * @property new_chat_member New information about the chat member
+ * @property invite_link <em>Optional</em>. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.
+ *
+ * @constructor Creates a [ChatMemberUpdated].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ChatMemberUpdated {
+    /// Chat the user belongs to
+    pub chat: Chat,
+    /// Performer of the action, which resulted in the change
+    pub from: User,
+    /// Date the change was done in Unix time
+    pub date: Integer,
+    /// Previous information about the chat member
+    pub old_chat_member: ChatMember,
+    /// New information about the chat member
+    pub new_chat_member: ChatMember,
+    /// <em>Optional</em>. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invite_link: Option<ChatInviteLink>
 }
 
 /**
@@ -1266,6 +1493,22 @@ pub struct ChatPermissions {
 }
 
 /**
+ * <p>Represents a location to which a chat is connected.</p>
+ *
+ * @property location The location to which the supergroup is connected. Can't be a live location.
+ * @property address Location address; 1-64 characters, as defined by the chat owner
+ *
+ * @constructor Creates a [ChatLocation].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ChatLocation {
+    /// The location to which the supergroup is connected. Can't be a live location.
+    pub location: Location,
+    /// Location address; 1-64 characters, as defined by the chat owner
+    pub address: String
+}
+
+/**
  * <p>This object represents a bot command.</p>
  *
  * @property command Text of the command, 1-32 characters. Can contain only lowercase English letters, digits and underscores.
@@ -1284,14 +1527,14 @@ pub struct BotCommand {
 /**
  * <p>Contains information about why a request was unsuccessful.</p>
  *
- * @property migrate_to_chat_id <em>Optional</em>. The group has been migrated to a supergroup with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
+ * @property migrate_to_chat_id <em>Optional</em>. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
  * @property retry_after <em>Optional</em>. In case of exceeding flood control, the number of seconds left to wait before the request can be repeated
  *
  * @constructor Creates a [ResponseParameters].
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct ResponseParameters {
-    /// <em>Optional</em>. The group has been migrated to a supergroup with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
+    /// <em>Optional</em>. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub migrate_to_chat_id: Option<Integer>,
     /// <em>Optional</em>. In case of exceeding flood control, the number of seconds left to wait before the request can be repeated
@@ -1306,6 +1549,7 @@ pub struct ResponseParameters {
  * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the photo to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  *
  * @constructor Creates a [InputMediaPhoto].
  * */
@@ -1321,7 +1565,10 @@ pub struct InputMediaPhoto {
     pub caption: Option<String>,
     /// <em>Optional</em>. Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub parse_mode: Option<ParseMode>
+    pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>
 }
 
 /**
@@ -1332,6 +1579,7 @@ pub struct InputMediaPhoto {
  * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property width <em>Optional</em>. Video width
  * @property height <em>Optional</em>. Video height
  * @property duration <em>Optional</em>. Video duration
@@ -1355,6 +1603,9 @@ pub struct InputMediaVideo {
     /// <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// <em>Optional</em>. Video width
     #[serde(skip_serializing_if = "Option::is_none")]
     pub width: Option<Integer>,
@@ -1377,6 +1628,7 @@ pub struct InputMediaVideo {
  * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the animation to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property width <em>Optional</em>. Animation width
  * @property height <em>Optional</em>. Animation height
  * @property duration <em>Optional</em>. Animation duration
@@ -1399,6 +1651,9 @@ pub struct InputMediaAnimation {
     /// <em>Optional</em>. Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// <em>Optional</em>. Animation width
     #[serde(skip_serializing_if = "Option::is_none")]
     pub width: Option<Integer>,
@@ -1418,6 +1673,7 @@ pub struct InputMediaAnimation {
  * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the audio to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property duration <em>Optional</em>. Duration of the audio in seconds
  * @property performer <em>Optional</em>. Performer of the audio
  * @property title <em>Optional</em>. Title of the audio
@@ -1440,6 +1696,9 @@ pub struct InputMediaAudio {
     /// <em>Optional</em>. Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// <em>Optional</em>. Duration of the audio in seconds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<Integer>,
@@ -1459,6 +1718,8 @@ pub struct InputMediaAudio {
  * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the document to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+ * @property disable_content_type_detection <em>Optional</em>. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always true, if the document is sent as part of an album.
  *
  * @constructor Creates a [InputMediaDocument].
  * */
@@ -1477,7 +1738,13 @@ pub struct InputMediaDocument {
     pub caption: Option<String>,
     /// <em>Optional</em>. Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub parse_mode: Option<ParseMode>
+    pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
+    /// <em>Optional</em>. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always true, if the document is sent as part of an album.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_content_type_detection: Option<bool>
 }
 
 
@@ -1672,6 +1939,7 @@ pub struct InlineQueryResultArticle {
  * @property description <em>Optional</em>. Short description of the result
  * @property caption <em>Optional</em>. Caption of the photo to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the photo
  *
@@ -1706,6 +1974,9 @@ pub struct InlineQueryResultPhoto {
     /// <em>Optional</em>. Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
@@ -1728,6 +1999,7 @@ pub struct InlineQueryResultPhoto {
  * @property title <em>Optional</em>. Title for the result
  * @property caption <em>Optional</em>. Caption of the GIF file to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the GIF animation
  *
@@ -1765,6 +2037,9 @@ pub struct InlineQueryResultGif {
     /// <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
@@ -1787,6 +2062,7 @@ pub struct InlineQueryResultGif {
  * @property title <em>Optional</em>. Title for the result
  * @property caption <em>Optional</em>. Caption of the MPEG-4 file to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the video animation
  *
@@ -1824,6 +2100,9 @@ pub struct InlineQueryResultMpeg4Gif {
     /// <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
@@ -1845,6 +2124,7 @@ pub struct InlineQueryResultMpeg4Gif {
  * @property title Title for the result
  * @property caption <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property video_width <em>Optional</em>. Video width
  * @property video_height <em>Optional</em>. Video height
  * @property video_duration <em>Optional</em>. Video duration in seconds
@@ -1875,6 +2155,9 @@ pub struct InlineQueryResultVideo {
     /// <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// <em>Optional</em>. Video width
     #[serde(skip_serializing_if = "Option::is_none")]
     pub video_width: Option<Integer>,
@@ -1904,6 +2187,7 @@ pub struct InlineQueryResultVideo {
  * @property title Title
  * @property caption <em>Optional</em>. Caption, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property performer <em>Optional</em>. Performer
  * @property audio_duration <em>Optional</em>. Audio duration in seconds
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
@@ -1928,6 +2212,9 @@ pub struct InlineQueryResultAudio {
     /// <em>Optional</em>. Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// <em>Optional</em>. Performer
     #[serde(skip_serializing_if = "Option::is_none")]
     pub performer: Option<String>,
@@ -1951,6 +2238,7 @@ pub struct InlineQueryResultAudio {
  * @property title Recording title
  * @property caption <em>Optional</em>. Caption, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the voice message caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property voice_duration <em>Optional</em>. Recording duration in seconds
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the voice recording
@@ -1974,6 +2262,9 @@ pub struct InlineQueryResultVoice {
     /// <em>Optional</em>. Mode for parsing entities in the voice message caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// <em>Optional</em>. Recording duration in seconds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub voice_duration: Option<Integer>,
@@ -1993,6 +2284,7 @@ pub struct InlineQueryResultVoice {
  * @property title Title for the result
  * @property caption <em>Optional</em>. Caption of the document to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property document_url A valid URL for the file
  * @property mime_type Mime type of the content of the file, either “application/pdf” or “application/zip”
  * @property description <em>Optional</em>. Short description of the result
@@ -2019,6 +2311,9 @@ pub struct InlineQueryResultDocument {
     /// <em>Optional</em>. Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// A valid URL for the file
     pub document_url: String,
     /// Mime type of the content of the file, either “application/pdf” or “application/zip”
@@ -2051,7 +2346,10 @@ pub struct InlineQueryResultDocument {
  * @property latitude Location latitude in degrees
  * @property longitude Location longitude in degrees
  * @property title Location title
+ * @property horizontal_accuracy <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500
  * @property live_period <em>Optional</em>. Period in seconds for which the location can be updated, should be between 60 and 86400.
+ * @property heading <em>Optional</em>. For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
+ * @property proximity_alert_radius <em>Optional</em>. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the location
  * @property thumb_url <em>Optional</em>. Url of the thumbnail for the result
@@ -2073,9 +2371,18 @@ pub struct InlineQueryResultLocation {
     pub longitude: Float,
     /// Location title
     pub title: String,
+    /// <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub horizontal_accuracy: Option<Float>,
     /// <em>Optional</em>. Period in seconds for which the location can be updated, should be between 60 and 86400.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub live_period: Option<Integer>,
+    /// <em>Optional</em>. For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub heading: Option<Integer>,
+    /// <em>Optional</em>. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proximity_alert_radius: Option<Integer>,
     /// <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
@@ -2104,6 +2411,8 @@ pub struct InlineQueryResultLocation {
  * @property address Address of the venue
  * @property foursquare_id <em>Optional</em>. Foursquare identifier of the venue if known
  * @property foursquare_type <em>Optional</em>. Foursquare type of the venue, if known. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
+ * @property google_place_id <em>Optional</em>. Google Places identifier of the venue
+ * @property google_place_type <em>Optional</em>. Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.)
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the venue
  * @property thumb_url <em>Optional</em>. Url of the thumbnail for the result
@@ -2133,6 +2442,12 @@ pub struct InlineQueryResultVenue {
     /// <em>Optional</em>. Foursquare type of the venue, if known. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub foursquare_type: Option<String>,
+    /// <em>Optional</em>. Google Places identifier of the venue
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_place_id: Option<String>,
+    /// <em>Optional</em>. Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_place_type: Option<String>,
     /// <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
@@ -2235,6 +2550,7 @@ pub struct InlineQueryResultGame {
  * @property description <em>Optional</em>. Short description of the result
  * @property caption <em>Optional</em>. Caption of the photo to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the photo
  *
@@ -2261,6 +2577,9 @@ pub struct InlineQueryResultCachedPhoto {
     /// <em>Optional</em>. Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
@@ -2278,6 +2597,7 @@ pub struct InlineQueryResultCachedPhoto {
  * @property title <em>Optional</em>. Title for the result
  * @property caption <em>Optional</em>. Caption of the GIF file to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the GIF animation
  *
@@ -2301,6 +2621,9 @@ pub struct InlineQueryResultCachedGif {
     /// <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
@@ -2318,6 +2641,7 @@ pub struct InlineQueryResultCachedGif {
  * @property title <em>Optional</em>. Title for the result
  * @property caption <em>Optional</em>. Caption of the MPEG-4 file to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the video animation
  *
@@ -2341,6 +2665,9 @@ pub struct InlineQueryResultCachedMpeg4Gif {
     /// <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
@@ -2387,6 +2714,7 @@ pub struct InlineQueryResultCachedSticker {
  * @property description <em>Optional</em>. Short description of the result
  * @property caption <em>Optional</em>. Caption of the document to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the file
  *
@@ -2412,6 +2740,9 @@ pub struct InlineQueryResultCachedDocument {
     /// <em>Optional</em>. Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
@@ -2430,6 +2761,7 @@ pub struct InlineQueryResultCachedDocument {
  * @property description <em>Optional</em>. Short description of the result
  * @property caption <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the video
  *
@@ -2455,6 +2787,9 @@ pub struct InlineQueryResultCachedVideo {
     /// <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
@@ -2472,6 +2807,7 @@ pub struct InlineQueryResultCachedVideo {
  * @property title Voice message title
  * @property caption <em>Optional</em>. Caption, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the voice message caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the voice message
  *
@@ -2494,6 +2830,9 @@ pub struct InlineQueryResultCachedVoice {
     /// <em>Optional</em>. Mode for parsing entities in the voice message caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
@@ -2510,6 +2849,7 @@ pub struct InlineQueryResultCachedVoice {
  * @property audio_file_id A valid file identifier for the audio file
  * @property caption <em>Optional</em>. Caption, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the audio
  *
@@ -2530,6 +2870,9 @@ pub struct InlineQueryResultCachedAudio {
     /// <em>Optional</em>. Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
@@ -2543,6 +2886,7 @@ pub struct InlineQueryResultCachedAudio {
  *
  * @property message_text Text of the message to be sent, 1-4096 characters
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property entities <em>Optional</em>. List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
  * @property disable_web_page_preview <em>Optional</em>. Disables link previews for links in the sent message
  *
  * @constructor Creates a [InputTextMessageContent].
@@ -2554,6 +2898,9 @@ pub struct InputTextMessageContent {
     /// <em>Optional</em>. Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub entities: Option<Vec<MessageEntity>>,
     /// <em>Optional</em>. Disables link previews for links in the sent message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_web_page_preview: Option<bool>
@@ -2564,7 +2911,10 @@ pub struct InputTextMessageContent {
  *
  * @property latitude Latitude of the location in degrees
  * @property longitude Longitude of the location in degrees
+ * @property horizontal_accuracy <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500
  * @property live_period <em>Optional</em>. Period in seconds for which the location can be updated, should be between 60 and 86400.
+ * @property heading <em>Optional</em>. For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
+ * @property proximity_alert_radius <em>Optional</em>. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
  *
  * @constructor Creates a [InputLocationMessageContent].
  * */
@@ -2574,9 +2924,18 @@ pub struct InputLocationMessageContent {
     pub latitude: Float,
     /// Longitude of the location in degrees
     pub longitude: Float,
+    /// <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub horizontal_accuracy: Option<Float>,
     /// <em>Optional</em>. Period in seconds for which the location can be updated, should be between 60 and 86400.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub live_period: Option<Integer>
+    pub live_period: Option<Integer>,
+    /// <em>Optional</em>. For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub heading: Option<Integer>,
+    /// <em>Optional</em>. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proximity_alert_radius: Option<Integer>
 }
 
 /**
@@ -2588,6 +2947,8 @@ pub struct InputLocationMessageContent {
  * @property address Address of the venue
  * @property foursquare_id <em>Optional</em>. Foursquare identifier of the venue, if known
  * @property foursquare_type <em>Optional</em>. Foursquare type of the venue, if known. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
+ * @property google_place_id <em>Optional</em>. Google Places identifier of the venue
+ * @property google_place_type <em>Optional</em>. Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.)
  *
  * @constructor Creates a [InputVenueMessageContent].
  * */
@@ -2606,7 +2967,13 @@ pub struct InputVenueMessageContent {
     pub foursquare_id: Option<String>,
     /// <em>Optional</em>. Foursquare type of the venue, if known. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub foursquare_type: Option<String>
+    pub foursquare_type: Option<String>,
+    /// <em>Optional</em>. Google Places identifier of the venue
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_place_id: Option<String>,
+    /// <em>Optional</em>. Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_place_type: Option<String>
 }
 
 /**
@@ -3251,7 +3618,7 @@ pub struct GameHighScore {
  * @property offset Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as <a href="#getupdates">getUpdates</a> is called with an <em>offset</em> higher than its <em>update_id</em>. The negative offset can be specified to retrieve updates starting from <em>-offset</em> update from the end of the updates queue. All previous updates will forgotten.
  * @property limit Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults to 100.
  * @property timeout Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only.
- * @property allowed_updates A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.
+ * @property allowed_updates A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em> (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct GetUpdatesRequest {
@@ -3261,7 +3628,7 @@ pub struct GetUpdatesRequest {
     pub limit: Option<Integer>,
     /// Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only.
     pub timeout: Option<Integer>,
-    /// A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.
+    /// A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em> (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.
     pub allowed_updates: Option<Vec<String>>
 }
 
@@ -3273,8 +3640,10 @@ pub struct GetUpdatesRequest {
  *
  * @property url HTTPS url to send updates to. Use an empty string to remove webhook integration
  * @property certificate Upload your public key certificate so that the root certificate in use can be checked. See our <a href="/bots/self-signed">self-signed guide</a> for details.
+ * @property ip_address The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS
  * @property max_connections Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to <em>40</em>. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.
- * @property allowed_updates A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.
+ * @property allowed_updates A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em> (default). If not specified, the previous setting will be used.<br>Please note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.
+ * @property drop_pending_updates Pass <em>True</em> to drop all pending updates
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SetWebhookRequest {
@@ -3282,10 +3651,25 @@ pub struct SetWebhookRequest {
     pub url: String,
     /// Upload your public key certificate so that the root certificate in use can be checked. See our <a href="/bots/self-signed">self-signed guide</a> for details.
     pub certificate: Option<InputFile>,
+    /// The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS
+    pub ip_address: Option<String>,
     /// Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to <em>40</em>. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.
     pub max_connections: Option<Integer>,
-    /// A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.
-    pub allowed_updates: Option<Vec<String>>
+    /// A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em> (default). If not specified, the previous setting will be used.<br>Please note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.
+    pub allowed_updates: Option<Vec<String>>,
+    /// Pass <em>True</em> to drop all pending updates
+    pub drop_pending_updates: Option<bool>
+}
+
+/**
+ * <p>Use this method to remove webhook integration if you decide to switch back to <a href="#getupdates">getUpdates</a>. Returns <em>True</em> on success.</p>
+ *
+ * @property drop_pending_updates Pass <em>True</em> to drop all pending updates
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct DeleteWebhookRequest {
+    /// Pass <em>True</em> to drop all pending updates
+    pub drop_pending_updates: Option<bool>
 }
 
 
@@ -3297,9 +3681,11 @@ pub struct SetWebhookRequest {
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property text Text of the message to be sent, 1-4096 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property entities List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
  * @property disable_web_page_preview Disables link previews for links in this message
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -3310,12 +3696,16 @@ pub struct SendMessageRequest {
     pub text: String,
     /// Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
+    pub entities: Option<Vec<MessageEntity>>,
     /// Disables link previews for links in this message
     pub disable_web_page_preview: Option<bool>,
     /// Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
     pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
     pub reply_markup: Option<KeyboardOption>
 }
@@ -3341,30 +3731,74 @@ pub struct ForwardMessageRequest {
 }
 
 /**
+ * <p>Use this method to copy messages of any kind. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
+ *
+ * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+ * @property from_chat_id Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>)
+ * @property message_id Message identifier in the chat specified in <em>from_chat_id</em>
+ * @property caption New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept
+ * @property parse_mode Mode for parsing entities in the new caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities List of special entities that appear in the new caption, which can be specified instead of <em>parse_mode</em>
+ * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property reply_to_message_id If the message is a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+ * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct CopyMessageRequest {
+    /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+    pub chat_id: String,
+    /// Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>)
+    pub from_chat_id: String,
+    /// Message identifier in the chat specified in <em>from_chat_id</em>
+    pub message_id: Integer,
+    /// New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept
+    pub caption: Option<String>,
+    /// Mode for parsing entities in the new caption. See <a href="#formatting-options">formatting options</a> for more details.
+    pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the new caption, which can be specified instead of <em>parse_mode</em>
+    pub caption_entities: Option<Vec<MessageEntity>>,
+    /// Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+    pub disable_notification: Option<bool>,
+    /// If the message is a reply, ID of the original message
+    pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>,
+    /// Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
+    pub reply_markup: Option<KeyboardOption>
+}
+
+/**
  * <p>Use this method to send photos. On success, the sent <a href="#message">Message</a> is returned.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property photo Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
+ * @property photo Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption Photo caption (may also be used when resending photos by <em>file_id</em>), 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendPhotoRequest {
     /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: String,
-    /// Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
+    /// Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. <a href="#sending-files">More info on Sending Files »</a>
     pub photo: String,
     /// Photo caption (may also be used when resending photos by <em>file_id</em>), 0-1024 characters after entities parsing
     pub caption: Option<String>,
     /// Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
     pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
     pub reply_markup: Option<KeyboardOption>
 }
@@ -3376,12 +3810,14 @@ pub struct SendPhotoRequest {
  * @property audio Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption Audio caption, 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property duration Duration of the audio in seconds
  * @property performer Performer
  * @property title Track name
  * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -3394,6 +3830,8 @@ pub struct SendAudioRequest {
     pub caption: Option<String>,
     /// Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// Duration of the audio in seconds
     pub duration: Option<Integer>,
     /// Performer
@@ -3406,6 +3844,8 @@ pub struct SendAudioRequest {
     pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
     pub reply_markup: Option<KeyboardOption>
 }
@@ -3418,8 +3858,11 @@ pub struct SendAudioRequest {
  * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption Document caption (may also be used when resending documents by <em>file_id</em>), 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+ * @property disable_content_type_detection Disables automatic server-side content type detection for files uploaded using multipart/form-data
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -3434,10 +3877,16 @@ pub struct SendDocumentRequest {
     pub caption: Option<String>,
     /// Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    pub caption_entities: Option<Vec<MessageEntity>>,
+    /// Disables automatic server-side content type detection for files uploaded using multipart/form-data
+    pub disable_content_type_detection: Option<bool>,
     /// Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
     pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
     pub reply_markup: Option<KeyboardOption>
 }
@@ -3453,9 +3902,11 @@ pub struct SendDocumentRequest {
  * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption Video caption (may also be used when resending videos by <em>file_id</em>), 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property supports_streaming Pass <em>True</em>, if the uploaded video is suitable for streaming
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -3476,12 +3927,16 @@ pub struct SendVideoRequest {
     pub caption: Option<String>,
     /// Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// Pass <em>True</em>, if the uploaded video is suitable for streaming
     pub supports_streaming: Option<bool>,
     /// Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
     pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
     pub reply_markup: Option<KeyboardOption>
 }
@@ -3497,8 +3952,10 @@ pub struct SendVideoRequest {
  * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption Animation caption (may also be used when resending animation by <em>file_id</em>), 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -3519,10 +3976,14 @@ pub struct SendAnimationRequest {
     pub caption: Option<String>,
     /// Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
     pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
     pub reply_markup: Option<KeyboardOption>
 }
@@ -3534,9 +3995,11 @@ pub struct SendAnimationRequest {
  * @property voice Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption Voice message caption, 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the voice message caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property duration Duration of the voice message in seconds
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -3549,12 +4012,16 @@ pub struct SendVoiceRequest {
     pub caption: Option<String>,
     /// Mode for parsing entities in the voice message caption. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// Duration of the voice message in seconds
     pub duration: Option<Integer>,
     /// Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
     pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
     pub reply_markup: Option<KeyboardOption>
 }
@@ -3569,6 +4036,7 @@ pub struct SendVoiceRequest {
  * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -3587,28 +4055,33 @@ pub struct SendVideoNoteRequest {
     pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
     pub reply_markup: Option<KeyboardOption>
 }
 
 /**
- * <p>Use this method to send a group of photos or videos as an album. On success, an array of the sent <a href="#message">Messages</a> is returned.</p>
+ * <p>Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of <a href="#message">Messages</a> that were sent is returned.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property media A JSON-serialized array describing photos and videos to be sent, must include 2-10 items
- * @property disable_notification Sends the messages <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property media A JSON-serialized array describing messages to be sent, must include 2-10 items
+ * @property disable_notification Sends messages <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the messages are a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendMediaGroupRequest {
     /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: String,
-    /// A JSON-serialized array describing photos and videos to be sent, must include 2-10 items
-    pub media: Vec<InputMediaPhotoOrVideo>,
-    /// Sends the messages <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+    /// A JSON-serialized array describing messages to be sent, must include 2-10 items
+    pub media: Vec<InputMedia>,
+    /// Sends messages <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
     pub disable_notification: Option<bool>,
     /// If the messages are a reply, ID of the original message
-    pub reply_to_message_id: Option<Integer>
+    pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>
 }
 
 /**
@@ -3617,9 +4090,13 @@ pub struct SendMediaGroupRequest {
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property latitude Latitude of the location
  * @property longitude Longitude of the location
+ * @property horizontal_accuracy The radius of uncertainty for the location, measured in meters; 0-1500
  * @property live_period Period in seconds for which the location will be updated (see <a href="https://telegram.org/blog/live-locations">Live Locations</a>, should be between 60 and 86400.
+ * @property heading For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
+ * @property proximity_alert_radius For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -3630,24 +4107,35 @@ pub struct SendLocationRequest {
     pub latitude: Float,
     /// Longitude of the location
     pub longitude: Float,
+    /// The radius of uncertainty for the location, measured in meters; 0-1500
+    pub horizontal_accuracy: Option<Float>,
     /// Period in seconds for which the location will be updated (see <a href="https://telegram.org/blog/live-locations">Live Locations</a>, should be between 60 and 86400.
     pub live_period: Option<Integer>,
+    /// For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
+    pub heading: Option<Integer>,
+    /// For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
+    pub proximity_alert_radius: Option<Integer>,
     /// Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
     pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
     pub reply_markup: Option<KeyboardOption>
 }
 
 /**
- * <p>Use this method to edit live location messages. A location can be edited until its <em>live_period</em> expires or editing is explicitly disabled by a call to <a href="#stopmessagelivelocation">stopMessageLiveLocation</a>. On success, if the edited message was sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+ * <p>Use this method to edit live location messages. A location can be edited until its <em>live_period</em> expires or editing is explicitly disabled by a call to <a href="#stopmessagelivelocation">stopMessageLiveLocation</a>. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
  *
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
  * @property latitude Latitude of new location
  * @property longitude Longitude of new location
+ * @property horizontal_accuracy The radius of uncertainty for the location, measured in meters; 0-1500
+ * @property heading Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
+ * @property proximity_alert_radius Maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
  * @property reply_markup A JSON-serialized object for a new <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -3662,6 +4150,12 @@ pub struct EditMessageLiveLocationRequest {
     pub latitude: Float,
     /// Longitude of new location
     pub longitude: Float,
+    /// The radius of uncertainty for the location, measured in meters; 0-1500
+    pub horizontal_accuracy: Option<Float>,
+    /// Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
+    pub heading: Option<Integer>,
+    /// Maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
+    pub proximity_alert_radius: Option<Integer>,
     /// A JSON-serialized object for a new <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
     pub reply_markup: Option<InlineKeyboardMarkup>
 }
@@ -3696,8 +4190,11 @@ pub struct StopMessageLiveLocationRequest {
  * @property address Address of the venue
  * @property foursquare_id Foursquare identifier of the venue
  * @property foursquare_type Foursquare type of the venue, if known. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
+ * @property google_place_id Google Places identifier of the venue
+ * @property google_place_type Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.)
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -3716,10 +4213,16 @@ pub struct SendVenueRequest {
     pub foursquare_id: Option<String>,
     /// Foursquare type of the venue, if known. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
     pub foursquare_type: Option<String>,
+    /// Google Places identifier of the venue
+    pub google_place_id: Option<String>,
+    /// Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.)
+    pub google_place_type: Option<String>,
     /// Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
     pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
     pub reply_markup: Option<KeyboardOption>
 }
@@ -3734,6 +4237,7 @@ pub struct SendVenueRequest {
  * @property vcard Additional data about the contact in the form of a <a href="https://en.wikipedia.org/wiki/VCard">vCard</a>, 0-2048 bytes
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove keyboard or to force a reply from the user.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -3752,6 +4256,8 @@ pub struct SendContactRequest {
     pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove keyboard or to force a reply from the user.
     pub reply_markup: Option<KeyboardOption>
 }
@@ -3760,7 +4266,7 @@ pub struct SendContactRequest {
  * <p>Use this method to send a native poll. On success, the sent <a href="#message">Message</a> is returned.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property question Poll question, 1-255 characters
+ * @property question Poll question, 1-300 characters
  * @property options A JSON-serialized list of answer options, 2-10 strings 1-100 characters each
  * @property is_anonymous True, if the poll needs to be anonymous, defaults to <em>True</em>
  * @property type Poll type, “quiz” or “regular”, defaults to “regular”
@@ -3768,18 +4274,20 @@ pub struct SendContactRequest {
  * @property correct_option_id 0-based identifier of the correct answer option, required for polls in quiz mode
  * @property explanation Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
  * @property explanation_parse_mode Mode for parsing entities in the explanation. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property explanation_entities List of special entities that appear in the poll explanation, which can be specified instead of <em>parse_mode</em>
  * @property open_period Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with <em>close_date</em>.
  * @property close_date Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with <em>open_period</em>.
  * @property is_closed Pass <em>True</em>, if the poll needs to be immediately closed. This can be useful for poll preview.
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendPollRequest {
     /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: String,
-    /// Poll question, 1-255 characters
+    /// Poll question, 1-300 characters
     pub question: String,
     /// A JSON-serialized list of answer options, 2-10 strings 1-100 characters each
     pub options: Vec<String>,
@@ -3796,6 +4304,8 @@ pub struct SendPollRequest {
     pub explanation: Option<String>,
     /// Mode for parsing entities in the explanation. See <a href="#formatting-options">formatting options</a> for more details.
     pub explanation_parse_mode: Option<String>,
+    /// List of special entities that appear in the poll explanation, which can be specified instead of <em>parse_mode</em>
+    pub explanation_entities: Option<Vec<MessageEntity>>,
     /// Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with <em>close_date</em>.
     pub open_period: Option<Integer>,
     /// Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with <em>open_period</em>.
@@ -3806,6 +4316,8 @@ pub struct SendPollRequest {
     pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
     pub reply_markup: Option<KeyboardOption>
 }
@@ -3814,21 +4326,24 @@ pub struct SendPollRequest {
  * <p>Use this method to send an animated emoji that will display a random value. On success, the sent <a href="#message">Message</a> is returned.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property emoji Emoji on which the dice throw animation is based. Currently, must be one of “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, or “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”. Dice can have values 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, and values 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”. Defaults to “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”
+ * @property emoji Emoji on which the dice throw animation is based. Currently, must be one of “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”, “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, or “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Dice can have values 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, values 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” and “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, and values 1-64 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Defaults to “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendDiceRequest {
     /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: String,
-    /// Emoji on which the dice throw animation is based. Currently, must be one of “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, or “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”. Dice can have values 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, and values 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”. Defaults to “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”
+    /// Emoji on which the dice throw animation is based. Currently, must be one of “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”, “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, or “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Dice can have values 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, values 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” and “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, and values 1-64 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Defaults to “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”
     pub emoji: Option<String>,
     /// Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
     pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
     pub reply_markup: Option<KeyboardOption>
 }
@@ -3839,13 +4354,13 @@ pub struct SendDiceRequest {
  * </blockquote><p>We only recommend using this method when a response from the bot will take a <strong>noticeable</strong> amount of time to arrive.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property action Type of action to broadcast. Choose one, depending on what the user is about to receive: <em>typing</em> for <a href="#sendmessage">text messages</a>, <em>upload_photo</em> for <a href="#sendphoto">photos</a>, <em>record_video</em> or <em>upload_video</em> for <a href="#sendvideo">videos</a>, <em>record_audio</em> or <em>upload_audio</em> for <a href="#sendaudio">audio files</a>, <em>upload_document</em> for <a href="#senddocument">general files</a>, <em>find_location</em> for <a href="#sendlocation">location data</a>, <em>record_video_note</em> or <em>upload_video_note</em> for <a href="#sendvideonote">video notes</a>.
+ * @property action Type of action to broadcast. Choose one, depending on what the user is about to receive: <em>typing</em> for <a href="#sendmessage">text messages</a>, <em>upload_photo</em> for <a href="#sendphoto">photos</a>, <em>record_video</em> or <em>upload_video</em> for <a href="#sendvideo">videos</a>, <em>record_voice</em> or <em>upload_voice</em> for <a href="#sendvoice">voice notes</a>, <em>upload_document</em> for <a href="#senddocument">general files</a>, <em>find_location</em> for <a href="#sendlocation">location data</a>, <em>record_video_note</em> or <em>upload_video_note</em> for <a href="#sendvideonote">video notes</a>.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendChatActionRequest {
     /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: String,
-    /// Type of action to broadcast. Choose one, depending on what the user is about to receive: <em>typing</em> for <a href="#sendmessage">text messages</a>, <em>upload_photo</em> for <a href="#sendphoto">photos</a>, <em>record_video</em> or <em>upload_video</em> for <a href="#sendvideo">videos</a>, <em>record_audio</em> or <em>upload_audio</em> for <a href="#sendaudio">audio files</a>, <em>upload_document</em> for <a href="#senddocument">general files</a>, <em>find_location</em> for <a href="#sendlocation">location data</a>, <em>record_video_note</em> or <em>upload_video_note</em> for <a href="#sendvideonote">video notes</a>.
+    /// Type of action to broadcast. Choose one, depending on what the user is about to receive: <em>typing</em> for <a href="#sendmessage">text messages</a>, <em>upload_photo</em> for <a href="#sendphoto">photos</a>, <em>record_video</em> or <em>upload_video</em> for <a href="#sendvideo">videos</a>, <em>record_voice</em> or <em>upload_voice</em> for <a href="#sendvoice">voice notes</a>, <em>upload_document</em> for <a href="#senddocument">general files</a>, <em>find_location</em> for <a href="#sendlocation">location data</a>, <em>record_video_note</em> or <em>upload_video_note</em> for <a href="#sendvideonote">video notes</a>.
     pub action: String
 }
 
@@ -3878,11 +4393,12 @@ pub struct GetFileRequest {
 }
 
 /**
- * <p>Use this method to kick a user from a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the group on their own using invite links, etc., unless <a href="#unbanchatmember">unbanned</a> first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+ * <p>Use this method to kick a user from a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless <a href="#unbanchatmember">unbanned</a> first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target group or username of the target supergroup or channel (in the format <code>@channelusername</code>)
  * @property user_id Unique identifier of the target user
- * @property until_date Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever
+ * @property until_date Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only.
+ * @property revoke_messages Pass <em>True</em> to delete all messages from the chat for the user that is being removed. If <em>False</em>, the user will be able to see messages in the group that were sent before the user was removed. Always <em>True</em> for supergroups and channels.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct KickChatMemberRequest {
@@ -3890,22 +4406,27 @@ pub struct KickChatMemberRequest {
     pub chat_id: String,
     /// Unique identifier of the target user
     pub user_id: Integer,
-    /// Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever
-    pub until_date: Option<Integer>
+    /// Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only.
+    pub until_date: Option<Integer>,
+    /// Pass <em>True</em> to delete all messages from the chat for the user that is being removed. If <em>False</em>, the user will be able to see messages in the group that were sent before the user was removed. Always <em>True</em> for supergroups and channels.
+    pub revoke_messages: Option<bool>
 }
 
 /**
- * <p>Use this method to unban a previously kicked user in a supergroup or channel. The user will <strong>not</strong> return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. Returns <em>True</em> on success.</p>
+ * <p>Use this method to unban a previously kicked user in a supergroup or channel. The user will <strong>not</strong> return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. By default, this method guarantees that after the call the user is not a member of the chat, but will be able to join it. So if the user is a member of the chat they will also be <strong>removed</strong> from the chat. If you don't want this, use the parameter <em>only_if_banned</em>. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target group or username of the target supergroup or channel (in the format <code>@username</code>)
  * @property user_id Unique identifier of the target user
+ * @property only_if_banned Do nothing if the user is not banned
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct UnbanChatMemberRequest {
     /// Unique identifier for the target group or username of the target supergroup or channel (in the format <code>@username</code>)
     pub chat_id: String,
     /// Unique identifier of the target user
-    pub user_id: Integer
+    pub user_id: Integer,
+    /// Do nothing if the user is not banned
+    pub only_if_banned: Option<bool>
 }
 
 /**
@@ -3933,14 +4454,17 @@ pub struct RestrictChatMemberRequest {
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property user_id Unique identifier of the target user
- * @property can_change_info Pass True, if the administrator can change chat title, photo and other settings
+ * @property is_anonymous Pass <em>True</em>, if the administrator's presence in the chat is hidden
+ * @property can_manage_chat Pass True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
  * @property can_post_messages Pass True, if the administrator can create channel posts, channels only
  * @property can_edit_messages Pass True, if the administrator can edit messages of other users and can pin messages, channels only
  * @property can_delete_messages Pass True, if the administrator can delete messages of other users
- * @property can_invite_users Pass True, if the administrator can invite new users to the chat
+ * @property can_manage_voice_chats Pass True, if the administrator can manage voice chats
  * @property can_restrict_members Pass True, if the administrator can restrict, ban or unban chat members
- * @property can_pin_messages Pass True, if the administrator can pin messages, supergroups only
  * @property can_promote_members Pass True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
+ * @property can_change_info Pass True, if the administrator can change chat title, photo and other settings
+ * @property can_invite_users Pass True, if the administrator can invite new users to the chat
+ * @property can_pin_messages Pass True, if the administrator can pin messages, supergroups only
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct PromoteChatMemberRequest {
@@ -3948,22 +4472,28 @@ pub struct PromoteChatMemberRequest {
     pub chat_id: String,
     /// Unique identifier of the target user
     pub user_id: Integer,
-    /// Pass True, if the administrator can change chat title, photo and other settings
-    pub can_change_info: Option<bool>,
+    /// Pass <em>True</em>, if the administrator's presence in the chat is hidden
+    pub is_anonymous: Option<bool>,
+    /// Pass True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
+    pub can_manage_chat: Option<bool>,
     /// Pass True, if the administrator can create channel posts, channels only
     pub can_post_messages: Option<bool>,
     /// Pass True, if the administrator can edit messages of other users and can pin messages, channels only
     pub can_edit_messages: Option<bool>,
     /// Pass True, if the administrator can delete messages of other users
     pub can_delete_messages: Option<bool>,
-    /// Pass True, if the administrator can invite new users to the chat
-    pub can_invite_users: Option<bool>,
+    /// Pass True, if the administrator can manage voice chats
+    pub can_manage_voice_chats: Option<bool>,
     /// Pass True, if the administrator can restrict, ban or unban chat members
     pub can_restrict_members: Option<bool>,
-    /// Pass True, if the administrator can pin messages, supergroups only
-    pub can_pin_messages: Option<bool>,
     /// Pass True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
-    pub can_promote_members: Option<bool>
+    pub can_promote_members: Option<bool>,
+    /// Pass True, if the administrator can change chat title, photo and other settings
+    pub can_change_info: Option<bool>,
+    /// Pass True, if the administrator can invite new users to the chat
+    pub can_invite_users: Option<bool>,
+    /// Pass True, if the administrator can pin messages, supergroups only
+    pub can_pin_messages: Option<bool>
 }
 
 /**
@@ -3998,8 +4528,8 @@ pub struct SetChatPermissionsRequest {
 }
 
 /**
- * <p>Use this method to generate a new invite link for a chat; any previously generated link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as <em>String</em> on success.</p><blockquote> 
- *  <p>Note: Each administrator in a chat generates their own invite links. Bots can't use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using <a href="#exportchatinvitelink">exportChatInviteLink</a> — after this the link will become available to the bot via the <a href="#getchat">getChat</a> method. If your bot needs to generate a new invite link replacing its previous one, use <a href="#exportchatinvitelink">exportChatInviteLink</a> again.</p> 
+ * <p>Use this method to generate a new primary invite link for a chat; any previously generated primary link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as <em>String</em> on success.</p><blockquote> 
+ *  <p>Note: Each administrator in a chat generates their own invite links. Bots can't use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using <a href="#exportchatinvitelink">exportChatInviteLink</a> or by calling the <a href="#getchat">getChat</a> method. If your bot needs to generate a new primary invite link replacing its previous one, use <a href="#exportchatinvitelink">exportChatInviteLink</a> again.</p> 
  * </blockquote>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
@@ -4008,6 +4538,57 @@ pub struct SetChatPermissionsRequest {
 pub struct ExportChatInviteLinkRequest {
     /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: String
+}
+
+/**
+ * <p>Use this method to create an additional invite link for a chat. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. The link can be revoked using the method <a href="#revokechatinvitelink">revokeChatInviteLink</a>. Returns the new invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+ *
+ * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+ * @property expire_date Point in time (Unix timestamp) when the link will expire
+ * @property member_limit Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct CreateChatInviteLinkRequest {
+    /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+    pub chat_id: String,
+    /// Point in time (Unix timestamp) when the link will expire
+    pub expire_date: Option<Integer>,
+    /// Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+    pub member_limit: Option<Integer>
+}
+
+/**
+ * <p>Use this method to edit a non-primary invite link created by the bot. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the edited invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+ *
+ * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+ * @property invite_link The invite link to edit
+ * @property expire_date Point in time (Unix timestamp) when the link will expire
+ * @property member_limit Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct EditChatInviteLinkRequest {
+    /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+    pub chat_id: String,
+    /// The invite link to edit
+    pub invite_link: String,
+    /// Point in time (Unix timestamp) when the link will expire
+    pub expire_date: Option<Integer>,
+    /// Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+    pub member_limit: Option<Integer>
+}
+
+/**
+ * <p>Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the revoked invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+ *
+ * @property chat_id Unique identifier of the target chat or username of the target channel (in the format <code>@channelusername</code>)
+ * @property invite_link The invite link to revoke
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct RevokeChatInviteLinkRequest {
+    /// Unique identifier of the target chat or username of the target channel (in the format <code>@channelusername</code>)
+    pub chat_id: String,
+    /// The invite link to revoke
+    pub invite_link: String
 }
 
 /**
@@ -4064,11 +4645,11 @@ pub struct SetChatDescriptionRequest {
 }
 
 /**
- * <p>Use this method to pin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in the supergroup or 'can_edit_messages' admin right in the channel. Returns <em>True</em> on success.</p>
+ * <p>Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in a supergroup or 'can_edit_messages' admin right in a channel. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Identifier of a message to pin
- * @property disable_notification Pass <em>True</em>, if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels.
+ * @property disable_notification Pass <em>True</em>, if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct PinChatMessageRequest {
@@ -4076,17 +4657,31 @@ pub struct PinChatMessageRequest {
     pub chat_id: String,
     /// Identifier of a message to pin
     pub message_id: Integer,
-    /// Pass <em>True</em>, if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels.
+    /// Pass <em>True</em>, if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.
     pub disable_notification: Option<bool>
 }
 
 /**
- * <p>Use this method to unpin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in the supergroup or 'can_edit_messages' admin right in the channel. Returns <em>True</em> on success.</p>
+ * <p>Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in a supergroup or 'can_edit_messages' admin right in a channel. Returns <em>True</em> on success.</p>
+ *
+ * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+ * @property message_id Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned.
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct UnpinChatMessageRequest {
+    /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+    pub chat_id: String,
+    /// Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned.
+    pub message_id: Option<Integer>
+}
+
+/**
+ * <p>Use this method to clear the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in a supergroup or 'can_edit_messages' admin right in a channel. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
-pub struct UnpinChatMessageRequest {
+pub struct UnpinAllChatMessagesRequest {
     /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: String
 }
@@ -4214,13 +4809,14 @@ pub struct SetMyCommandsRequest {
 /// Updating messages
 
 /**
- * <p>Use this method to edit text and <a href="#games">game</a> messages. On success, if edited message is sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+ * <p>Use this method to edit text and <a href="#games">game</a> messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
  *
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
  * @property text New text of the message, 1-4096 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property entities List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
  * @property disable_web_page_preview Disables link previews for links in this message
  * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
  * */
@@ -4236,6 +4832,8 @@ pub struct EditMessageTextRequest {
     pub text: String,
     /// Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
+    pub entities: Option<Vec<MessageEntity>>,
     /// Disables link previews for links in this message
     pub disable_web_page_preview: Option<bool>,
     /// A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
@@ -4243,13 +4841,14 @@ pub struct EditMessageTextRequest {
 }
 
 /**
- * <p>Use this method to edit captions of messages. On success, if edited message is sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+ * <p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
  *
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
  * @property caption New caption of the message, 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the message caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -4264,12 +4863,14 @@ pub struct EditMessageCaptionRequest {
     pub caption: Option<String>,
     /// Mode for parsing entities in the message caption. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
     pub reply_markup: Option<InlineKeyboardMarkup>
 }
 
 /**
- * <p>Use this method to edit animation, audio, document, photo, or video messages. If a message is a part of a message album, then it can be edited only to a photo or a video. Otherwise, message type can be changed arbitrarily. When inline message is edited, new file can't be uploaded. Use previously uploaded file via its file_id or specify a URL. On success, if the edited message was sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+ * <p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded. Use a previously uploaded file via its file_id or specify a URL. On success, if the edited message was sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
  *
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
@@ -4292,7 +4893,7 @@ pub struct EditMessageMediaRequest {
 }
 
 /**
- * <p>Use this method to edit only the reply markup of messages. On success, if edited message is sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+ * <p>Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
  *
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
@@ -4352,6 +4953,7 @@ pub struct DeleteMessageRequest {
  * @property sticker Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -4364,6 +4966,8 @@ pub struct SendStickerRequest {
     pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
     pub reply_markup: Option<KeyboardOption>
 }
@@ -4553,6 +5157,7 @@ pub struct AnswerInlineQueryRequest {
  * @property is_flexible Pass <em>True</em>, if the final price depends on the shipping method
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If empty, one 'Pay <code>total price</code>' button will be shown. If not empty, the first button must be a Pay button.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -4601,6 +5206,8 @@ pub struct SendInvoiceRequest {
     pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>,
     /// A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If empty, one 'Pay <code>total price</code>' button will be shown. If not empty, the first button must be a Pay button.
     pub reply_markup: Option<InlineKeyboardMarkup>
 }
@@ -4669,6 +5276,7 @@ pub struct SetPassportDataErrorsRequest {
  * @property game_short_name Short name of the game, serves as the unique identifier for the game. Set up your games via <a href="https://t.me/botfather">Botfather</a>.
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
+ * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -4681,6 +5289,8 @@ pub struct SendGameRequest {
     pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     pub reply_to_message_id: Option<Integer>,
+    /// Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+    pub allow_sending_without_reply: Option<bool>,
     /// A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.
     pub reply_markup: Option<InlineKeyboardMarkup>
 }

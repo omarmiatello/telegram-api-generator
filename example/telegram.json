@@ -102,6 +102,22 @@
               "name": "PollAnswer"
             },
             "required": false
+          },
+          {
+            "name": "my_chat_member",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. The bot\u0027s chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user.",
+            "type": {
+              "name": "ChatMemberUpdated"
+            },
+            "required": false
+          },
+          {
+            "name": "chat_member",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. A chat member\u0027s status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify “chat_member” in the list of \u003cem\u003eallowed_updates\u003c/em\u003e to receive these updates.",
+            "type": {
+              "name": "ChatMemberUpdated"
+            },
+            "required": false
           }
         ]
       },
@@ -134,6 +150,14 @@
             "required": true
           },
           {
+            "name": "ip_address",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Currently used webhook IP address",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
             "name": "last_error_date",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Unix time for the most recent error that happened when trying to deliver an update via webhook",
             "type": {
@@ -159,7 +183,7 @@
           },
           {
             "name": "allowed_updates",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. A list of update types the bot is subscribed to. Defaults to all update types",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. A list of update types the bot is subscribed to. Defaults to all update types except \u003cem\u003echat_member\u003c/em\u003e",
             "type": {
               "elementType": {
                 "name": "String"
@@ -202,7 +226,7 @@
           },
           {
             "name": "allowed_updates",
-            "description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.\u003cbr\u003e\u003cbr\u003ePlease note that this parameter doesn\u0027t affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.",
+            "description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e for a complete list of available update types. Specify an empty list to receive all update types except \u003cem\u003echat_member\u003c/em\u003e (default). If not specified, the previous setting will be used.\u003cbr\u003e\u003cbr\u003ePlease note that this parameter doesn\u0027t affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.",
             "type": {
               "elementType": {
                 "name": "String"
@@ -240,6 +264,14 @@
             "required": false
           },
           {
+            "name": "ip_address",
+            "description": "The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
             "name": "max_connections",
             "description": "Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to \u003cem\u003e40\u003c/em\u003e. Use lower values to limit the load on your bot\u0027s server, and higher values to increase your bot\u0027s throughput.",
             "type": {
@@ -249,12 +281,20 @@
           },
           {
             "name": "allowed_updates",
-            "description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.\u003cbr\u003e\u003cbr\u003ePlease note that this parameter doesn\u0027t affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.",
+            "description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e for a complete list of available update types. Specify an empty list to receive all update types except \u003cem\u003echat_member\u003c/em\u003e (default). If not specified, the previous setting will be used.\u003cbr\u003ePlease note that this parameter doesn\u0027t affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.",
             "type": {
               "elementType": {
                 "name": "String"
               },
               "name": "List\u003cString\u003e"
+            },
+            "required": false
+          },
+          {
+            "name": "drop_pending_updates",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e to drop all pending updates",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           }
@@ -265,8 +305,17 @@
       },
       {
         "name": "deleteWebhook",
-        "description": "\u003cp\u003eUse this method to remove webhook integration if you decide to switch back to \u003ca href\u003d\"#getupdates\"\u003egetUpdates\u003c/a\u003e. Returns \u003cem\u003eTrue\u003c/em\u003e on success. Requires no parameters.\u003c/p\u003e",
-        "docParameters": [],
+        "description": "\u003cp\u003eUse this method to remove webhook integration if you decide to switch back to \u003ca href\u003d\"#getupdates\"\u003egetUpdates\u003c/a\u003e. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "drop_pending_updates",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e to drop all pending updates",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          }
+        ],
         "returns": {
           "name": "Boolean"
         }
@@ -291,7 +340,7 @@
         "docFields": [
           {
             "name": "id",
-            "description": "Unique identifier for this user or bot",
+            "description": "Unique identifier for this user or bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.",
             "type": {
               "name": "Integer"
             },
@@ -369,7 +418,7 @@
         "docFields": [
           {
             "name": "id",
-            "description": "Unique identifier for this chat. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.",
+            "description": "Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.",
             "type": {
               "name": "Integer"
             },
@@ -424,6 +473,14 @@
             "required": false
           },
           {
+            "name": "bio",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Bio of the other party in a private chat. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
             "name": "description",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Description, for groups, supergroups and channel chats. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
@@ -433,7 +490,7 @@
           },
           {
             "name": "invite_link",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Chat invite link, for groups, supergroups and channel chats. Each administrator in a chat generates their own invite links, so the bot must first generate the link using \u003ca href\u003d\"#exportchatinvitelink\"\u003eexportChatInviteLink\u003c/a\u003e. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Primary invite link, for groups, supergroups and channel chats. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
               "name": "String"
             },
@@ -441,7 +498,7 @@
           },
           {
             "name": "pinned_message",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pinned message, for groups, supergroups and channels. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. The most recent pinned message (by sending date). Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
               "name": "Message"
             },
@@ -464,6 +521,14 @@
             "required": false
           },
           {
+            "name": "message_auto_delete_time",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
             "name": "sticker_set_name",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. For supergroups, name of group sticker set. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
@@ -476,6 +541,22 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the bot can change the group sticker set. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
               "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "linked_chat_id",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "location",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. For supergroups, the location to which the supergroup is connected. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "type": {
+              "name": "ChatLocation"
             },
             "required": false
           }
@@ -498,6 +579,14 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Sender, empty for messages sent to channels",
             "type": {
               "name": "User"
+            },
+            "required": false
+          },
+          {
+            "name": "sender_chat",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Sender of the message, sent on behalf of a chat. The channel itself for channel messages. The supergroup itself for messages from anonymous group administrators. The linked channel for messages automatically forwarded to the discussion group",
+            "type": {
+              "name": "Chat"
             },
             "required": false
           },
@@ -527,7 +616,7 @@
           },
           {
             "name": "forward_from_chat",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. For messages forwarded from channels, information about the original channel",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. For messages forwarded from channels or from anonymous administrators, information about the original sender chat",
             "type": {
               "name": "Chat"
             },
@@ -599,7 +688,7 @@
           },
           {
             "name": "author_signature",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Signature of the post author for messages in channels",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator",
             "type": {
               "name": "String"
             },
@@ -720,7 +809,7 @@
           },
           {
             "name": "dice",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a dice with random value from 1 to 6",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a dice with random value",
             "type": {
               "name": "Dice"
             },
@@ -829,8 +918,16 @@
             "required": false
           },
           {
+            "name": "message_auto_delete_timer_changed",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: auto-delete timer settings changed in the chat",
+            "type": {
+              "name": "MessageAutoDeleteTimerChanged"
+            },
+            "required": false
+          },
+          {
             "name": "migrate_to_chat_id",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. The group has been migrated to a supergroup with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.",
             "type": {
               "name": "Integer"
             },
@@ -838,7 +935,7 @@
           },
           {
             "name": "migrate_from_chat_id",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. The supergroup has been migrated from a group with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. The supergroup has been migrated from a group with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.",
             "type": {
               "name": "Integer"
             },
@@ -885,6 +982,38 @@
             "required": false
           },
           {
+            "name": "proximity_alert_triggered",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message. A user in the chat triggered another user\u0027s proximity alert while sharing Live Location.",
+            "type": {
+              "name": "ProximityAlertTriggered"
+            },
+            "required": false
+          },
+          {
+            "name": "voice_chat_started",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: voice chat started",
+            "type": {
+              "name": "VoiceChatStarted"
+            },
+            "required": false
+          },
+          {
+            "name": "voice_chat_ended",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: voice chat ended",
+            "type": {
+              "name": "VoiceChatEnded"
+            },
+            "required": false
+          },
+          {
+            "name": "voice_chat_participants_invited",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: new participants invited to a voice chat",
+            "type": {
+              "name": "VoiceChatParticipantsInvited"
+            },
+            "required": false
+          },
+          {
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Inline keyboard attached to the message. \u003ccode\u003elogin_url\u003c/code\u003e buttons are represented as ordinary \u003ccode\u003eurl\u003c/code\u003e buttons.",
             "type": {
@@ -908,6 +1037,20 @@
               }
             },
             "required": false
+          }
+        ]
+      },
+      {
+        "name": "MessageId",
+        "description": "\u003cp\u003eThis object represents a unique message identifier.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "message_id",
+            "description": "Unique message identifier",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
           }
         ]
       },
@@ -1134,6 +1277,14 @@
             "required": false
           },
           {
+            "name": "file_name",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Original filename as defined by sender",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
             "name": "mime_type",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. MIME type of the file as defined by sender",
             "type": {
@@ -1262,6 +1413,14 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Video thumbnail",
             "type": {
               "name": "PhotoSize"
+            },
+            "required": false
+          },
+          {
+            "name": "file_name",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Original filename as defined by sender",
+            "type": {
+              "name": "String"
             },
             "required": false
           },
@@ -1413,7 +1572,7 @@
           },
           {
             "name": "user_id",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Contact\u0027s user identifier in Telegram",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Contact\u0027s user identifier in Telegram. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.",
             "type": {
               "name": "Integer"
             },
@@ -1443,7 +1602,7 @@
           },
           {
             "name": "value",
-            "description": "Value of the dice, 1-6 for “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB2.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎲\"\u003e” and “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EAF.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎯\"\u003e” base emoji, 1-5 for “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8F80.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🏀\"\u003e” base emoji",
+            "description": "Value of the dice, 1-6 for “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB2.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎲\"\u003e”, “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EAF.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎯\"\u003e” and “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB3.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎳\"\u003e” base emoji, 1-5 for “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8F80.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🏀\"\u003e” and “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/E29ABD.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"⚽\"\u003e” base emoji, 1-64 for “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB0.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎰\"\u003e” base emoji",
             "type": {
               "name": "Integer"
             },
@@ -1520,7 +1679,7 @@
           },
           {
             "name": "question",
-            "description": "Poll question, 1-255 characters",
+            "description": "Poll question, 1-300 characters",
             "type": {
               "name": "String"
             },
@@ -1641,6 +1800,38 @@
               "name": "Float"
             },
             "required": true
+          },
+          {
+            "name": "horizontal_accuracy",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. The radius of uncertainty for the location, measured in meters; 0-1500",
+            "type": {
+              "name": "Float"
+            },
+            "required": false
+          },
+          {
+            "name": "live_period",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Time relative to the message sending date, during which the location can be updated, in seconds. For active live locations only.",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "heading",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. The direction in which user is moving, in degrees; 1-360. For active live locations only.",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "proximity_alert_radius",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only.",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
           }
         ]
       },
@@ -1650,7 +1841,7 @@
         "docFields": [
           {
             "name": "location",
-            "description": "Venue location",
+            "description": "Venue location. Can\u0027t be a live location",
             "type": {
               "name": "Location"
             },
@@ -1685,6 +1876,97 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Foursquare type of the venue. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)",
             "type": {
               "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "google_place_id",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Google Places identifier of the venue",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "google_place_type",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Google Places type of the venue. (See \u003ca href\u003d\"https://developers.google.com/places/web-service/supported_types\"\u003esupported types\u003c/a\u003e.)",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          }
+        ]
+      },
+      {
+        "name": "ProximityAlertTriggered",
+        "description": "\u003cp\u003eThis object represents the content of a service message, sent whenever a user in the chat triggers a proximity alert set by another user.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "traveler",
+            "description": "User that triggered the alert",
+            "type": {
+              "name": "User"
+            },
+            "required": true
+          },
+          {
+            "name": "watcher",
+            "description": "User that set the alert",
+            "type": {
+              "name": "User"
+            },
+            "required": true
+          },
+          {
+            "name": "distance",
+            "description": "The distance between the users",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "MessageAutoDeleteTimerChanged",
+        "description": "\u003cp\u003eThis object represents a service message about a change in auto-delete timer settings.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "message_auto_delete_time",
+            "description": "New auto-delete time for messages in the chat",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "VoiceChatEnded",
+        "description": "\u003cp\u003eThis object represents a service message about a voice chat ended in the chat.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "duration",
+            "description": "Voice chat duration; in seconds",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "VoiceChatParticipantsInvited",
+        "description": "\u003cp\u003eThis object represents a service message about new members invited to a voice chat.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "users",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. New members that were invited to the voice chat",
+            "type": {
+              "elementType": {
+                "name": "User"
+              },
+              "name": "List\u003cUser\u003e"
             },
             "required": false
           }
@@ -2125,6 +2407,60 @@
         ]
       },
       {
+        "name": "ChatInviteLink",
+        "description": "\u003cp\u003eRepresents an invite link for a chat.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "invite_link",
+            "description": "The invite link. If the link was created by another chat administrator, then the second part of the link will be replaced with “…”.",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "creator",
+            "description": "Creator of the link",
+            "type": {
+              "name": "User"
+            },
+            "required": true
+          },
+          {
+            "name": "is_primary",
+            "description": "True, if the link is primary",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "is_revoked",
+            "description": "True, if the link is revoked",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "expire_date",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Point in time (Unix timestamp) when the link will expire or has been expired",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "member_limit",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          }
+        ]
+      },
+      {
         "name": "ChatMember",
         "description": "\u003cp\u003eThis object contains information about one member of a chat.\u003c/p\u003e",
         "docFields": [
@@ -2153,16 +2489,24 @@
             "required": false
           },
           {
-            "name": "until_date",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time",
+            "name": "is_anonymous",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Owner and administrators only. True, if the user\u0027s presence in the chat is hidden",
             "type": {
-              "name": "Integer"
+              "name": "Boolean"
             },
             "required": false
           },
           {
             "name": "can_be_edited",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the bot is allowed to edit administrator privileges of that user",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_manage_chat",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
             "type": {
               "name": "Boolean"
             },
@@ -2187,6 +2531,14 @@
           {
             "name": "can_delete_messages",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can delete messages of other users",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_manage_voice_chats",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can manage voice chats",
             "type": {
               "name": "Boolean"
             },
@@ -2279,6 +2631,68 @@
               "name": "Boolean"
             },
             "required": false
+          },
+          {
+            "name": "until_date",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          }
+        ]
+      },
+      {
+        "name": "ChatMemberUpdated",
+        "description": "\u003cp\u003eThis object represents changes in the status of a chat member.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "chat",
+            "description": "Chat the user belongs to",
+            "type": {
+              "name": "Chat"
+            },
+            "required": true
+          },
+          {
+            "name": "from",
+            "description": "Performer of the action, which resulted in the change",
+            "type": {
+              "name": "User"
+            },
+            "required": true
+          },
+          {
+            "name": "date",
+            "description": "Date the change was done in Unix time",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          },
+          {
+            "name": "old_chat_member",
+            "description": "Previous information about the chat member",
+            "type": {
+              "name": "ChatMember"
+            },
+            "required": true
+          },
+          {
+            "name": "new_chat_member",
+            "description": "New information about the chat member",
+            "type": {
+              "name": "ChatMember"
+            },
+            "required": true
+          },
+          {
+            "name": "invite_link",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.",
+            "type": {
+              "name": "ChatInviteLink"
+            },
+            "required": false
           }
         ]
       },
@@ -2353,6 +2767,28 @@
         ]
       },
       {
+        "name": "ChatLocation",
+        "description": "\u003cp\u003eRepresents a location to which a chat is connected.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "location",
+            "description": "The location to which the supergroup is connected. Can\u0027t be a live location.",
+            "type": {
+              "name": "Location"
+            },
+            "required": true
+          },
+          {
+            "name": "address",
+            "description": "Location address; 1-64 characters, as defined by the chat owner",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
         "name": "BotCommand",
         "description": "\u003cp\u003eThis object represents a bot command.\u003c/p\u003e",
         "docFields": [
@@ -2380,7 +2816,7 @@
         "docFields": [
           {
             "name": "migrate_to_chat_id",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. The group has been migrated to a supergroup with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.",
             "type": {
               "name": "Integer"
             },
@@ -2429,6 +2865,17 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the photo caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
               "name": "ParseMode"
+            },
+            "required": false
+          },
+          {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
             },
             "required": false
           }
@@ -2483,6 +2930,17 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the video caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
               "name": "ParseMode"
+            },
+            "required": false
+          },
+          {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
             },
             "required": false
           },
@@ -2573,6 +3031,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "width",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Animation width",
             "type": {
@@ -2647,6 +3116,17 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the audio caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
               "name": "ParseMode"
+            },
+            "required": false
+          },
+          {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
             },
             "required": false
           },
@@ -2727,6 +3207,25 @@
               "name": "ParseMode"
             },
             "required": false
+          },
+          {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
+            "name": "disable_content_type_detection",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always true, if the document is sent as part of an album.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
           }
         ]
       }
@@ -2738,6 +3237,22 @@
     "description": "\u003cblockquote\u003e \n \u003cp\u003eAll methods in the Bot API are case-insensitive. We support \u003cstrong\u003eGET\u003c/strong\u003e and \u003cstrong\u003ePOST\u003c/strong\u003e HTTP methods. Use either \u003ca href\u003d\"https://en.wikipedia.org/wiki/Query_string\"\u003eURL query string\u003c/a\u003e or \u003cem\u003eapplication/json\u003c/em\u003e or \u003cem\u003eapplication/x-www-form-urlencoded\u003c/em\u003e or \u003cem\u003emultipart/form-data\u003c/em\u003e for passing parameters in Bot API requests.\u003cbr\u003eOn successful call, a JSON-object containing the result will be returned.\u003c/p\u003e \n\u003c/blockquote\u003e",
     "docTypes": [],
     "docMethods": [
+      {
+        "name": "logOut",
+        "description": "\u003cp\u003eUse this method to log out from the cloud Bot API server before launching the bot locally. You \u003cstrong\u003emust\u003c/strong\u003e log out the bot before running it locally, otherwise there is no guarantee that the bot will receive updates. After a successful call, you can immediately log in on a local server, but will not be able to log in back to the cloud Bot API server for 10 minutes. Returns \u003cem\u003eTrue\u003c/em\u003e on success. Requires no parameters.\u003c/p\u003e",
+        "docParameters": [],
+        "returns": {
+          "name": "Boolean"
+        }
+      },
+      {
+        "name": "close",
+        "description": "\u003cp\u003eUse this method to close the bot instance before moving it from one local server to another. You need to delete the webhook before calling this method to ensure that the bot isn\u0027t launched again after server restart. The method will return error 429 in the first 10 minutes after the bot is launched. Returns \u003cem\u003eTrue\u003c/em\u003e on success. Requires no parameters.\u003c/p\u003e",
+        "docParameters": [],
+        "returns": {
+          "name": "Boolean"
+        }
+      },
       {
         "name": "sendMessage",
         "description": "\u003cp\u003eUse this method to send text messages. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
@@ -2775,6 +3290,17 @@
             "required": false
           },
           {
+            "name": "entities",
+            "description": "List of special entities that appear in message text, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "disable_web_page_preview",
             "description": "Disables link previews for links in this message",
             "type": {
@@ -2795,6 +3321,14 @@
             "description": "If the message is a reply, ID of the original message",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -2883,6 +3417,128 @@
         }
       },
       {
+        "name": "copyMessage",
+        "description": "\u003cp\u003eUse this method to copy messages of any kind. The method is analogous to the method \u003ca href\u003d\"#forwardmessage\"\u003eforwardMessage\u003c/a\u003e, but the copied message doesn\u0027t have a link to the original message. Returns the \u003ca href\u003d\"#messageid\"\u003eMessageId\u003c/a\u003e of the sent message on success.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          },
+          {
+            "name": "from_chat_id",
+            "description": "Unique identifier for the chat where the original message was sent (or channel username in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          },
+          {
+            "name": "message_id",
+            "description": "Message identifier in the chat specified in \u003cem\u003efrom_chat_id\u003c/em\u003e",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          },
+          {
+            "name": "caption",
+            "description": "New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "parse_mode",
+            "description": "Mode for parsing entities in the new caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
+            "type": {
+              "name": "ParseMode"
+            },
+            "required": false
+          },
+          {
+            "name": "caption_entities",
+            "description": "List of special entities that appear in the new caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
+            "name": "disable_notification",
+            "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "reply_to_message_id",
+            "description": "If the message is a reply, ID of the original message",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "reply_markup",
+            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove reply keyboard or to force a reply from the user.",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "InlineKeyboardMarkup"
+                },
+                {
+                  "name": "ReplyKeyboardMarkup"
+                },
+                {
+                  "name": "ReplyKeyboardRemove"
+                },
+                {
+                  "name": "ForceReply"
+                }
+              ],
+              "name": "KeyboardOption"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "name": "MessageId"
+        }
+      },
+      {
         "name": "sendPhoto",
         "description": "\u003cp\u003eUse this method to send photos. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
         "docParameters": [
@@ -2904,7 +3560,7 @@
           },
           {
             "name": "photo",
-            "description": "Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo\u0027s width and height must not exceed 10000 in total. Width and height ratio must be at most 20. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -2935,6 +3591,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "disable_notification",
             "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
             "type": {
@@ -2947,6 +3614,14 @@
             "description": "If the message is a reply, ID of the original message",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -3030,6 +3705,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "duration",
             "description": "Duration of the audio in seconds",
             "type": {
@@ -3082,6 +3768,14 @@
             "description": "If the message is a reply, ID of the original message",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -3181,6 +3875,25 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
+            "name": "disable_content_type_detection",
+            "description": "Disables automatic server-side content type detection for files uploaded using multipart/form-data",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
             "name": "disable_notification",
             "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
             "type": {
@@ -3193,6 +3906,14 @@
             "description": "If the message is a reply, ID of the original message",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -3316,6 +4037,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "supports_streaming",
             "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the uploaded video is suitable for streaming",
             "type": {
@@ -3336,6 +4068,14 @@
             "description": "If the message is a reply, ID of the original message",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -3459,6 +4199,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "disable_notification",
             "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
             "type": {
@@ -3471,6 +4222,14 @@
             "description": "If the message is a reply, ID of the original message",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -3554,6 +4313,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "duration",
             "description": "Duration of the voice message in seconds",
             "type": {
@@ -3574,6 +4344,14 @@
             "description": "If the message is a reply, ID of the original message",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -3689,6 +4467,14 @@
             "required": false
           },
           {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
             "name": "reply_markup",
             "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove reply keyboard or to force a reply from the user.",
             "type": {
@@ -3717,7 +4503,7 @@
       },
       {
         "name": "sendMediaGroup",
-        "description": "\u003cp\u003eUse this method to send a group of photos or videos as an album. On success, an array of the sent \u003ca href\u003d\"#message\"\u003eMessages\u003c/a\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of \u003ca href\u003d\"#message\"\u003eMessages\u003c/a\u003e that were sent is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -3737,29 +4523,18 @@
           },
           {
             "name": "media",
-            "description": "A JSON-serialized array describing photos and videos to be sent, must include 2-10 items",
+            "description": "A JSON-serialized array describing messages to be sent, must include 2-10 items",
             "type": {
               "elementType": {
-                "validTypes": [
-                  {
-                    "name": "InputMediaPhoto"
-                  },
-                  {
-                    "name": "InputMediaVideo"
-                  }
-                ],
-                "name": "InputMediaPhotoOrVideo",
-                "superType": {
-                  "name": "InputMedia"
-                }
+                "name": "InputMedia"
               },
-              "name": "List\u003cInputMediaPhotoOrVideo\u003e"
+              "name": "List\u003cInputMedia\u003e"
             },
             "required": true
           },
           {
             "name": "disable_notification",
-            "description": "Sends the messages \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
+            "description": "Sends messages \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
             "type": {
               "name": "Boolean"
             },
@@ -3772,13 +4547,18 @@
               "name": "Integer"
             },
             "required": false
+          },
+          {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
           }
         ],
         "returns": {
-          "elementType": {
-            "name": "Message"
-          },
-          "name": "List\u003cMessage\u003e"
+          "name": "sent"
         }
       },
       {
@@ -3818,8 +4598,32 @@
             "required": true
           },
           {
+            "name": "horizontal_accuracy",
+            "description": "The radius of uncertainty for the location, measured in meters; 0-1500",
+            "type": {
+              "name": "Float"
+            },
+            "required": false
+          },
+          {
             "name": "live_period",
             "description": "Period in seconds for which the location will be updated (see \u003ca href\u003d\"https://telegram.org/blog/live-locations\"\u003eLive Locations\u003c/a\u003e, should be between 60 and 86400.",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "heading",
+            "description": "For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "proximity_alert_radius",
+            "description": "For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.",
             "type": {
               "name": "Integer"
             },
@@ -3838,6 +4642,14 @@
             "description": "If the message is a reply, ID of the original message",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -3870,7 +4682,7 @@
       },
       {
         "name": "editMessageLiveLocation",
-        "description": "\u003cp\u003eUse this method to edit live location messages. A location can be edited until its \u003cem\u003elive_period\u003c/em\u003e expires or editing is explicitly disabled by a call to \u003ca href\u003d\"#stopmessagelivelocation\"\u003estopMessageLiveLocation\u003c/a\u003e. On success, if the edited message was sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to edit live location messages. A location can be edited until its \u003cem\u003elive_period\u003c/em\u003e expires or editing is explicitly disabled by a call to \u003ca href\u003d\"#stopmessagelivelocation\"\u003estopMessageLiveLocation\u003c/a\u003e. On success, if the edited message is not an inline message, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -3919,6 +4731,30 @@
               "name": "Float"
             },
             "required": true
+          },
+          {
+            "name": "horizontal_accuracy",
+            "description": "The radius of uncertainty for the location, measured in meters; 0-1500",
+            "type": {
+              "name": "Float"
+            },
+            "required": false
+          },
+          {
+            "name": "heading",
+            "description": "Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "proximity_alert_radius",
+            "description": "Maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
           },
           {
             "name": "reply_markup",
@@ -4085,6 +4921,22 @@
             "required": false
           },
           {
+            "name": "google_place_id",
+            "description": "Google Places identifier of the venue",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "google_place_type",
+            "description": "Google Places type of the venue. (See \u003ca href\u003d\"https://developers.google.com/places/web-service/supported_types\"\u003esupported types\u003c/a\u003e.)",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
             "name": "disable_notification",
             "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
             "type": {
@@ -4097,6 +4949,14 @@
             "description": "If the message is a reply, ID of the original message",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -4196,6 +5056,14 @@
             "required": false
           },
           {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
             "name": "reply_markup",
             "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove keyboard or to force a reply from the user.",
             "type": {
@@ -4244,7 +5112,7 @@
           },
           {
             "name": "question",
-            "description": "Poll question, 1-255 characters",
+            "description": "Poll question, 1-300 characters",
             "type": {
               "name": "String"
             },
@@ -4310,6 +5178,17 @@
             "required": false
           },
           {
+            "name": "explanation_entities",
+            "description": "List of special entities that appear in the poll explanation, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "open_period",
             "description": "Amount of time in seconds the poll will be active after creation, 5-600. Can\u0027t be used together with \u003cem\u003eclose_date\u003c/em\u003e.",
             "type": {
@@ -4346,6 +5225,14 @@
             "description": "If the message is a reply, ID of the original message",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -4398,7 +5285,7 @@
           },
           {
             "name": "emoji",
-            "description": "Emoji on which the dice throw animation is based. Currently, must be one of “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB2.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎲\"\u003e”, “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EAF.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎯\"\u003e”, or “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8F80.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🏀\"\u003e”. Dice can have values 1-6 for “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB2.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎲\"\u003e” and “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EAF.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎯\"\u003e”, and values 1-5 for “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8F80.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🏀\"\u003e”. Defaults to “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB2.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎲\"\u003e”",
+            "description": "Emoji on which the dice throw animation is based. Currently, must be one of “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB2.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎲\"\u003e”, “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EAF.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎯\"\u003e”, “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8F80.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🏀\"\u003e”, “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/E29ABD.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"⚽\"\u003e”, “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB3.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎳\"\u003e”, or “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB0.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎰\"\u003e”. Dice can have values 1-6 for “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB2.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎲\"\u003e”, “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EAF.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎯\"\u003e” and “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB3.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎳\"\u003e”, values 1-5 for “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8F80.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🏀\"\u003e” and “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/E29ABD.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"⚽\"\u003e”, and values 1-64 for “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB0.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎰\"\u003e”. Defaults to “\u003cimg class\u003d\"emoji\" src\u003d\"//telegram.org/img/emoji/40/F09F8EB2.png\" width\u003d\"20\" height\u003d\"20\" alt\u003d\"🎲\"\u003e”",
             "type": {
               "name": "String"
             },
@@ -4417,6 +5304,14 @@
             "description": "If the message is a reply, ID of the original message",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -4469,7 +5364,7 @@
           },
           {
             "name": "action",
-            "description": "Type of action to broadcast. Choose one, depending on what the user is about to receive: \u003cem\u003etyping\u003c/em\u003e for \u003ca href\u003d\"#sendmessage\"\u003etext messages\u003c/a\u003e, \u003cem\u003eupload_photo\u003c/em\u003e for \u003ca href\u003d\"#sendphoto\"\u003ephotos\u003c/a\u003e, \u003cem\u003erecord_video\u003c/em\u003e or \u003cem\u003eupload_video\u003c/em\u003e for \u003ca href\u003d\"#sendvideo\"\u003evideos\u003c/a\u003e, \u003cem\u003erecord_audio\u003c/em\u003e or \u003cem\u003eupload_audio\u003c/em\u003e for \u003ca href\u003d\"#sendaudio\"\u003eaudio files\u003c/a\u003e, \u003cem\u003eupload_document\u003c/em\u003e for \u003ca href\u003d\"#senddocument\"\u003egeneral files\u003c/a\u003e, \u003cem\u003efind_location\u003c/em\u003e for \u003ca href\u003d\"#sendlocation\"\u003elocation data\u003c/a\u003e, \u003cem\u003erecord_video_note\u003c/em\u003e or \u003cem\u003eupload_video_note\u003c/em\u003e for \u003ca href\u003d\"#sendvideonote\"\u003evideo notes\u003c/a\u003e.",
+            "description": "Type of action to broadcast. Choose one, depending on what the user is about to receive: \u003cem\u003etyping\u003c/em\u003e for \u003ca href\u003d\"#sendmessage\"\u003etext messages\u003c/a\u003e, \u003cem\u003eupload_photo\u003c/em\u003e for \u003ca href\u003d\"#sendphoto\"\u003ephotos\u003c/a\u003e, \u003cem\u003erecord_video\u003c/em\u003e or \u003cem\u003eupload_video\u003c/em\u003e for \u003ca href\u003d\"#sendvideo\"\u003evideos\u003c/a\u003e, \u003cem\u003erecord_voice\u003c/em\u003e or \u003cem\u003eupload_voice\u003c/em\u003e for \u003ca href\u003d\"#sendvoice\"\u003evoice notes\u003c/a\u003e, \u003cem\u003eupload_document\u003c/em\u003e for \u003ca href\u003d\"#senddocument\"\u003egeneral files\u003c/a\u003e, \u003cem\u003efind_location\u003c/em\u003e for \u003ca href\u003d\"#sendlocation\"\u003elocation data\u003c/a\u003e, \u003cem\u003erecord_video_note\u003c/em\u003e or \u003cem\u003eupload_video_note\u003c/em\u003e for \u003ca href\u003d\"#sendvideonote\"\u003evideo notes\u003c/a\u003e.",
             "type": {
               "name": "String"
             },
@@ -4532,7 +5427,7 @@
       },
       {
         "name": "kickChatMember",
-        "description": "\u003cp\u003eUse this method to kick a user from a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the group on their own using invite links, etc., unless \u003ca href\u003d\"#unbanchatmember\"\u003eunbanned\u003c/a\u003e first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to kick a user from a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless \u003ca href\u003d\"#unbanchatmember\"\u003eunbanned\u003c/a\u003e first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4560,9 +5455,17 @@
           },
           {
             "name": "until_date",
-            "description": "Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever",
+            "description": "Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only.",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "revoke_messages",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e to delete all messages from the chat for the user that is being removed. If \u003cem\u003eFalse\u003c/em\u003e, the user will be able to see messages in the group that were sent before the user was removed. Always \u003cem\u003eTrue\u003c/em\u003e for supergroups and channels.",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           }
@@ -4573,7 +5476,7 @@
       },
       {
         "name": "unbanChatMember",
-        "description": "\u003cp\u003eUse this method to unban a previously kicked user in a supergroup or channel. The user will \u003cstrong\u003enot\u003c/strong\u003e return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to unban a previously kicked user in a supergroup or channel. The user will \u003cstrong\u003enot\u003c/strong\u003e return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. By default, this method guarantees that after the call the user is not a member of the chat, but will be able to join it. So if the user is a member of the chat they will also be \u003cstrong\u003eremoved\u003c/strong\u003e from the chat. If you don\u0027t want this, use the parameter \u003cem\u003eonly_if_banned\u003c/em\u003e. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4598,6 +5501,14 @@
               "name": "Integer"
             },
             "required": true
+          },
+          {
+            "name": "only_if_banned",
+            "description": "Do nothing if the user is not banned",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
           }
         ],
         "returns": {
@@ -4682,8 +5593,16 @@
             "required": true
           },
           {
-            "name": "can_change_info",
-            "description": "Pass True, if the administrator can change chat title, photo and other settings",
+            "name": "is_anonymous",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the administrator\u0027s presence in the chat is hidden",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_manage_chat",
+            "description": "Pass True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
             "type": {
               "name": "Boolean"
             },
@@ -4714,8 +5633,8 @@
             "required": false
           },
           {
-            "name": "can_invite_users",
-            "description": "Pass True, if the administrator can invite new users to the chat",
+            "name": "can_manage_voice_chats",
+            "description": "Pass True, if the administrator can manage voice chats",
             "type": {
               "name": "Boolean"
             },
@@ -4730,16 +5649,32 @@
             "required": false
           },
           {
-            "name": "can_pin_messages",
-            "description": "Pass True, if the administrator can pin messages, supergroups only",
+            "name": "can_promote_members",
+            "description": "Pass True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)",
             "type": {
               "name": "Boolean"
             },
             "required": false
           },
           {
-            "name": "can_promote_members",
-            "description": "Pass True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)",
+            "name": "can_change_info",
+            "description": "Pass True, if the administrator can change chat title, photo and other settings",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_invite_users",
+            "description": "Pass True, if the administrator can invite new users to the chat",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_pin_messages",
+            "description": "Pass True, if the administrator can pin messages, supergroups only",
             "type": {
               "name": "Boolean"
             },
@@ -4826,7 +5761,7 @@
       },
       {
         "name": "exportChatInviteLink",
-        "description": "\u003cp\u003eUse this method to generate a new invite link for a chat; any previously generated link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as \u003cem\u003eString\u003c/em\u003e on success.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: Each administrator in a chat generates their own invite links. Bots can\u0027t use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using \u003ca href\u003d\"#exportchatinvitelink\"\u003eexportChatInviteLink\u003c/a\u003e — after this the link will become available to the bot via the \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e method. If your bot needs to generate a new invite link replacing its previous one, use \u003ca href\u003d\"#exportchatinvitelink\"\u003eexportChatInviteLink\u003c/a\u003e again.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUse this method to generate a new primary invite link for a chat; any previously generated primary link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as \u003cem\u003eString\u003c/em\u003e on success.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: Each administrator in a chat generates their own invite links. Bots can\u0027t use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using \u003ca href\u003d\"#exportchatinvitelink\"\u003eexportChatInviteLink\u003c/a\u003e or by calling the \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e method. If your bot needs to generate a new primary invite link replacing its previous one, use \u003ca href\u003d\"#exportchatinvitelink\"\u003eexportChatInviteLink\u003c/a\u003e again.\u003c/p\u003e \n\u003c/blockquote\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4847,6 +5782,129 @@
         ],
         "returns": {
           "name": "String"
+        }
+      },
+      {
+        "name": "createChatInviteLink",
+        "description": "\u003cp\u003eUse this method to create an additional invite link for a chat. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. The link can be revoked using the method \u003ca href\u003d\"#revokechatinvitelink\"\u003erevokeChatInviteLink\u003c/a\u003e. Returns the new invite link as \u003ca href\u003d\"#chatinvitelink\"\u003eChatInviteLink\u003c/a\u003e object.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          },
+          {
+            "name": "expire_date",
+            "description": "Point in time (Unix timestamp) when the link will expire",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "member_limit",
+            "description": "Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "name": "ChatInviteLink"
+        }
+      },
+      {
+        "name": "editChatInviteLink",
+        "description": "\u003cp\u003eUse this method to edit a non-primary invite link created by the bot. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the edited invite link as a \u003ca href\u003d\"#chatinvitelink\"\u003eChatInviteLink\u003c/a\u003e object.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          },
+          {
+            "name": "invite_link",
+            "description": "The invite link to edit",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "expire_date",
+            "description": "Point in time (Unix timestamp) when the link will expire",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "member_limit",
+            "description": "Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "name": "ChatInviteLink"
+        }
+      },
+      {
+        "name": "revokeChatInviteLink",
+        "description": "\u003cp\u003eUse this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the revoked invite link as \u003ca href\u003d\"#chatinvitelink\"\u003eChatInviteLink\u003c/a\u003e object.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier of the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          },
+          {
+            "name": "invite_link",
+            "description": "The invite link to revoke",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          }
+        ],
+        "returns": {
+          "name": "ChatInviteLink"
         }
       },
       {
@@ -4975,7 +6033,7 @@
       },
       {
         "name": "pinChatMessage",
-        "description": "\u003cp\u003eUse this method to pin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the \u0027can_pin_messages\u0027 admin right in the supergroup or \u0027can_edit_messages\u0027 admin right in the channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the \u0027can_pin_messages\u0027 admin right in a supergroup or \u0027can_edit_messages\u0027 admin right in a channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -5003,7 +6061,7 @@
           },
           {
             "name": "disable_notification",
-            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels.",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.",
             "type": {
               "name": "Boolean"
             },
@@ -5016,7 +6074,40 @@
       },
       {
         "name": "unpinChatMessage",
-        "description": "\u003cp\u003eUse this method to unpin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the \u0027can_pin_messages\u0027 admin right in the supergroup or \u0027can_edit_messages\u0027 admin right in the channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the \u0027can_pin_messages\u0027 admin right in a supergroup or \u0027can_edit_messages\u0027 admin right in a channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          },
+          {
+            "name": "message_id",
+            "description": "Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned.",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
+      },
+      {
+        "name": "unpinAllChatMessages",
+        "description": "\u003cp\u003eUse this method to clear the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the \u0027can_pin_messages\u0027 admin right in a supergroup or \u0027can_edit_messages\u0027 admin right in a channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -5322,7 +6413,7 @@
     "docMethods": [
       {
         "name": "editMessageText",
-        "description": "\u003cp\u003eUse this method to edit text and \u003ca href\u003d\"#games\"\u003egame\u003c/a\u003e messages. On success, if edited message is sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to edit text and \u003ca href\u003d\"#games\"\u003egame\u003c/a\u003e messages. On success, if the edited message is not an inline message, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -5373,6 +6464,17 @@
             "required": false
           },
           {
+            "name": "entities",
+            "description": "List of special entities that appear in message text, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "disable_web_page_preview",
             "description": "Disables link previews for links in this message",
             "type": {
@@ -5412,7 +6514,7 @@
       },
       {
         "name": "editMessageCaption",
-        "description": "\u003cp\u003eUse this method to edit captions of messages. On success, if edited message is sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to edit captions of messages. On success, if the edited message is not an inline message, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -5463,6 +6565,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "reply_markup",
             "description": "A JSON-serialized object for an \u003ca href\u003d\"https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboard\u003c/a\u003e.",
             "type": {
@@ -5494,7 +6607,7 @@
       },
       {
         "name": "editMessageMedia",
-        "description": "\u003cp\u003eUse this method to edit animation, audio, document, photo, or video messages. If a message is a part of a message album, then it can be edited only to a photo or a video. Otherwise, message type can be changed arbitrarily. When inline message is edited, new file can\u0027t be uploaded. Use previously uploaded file via its file_id or specify a URL. On success, if the edited message was sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can\u0027t be uploaded. Use a previously uploaded file via its file_id or specify a URL. On success, if the edited message was sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -5568,7 +6681,7 @@
       },
       {
         "name": "editMessageReplyMarkup",
-        "description": "\u003cp\u003eUse this method to edit only the reply markup of messages. On success, if edited message is sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -5961,6 +7074,14 @@
             "description": "If the message is a reply, ID of the original message",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -6510,6 +7631,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
@@ -6633,6 +7765,17 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
               "name": "ParseMode"
+            },
+            "required": false
+          },
+          {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
             },
             "required": false
           },
@@ -6764,6 +7907,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
@@ -6863,6 +8017,17 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the video caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
               "name": "ParseMode"
+            },
+            "required": false
+          },
+          {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
             },
             "required": false
           },
@@ -6986,6 +8151,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "performer",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Performer",
             "type": {
@@ -7089,6 +8265,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "voice_duration",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Recording duration in seconds",
             "type": {
@@ -7172,6 +8359,17 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the document caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
               "name": "ParseMode"
+            },
+            "required": false
+          },
+          {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
             },
             "required": false
           },
@@ -7303,8 +8501,32 @@
             "required": true
           },
           {
+            "name": "horizontal_accuracy",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. The radius of uncertainty for the location, measured in meters; 0-1500",
+            "type": {
+              "name": "Float"
+            },
+            "required": false
+          },
+          {
             "name": "live_period",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Period in seconds for which the location can be updated, should be between 60 and 86400.",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "heading",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "proximity_alert_radius",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.",
             "type": {
               "name": "Integer"
             },
@@ -7432,6 +8654,22 @@
           {
             "name": "foursquare_type",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Foursquare type of the venue, if known. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "google_place_id",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Google Places identifier of the venue",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "google_place_type",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Google Places type of the venue. (See \u003ca href\u003d\"https://developers.google.com/places/web-service/supported_types\"\u003esupported types\u003c/a\u003e.)",
             "type": {
               "name": "String"
             },
@@ -7723,6 +8961,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
@@ -7810,6 +9059,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
@@ -7893,6 +9153,17 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Mode for parsing entities in the caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
             "type": {
               "name": "ParseMode"
+            },
+            "required": false
+          },
+          {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
             },
             "required": false
           },
@@ -8055,6 +9326,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
@@ -8150,6 +9432,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
@@ -8237,6 +9530,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
@@ -8316,6 +9620,17 @@
             "required": false
           },
           {
+            "name": "caption_entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "reply_markup",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003eInline keyboard\u003c/a\u003e attached to the message",
             "type": {
@@ -8371,6 +9686,17 @@
             "required": false
           },
           {
+            "name": "entities",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. List of special entities that appear in message text, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
             "name": "disable_web_page_preview",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Disables link previews for links in the sent message",
             "type": {
@@ -8401,8 +9727,32 @@
             "required": true
           },
           {
+            "name": "horizontal_accuracy",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. The radius of uncertainty for the location, measured in meters; 0-1500",
+            "type": {
+              "name": "Float"
+            },
+            "required": false
+          },
+          {
             "name": "live_period",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Period in seconds for which the location can be updated, should be between 60 and 86400.",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "heading",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "proximity_alert_radius",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.",
             "type": {
               "name": "Integer"
             },
@@ -8457,6 +9807,22 @@
           {
             "name": "foursquare_type",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Foursquare type of the venue, if known. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "google_place_id",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Google Places identifier of the venue",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "google_place_type",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Google Places type of the venue. (See \u003ca href\u003d\"https://developers.google.com/places/web-service/supported_types\"\u003esupported types\u003c/a\u003e.)",
             "type": {
               "name": "String"
             },
@@ -9161,6 +10527,14 @@
             "description": "If the message is a reply, ID of the original message",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -9979,6 +11353,14 @@
             "description": "If the message is a reply, ID of the original message",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "allow_sending_without_reply",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the message should be sent even if the specified replied-to message is not found",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },

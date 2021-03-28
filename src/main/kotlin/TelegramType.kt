@@ -11,6 +11,7 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
     object CallbackGame : TelegramType("CallbackGame", superType = null)
     object InputFile : TelegramType("InputFile", superType = null)
     object ParseMode : TelegramType("ParseMode", superType = null)
+    object VoiceChatStarted : TelegramType("VoiceChatStarted", superType = null)
 
     sealed class Super(name: String) : TelegramType(name, superType = null) {
         object InputMedia : Super("InputMedia")
@@ -48,15 +49,6 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             ),
             superType = null
         )
-
-        object InputMediaPhotoOrVideo : WithAlternative(
-            name = "InputMediaPhotoOrVideo",
-            validTypes = listOf(
-                Declared("InputMediaPhoto", InputMediaPhotoOrVideo),
-                Declared("InputMediaVideo", InputMediaPhotoOrVideo)
-            ),
-            superType = Super.InputMedia
-        )
     }
 
     override fun toString() = name
@@ -70,7 +62,7 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             Super.InlineQueryResult,
             Super.PassportElementError,
             WithAlternative.KeyboardOption,
-            WithAlternative.InputMediaPhotoOrVideo
+            VoiceChatStarted,
         )
 
         private fun findSuper(docName: String) = allSuper.filterIsInstance(WithAlternative::class.java)
@@ -86,13 +78,13 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             "InputMedia" -> Super.InputMedia
             "InputFile" -> InputFile
             "ParseMode" -> ParseMode
+            "VoiceChatStarted" -> VoiceChatStarted
             "InputMessageContent" -> Super.InputMessageContent
             "InlineQueryResult" -> Super.InlineQueryResult
             "PassportElementError" -> Super.PassportElementError
             "InputFileOrString" -> WithAlternative.InputFileOrString
             "IntegerOrString" -> WithAlternative.IntegerOrString
             "KeyboardOption" -> WithAlternative.KeyboardOption
-            "InputMediaPhotoOrVideo" -> WithAlternative.InputMediaPhotoOrVideo
             else -> {
                 if (type.startsWith("Array of ")) {
                     ListType(from(type.removePrefix("Array of ")))

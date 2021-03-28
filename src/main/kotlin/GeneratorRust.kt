@@ -105,6 +105,7 @@ private fun TelegramType.toRustType(): String = when (this) {
     TelegramType.CallbackGame,
     TelegramType.InputFile -> name
     TelegramType.ParseMode -> name
+    TelegramType.VoiceChatStarted -> name
     is TelegramType.Super -> {
         when (this) {
             TelegramType.Super.InputMedia,
@@ -120,7 +121,6 @@ private fun TelegramType.toRustType(): String = when (this) {
             TelegramType.WithAlternative.InputFileOrString -> "String"
             TelegramType.WithAlternative.IntegerOrString -> "String"
             TelegramType.WithAlternative.KeyboardOption -> name
-            TelegramType.WithAlternative.InputMediaPhotoOrVideo -> name
         }
     }
 }

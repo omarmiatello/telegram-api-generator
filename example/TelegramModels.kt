@@ -1,24 +1,31 @@
-import kotlinx.serialization.ContextualSerialization
+package com.github.omarmiatello.telegram
+
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import kotlinx.serialization.json.JsonLiteral
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 
-private val json = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true, prettyPrint = true, encodeDefaults = false))
-sealed class TelegramModel { abstract fun toJson(): String }
+private val json = Json { ignoreUnknownKeys = true; prettyPrint = true; encodeDefaults = false }
+
+sealed class TelegramModel {
+    abstract fun toJson(): String
+}
+
 sealed class InputMedia : TelegramModel()
 sealed class InputMessageContent : TelegramModel()
 sealed class InlineQueryResult : TelegramModel()
 sealed class PassportElementError : TelegramModel()
 sealed class KeyboardOption : TelegramModel()
-sealed class InputMediaPhotoOrVideo : InputMedia()
+sealed class VoiceChatStarted : TelegramModel()
+
 @Serializable
 data class TelegramResponse<T>(val ok: Boolean, val result: T)
 
 // --- Utility ---
 
 enum class ParseMode { MarkdownV2, Markdown, HTML }
+
 fun String.parseTelegramRequest() = Update.fromJson(this)
 
 // --- Parameters & Responses ---
@@ -41,6 +48,8 @@ fun String.parseTelegramRequest() = Update.fromJson(this)
  * @property pre_checkout_query <em>Optional</em>. New incoming pre-checkout query. Contains full information about checkout
  * @property poll <em>Optional</em>. New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot
  * @property poll_answer <em>Optional</em>. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.
+ * @property my_chat_member <em>Optional</em>. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user.
+ * @property chat_member <em>Optional</em>. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify “chat_member” in the list of <em>allowed_updates</em> to receive these updates.
  *
  * @constructor Creates a [Update].
  * */
@@ -57,11 +66,14 @@ data class Update(
     val shipping_query: ShippingQuery? = null,
     val pre_checkout_query: PreCheckoutQuery? = null,
     val poll: Poll? = null,
-    val poll_answer: PollAnswer? = null
+    val poll_answer: PollAnswer? = null,
+    val my_chat_member: ChatMemberUpdated? = null,
+    val chat_member: ChatMemberUpdated? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -71,10 +83,11 @@ data class Update(
  * @property url Webhook URL, may be empty if webhook is not set up
  * @property has_custom_certificate True, if a custom certificate was provided for webhook certificate checks
  * @property pending_update_count Number of updates awaiting delivery
+ * @property ip_address <em>Optional</em>. Currently used webhook IP address
  * @property last_error_date <em>Optional</em>. Unix time for the most recent error that happened when trying to deliver an update via webhook
  * @property last_error_message <em>Optional</em>. Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook
  * @property max_connections <em>Optional</em>. Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery
- * @property allowed_updates <em>Optional</em>. A list of update types the bot is subscribed to. Defaults to all update types
+ * @property allowed_updates <em>Optional</em>. A list of update types the bot is subscribed to. Defaults to all update types except <em>chat_member</em>
  *
  * @constructor Creates a [WebhookInfo].
  * */
@@ -83,14 +96,16 @@ data class WebhookInfo(
     val url: String,
     val has_custom_certificate: Boolean,
     val pending_update_count: Int,
+    val ip_address: String? = null,
     val last_error_date: Int? = null,
     val last_error_message: String? = null,
     val max_connections: Int? = null,
-    val allowed_updates: List<String>? = null
+    val allowed_updates: List<String>? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -100,7 +115,7 @@ data class WebhookInfo(
 /**
  * <p>This object represents a Telegram user or bot.</p>
  *
- * @property id Unique identifier for this user or bot
+ * @property id Unique identifier for this user or bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
  * @property is_bot True, if this user is a bot
  * @property first_name User's or bot's first name
  * @property last_name <em>Optional</em>. User's or bot's last name
@@ -122,31 +137,36 @@ data class User(
     val language_code: String? = null,
     val can_join_groups: Boolean? = null,
     val can_read_all_group_messages: Boolean? = null,
-    val supports_inline_queries: Boolean? = null
+    val supports_inline_queries: Boolean? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
 /**
  * <p>This object represents a chat.</p>
  *
- * @property id Unique identifier for this chat. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
+ * @property id Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
  * @property type Type of chat, can be either “private”, “group”, “supergroup” or “channel”
  * @property title <em>Optional</em>. Title, for supergroups, channels and group chats
  * @property username <em>Optional</em>. Username, for private chats, supergroups and channels if available
  * @property first_name <em>Optional</em>. First name of the other party in a private chat
  * @property last_name <em>Optional</em>. Last name of the other party in a private chat
  * @property photo <em>Optional</em>. Chat photo. Returned only in <a href="#getchat">getChat</a>.
+ * @property bio <em>Optional</em>. Bio of the other party in a private chat. Returned only in <a href="#getchat">getChat</a>.
  * @property description <em>Optional</em>. Description, for groups, supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>.
- * @property invite_link <em>Optional</em>. Chat invite link, for groups, supergroups and channel chats. Each administrator in a chat generates their own invite links, so the bot must first generate the link using <a href="#exportchatinvitelink">exportChatInviteLink</a>. Returned only in <a href="#getchat">getChat</a>.
- * @property pinned_message <em>Optional</em>. Pinned message, for groups, supergroups and channels. Returned only in <a href="#getchat">getChat</a>.
+ * @property invite_link <em>Optional</em>. Primary invite link, for groups, supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>.
+ * @property pinned_message <em>Optional</em>. The most recent pinned message (by sending date). Returned only in <a href="#getchat">getChat</a>.
  * @property permissions <em>Optional</em>. Default chat member permissions, for groups and supergroups. Returned only in <a href="#getchat">getChat</a>.
  * @property slow_mode_delay <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user. Returned only in <a href="#getchat">getChat</a>.
+ * @property message_auto_delete_time <em>Optional</em>. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in <a href="#getchat">getChat</a>.
  * @property sticker_set_name <em>Optional</em>. For supergroups, name of group sticker set. Returned only in <a href="#getchat">getChat</a>.
  * @property can_set_sticker_set <em>Optional</em>. True, if the bot can change the group sticker set. Returned only in <a href="#getchat">getChat</a>.
+ * @property linked_chat_id <em>Optional</em>. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in <a href="#getchat">getChat</a>.
+ * @property location <em>Optional</em>. For supergroups, the location to which the supergroup is connected. Returned only in <a href="#getchat">getChat</a>.
  *
  * @constructor Creates a [Chat].
  * */
@@ -159,17 +179,22 @@ data class Chat(
     val first_name: String? = null,
     val last_name: String? = null,
     val photo: ChatPhoto? = null,
+    val bio: String? = null,
     val description: String? = null,
     val invite_link: String? = null,
     val pinned_message: Message? = null,
     val permissions: ChatPermissions? = null,
     val slow_mode_delay: Int? = null,
+    val message_auto_delete_time: Int? = null,
     val sticker_set_name: String? = null,
-    val can_set_sticker_set: Boolean? = null
+    val can_set_sticker_set: Boolean? = null,
+    val linked_chat_id: Int? = null,
+    val location: ChatLocation? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -178,10 +203,11 @@ data class Chat(
  *
  * @property message_id Unique message identifier inside this chat
  * @property from <em>Optional</em>. Sender, empty for messages sent to channels
+ * @property sender_chat <em>Optional</em>. Sender of the message, sent on behalf of a chat. The channel itself for channel messages. The supergroup itself for messages from anonymous group administrators. The linked channel for messages automatically forwarded to the discussion group
  * @property date Date the message was sent in Unix time
  * @property chat Conversation the message belongs to
  * @property forward_from <em>Optional</em>. For forwarded messages, sender of the original message
- * @property forward_from_chat <em>Optional</em>. For messages forwarded from channels, information about the original channel
+ * @property forward_from_chat <em>Optional</em>. For messages forwarded from channels or from anonymous administrators, information about the original sender chat
  * @property forward_from_message_id <em>Optional</em>. For messages forwarded from channels, identifier of the original message in the channel
  * @property forward_signature <em>Optional</em>. For messages forwarded from channels, signature of the post author if present
  * @property forward_sender_name <em>Optional</em>. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages
@@ -190,7 +216,7 @@ data class Chat(
  * @property via_bot <em>Optional</em>. Bot through which the message was sent
  * @property edit_date <em>Optional</em>. Date the message was last edited in Unix time
  * @property media_group_id <em>Optional</em>. The unique identifier of a media message group this message belongs to
- * @property author_signature <em>Optional</em>. Signature of the post author for messages in channels
+ * @property author_signature <em>Optional</em>. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
  * @property text <em>Optional</em>. For text messages, the actual UTF-8 text of the message, 0-4096 characters
  * @property entities <em>Optional</em>. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text
  * @property animation <em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set
@@ -204,7 +230,7 @@ data class Chat(
  * @property caption <em>Optional</em>. Caption for the animation, audio, document, photo, video or voice, 0-1024 characters
  * @property caption_entities <em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption
  * @property contact <em>Optional</em>. Message is a shared contact, information about the contact
- * @property dice <em>Optional</em>. Message is a dice with random value from 1 to 6
+ * @property dice <em>Optional</em>. Message is a dice with random value
  * @property game <em>Optional</em>. Message is a game, information about the game. <a href="#games">More about games »</a>
  * @property poll <em>Optional</em>. Message is a native poll, information about the poll
  * @property venue <em>Optional</em>. Message is a venue, information about the venue. For backward compatibility, when this field is set, the <em>location</em> field will also be set
@@ -217,13 +243,18 @@ data class Chat(
  * @property group_chat_created <em>Optional</em>. Service message: the group has been created
  * @property supergroup_chat_created <em>Optional</em>. Service message: the supergroup has been created. This field can't be received in a message coming through updates, because bot can't be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup.
  * @property channel_chat_created <em>Optional</em>. Service message: the channel has been created. This field can't be received in a message coming through updates, because bot can't be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel.
- * @property migrate_to_chat_id <em>Optional</em>. The group has been migrated to a supergroup with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
- * @property migrate_from_chat_id <em>Optional</em>. The supergroup has been migrated from a group with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
+ * @property message_auto_delete_timer_changed <em>Optional</em>. Service message: auto-delete timer settings changed in the chat
+ * @property migrate_to_chat_id <em>Optional</em>. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
+ * @property migrate_from_chat_id <em>Optional</em>. The supergroup has been migrated from a group with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
  * @property pinned_message <em>Optional</em>. Specified message was pinned. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it is itself a reply.
  * @property invoice <em>Optional</em>. Message is an invoice for a <a href="#payments">payment</a>, information about the invoice. <a href="#payments">More about payments »</a>
  * @property successful_payment <em>Optional</em>. Message is a service message about a successful payment, information about the payment. <a href="#payments">More about payments »</a>
  * @property connected_website <em>Optional</em>. The domain name of the website on which the user has logged in. <a href="/widgets/login">More about Telegram Login »</a>
  * @property passport_data <em>Optional</em>. Telegram Passport data
+ * @property proximity_alert_triggered <em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.
+ * @property voice_chat_started <em>Optional</em>. Service message: voice chat started
+ * @property voice_chat_ended <em>Optional</em>. Service message: voice chat ended
+ * @property voice_chat_participants_invited <em>Optional</em>. Service message: new participants invited to a voice chat
  * @property reply_markup <em>Optional</em>. Inline keyboard attached to the message. <code>login_url</code> buttons are represented as ordinary <code>url</code> buttons.
  *
  * @constructor Creates a [Message].
@@ -232,6 +263,7 @@ data class Chat(
 data class Message(
     val message_id: Int,
     val from: User? = null,
+    val sender_chat: Chat? = null,
     val date: Int,
     val chat: Chat,
     val forward_from: User? = null,
@@ -271,6 +303,7 @@ data class Message(
     val group_chat_created: Boolean? = null,
     val supergroup_chat_created: Boolean? = null,
     val channel_chat_created: Boolean? = null,
+    val message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged? = null,
     val migrate_to_chat_id: Int? = null,
     val migrate_from_chat_id: Int? = null,
     val pinned_message: Message? = null,
@@ -278,11 +311,34 @@ data class Message(
     val successful_payment: SuccessfulPayment? = null,
     val connected_website: String? = null,
     val passport_data: PassportData? = null,
-    val reply_markup: InlineKeyboardMarkup? = null
+    val proximity_alert_triggered: ProximityAlertTriggered? = null,
+    val voice_chat_started: @Contextual VoiceChatStarted? = null,
+    val voice_chat_ended: VoiceChatEnded? = null,
+    val voice_chat_participants_invited: VoiceChatParticipantsInvited? = null,
+    val reply_markup: InlineKeyboardMarkup? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+    }
+}
+
+/**
+ * <p>This object represents a unique message identifier.</p>
+ *
+ * @property message_id Unique message identifier
+ *
+ * @constructor Creates a [MessageId].
+ * */
+@Serializable
+data class MessageId(
+    val message_id: Int,
+) : TelegramModel() {
+    override fun toJson() = json.encodeToString(serializer(), this)
+
+    companion object {
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -305,11 +361,12 @@ data class MessageEntity(
     val length: Int,
     val url: String? = null,
     val user: User? = null,
-    val language: String? = null
+    val language: String? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -330,11 +387,12 @@ data class PhotoSize(
     val file_unique_id: String,
     val width: Int,
     val height: Int,
-    val file_size: Int? = null
+    val file_size: Int? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -363,11 +421,12 @@ data class Animation(
     val thumb: PhotoSize? = null,
     val file_name: String? = null,
     val mime_type: String? = null,
-    val file_size: Int? = null
+    val file_size: Int? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -379,6 +438,7 @@ data class Animation(
  * @property duration Duration of the audio in seconds as defined by sender
  * @property performer <em>Optional</em>. Performer of the audio as defined by sender or by audio tags
  * @property title <em>Optional</em>. Title of the audio as defined by sender or by audio tags
+ * @property file_name <em>Optional</em>. Original filename as defined by sender
  * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
  * @property file_size <em>Optional</em>. File size
  * @property thumb <em>Optional</em>. Thumbnail of the album cover to which the music file belongs
@@ -392,13 +452,15 @@ data class Audio(
     val duration: Int,
     val performer: String? = null,
     val title: String? = null,
+    val file_name: String? = null,
     val mime_type: String? = null,
     val file_size: Int? = null,
-    val thumb: PhotoSize? = null
+    val thumb: PhotoSize? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -421,11 +483,12 @@ data class Document(
     val thumb: PhotoSize? = null,
     val file_name: String? = null,
     val mime_type: String? = null,
-    val file_size: Int? = null
+    val file_size: Int? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -438,6 +501,7 @@ data class Document(
  * @property height Video height as defined by sender
  * @property duration Duration of the video in seconds as defined by sender
  * @property thumb <em>Optional</em>. Video thumbnail
+ * @property file_name <em>Optional</em>. Original filename as defined by sender
  * @property mime_type <em>Optional</em>. Mime type of a file as defined by sender
  * @property file_size <em>Optional</em>. File size
  *
@@ -451,12 +515,14 @@ data class Video(
     val height: Int,
     val duration: Int,
     val thumb: PhotoSize? = null,
+    val file_name: String? = null,
     val mime_type: String? = null,
-    val file_size: Int? = null
+    val file_size: Int? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -479,11 +545,12 @@ data class VideoNote(
     val length: Int,
     val duration: Int,
     val thumb: PhotoSize? = null,
-    val file_size: Int? = null
+    val file_size: Int? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -504,11 +571,12 @@ data class Voice(
     val file_unique_id: String,
     val duration: Int,
     val mime_type: String? = null,
-    val file_size: Int? = null
+    val file_size: Int? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -518,7 +586,7 @@ data class Voice(
  * @property phone_number Contact's phone number
  * @property first_name Contact's first name
  * @property last_name <em>Optional</em>. Contact's last name
- * @property user_id <em>Optional</em>. Contact's user identifier in Telegram
+ * @property user_id <em>Optional</em>. Contact's user identifier in Telegram. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
  * @property vcard <em>Optional</em>. Additional data about the contact in the form of a <a href="https://en.wikipedia.org/wiki/VCard">vCard</a>
  *
  * @constructor Creates a [Contact].
@@ -529,11 +597,12 @@ data class Contact(
     val first_name: String,
     val last_name: String? = null,
     val user_id: Int? = null,
-    val vcard: String? = null
+    val vcard: String? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -541,18 +610,19 @@ data class Contact(
  * <p>This object represents an animated emoji that displays a random value.</p>
  *
  * @property emoji Emoji on which the dice throw animation is based
- * @property value Value of the dice, 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” base emoji, 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” base emoji
+ * @property value Value of the dice, 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">” base emoji, 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” and “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">” base emoji, 1-64 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">” base emoji
  *
  * @constructor Creates a [Dice].
  * */
 @Serializable
 data class Dice(
     val emoji: String,
-    val value: Int
+    val value: Int,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -567,11 +637,12 @@ data class Dice(
 @Serializable
 data class PollOption(
     val text: String,
-    val voter_count: Int
+    val voter_count: Int,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -588,11 +659,12 @@ data class PollOption(
 data class PollAnswer(
     val poll_id: String,
     val user: User,
-    val option_ids: List<Int>
+    val option_ids: List<Int>,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -600,7 +672,7 @@ data class PollAnswer(
  * <p>This object contains information about a poll.</p>
  *
  * @property id Unique poll identifier
- * @property question Poll question, 1-255 characters
+ * @property question Poll question, 1-300 characters
  * @property options List of poll options
  * @property total_voter_count Total number of users that voted in the poll
  * @property is_closed True, if the poll is closed
@@ -629,11 +701,12 @@ data class Poll(
     val explanation: String? = null,
     val explanation_entities: List<MessageEntity>? = null,
     val open_period: Int? = null,
-    val close_date: Int? = null
+    val close_date: Int? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -642,28 +715,39 @@ data class Poll(
  *
  * @property longitude Longitude as defined by sender
  * @property latitude Latitude as defined by sender
+ * @property horizontal_accuracy <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500
+ * @property live_period <em>Optional</em>. Time relative to the message sending date, during which the location can be updated, in seconds. For active live locations only.
+ * @property heading <em>Optional</em>. The direction in which user is moving, in degrees; 1-360. For active live locations only.
+ * @property proximity_alert_radius <em>Optional</em>. Maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only.
  *
  * @constructor Creates a [Location].
  * */
 @Serializable
 data class Location(
     val longitude: Float,
-    val latitude: Float
+    val latitude: Float,
+    val horizontal_accuracy: Float? = null,
+    val live_period: Int? = null,
+    val heading: Int? = null,
+    val proximity_alert_radius: Int? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
 /**
  * <p>This object represents a venue.</p>
  *
- * @property location Venue location
+ * @property location Venue location. Can't be a live location
  * @property title Name of the venue
  * @property address Address of the venue
  * @property foursquare_id <em>Optional</em>. Foursquare identifier of the venue
  * @property foursquare_type <em>Optional</em>. Foursquare type of the venue. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
+ * @property google_place_id <em>Optional</em>. Google Places identifier of the venue
+ * @property google_place_type <em>Optional</em>. Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.)
  *
  * @constructor Creates a [Venue].
  * */
@@ -673,11 +757,90 @@ data class Venue(
     val title: String,
     val address: String,
     val foursquare_id: String? = null,
-    val foursquare_type: String? = null
+    val foursquare_type: String? = null,
+    val google_place_id: String? = null,
+    val google_place_type: String? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+    }
+}
+
+/**
+ * <p>This object represents the content of a service message, sent whenever a user in the chat triggers a proximity alert set by another user.</p>
+ *
+ * @property traveler User that triggered the alert
+ * @property watcher User that set the alert
+ * @property distance The distance between the users
+ *
+ * @constructor Creates a [ProximityAlertTriggered].
+ * */
+@Serializable
+data class ProximityAlertTriggered(
+    val traveler: User,
+    val watcher: User,
+    val distance: Int,
+) : TelegramModel() {
+    override fun toJson() = json.encodeToString(serializer(), this)
+
+    companion object {
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+    }
+}
+
+/**
+ * <p>This object represents a service message about a change in auto-delete timer settings.</p>
+ *
+ * @property message_auto_delete_time New auto-delete time for messages in the chat
+ *
+ * @constructor Creates a [MessageAutoDeleteTimerChanged].
+ * */
+@Serializable
+data class MessageAutoDeleteTimerChanged(
+    val message_auto_delete_time: Int,
+) : TelegramModel() {
+    override fun toJson() = json.encodeToString(serializer(), this)
+
+    companion object {
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+    }
+}
+
+/**
+ * <p>This object represents a service message about a voice chat ended in the chat.</p>
+ *
+ * @property duration Voice chat duration; in seconds
+ *
+ * @constructor Creates a [VoiceChatEnded].
+ * */
+@Serializable
+data class VoiceChatEnded(
+    val duration: Int,
+) : TelegramModel() {
+    override fun toJson() = json.encodeToString(serializer(), this)
+
+    companion object {
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+    }
+}
+
+/**
+ * <p>This object represents a service message about new members invited to a voice chat.</p>
+ *
+ * @property users <em>Optional</em>. New members that were invited to the voice chat
+ *
+ * @constructor Creates a [VoiceChatParticipantsInvited].
+ * */
+@Serializable
+data class VoiceChatParticipantsInvited(
+    val users: List<User>? = null,
+) : TelegramModel() {
+    override fun toJson() = json.encodeToString(serializer(), this)
+
+    companion object {
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -692,17 +855,18 @@ data class Venue(
 @Serializable
 data class UserProfilePhotos(
     val total_count: Int,
-    val photos: List<List<PhotoSize>>
+    val photos: List<List<PhotoSize>>,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
 /**
- * <p>This object represents a file ready to be downloaded. The file can be downloaded via the link <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code>. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling <a href="#getfile">getFile</a>.</p><blockquote> 
- *  <p>Maximum file size to download is 20 MB</p> 
+ * <p>This object represents a file ready to be downloaded. The file can be downloaded via the link <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code>. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling <a href="#getfile">getFile</a>.</p><blockquote>
+ *  <p>Maximum file size to download is 20 MB</p>
  * </blockquote>
  *
  * @property file_id Identifier for this file, which can be used to download or reuse the file
@@ -717,11 +881,12 @@ data class File(
     val file_id: String,
     val file_unique_id: String,
     val file_size: Int? = null,
-    val file_path: String? = null
+    val file_path: String? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -740,11 +905,12 @@ data class ReplyKeyboardMarkup(
     val keyboard: List<List<KeyboardButton>>,
     val resize_keyboard: Boolean? = null,
     val one_time_keyboard: Boolean? = null,
-    val selective: Boolean? = null
+    val selective: Boolean? = null,
 ) : KeyboardOption() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -763,11 +929,12 @@ data class KeyboardButton(
     val text: String,
     val request_contact: Boolean? = null,
     val request_location: Boolean? = null,
-    val request_poll: KeyboardButtonPollType? = null
+    val request_poll: KeyboardButtonPollType? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -780,11 +947,12 @@ data class KeyboardButton(
  * */
 @Serializable
 data class KeyboardButtonPollType(
-    val type: String? = null
+    val type: String? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -799,11 +967,12 @@ data class KeyboardButtonPollType(
 @Serializable
 data class ReplyKeyboardRemove(
     val remove_keyboard: Boolean,
-    val selective: Boolean? = null
+    val selective: Boolean? = null,
 ) : KeyboardOption() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -816,11 +985,12 @@ data class ReplyKeyboardRemove(
  * */
 @Serializable
 data class InlineKeyboardMarkup(
-    val inline_keyboard: List<List<InlineKeyboardButton>>
+    val inline_keyboard: List<List<InlineKeyboardButton>>,
 ) : KeyboardOption() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -846,18 +1016,19 @@ data class InlineKeyboardButton(
     val callback_data: String? = null,
     val switch_inline_query: String? = null,
     val switch_inline_query_current_chat: String? = null,
-    val callback_game: @ContextualSerialization Any? = null,
-    val pay: Boolean? = null
+    val callback_game: @Contextual Any? = null,
+    val pay: Boolean? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
 /**
- * <p>This object represents a parameter of the inline keyboard button used to automatically authorize a user. Serves as a great replacement for the <a href="https://core.telegram.org/widgets/login">Telegram Login Widget</a> when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:</p><p>Telegram apps support these buttons as of <a href="https://telegram.org/blog/privacy-discussions-web-bots#meet-seamless-web-bots">version 5.7</a>.</p><blockquote> 
- *  <p>Sample bot: <a href="https://t.me/discussbot">@discussbot</a></p> 
+ * <p>This object represents a parameter of the inline keyboard button used to automatically authorize a user. Serves as a great replacement for the <a href="https://core.telegram.org/widgets/login">Telegram Login Widget</a> when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:</p><p>Telegram apps support these buttons as of <a href="https://telegram.org/blog/privacy-discussions-web-bots#meet-seamless-web-bots">version 5.7</a>.</p><blockquote>
+ *  <p>Sample bot: <a href="https://t.me/discussbot">@discussbot</a></p>
  * </blockquote>
  *
  * @property url An HTTP URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in <a href="https://core.telegram.org/widgets/login#receiving-authorization-data">Receiving authorization data</a>.<br><br><strong>NOTE:</strong> You <strong>must</strong> always check the hash of the received data to verify the authentication and the integrity of the data as described in <a href="https://core.telegram.org/widgets/login#checking-authorization">Checking authorization</a>.
@@ -872,17 +1043,18 @@ data class LoginUrl(
     val url: String,
     val forward_text: String? = null,
     val bot_username: String? = null,
-    val request_write_access: Boolean? = null
+    val request_write_access: Boolean? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
 /**
- * <p>This object represents an incoming callback query from a callback button in an <a href="/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If the button that originated the query was attached to a message sent by the bot, the field <em>message</em> will be present. If the button was attached to a message sent via the bot (in <a href="#inline-mode">inline mode</a>), the field <em>inline_message_id</em> will be present. Exactly one of the fields <em>data</em> or <em>game_short_name</em> will be present.</p><blockquote> 
- *  <p><strong>NOTE:</strong> After the user presses a callback button, Telegram clients will display a progress bar until you call <a href="#answercallbackquery">answerCallbackQuery</a>. It is, therefore, necessary to react by calling <a href="#answercallbackquery">answerCallbackQuery</a> even if no notification to the user is needed (e.g., without specifying any of the optional parameters).</p> 
+ * <p>This object represents an incoming callback query from a callback button in an <a href="/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If the button that originated the query was attached to a message sent by the bot, the field <em>message</em> will be present. If the button was attached to a message sent via the bot (in <a href="#inline-mode">inline mode</a>), the field <em>inline_message_id</em> will be present. Exactly one of the fields <em>data</em> or <em>game_short_name</em> will be present.</p><blockquote>
+ *  <p><strong>NOTE:</strong> After the user presses a callback button, Telegram clients will display a progress bar until you call <a href="#answercallbackquery">answerCallbackQuery</a>. It is, therefore, necessary to react by calling <a href="#answercallbackquery">answerCallbackQuery</a> even if no notification to the user is needed (e.g., without specifying any of the optional parameters).</p>
  * </blockquote>
  *
  * @property id Unique identifier for this query
@@ -903,22 +1075,23 @@ data class CallbackQuery(
     val inline_message_id: String? = null,
     val chat_instance: String,
     val data: String? = null,
-    val game_short_name: String? = null
+    val game_short_name: String? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
 /**
- * <p>Upon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot's message and tapped 'Reply'). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice <a href="/bots#privacy-mode">privacy mode</a>.</p><blockquote> 
- *  <p><strong>Example:</strong> A <a href="https://t.me/PollBot">poll bot</a> for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:</p> 
- *  <ul> 
- *   <li>Explain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.</li> 
- *   <li>Guide the user through a step-by-step process. 'Please send me your question', 'Cool, now let's add the first answer option', 'Great. Keep adding answer options, then send /done when you're ready'.</li> 
- *  </ul> 
- *  <p>The last option is definitely more attractive. And if you use <a href="#forcereply">ForceReply</a> in your bot's questions, it will receive the user's answers even if it only receives replies, commands and mentions — without any extra work for the user.</p> 
+ * <p>Upon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot's message and tapped 'Reply'). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice <a href="/bots#privacy-mode">privacy mode</a>.</p><blockquote>
+ *  <p><strong>Example:</strong> A <a href="https://t.me/PollBot">poll bot</a> for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:</p>
+ *  <ul>
+ *   <li>Explain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.</li>
+ *   <li>Guide the user through a step-by-step process. 'Please send me your question', 'Cool, now let's add the first answer option', 'Great. Keep adding answer options, then send /done when you're ready'.</li>
+ *  </ul>
+ *  <p>The last option is definitely more attractive. And if you use <a href="#forcereply">ForceReply</a> in your bot's questions, it will receive the user's answers even if it only receives replies, commands and mentions — without any extra work for the user.</p>
  * </blockquote>
  *
  * @property force_reply Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply'
@@ -929,11 +1102,12 @@ data class CallbackQuery(
 @Serializable
 data class ForceReply(
     val force_reply: Boolean,
-    val selective: Boolean? = null
+    val selective: Boolean? = null,
 ) : KeyboardOption() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -952,11 +1126,40 @@ data class ChatPhoto(
     val small_file_id: String,
     val small_file_unique_id: String,
     val big_file_id: String,
-    val big_file_unique_id: String
+    val big_file_unique_id: String,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+    }
+}
+
+/**
+ * <p>Represents an invite link for a chat.</p>
+ *
+ * @property invite_link The invite link. If the link was created by another chat administrator, then the second part of the link will be replaced with “…”.
+ * @property creator Creator of the link
+ * @property is_primary True, if the link is primary
+ * @property is_revoked True, if the link is revoked
+ * @property expire_date <em>Optional</em>. Point in time (Unix timestamp) when the link will expire or has been expired
+ * @property member_limit <em>Optional</em>. Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+ *
+ * @constructor Creates a [ChatInviteLink].
+ * */
+@Serializable
+data class ChatInviteLink(
+    val invite_link: String,
+    val creator: User,
+    val is_primary: Boolean,
+    val is_revoked: Boolean,
+    val expire_date: Int? = null,
+    val member_limit: Int? = null,
+) : TelegramModel() {
+    override fun toJson() = json.encodeToString(serializer(), this)
+
+    companion object {
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -966,11 +1169,13 @@ data class ChatPhoto(
  * @property user Information about the user
  * @property status The member's status in the chat. Can be “creator”, “administrator”, “member”, “restricted”, “left” or “kicked”
  * @property custom_title <em>Optional</em>. Owner and administrators only. Custom title for this user
- * @property until_date <em>Optional</em>. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time
+ * @property is_anonymous <em>Optional</em>. Owner and administrators only. True, if the user's presence in the chat is hidden
  * @property can_be_edited <em>Optional</em>. Administrators only. True, if the bot is allowed to edit administrator privileges of that user
+ * @property can_manage_chat <em>Optional</em>. Administrators only. True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
  * @property can_post_messages <em>Optional</em>. Administrators only. True, if the administrator can post in the channel; channels only
  * @property can_edit_messages <em>Optional</em>. Administrators only. True, if the administrator can edit messages of other users and can pin messages; channels only
  * @property can_delete_messages <em>Optional</em>. Administrators only. True, if the administrator can delete messages of other users
+ * @property can_manage_voice_chats <em>Optional</em>. Administrators only. True, if the administrator can manage voice chats
  * @property can_restrict_members <em>Optional</em>. Administrators only. True, if the administrator can restrict, ban or unban chat members
  * @property can_promote_members <em>Optional</em>. Administrators only. True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)
  * @property can_change_info <em>Optional</em>. Administrators and restricted only. True, if the user is allowed to change the chat title, photo and other settings
@@ -982,6 +1187,7 @@ data class ChatPhoto(
  * @property can_send_polls <em>Optional</em>. Restricted only. True, if the user is allowed to send polls
  * @property can_send_other_messages <em>Optional</em>. Restricted only. True, if the user is allowed to send animations, games, stickers and use inline bots
  * @property can_add_web_page_previews <em>Optional</em>. Restricted only. True, if the user is allowed to add web page previews to their messages
+ * @property until_date <em>Optional</em>. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time
  *
  * @constructor Creates a [ChatMember].
  * */
@@ -990,11 +1196,13 @@ data class ChatMember(
     val user: User,
     val status: String,
     val custom_title: String? = null,
-    val until_date: Int? = null,
+    val is_anonymous: Boolean? = null,
     val can_be_edited: Boolean? = null,
+    val can_manage_chat: Boolean? = null,
     val can_post_messages: Boolean? = null,
     val can_edit_messages: Boolean? = null,
     val can_delete_messages: Boolean? = null,
+    val can_manage_voice_chats: Boolean? = null,
     val can_restrict_members: Boolean? = null,
     val can_promote_members: Boolean? = null,
     val can_change_info: Boolean? = null,
@@ -1005,11 +1213,41 @@ data class ChatMember(
     val can_send_media_messages: Boolean? = null,
     val can_send_polls: Boolean? = null,
     val can_send_other_messages: Boolean? = null,
-    val can_add_web_page_previews: Boolean? = null
+    val can_add_web_page_previews: Boolean? = null,
+    val until_date: Int? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+    }
+}
+
+/**
+ * <p>This object represents changes in the status of a chat member.</p>
+ *
+ * @property chat Chat the user belongs to
+ * @property from Performer of the action, which resulted in the change
+ * @property date Date the change was done in Unix time
+ * @property old_chat_member Previous information about the chat member
+ * @property new_chat_member New information about the chat member
+ * @property invite_link <em>Optional</em>. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.
+ *
+ * @constructor Creates a [ChatMemberUpdated].
+ * */
+@Serializable
+data class ChatMemberUpdated(
+    val chat: Chat,
+    val from: User,
+    val date: Int,
+    val old_chat_member: ChatMember,
+    val new_chat_member: ChatMember,
+    val invite_link: ChatInviteLink? = null,
+) : TelegramModel() {
+    override fun toJson() = json.encodeToString(serializer(), this)
+
+    companion object {
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1036,11 +1274,32 @@ data class ChatPermissions(
     val can_add_web_page_previews: Boolean? = null,
     val can_change_info: Boolean? = null,
     val can_invite_users: Boolean? = null,
-    val can_pin_messages: Boolean? = null
+    val can_pin_messages: Boolean? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+    }
+}
+
+/**
+ * <p>Represents a location to which a chat is connected.</p>
+ *
+ * @property location The location to which the supergroup is connected. Can't be a live location.
+ * @property address Location address; 1-64 characters, as defined by the chat owner
+ *
+ * @constructor Creates a [ChatLocation].
+ * */
+@Serializable
+data class ChatLocation(
+    val location: Location,
+    val address: String,
+) : TelegramModel() {
+    override fun toJson() = json.encodeToString(serializer(), this)
+
+    companion object {
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1055,18 +1314,19 @@ data class ChatPermissions(
 @Serializable
 data class BotCommand(
     val command: String,
-    val description: String
+    val description: String,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
 /**
  * <p>Contains information about why a request was unsuccessful.</p>
  *
- * @property migrate_to_chat_id <em>Optional</em>. The group has been migrated to a supergroup with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
+ * @property migrate_to_chat_id <em>Optional</em>. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
  * @property retry_after <em>Optional</em>. In case of exceeding flood control, the number of seconds left to wait before the request can be repeated
  *
  * @constructor Creates a [ResponseParameters].
@@ -1074,11 +1334,12 @@ data class BotCommand(
 @Serializable
 data class ResponseParameters(
     val migrate_to_chat_id: Int? = null,
-    val retry_after: Int? = null
+    val retry_after: Int? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1089,6 +1350,7 @@ data class ResponseParameters(
  * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the photo to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  *
  * @constructor Creates a [InputMediaPhoto].
  * */
@@ -1097,11 +1359,13 @@ data class InputMediaPhoto(
     val type: String,
     val media: String,
     val caption: String? = null,
-    val parse_mode: ParseMode? = null
-) : InputMediaPhotoOrVideo() {
-    override fun toJson() = json.stringify(serializer(), this)
+    val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
+) : InputMedia() {
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1113,6 +1377,7 @@ data class InputMediaPhoto(
  * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property width <em>Optional</em>. Video width
  * @property height <em>Optional</em>. Video height
  * @property duration <em>Optional</em>. Video duration
@@ -1127,14 +1392,16 @@ data class InputMediaVideo(
     val thumb: String? = null,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val width: Int? = null,
     val height: Int? = null,
     val duration: Int? = null,
-    val supports_streaming: Boolean? = null
-) : InputMediaPhotoOrVideo() {
-    override fun toJson() = json.stringify(serializer(), this)
+    val supports_streaming: Boolean? = null,
+) : InputMedia() {
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1146,6 +1413,7 @@ data class InputMediaVideo(
  * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the animation to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property width <em>Optional</em>. Animation width
  * @property height <em>Optional</em>. Animation height
  * @property duration <em>Optional</em>. Animation duration
@@ -1159,13 +1427,15 @@ data class InputMediaAnimation(
     val thumb: String? = null,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val width: Int? = null,
     val height: Int? = null,
-    val duration: Int? = null
+    val duration: Int? = null,
 ) : InputMedia() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1177,6 +1447,7 @@ data class InputMediaAnimation(
  * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the audio to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property duration <em>Optional</em>. Duration of the audio in seconds
  * @property performer <em>Optional</em>. Performer of the audio
  * @property title <em>Optional</em>. Title of the audio
@@ -1190,13 +1461,15 @@ data class InputMediaAudio(
     val thumb: String? = null,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val duration: Int? = null,
     val performer: String? = null,
-    val title: String? = null
+    val title: String? = null,
 ) : InputMedia() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1208,6 +1481,8 @@ data class InputMediaAudio(
  * @property thumb <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption <em>Optional</em>. Caption of the document to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+ * @property disable_content_type_detection <em>Optional</em>. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always true, if the document is sent as part of an album.
  *
  * @constructor Creates a [InputMediaDocument].
  * */
@@ -1217,11 +1492,14 @@ data class InputMediaDocument(
     val media: String,
     val thumb: String? = null,
     val caption: String? = null,
-    val parse_mode: ParseMode? = null
+    val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
+    val disable_content_type_detection: Boolean? = null,
 ) : InputMedia() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1255,11 +1533,12 @@ data class Sticker(
     val emoji: String? = null,
     val set_name: String? = null,
     val mask_position: MaskPosition? = null,
-    val file_size: Int? = null
+    val file_size: Int? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1282,11 +1561,12 @@ data class StickerSet(
     val is_animated: Boolean,
     val contains_masks: Boolean,
     val stickers: List<Sticker>,
-    val thumb: PhotoSize? = null
+    val thumb: PhotoSize? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1305,11 +1585,12 @@ data class MaskPosition(
     val point: String,
     val x_shift: Float,
     val y_shift: Float,
-    val scale: Float
+    val scale: Float,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1333,11 +1614,12 @@ data class InlineQuery(
     val from: User,
     val location: Location? = null,
     val query: String,
-    val offset: String
+    val offset: String,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1363,18 +1645,19 @@ data class InlineQueryResultArticle(
     val type: String,
     val id: String,
     val title: String,
-    val input_message_content: @ContextualSerialization InputMessageContent,
+    val input_message_content: @Contextual InputMessageContent,
     val reply_markup: InlineKeyboardMarkup? = null,
     val url: String? = null,
     val hide_url: Boolean? = null,
     val description: String? = null,
     val thumb_url: String? = null,
     val thumb_width: Int? = null,
-    val thumb_height: Int? = null
+    val thumb_height: Int? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1391,6 +1674,7 @@ data class InlineQueryResultArticle(
  * @property description <em>Optional</em>. Short description of the result
  * @property caption <em>Optional</em>. Caption of the photo to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the photo
  *
@@ -1408,12 +1692,14 @@ data class InlineQueryResultPhoto(
     val description: String? = null,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null
+    val input_message_content: @Contextual InputMessageContent? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1431,6 +1717,7 @@ data class InlineQueryResultPhoto(
  * @property title <em>Optional</em>. Title for the result
  * @property caption <em>Optional</em>. Caption of the GIF file to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the GIF animation
  *
@@ -1449,12 +1736,14 @@ data class InlineQueryResultGif(
     val title: String? = null,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null
+    val input_message_content: @Contextual InputMessageContent? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1472,6 +1761,7 @@ data class InlineQueryResultGif(
  * @property title <em>Optional</em>. Title for the result
  * @property caption <em>Optional</em>. Caption of the MPEG-4 file to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the video animation
  *
@@ -1490,18 +1780,20 @@ data class InlineQueryResultMpeg4Gif(
     val title: String? = null,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null
+    val input_message_content: @Contextual InputMessageContent? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
 /**
- * <p>Represents a link to a page containing an embedded video player or a video file. By default, this video file will be sent by the user with an optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the video.</p><blockquote> 
- *  <p>If an InlineQueryResultVideo message contains an embedded video (e.g., YouTube), you <strong>must</strong> replace its content using <em>input_message_content</em>.</p> 
+ * <p>Represents a link to a page containing an embedded video player or a video file. By default, this video file will be sent by the user with an optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the video.</p><blockquote>
+ *  <p>If an InlineQueryResultVideo message contains an embedded video (e.g., YouTube), you <strong>must</strong> replace its content using <em>input_message_content</em>.</p>
  * </blockquote>
  *
  * @property type Type of the result, must be <em>video</em>
@@ -1512,6 +1804,7 @@ data class InlineQueryResultMpeg4Gif(
  * @property title Title for the result
  * @property caption <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property video_width <em>Optional</em>. Video width
  * @property video_height <em>Optional</em>. Video height
  * @property video_duration <em>Optional</em>. Video duration in seconds
@@ -1531,16 +1824,18 @@ data class InlineQueryResultVideo(
     val title: String,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val video_width: Int? = null,
     val video_height: Int? = null,
     val video_duration: Int? = null,
     val description: String? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null
+    val input_message_content: @Contextual InputMessageContent? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1553,6 +1848,7 @@ data class InlineQueryResultVideo(
  * @property title Title
  * @property caption <em>Optional</em>. Caption, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property performer <em>Optional</em>. Performer
  * @property audio_duration <em>Optional</em>. Audio duration in seconds
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
@@ -1568,14 +1864,16 @@ data class InlineQueryResultAudio(
     val title: String,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val performer: String? = null,
     val audio_duration: Int? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null
+    val input_message_content: @Contextual InputMessageContent? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1588,6 +1886,7 @@ data class InlineQueryResultAudio(
  * @property title Recording title
  * @property caption <em>Optional</em>. Caption, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the voice message caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property voice_duration <em>Optional</em>. Recording duration in seconds
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the voice recording
@@ -1602,13 +1901,15 @@ data class InlineQueryResultVoice(
     val title: String,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val voice_duration: Int? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null
+    val input_message_content: @Contextual InputMessageContent? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1620,6 +1921,7 @@ data class InlineQueryResultVoice(
  * @property title Title for the result
  * @property caption <em>Optional</em>. Caption of the document to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property document_url A valid URL for the file
  * @property mime_type Mime type of the content of the file, either “application/pdf” or “application/zip”
  * @property description <em>Optional</em>. Short description of the result
@@ -1638,18 +1940,20 @@ data class InlineQueryResultDocument(
     val title: String,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val document_url: String,
     val mime_type: String,
     val description: String? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null,
+    val input_message_content: @Contextual InputMessageContent? = null,
     val thumb_url: String? = null,
     val thumb_width: Int? = null,
-    val thumb_height: Int? = null
+    val thumb_height: Int? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1661,7 +1965,10 @@ data class InlineQueryResultDocument(
  * @property latitude Location latitude in degrees
  * @property longitude Location longitude in degrees
  * @property title Location title
+ * @property horizontal_accuracy <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500
  * @property live_period <em>Optional</em>. Period in seconds for which the location can be updated, should be between 60 and 86400.
+ * @property heading <em>Optional</em>. For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
+ * @property proximity_alert_radius <em>Optional</em>. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the location
  * @property thumb_url <em>Optional</em>. Url of the thumbnail for the result
@@ -1677,16 +1984,20 @@ data class InlineQueryResultLocation(
     val latitude: Float,
     val longitude: Float,
     val title: String,
+    val horizontal_accuracy: Float? = null,
     val live_period: Int? = null,
+    val heading: Int? = null,
+    val proximity_alert_radius: Int? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null,
+    val input_message_content: @Contextual InputMessageContent? = null,
     val thumb_url: String? = null,
     val thumb_width: Int? = null,
-    val thumb_height: Int? = null
+    val thumb_height: Int? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1701,6 +2012,8 @@ data class InlineQueryResultLocation(
  * @property address Address of the venue
  * @property foursquare_id <em>Optional</em>. Foursquare identifier of the venue if known
  * @property foursquare_type <em>Optional</em>. Foursquare type of the venue, if known. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
+ * @property google_place_id <em>Optional</em>. Google Places identifier of the venue
+ * @property google_place_type <em>Optional</em>. Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.)
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the venue
  * @property thumb_url <em>Optional</em>. Url of the thumbnail for the result
@@ -1719,15 +2032,18 @@ data class InlineQueryResultVenue(
     val address: String,
     val foursquare_id: String? = null,
     val foursquare_type: String? = null,
+    val google_place_id: String? = null,
+    val google_place_type: String? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null,
+    val input_message_content: @Contextual InputMessageContent? = null,
     val thumb_url: String? = null,
     val thumb_width: Int? = null,
-    val thumb_height: Int? = null
+    val thumb_height: Int? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1757,14 +2073,15 @@ data class InlineQueryResultContact(
     val last_name: String? = null,
     val vcard: String? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null,
+    val input_message_content: @Contextual InputMessageContent? = null,
     val thumb_url: String? = null,
     val thumb_width: Int? = null,
-    val thumb_height: Int? = null
+    val thumb_height: Int? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1783,11 +2100,12 @@ data class InlineQueryResultGame(
     val type: String,
     val id: String,
     val game_short_name: String,
-    val reply_markup: InlineKeyboardMarkup? = null
+    val reply_markup: InlineKeyboardMarkup? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1801,6 +2119,7 @@ data class InlineQueryResultGame(
  * @property description <em>Optional</em>. Short description of the result
  * @property caption <em>Optional</em>. Caption of the photo to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the photo
  *
@@ -1815,12 +2134,14 @@ data class InlineQueryResultCachedPhoto(
     val description: String? = null,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null
+    val input_message_content: @Contextual InputMessageContent? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1833,6 +2154,7 @@ data class InlineQueryResultCachedPhoto(
  * @property title <em>Optional</em>. Title for the result
  * @property caption <em>Optional</em>. Caption of the GIF file to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the GIF animation
  *
@@ -1846,12 +2168,14 @@ data class InlineQueryResultCachedGif(
     val title: String? = null,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null
+    val input_message_content: @Contextual InputMessageContent? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1864,6 +2188,7 @@ data class InlineQueryResultCachedGif(
  * @property title <em>Optional</em>. Title for the result
  * @property caption <em>Optional</em>. Caption of the MPEG-4 file to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the video animation
  *
@@ -1877,12 +2202,14 @@ data class InlineQueryResultCachedMpeg4Gif(
     val title: String? = null,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null
+    val input_message_content: @Contextual InputMessageContent? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1903,11 +2230,12 @@ data class InlineQueryResultCachedSticker(
     val id: String,
     val sticker_file_id: String,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null
+    val input_message_content: @Contextual InputMessageContent? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1921,6 +2249,7 @@ data class InlineQueryResultCachedSticker(
  * @property description <em>Optional</em>. Short description of the result
  * @property caption <em>Optional</em>. Caption of the document to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the file
  *
@@ -1935,12 +2264,14 @@ data class InlineQueryResultCachedDocument(
     val description: String? = null,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null
+    val input_message_content: @Contextual InputMessageContent? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1954,6 +2285,7 @@ data class InlineQueryResultCachedDocument(
  * @property description <em>Optional</em>. Short description of the result
  * @property caption <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the video
  *
@@ -1968,12 +2300,14 @@ data class InlineQueryResultCachedVideo(
     val description: String? = null,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null
+    val input_message_content: @Contextual InputMessageContent? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -1986,6 +2320,7 @@ data class InlineQueryResultCachedVideo(
  * @property title Voice message title
  * @property caption <em>Optional</em>. Caption, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the voice message caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the voice message
  *
@@ -1999,12 +2334,14 @@ data class InlineQueryResultCachedVoice(
     val title: String,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null
+    val input_message_content: @Contextual InputMessageContent? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2016,6 +2353,7 @@ data class InlineQueryResultCachedVoice(
  * @property audio_file_id A valid file identifier for the audio file
  * @property caption <em>Optional</em>. Caption, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup <em>Optional</em>. <a href="/bots#inline-keyboards-and-on-the-fly-updating">Inline keyboard</a> attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the audio
  *
@@ -2028,12 +2366,14 @@ data class InlineQueryResultCachedAudio(
     val audio_file_id: String,
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
+    val caption_entities: List<MessageEntity>? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
-    val input_message_content: @ContextualSerialization InputMessageContent? = null
+    val input_message_content: @Contextual InputMessageContent? = null,
 ) : InlineQueryResult() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2042,6 +2382,7 @@ data class InlineQueryResultCachedAudio(
  *
  * @property message_text Text of the message to be sent, 1-4096 characters
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property entities <em>Optional</em>. List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
  * @property disable_web_page_preview <em>Optional</em>. Disables link previews for links in the sent message
  *
  * @constructor Creates a [InputTextMessageContent].
@@ -2050,11 +2391,13 @@ data class InlineQueryResultCachedAudio(
 data class InputTextMessageContent(
     val message_text: String,
     val parse_mode: ParseMode? = null,
-    val disable_web_page_preview: Boolean? = null
+    val entities: List<MessageEntity>? = null,
+    val disable_web_page_preview: Boolean? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2063,7 +2406,10 @@ data class InputTextMessageContent(
  *
  * @property latitude Latitude of the location in degrees
  * @property longitude Longitude of the location in degrees
+ * @property horizontal_accuracy <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500
  * @property live_period <em>Optional</em>. Period in seconds for which the location can be updated, should be between 60 and 86400.
+ * @property heading <em>Optional</em>. For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
+ * @property proximity_alert_radius <em>Optional</em>. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
  *
  * @constructor Creates a [InputLocationMessageContent].
  * */
@@ -2071,11 +2417,15 @@ data class InputTextMessageContent(
 data class InputLocationMessageContent(
     val latitude: Float,
     val longitude: Float,
-    val live_period: Int? = null
+    val horizontal_accuracy: Float? = null,
+    val live_period: Int? = null,
+    val heading: Int? = null,
+    val proximity_alert_radius: Int? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2088,6 +2438,8 @@ data class InputLocationMessageContent(
  * @property address Address of the venue
  * @property foursquare_id <em>Optional</em>. Foursquare identifier of the venue, if known
  * @property foursquare_type <em>Optional</em>. Foursquare type of the venue, if known. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
+ * @property google_place_id <em>Optional</em>. Google Places identifier of the venue
+ * @property google_place_type <em>Optional</em>. Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.)
  *
  * @constructor Creates a [InputVenueMessageContent].
  * */
@@ -2098,11 +2450,14 @@ data class InputVenueMessageContent(
     val title: String,
     val address: String,
     val foursquare_id: String? = null,
-    val foursquare_type: String? = null
+    val foursquare_type: String? = null,
+    val google_place_id: String? = null,
+    val google_place_type: String? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2121,11 +2476,12 @@ data class InputContactMessageContent(
     val phone_number: String,
     val first_name: String,
     val last_name: String? = null,
-    val vcard: String? = null
+    val vcard: String? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2146,11 +2502,12 @@ data class ChosenInlineResult(
     val from: User,
     val location: Location? = null,
     val inline_message_id: String? = null,
-    val query: String
+    val query: String,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2168,11 +2525,12 @@ data class ChosenInlineResult(
 @Serializable
 data class LabeledPrice(
     val label: String,
-    val amount: Int
+    val amount: Int,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2193,11 +2551,12 @@ data class Invoice(
     val description: String,
     val start_parameter: String,
     val currency: String,
-    val total_amount: Int
+    val total_amount: Int,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2220,11 +2579,12 @@ data class ShippingAddress(
     val city: String,
     val street_line1: String,
     val street_line2: String,
-    val post_code: String
+    val post_code: String,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2243,11 +2603,12 @@ data class OrderInfo(
     val name: String? = null,
     val phone_number: String? = null,
     val email: String? = null,
-    val shipping_address: ShippingAddress? = null
+    val shipping_address: ShippingAddress? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2264,11 +2625,12 @@ data class OrderInfo(
 data class ShippingOption(
     val id: String,
     val title: String,
-    val prices: List<LabeledPrice>
+    val prices: List<LabeledPrice>,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2293,11 +2655,12 @@ data class SuccessfulPayment(
     val shipping_option_id: String? = null,
     val order_info: OrderInfo? = null,
     val telegram_payment_charge_id: String,
-    val provider_payment_charge_id: String
+    val provider_payment_charge_id: String,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2316,11 +2679,12 @@ data class ShippingQuery(
     val id: String,
     val from: User,
     val invoice_payload: String,
-    val shipping_address: ShippingAddress
+    val shipping_address: ShippingAddress,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2345,11 +2709,12 @@ data class PreCheckoutQuery(
     val total_amount: Int,
     val invoice_payload: String,
     val shipping_option_id: String? = null,
-    val order_info: OrderInfo? = null
+    val order_info: OrderInfo? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2367,11 +2732,12 @@ data class PreCheckoutQuery(
 @Serializable
 data class PassportData(
     val data: List<EncryptedPassportElement>,
-    val credentials: EncryptedCredentials
+    val credentials: EncryptedCredentials,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2390,11 +2756,12 @@ data class PassportFile(
     val file_id: String,
     val file_unique_id: String,
     val file_size: Int,
-    val file_date: Int
+    val file_date: Int,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2425,11 +2792,12 @@ data class EncryptedPassportElement(
     val reverse_side: PassportFile? = null,
     val selfie: PassportFile? = null,
     val translation: List<PassportFile>? = null,
-    val hash: String
+    val hash: String,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2446,11 +2814,12 @@ data class EncryptedPassportElement(
 data class EncryptedCredentials(
     val data: String,
     val hash: String,
-    val secret: String
+    val secret: String,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2471,11 +2840,12 @@ data class PassportElementErrorDataField(
     val type: String,
     val field_name: String,
     val data_hash: String,
-    val message: String
+    val message: String,
 ) : PassportElementError() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2494,11 +2864,12 @@ data class PassportElementErrorFrontSide(
     val source: String,
     val type: String,
     val file_hash: String,
-    val message: String
+    val message: String,
 ) : PassportElementError() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2517,11 +2888,12 @@ data class PassportElementErrorReverseSide(
     val source: String,
     val type: String,
     val file_hash: String,
-    val message: String
+    val message: String,
 ) : PassportElementError() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2540,11 +2912,12 @@ data class PassportElementErrorSelfie(
     val source: String,
     val type: String,
     val file_hash: String,
-    val message: String
+    val message: String,
 ) : PassportElementError() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2563,11 +2936,12 @@ data class PassportElementErrorFile(
     val source: String,
     val type: String,
     val file_hash: String,
-    val message: String
+    val message: String,
 ) : PassportElementError() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2586,11 +2960,12 @@ data class PassportElementErrorFiles(
     val source: String,
     val type: String,
     val file_hashes: List<String>,
-    val message: String
+    val message: String,
 ) : PassportElementError() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2609,11 +2984,12 @@ data class PassportElementErrorTranslationFile(
     val source: String,
     val type: String,
     val file_hash: String,
-    val message: String
+    val message: String,
 ) : PassportElementError() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2632,11 +3008,12 @@ data class PassportElementErrorTranslationFiles(
     val source: String,
     val type: String,
     val file_hashes: List<String>,
-    val message: String
+    val message: String,
 ) : PassportElementError() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2655,11 +3032,12 @@ data class PassportElementErrorUnspecified(
     val source: String,
     val type: String,
     val element_hash: String,
-    val message: String
+    val message: String,
 ) : PassportElementError() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2685,11 +3063,12 @@ data class Game(
     val photo: List<PhotoSize>,
     val text: String? = null,
     val text_entities: List<MessageEntity>? = null,
-    val animation: Animation? = null
+    val animation: Animation? = null,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2706,11 +3085,12 @@ data class Game(
 data class GameHighScore(
     val position: Int,
     val user: User,
-    val score: Int
+    val score: Int,
 ) : TelegramModel() {
-    override fun toJson() = json.stringify(serializer(), this)
+    override fun toJson() = json.encodeToString(serializer(), this)
+
     companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
     }
 }
 
@@ -2718,1719 +3098,2062 @@ data class GameHighScore(
 // --- Requests ---
 
 sealed class TelegramRequest {
-abstract fun toJsonForRequest(): String
-abstract fun toJsonForResponse(): String
+    abstract fun toJsonForRequest(): String
+    abstract fun toJsonForResponse(): String
 
 // Getting updates
 
-/**
- * <p>Use this method to receive incoming updates using long polling (<a href="https://en.wikipedia.org/wiki/Push_technology#Long_polling">wiki</a>). An Array of <a href="#update">Update</a> objects is returned.</p><blockquote> 
- *  <p><strong>Notes</strong><br><strong>1.</strong> This method will not work if an outgoing webhook is set up.<br><strong>2.</strong> In order to avoid getting duplicate updates, recalculate <em>offset</em> after each server response.</p> 
- * </blockquote>
- *
- * @property offset Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as <a href="#getupdates">getUpdates</a> is called with an <em>offset</em> higher than its <em>update_id</em>. The negative offset can be specified to retrieve updates starting from <em>-offset</em> update from the end of the updates queue. All previous updates will forgotten.
- * @property limit Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults to 100.
- * @property timeout Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only.
- * @property allowed_updates A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.
- * */
-@Serializable
-data class GetUpdatesRequest(
-    val offset: Int? = null,
-    val limit: Int? = null,
-    val timeout: Int? = null,
-    val allowed_updates: List<String>? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("getUpdates"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to receive incoming updates using long polling (<a href="https://en.wikipedia.org/wiki/Push_technology#Long_polling">wiki</a>). An Array of <a href="#update">Update</a> objects is returned.</p><blockquote>
+     *  <p><strong>Notes</strong><br><strong>1.</strong> This method will not work if an outgoing webhook is set up.<br><strong>2.</strong> In order to avoid getting duplicate updates, recalculate <em>offset</em> after each server response.</p>
+     * </blockquote>
+     *
+     * @property offset Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as <a href="#getupdates">getUpdates</a> is called with an <em>offset</em> higher than its <em>update_id</em>. The negative offset can be specified to retrieve updates starting from <em>-offset</em> update from the end of the updates queue. All previous updates will forgotten.
+     * @property limit Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults to 100.
+     * @property timeout Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only.
+     * @property allowed_updates A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em> (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.
+     * */
+    @Serializable
+    data class GetUpdatesRequest(
+        val offset: Int? = null,
+        val limit: Int? = null,
+        val timeout: Int? = null,
+        val allowed_updates: List<String>? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("getUpdates"))
+        ).toString()
 
-/**
- * <p>Use this method to specify a url and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the Webhook request comes from Telegram, we recommend using a secret path in the URL, e.g. <code>https://www.example.com/&lt;token&gt;</code>. Since nobody else knows your bot's token, you can be pretty sure it's us.</p><blockquote> 
- *  <p><strong>Notes</strong><br><strong>1.</strong> You will not be able to receive updates using <a href="#getupdates">getUpdates</a> for as long as an outgoing webhook is set up.<br><strong>2.</strong> To use a self-signed certificate, you need to upload your <a href="/bots/self-signed">public key certificate</a> using <em>certificate</em> parameter. Please upload as InputFile, sending a String will not work.<br><strong>3.</strong> Ports currently supported <em>for Webhooks</em>: <strong>443, 80, 88, 8443</strong>.</p> 
- *  <p><strong>NEW!</strong> If you're having any trouble setting up webhooks, please check out this <a href="/bots/webhooks">amazing guide to Webhooks</a>.</p> 
- * </blockquote>
- *
- * @property url HTTPS url to send updates to. Use an empty string to remove webhook integration
- * @property certificate Upload your public key certificate so that the root certificate in use can be checked. See our <a href="/bots/self-signed">self-signed guide</a> for details.
- * @property max_connections Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to <em>40</em>. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.
- * @property allowed_updates A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.
- * */
-@Serializable
-data class SetWebhookRequest(
-    val url: String,
-    val certificate: @ContextualSerialization Any? = null,
-    val max_connections: Int? = null,
-    val allowed_updates: List<String>? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("setWebhook"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
+
+    /**
+     * <p>Use this method to specify a url and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the Webhook request comes from Telegram, we recommend using a secret path in the URL, e.g. <code>https://www.example.com/&lt;token&gt;</code>. Since nobody else knows your bot's token, you can be pretty sure it's us.</p><blockquote>
+     *  <p><strong>Notes</strong><br><strong>1.</strong> You will not be able to receive updates using <a href="#getupdates">getUpdates</a> for as long as an outgoing webhook is set up.<br><strong>2.</strong> To use a self-signed certificate, you need to upload your <a href="/bots/self-signed">public key certificate</a> using <em>certificate</em> parameter. Please upload as InputFile, sending a String will not work.<br><strong>3.</strong> Ports currently supported <em>for Webhooks</em>: <strong>443, 80, 88, 8443</strong>.</p>
+     *  <p><strong>NEW!</strong> If you're having any trouble setting up webhooks, please check out this <a href="/bots/webhooks">amazing guide to Webhooks</a>.</p>
+     * </blockquote>
+     *
+     * @property url HTTPS url to send updates to. Use an empty string to remove webhook integration
+     * @property certificate Upload your public key certificate so that the root certificate in use can be checked. See our <a href="/bots/self-signed">self-signed guide</a> for details.
+     * @property ip_address The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS
+     * @property max_connections Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to <em>40</em>. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.
+     * @property allowed_updates A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em> (default). If not specified, the previous setting will be used.<br>Please note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.
+     * @property drop_pending_updates Pass <em>True</em> to drop all pending updates
+     * */
+    @Serializable
+    data class SetWebhookRequest(
+        val url: String,
+        val certificate: @Contextual Any? = null,
+        val ip_address: String? = null,
+        val max_connections: Int? = null,
+        val allowed_updates: List<String>? = null,
+        val drop_pending_updates: Boolean? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("setWebhook"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to remove webhook integration if you decide to switch back to <a href="#getupdates">getUpdates</a>. Returns <em>True</em> on success.</p>
+     *
+     * @property drop_pending_updates Pass <em>True</em> to drop all pending updates
+     * */
+    @Serializable
+    data class DeleteWebhookRequest(
+        val drop_pending_updates: Boolean? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("deleteWebhook"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
 
 
 // Available methods
 
-/**
- * <p>Use this method to send text messages. On success, the sent <a href="#message">Message</a> is returned.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property text Text of the message to be sent, 1-4096 characters after entities parsing
- * @property parse_mode Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details.
- * @property disable_web_page_preview Disables link previews for links in this message
- * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property reply_to_message_id If the message is a reply, ID of the original message
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
- * */
-@Serializable
-data class SendMessageRequest(
-    val chat_id: String,
-    val text: String,
-    val parse_mode: ParseMode? = null,
-    val disable_web_page_preview: Boolean? = null,
-    val disable_notification: Boolean? = null,
-    val reply_to_message_id: Int? = null,
-    val reply_markup: @ContextualSerialization KeyboardOption? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendMessage"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to send text messages. On success, the sent <a href="#message">Message</a> is returned.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property text Text of the message to be sent, 1-4096 characters after entities parsing
+     * @property parse_mode Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details.
+     * @property entities List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
+     * @property disable_web_page_preview Disables link previews for links in this message
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the message is a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
+     * */
+    @Serializable
+    data class SendMessageRequest(
+        val chat_id: String,
+        val text: String,
+        val parse_mode: ParseMode? = null,
+        val entities: List<MessageEntity>? = null,
+        val disable_web_page_preview: Boolean? = null,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+        val reply_markup: @Contextual KeyboardOption? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendMessage"))
+        ).toString()
 
-/**
- * <p>Use this method to forward messages of any kind. On success, the sent <a href="#message">Message</a> is returned.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property from_chat_id Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>)
- * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property message_id Message identifier in the chat specified in <em>from_chat_id</em>
- * */
-@Serializable
-data class ForwardMessageRequest(
-    val chat_id: String,
-    val from_chat_id: String,
-    val disable_notification: Boolean? = null,
-    val message_id: Int
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("forwardMessage"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to send photos. On success, the sent <a href="#message">Message</a> is returned.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property photo Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
- * @property caption Photo caption (may also be used when resending photos by <em>file_id</em>), 0-1024 characters after entities parsing
- * @property parse_mode Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details.
- * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property reply_to_message_id If the message is a reply, ID of the original message
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
- * */
-@Serializable
-data class SendPhotoRequest(
-    val chat_id: String,
-    val photo: String,
-    val caption: String? = null,
-    val parse_mode: ParseMode? = null,
-    val disable_notification: Boolean? = null,
-    val reply_to_message_id: Int? = null,
-    val reply_markup: @ContextualSerialization KeyboardOption? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendPhoto"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to forward messages of any kind. On success, the sent <a href="#message">Message</a> is returned.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property from_chat_id Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>)
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property message_id Message identifier in the chat specified in <em>from_chat_id</em>
+     * */
+    @Serializable
+    data class ForwardMessageRequest(
+        val chat_id: String,
+        val from_chat_id: String,
+        val disable_notification: Boolean? = null,
+        val message_id: Int,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("forwardMessage"))
+        ).toString()
 
-/**
- * <p>Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent <a href="#message">Message</a> is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.</p><p>For sending voice messages, use the <a href="#sendvoice">sendVoice</a> method instead.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property audio Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
- * @property caption Audio caption, 0-1024 characters after entities parsing
- * @property parse_mode Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details.
- * @property duration Duration of the audio in seconds
- * @property performer Performer
- * @property title Track name
- * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
- * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property reply_to_message_id If the message is a reply, ID of the original message
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
- * */
-@Serializable
-data class SendAudioRequest(
-    val chat_id: String,
-    val audio: String,
-    val caption: String? = null,
-    val parse_mode: ParseMode? = null,
-    val duration: Int? = null,
-    val performer: String? = null,
-    val title: String? = null,
-    val thumb: String? = null,
-    val disable_notification: Boolean? = null,
-    val reply_to_message_id: Int? = null,
-    val reply_markup: @ContextualSerialization KeyboardOption? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendAudio"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to send general files. On success, the sent <a href="#message">Message</a> is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property document File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
- * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
- * @property caption Document caption (may also be used when resending documents by <em>file_id</em>), 0-1024 characters after entities parsing
- * @property parse_mode Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
- * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property reply_to_message_id If the message is a reply, ID of the original message
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
- * */
-@Serializable
-data class SendDocumentRequest(
-    val chat_id: String,
-    val document: String,
-    val thumb: String? = null,
-    val caption: String? = null,
-    val parse_mode: ParseMode? = null,
-    val disable_notification: Boolean? = null,
-    val reply_to_message_id: Int? = null,
-    val reply_markup: @ContextualSerialization KeyboardOption? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendDocument"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to copy messages of any kind. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property from_chat_id Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>)
+     * @property message_id Message identifier in the chat specified in <em>from_chat_id</em>
+     * @property caption New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept
+     * @property parse_mode Mode for parsing entities in the new caption. See <a href="#formatting-options">formatting options</a> for more details.
+     * @property caption_entities List of special entities that appear in the new caption, which can be specified instead of <em>parse_mode</em>
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the message is a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
+     * */
+    @Serializable
+    data class CopyMessageRequest(
+        val chat_id: String,
+        val from_chat_id: String,
+        val message_id: Int,
+        val caption: String? = null,
+        val parse_mode: ParseMode? = null,
+        val caption_entities: List<MessageEntity>? = null,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+        val reply_markup: @Contextual KeyboardOption? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("copyMessage"))
+        ).toString()
 
-/**
- * <p>Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as <a href="#document">Document</a>). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property video Video to send. Pass a file_id as String to send a video that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a video from the Internet, or upload a new video using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
- * @property duration Duration of sent video in seconds
- * @property width Video width
- * @property height Video height
- * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
- * @property caption Video caption (may also be used when resending videos by <em>file_id</em>), 0-1024 characters after entities parsing
- * @property parse_mode Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
- * @property supports_streaming Pass <em>True</em>, if the uploaded video is suitable for streaming
- * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property reply_to_message_id If the message is a reply, ID of the original message
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
- * */
-@Serializable
-data class SendVideoRequest(
-    val chat_id: String,
-    val video: String,
-    val duration: Int? = null,
-    val width: Int? = null,
-    val height: Int? = null,
-    val thumb: String? = null,
-    val caption: String? = null,
-    val parse_mode: ParseMode? = null,
-    val supports_streaming: Boolean? = null,
-    val disable_notification: Boolean? = null,
-    val reply_to_message_id: Int? = null,
-    val reply_markup: @ContextualSerialization KeyboardOption? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendVideo"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property animation Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
- * @property duration Duration of sent animation in seconds
- * @property width Animation width
- * @property height Animation height
- * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
- * @property caption Animation caption (may also be used when resending animation by <em>file_id</em>), 0-1024 characters after entities parsing
- * @property parse_mode Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details.
- * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property reply_to_message_id If the message is a reply, ID of the original message
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
- * */
-@Serializable
-data class SendAnimationRequest(
-    val chat_id: String,
-    val animation: String,
-    val duration: Int? = null,
-    val width: Int? = null,
-    val height: Int? = null,
-    val thumb: String? = null,
-    val caption: String? = null,
-    val parse_mode: ParseMode? = null,
-    val disable_notification: Boolean? = null,
-    val reply_to_message_id: Int? = null,
-    val reply_markup: @ContextualSerialization KeyboardOption? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendAnimation"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to send photos. On success, the sent <a href="#message">Message</a> is returned.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property photo Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. <a href="#sending-files">More info on Sending Files »</a>
+     * @property caption Photo caption (may also be used when resending photos by <em>file_id</em>), 0-1024 characters after entities parsing
+     * @property parse_mode Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details.
+     * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the message is a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
+     * */
+    @Serializable
+    data class SendPhotoRequest(
+        val chat_id: String,
+        val photo: String,
+        val caption: String? = null,
+        val parse_mode: ParseMode? = null,
+        val caption_entities: List<MessageEntity>? = null,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+        val reply_markup: @Contextual KeyboardOption? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendPhoto"))
+        ).toString()
 
-/**
- * <p>Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as <a href="#audio">Audio</a> or <a href="#document">Document</a>). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property voice Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
- * @property caption Voice message caption, 0-1024 characters after entities parsing
- * @property parse_mode Mode for parsing entities in the voice message caption. See <a href="#formatting-options">formatting options</a> for more details.
- * @property duration Duration of the voice message in seconds
- * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property reply_to_message_id If the message is a reply, ID of the original message
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
- * */
-@Serializable
-data class SendVoiceRequest(
-    val chat_id: String,
-    val voice: String,
-    val caption: String? = null,
-    val parse_mode: ParseMode? = null,
-    val duration: Int? = null,
-    val disable_notification: Boolean? = null,
-    val reply_to_message_id: Int? = null,
-    val reply_markup: @ContextualSerialization KeyboardOption? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendVoice"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>As of <a href="https://telegram.org/blog/video-messages-and-telescope">v.4.0</a>, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent <a href="#message">Message</a> is returned.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property video_note Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>. Sending video notes by a URL is currently unsupported
- * @property duration Duration of sent video in seconds
- * @property length Video width and height, i.e. diameter of the video message
- * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
- * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property reply_to_message_id If the message is a reply, ID of the original message
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
- * */
-@Serializable
-data class SendVideoNoteRequest(
-    val chat_id: String,
-    val video_note: String,
-    val duration: Int? = null,
-    val length: Int? = null,
-    val thumb: String? = null,
-    val disable_notification: Boolean? = null,
-    val reply_to_message_id: Int? = null,
-    val reply_markup: @ContextualSerialization KeyboardOption? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendVideoNote"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent <a href="#message">Message</a> is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.</p><p>For sending voice messages, use the <a href="#sendvoice">sendVoice</a> method instead.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property audio Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
+     * @property caption Audio caption, 0-1024 characters after entities parsing
+     * @property parse_mode Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details.
+     * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+     * @property duration Duration of the audio in seconds
+     * @property performer Performer
+     * @property title Track name
+     * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the message is a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
+     * */
+    @Serializable
+    data class SendAudioRequest(
+        val chat_id: String,
+        val audio: String,
+        val caption: String? = null,
+        val parse_mode: ParseMode? = null,
+        val caption_entities: List<MessageEntity>? = null,
+        val duration: Int? = null,
+        val performer: String? = null,
+        val title: String? = null,
+        val thumb: String? = null,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+        val reply_markup: @Contextual KeyboardOption? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendAudio"))
+        ).toString()
 
-/**
- * <p>Use this method to send a group of photos or videos as an album. On success, an array of the sent <a href="#message">Messages</a> is returned.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property media A JSON-serialized array describing photos and videos to be sent, must include 2-10 items
- * @property disable_notification Sends the messages <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property reply_to_message_id If the messages are a reply, ID of the original message
- * */
-@Serializable
-data class SendMediaGroupRequest(
-    val chat_id: String,
-    val media: List<@ContextualSerialization InputMediaPhotoOrVideo>,
-    val disable_notification: Boolean? = null,
-    val reply_to_message_id: Int? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendMediaGroup"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to send point on the map. On success, the sent <a href="#message">Message</a> is returned.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property latitude Latitude of the location
- * @property longitude Longitude of the location
- * @property live_period Period in seconds for which the location will be updated (see <a href="https://telegram.org/blog/live-locations">Live Locations</a>, should be between 60 and 86400.
- * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property reply_to_message_id If the message is a reply, ID of the original message
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
- * */
-@Serializable
-data class SendLocationRequest(
-    val chat_id: String,
-    val latitude: Float,
-    val longitude: Float,
-    val live_period: Int? = null,
-    val disable_notification: Boolean? = null,
-    val reply_to_message_id: Int? = null,
-    val reply_markup: @ContextualSerialization KeyboardOption? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendLocation"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to send general files. On success, the sent <a href="#message">Message</a> is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property document File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
+     * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+     * @property caption Document caption (may also be used when resending documents by <em>file_id</em>), 0-1024 characters after entities parsing
+     * @property parse_mode Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
+     * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+     * @property disable_content_type_detection Disables automatic server-side content type detection for files uploaded using multipart/form-data
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the message is a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
+     * */
+    @Serializable
+    data class SendDocumentRequest(
+        val chat_id: String,
+        val document: String,
+        val thumb: String? = null,
+        val caption: String? = null,
+        val parse_mode: ParseMode? = null,
+        val caption_entities: List<MessageEntity>? = null,
+        val disable_content_type_detection: Boolean? = null,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+        val reply_markup: @Contextual KeyboardOption? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendDocument"))
+        ).toString()
 
-/**
- * <p>Use this method to edit live location messages. A location can be edited until its <em>live_period</em> expires or editing is explicitly disabled by a call to <a href="#stopmessagelivelocation">stopMessageLiveLocation</a>. On success, if the edited message was sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
- *
- * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
- * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
- * @property latitude Latitude of new location
- * @property longitude Longitude of new location
- * @property reply_markup A JSON-serialized object for a new <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
- * */
-@Serializable
-data class EditMessageLiveLocationRequest(
-    val chat_id: String? = null,
-    val message_id: Int? = null,
-    val inline_message_id: String? = null,
-    val latitude: Float,
-    val longitude: Float,
-    val reply_markup: InlineKeyboardMarkup? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("editMessageLiveLocation"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to stop updating a live location message before <em>live_period</em> expires. On success, if the message was sent by the bot, the sent <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
- *
- * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message with live location to stop
- * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
- * @property reply_markup A JSON-serialized object for a new <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
- * */
-@Serializable
-data class StopMessageLiveLocationRequest(
-    val chat_id: String? = null,
-    val message_id: Int? = null,
-    val inline_message_id: String? = null,
-    val reply_markup: InlineKeyboardMarkup? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("stopMessageLiveLocation"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as <a href="#document">Document</a>). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property video Video to send. Pass a file_id as String to send a video that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a video from the Internet, or upload a new video using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
+     * @property duration Duration of sent video in seconds
+     * @property width Video width
+     * @property height Video height
+     * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+     * @property caption Video caption (may also be used when resending videos by <em>file_id</em>), 0-1024 characters after entities parsing
+     * @property parse_mode Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
+     * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+     * @property supports_streaming Pass <em>True</em>, if the uploaded video is suitable for streaming
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the message is a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
+     * */
+    @Serializable
+    data class SendVideoRequest(
+        val chat_id: String,
+        val video: String,
+        val duration: Int? = null,
+        val width: Int? = null,
+        val height: Int? = null,
+        val thumb: String? = null,
+        val caption: String? = null,
+        val parse_mode: ParseMode? = null,
+        val caption_entities: List<MessageEntity>? = null,
+        val supports_streaming: Boolean? = null,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+        val reply_markup: @Contextual KeyboardOption? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendVideo"))
+        ).toString()
 
-/**
- * <p>Use this method to send information about a venue. On success, the sent <a href="#message">Message</a> is returned.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property latitude Latitude of the venue
- * @property longitude Longitude of the venue
- * @property title Name of the venue
- * @property address Address of the venue
- * @property foursquare_id Foursquare identifier of the venue
- * @property foursquare_type Foursquare type of the venue, if known. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
- * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property reply_to_message_id If the message is a reply, ID of the original message
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
- * */
-@Serializable
-data class SendVenueRequest(
-    val chat_id: String,
-    val latitude: Float,
-    val longitude: Float,
-    val title: String,
-    val address: String,
-    val foursquare_id: String? = null,
-    val foursquare_type: String? = null,
-    val disable_notification: Boolean? = null,
-    val reply_to_message_id: Int? = null,
-    val reply_markup: @ContextualSerialization KeyboardOption? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendVenue"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to send phone contacts. On success, the sent <a href="#message">Message</a> is returned.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property phone_number Contact's phone number
- * @property first_name Contact's first name
- * @property last_name Contact's last name
- * @property vcard Additional data about the contact in the form of a <a href="https://en.wikipedia.org/wiki/VCard">vCard</a>, 0-2048 bytes
- * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property reply_to_message_id If the message is a reply, ID of the original message
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove keyboard or to force a reply from the user.
- * */
-@Serializable
-data class SendContactRequest(
-    val chat_id: String,
-    val phone_number: String,
-    val first_name: String,
-    val last_name: String? = null,
-    val vcard: String? = null,
-    val disable_notification: Boolean? = null,
-    val reply_to_message_id: Int? = null,
-    val reply_markup: @ContextualSerialization KeyboardOption? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendContact"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property animation Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
+     * @property duration Duration of sent animation in seconds
+     * @property width Animation width
+     * @property height Animation height
+     * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+     * @property caption Animation caption (may also be used when resending animation by <em>file_id</em>), 0-1024 characters after entities parsing
+     * @property parse_mode Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details.
+     * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the message is a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
+     * */
+    @Serializable
+    data class SendAnimationRequest(
+        val chat_id: String,
+        val animation: String,
+        val duration: Int? = null,
+        val width: Int? = null,
+        val height: Int? = null,
+        val thumb: String? = null,
+        val caption: String? = null,
+        val parse_mode: ParseMode? = null,
+        val caption_entities: List<MessageEntity>? = null,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+        val reply_markup: @Contextual KeyboardOption? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendAnimation"))
+        ).toString()
 
-/**
- * <p>Use this method to send a native poll. On success, the sent <a href="#message">Message</a> is returned.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property question Poll question, 1-255 characters
- * @property options A JSON-serialized list of answer options, 2-10 strings 1-100 characters each
- * @property is_anonymous True, if the poll needs to be anonymous, defaults to <em>True</em>
- * @property type Poll type, “quiz” or “regular”, defaults to “regular”
- * @property allows_multiple_answers True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to <em>False</em>
- * @property correct_option_id 0-based identifier of the correct answer option, required for polls in quiz mode
- * @property explanation Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
- * @property explanation_parse_mode Mode for parsing entities in the explanation. See <a href="#formatting-options">formatting options</a> for more details.
- * @property open_period Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with <em>close_date</em>.
- * @property close_date Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with <em>open_period</em>.
- * @property is_closed Pass <em>True</em>, if the poll needs to be immediately closed. This can be useful for poll preview.
- * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property reply_to_message_id If the message is a reply, ID of the original message
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
- * */
-@Serializable
-data class SendPollRequest(
-    val chat_id: String,
-    val question: String,
-    val options: List<String>,
-    val is_anonymous: Boolean? = null,
-    val type: String? = null,
-    val allows_multiple_answers: Boolean? = null,
-    val correct_option_id: Int? = null,
-    val explanation: String? = null,
-    val explanation_parse_mode: String? = null,
-    val open_period: Int? = null,
-    val close_date: Int? = null,
-    val is_closed: Boolean? = null,
-    val disable_notification: Boolean? = null,
-    val reply_to_message_id: Int? = null,
-    val reply_markup: @ContextualSerialization KeyboardOption? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendPoll"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to send an animated emoji that will display a random value. On success, the sent <a href="#message">Message</a> is returned.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property emoji Emoji on which the dice throw animation is based. Currently, must be one of “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, or “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”. Dice can have values 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, and values 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”. Defaults to “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”
- * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property reply_to_message_id If the message is a reply, ID of the original message
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
- * */
-@Serializable
-data class SendDiceRequest(
-    val chat_id: String,
-    val emoji: String? = null,
-    val disable_notification: Boolean? = null,
-    val reply_to_message_id: Int? = null,
-    val reply_markup: @ContextualSerialization KeyboardOption? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendDice"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as <a href="#audio">Audio</a> or <a href="#document">Document</a>). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property voice Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
+     * @property caption Voice message caption, 0-1024 characters after entities parsing
+     * @property parse_mode Mode for parsing entities in the voice message caption. See <a href="#formatting-options">formatting options</a> for more details.
+     * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+     * @property duration Duration of the voice message in seconds
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the message is a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
+     * */
+    @Serializable
+    data class SendVoiceRequest(
+        val chat_id: String,
+        val voice: String,
+        val caption: String? = null,
+        val parse_mode: ParseMode? = null,
+        val caption_entities: List<MessageEntity>? = null,
+        val duration: Int? = null,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+        val reply_markup: @Contextual KeyboardOption? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendVoice"))
+        ).toString()
 
-/**
- * <p>Use this method when you need to tell the user that something is happening on the bot's side. The status is set for 5 seconds or less (when a message arrives from your bot, Telegram clients clear its typing status). Returns <em>True</em> on success.</p><blockquote> 
- *  <p>Example: The <a href="https://t.me/imagebot">ImageBot</a> needs some time to process a request and upload the image. Instead of sending a text message along the lines of “Retrieving image, please wait…”, the bot may use <a href="#sendchataction">sendChatAction</a> with <em>action</em> = <em>upload_photo</em>. The user will see a “sending photo” status for the bot.</p> 
- * </blockquote><p>We only recommend using this method when a response from the bot will take a <strong>noticeable</strong> amount of time to arrive.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property action Type of action to broadcast. Choose one, depending on what the user is about to receive: <em>typing</em> for <a href="#sendmessage">text messages</a>, <em>upload_photo</em> for <a href="#sendphoto">photos</a>, <em>record_video</em> or <em>upload_video</em> for <a href="#sendvideo">videos</a>, <em>record_audio</em> or <em>upload_audio</em> for <a href="#sendaudio">audio files</a>, <em>upload_document</em> for <a href="#senddocument">general files</a>, <em>find_location</em> for <a href="#sendlocation">location data</a>, <em>record_video_note</em> or <em>upload_video_note</em> for <a href="#sendvideonote">video notes</a>.
- * */
-@Serializable
-data class SendChatActionRequest(
-    val chat_id: String,
-    val action: String
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendChatAction"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to get a list of profile pictures for a user. Returns a <a href="#userprofilephotos">UserProfilePhotos</a> object.</p>
- *
- * @property user_id Unique identifier of the target user
- * @property offset Sequential number of the first photo to be returned. By default, all photos are returned.
- * @property limit Limits the number of photos to be retrieved. Values between 1-100 are accepted. Defaults to 100.
- * */
-@Serializable
-data class GetUserProfilePhotosRequest(
-    val user_id: Int,
-    val offset: Int? = null,
-    val limit: Int? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("getUserProfilePhotos"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>As of <a href="https://telegram.org/blog/video-messages-and-telescope">v.4.0</a>, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent <a href="#message">Message</a> is returned.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property video_note Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>. Sending video notes by a URL is currently unsupported
+     * @property duration Duration of sent video in seconds
+     * @property length Video width and height, i.e. diameter of the video message
+     * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the message is a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
+     * */
+    @Serializable
+    data class SendVideoNoteRequest(
+        val chat_id: String,
+        val video_note: String,
+        val duration: Int? = null,
+        val length: Int? = null,
+        val thumb: String? = null,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+        val reply_markup: @Contextual KeyboardOption? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendVideoNote"))
+        ).toString()
 
-/**
- * <p>Use this method to get basic info about a file and prepare it for downloading. For the moment, bots can download files of up to 20MB in size. On success, a <a href="#file">File</a> object is returned. The file can then be downloaded via the link <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code>, where <code>&lt;file_path&gt;</code> is taken from the response. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling <a href="#getfile">getFile</a> again.</p><p><strong>Note:</strong> This function may not preserve the original file name and MIME type. You should save the file's MIME type and name (if available) when the File object is received.</p>
- *
- * @property file_id File identifier to get info about
- * */
-@Serializable
-data class GetFileRequest(
-    val file_id: String
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("getFile"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to kick a user from a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the group on their own using invite links, etc., unless <a href="#unbanchatmember">unbanned</a> first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
- *
- * @property chat_id Unique identifier for the target group or username of the target supergroup or channel (in the format <code>@channelusername</code>)
- * @property user_id Unique identifier of the target user
- * @property until_date Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever
- * */
-@Serializable
-data class KickChatMemberRequest(
-    val chat_id: String,
-    val user_id: Int,
-    val until_date: Int? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("kickChatMember"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of <a href="#message">Messages</a> that were sent is returned.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property media A JSON-serialized array describing messages to be sent, must include 2-10 items
+     * @property disable_notification Sends messages <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the messages are a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * */
+    @Serializable
+    data class SendMediaGroupRequest(
+        val chat_id: String,
+        val media: List<@Contextual InputMedia>,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendMediaGroup"))
+        ).toString()
 
-/**
- * <p>Use this method to unban a previously kicked user in a supergroup or channel. The user will <strong>not</strong> return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. Returns <em>True</em> on success.</p>
- *
- * @property chat_id Unique identifier for the target group or username of the target supergroup or channel (in the format <code>@username</code>)
- * @property user_id Unique identifier of the target user
- * */
-@Serializable
-data class UnbanChatMemberRequest(
-    val chat_id: String,
-    val user_id: Int
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("unbanChatMember"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights. Pass <em>True</em> for all permissions to lift restrictions from a user. Returns <em>True</em> on success.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
- * @property user_id Unique identifier of the target user
- * @property permissions A JSON-serialized object for new user permissions
- * @property until_date Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever
- * */
-@Serializable
-data class RestrictChatMemberRequest(
-    val chat_id: String,
-    val user_id: Int,
-    val permissions: ChatPermissions,
-    val until_date: Int? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("restrictChatMember"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to send point on the map. On success, the sent <a href="#message">Message</a> is returned.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property latitude Latitude of the location
+     * @property longitude Longitude of the location
+     * @property horizontal_accuracy The radius of uncertainty for the location, measured in meters; 0-1500
+     * @property live_period Period in seconds for which the location will be updated (see <a href="https://telegram.org/blog/live-locations">Live Locations</a>, should be between 60 and 86400.
+     * @property heading For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
+     * @property proximity_alert_radius For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the message is a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
+     * */
+    @Serializable
+    data class SendLocationRequest(
+        val chat_id: String,
+        val latitude: Float,
+        val longitude: Float,
+        val horizontal_accuracy: Float? = null,
+        val live_period: Int? = null,
+        val heading: Int? = null,
+        val proximity_alert_radius: Int? = null,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+        val reply_markup: @Contextual KeyboardOption? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendLocation"))
+        ).toString()
 
-/**
- * <p>Use this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Pass <em>False</em> for all boolean parameters to demote a user. Returns <em>True</em> on success.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property user_id Unique identifier of the target user
- * @property can_change_info Pass True, if the administrator can change chat title, photo and other settings
- * @property can_post_messages Pass True, if the administrator can create channel posts, channels only
- * @property can_edit_messages Pass True, if the administrator can edit messages of other users and can pin messages, channels only
- * @property can_delete_messages Pass True, if the administrator can delete messages of other users
- * @property can_invite_users Pass True, if the administrator can invite new users to the chat
- * @property can_restrict_members Pass True, if the administrator can restrict, ban or unban chat members
- * @property can_pin_messages Pass True, if the administrator can pin messages, supergroups only
- * @property can_promote_members Pass True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
- * */
-@Serializable
-data class PromoteChatMemberRequest(
-    val chat_id: String,
-    val user_id: Int,
-    val can_change_info: Boolean? = null,
-    val can_post_messages: Boolean? = null,
-    val can_edit_messages: Boolean? = null,
-    val can_delete_messages: Boolean? = null,
-    val can_invite_users: Boolean? = null,
-    val can_restrict_members: Boolean? = null,
-    val can_pin_messages: Boolean? = null,
-    val can_promote_members: Boolean? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("promoteChatMember"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to set a custom title for an administrator in a supergroup promoted by the bot. Returns <em>True</em> on success.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
- * @property user_id Unique identifier of the target user
- * @property custom_title New custom title for the administrator; 0-16 characters, emoji are not allowed
- * */
-@Serializable
-data class SetChatAdministratorCustomTitleRequest(
-    val chat_id: String,
-    val user_id: Int,
-    val custom_title: String
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("setChatAdministratorCustomTitle"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to edit live location messages. A location can be edited until its <em>live_period</em> expires or editing is explicitly disabled by a call to <a href="#stopmessagelivelocation">stopMessageLiveLocation</a>. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+     *
+     * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
+     * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
+     * @property latitude Latitude of new location
+     * @property longitude Longitude of new location
+     * @property horizontal_accuracy The radius of uncertainty for the location, measured in meters; 0-1500
+     * @property heading Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
+     * @property proximity_alert_radius Maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
+     * @property reply_markup A JSON-serialized object for a new <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
+     * */
+    @Serializable
+    data class EditMessageLiveLocationRequest(
+        val chat_id: String? = null,
+        val message_id: Int? = null,
+        val inline_message_id: String? = null,
+        val latitude: Float,
+        val longitude: Float,
+        val horizontal_accuracy: Float? = null,
+        val heading: Int? = null,
+        val proximity_alert_radius: Int? = null,
+        val reply_markup: InlineKeyboardMarkup? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(
+                serializer(),
+                this
+            ).jsonObject + ("method" to JsonPrimitive("editMessageLiveLocation"))
+        ).toString()
 
-/**
- * <p>Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the <em>can_restrict_members</em> admin rights. Returns <em>True</em> on success.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
- * @property permissions New default chat permissions
- * */
-@Serializable
-data class SetChatPermissionsRequest(
-    val chat_id: String,
-    val permissions: ChatPermissions
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("setChatPermissions"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to generate a new invite link for a chat; any previously generated link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as <em>String</em> on success.</p><blockquote> 
- *  <p>Note: Each administrator in a chat generates their own invite links. Bots can't use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using <a href="#exportchatinvitelink">exportChatInviteLink</a> — after this the link will become available to the bot via the <a href="#getchat">getChat</a> method. If your bot needs to generate a new invite link replacing its previous one, use <a href="#exportchatinvitelink">exportChatInviteLink</a> again.</p> 
- * </blockquote>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * */
-@Serializable
-data class ExportChatInviteLinkRequest(
-    val chat_id: String
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("exportChatInviteLink"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to stop updating a live location message before <em>live_period</em> expires. On success, if the message was sent by the bot, the sent <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+     *
+     * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message with live location to stop
+     * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
+     * @property reply_markup A JSON-serialized object for a new <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
+     * */
+    @Serializable
+    data class StopMessageLiveLocationRequest(
+        val chat_id: String? = null,
+        val message_id: Int? = null,
+        val inline_message_id: String? = null,
+        val reply_markup: InlineKeyboardMarkup? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(
+                serializer(),
+                this
+            ).jsonObject + ("method" to JsonPrimitive("stopMessageLiveLocation"))
+        ).toString()
 
-/**
- * <p>Use this method to set a new profile photo for the chat. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property photo New chat photo, uploaded using multipart/form-data
- * */
-@Serializable
-data class SetChatPhotoRequest(
-    val chat_id: String,
-    val photo: @ContextualSerialization Any
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("setChatPhoto"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to delete a chat photo. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * */
-@Serializable
-data class DeleteChatPhotoRequest(
-    val chat_id: String
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("deleteChatPhoto"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to send information about a venue. On success, the sent <a href="#message">Message</a> is returned.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property latitude Latitude of the venue
+     * @property longitude Longitude of the venue
+     * @property title Name of the venue
+     * @property address Address of the venue
+     * @property foursquare_id Foursquare identifier of the venue
+     * @property foursquare_type Foursquare type of the venue, if known. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
+     * @property google_place_id Google Places identifier of the venue
+     * @property google_place_type Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.)
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the message is a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
+     * */
+    @Serializable
+    data class SendVenueRequest(
+        val chat_id: String,
+        val latitude: Float,
+        val longitude: Float,
+        val title: String,
+        val address: String,
+        val foursquare_id: String? = null,
+        val foursquare_type: String? = null,
+        val google_place_id: String? = null,
+        val google_place_type: String? = null,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+        val reply_markup: @Contextual KeyboardOption? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendVenue"))
+        ).toString()
 
-/**
- * <p>Use this method to change the title of a chat. Titles can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property title New chat title, 1-255 characters
- * */
-@Serializable
-data class SetChatTitleRequest(
-    val chat_id: String,
-    val title: String
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("setChatTitle"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to change the description of a group, a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property description New chat description, 0-255 characters
- * */
-@Serializable
-data class SetChatDescriptionRequest(
-    val chat_id: String,
-    val description: String? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("setChatDescription"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to send phone contacts. On success, the sent <a href="#message">Message</a> is returned.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property phone_number Contact's phone number
+     * @property first_name Contact's first name
+     * @property last_name Contact's last name
+     * @property vcard Additional data about the contact in the form of a <a href="https://en.wikipedia.org/wiki/VCard">vCard</a>, 0-2048 bytes
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the message is a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove keyboard or to force a reply from the user.
+     * */
+    @Serializable
+    data class SendContactRequest(
+        val chat_id: String,
+        val phone_number: String,
+        val first_name: String,
+        val last_name: String? = null,
+        val vcard: String? = null,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+        val reply_markup: @Contextual KeyboardOption? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendContact"))
+        ).toString()
 
-/**
- * <p>Use this method to pin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in the supergroup or 'can_edit_messages' admin right in the channel. Returns <em>True</em> on success.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property message_id Identifier of a message to pin
- * @property disable_notification Pass <em>True</em>, if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels.
- * */
-@Serializable
-data class PinChatMessageRequest(
-    val chat_id: String,
-    val message_id: Int,
-    val disable_notification: Boolean? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("pinChatMessage"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to unpin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in the supergroup or 'can_edit_messages' admin right in the channel. Returns <em>True</em> on success.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * */
-@Serializable
-data class UnpinChatMessageRequest(
-    val chat_id: String
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("unpinChatMessage"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to send a native poll. On success, the sent <a href="#message">Message</a> is returned.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property question Poll question, 1-300 characters
+     * @property options A JSON-serialized list of answer options, 2-10 strings 1-100 characters each
+     * @property is_anonymous True, if the poll needs to be anonymous, defaults to <em>True</em>
+     * @property type Poll type, “quiz” or “regular”, defaults to “regular”
+     * @property allows_multiple_answers True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to <em>False</em>
+     * @property correct_option_id 0-based identifier of the correct answer option, required for polls in quiz mode
+     * @property explanation Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
+     * @property explanation_parse_mode Mode for parsing entities in the explanation. See <a href="#formatting-options">formatting options</a> for more details.
+     * @property explanation_entities List of special entities that appear in the poll explanation, which can be specified instead of <em>parse_mode</em>
+     * @property open_period Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with <em>close_date</em>.
+     * @property close_date Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with <em>open_period</em>.
+     * @property is_closed Pass <em>True</em>, if the poll needs to be immediately closed. This can be useful for poll preview.
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the message is a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
+     * */
+    @Serializable
+    data class SendPollRequest(
+        val chat_id: String,
+        val question: String,
+        val options: List<String>,
+        val is_anonymous: Boolean? = null,
+        val type: String? = null,
+        val allows_multiple_answers: Boolean? = null,
+        val correct_option_id: Int? = null,
+        val explanation: String? = null,
+        val explanation_parse_mode: String? = null,
+        val explanation_entities: List<MessageEntity>? = null,
+        val open_period: Int? = null,
+        val close_date: Int? = null,
+        val is_closed: Boolean? = null,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+        val reply_markup: @Contextual KeyboardOption? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendPoll"))
+        ).toString()
 
-/**
- * <p>Use this method for your bot to leave a group, supergroup or channel. Returns <em>True</em> on success.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target supergroup or channel (in the format <code>@channelusername</code>)
- * */
-@Serializable
-data class LeaveChatRequest(
-    val chat_id: String
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("leaveChat"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to get up to date information about the chat (current name of the user for one-on-one conversations, current username of a user, group or channel, etc.). Returns a <a href="#chat">Chat</a> object on success.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target supergroup or channel (in the format <code>@channelusername</code>)
- * */
-@Serializable
-data class GetChatRequest(
-    val chat_id: String
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("getChat"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to send an animated emoji that will display a random value. On success, the sent <a href="#message">Message</a> is returned.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property emoji Emoji on which the dice throw animation is based. Currently, must be one of “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”, “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, or “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Dice can have values 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, values 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” and “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, and values 1-64 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Defaults to “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the message is a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
+     * */
+    @Serializable
+    data class SendDiceRequest(
+        val chat_id: String,
+        val emoji: String? = null,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+        val reply_markup: @Contextual KeyboardOption? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendDice"))
+        ).toString()
 
-/**
- * <p>Use this method to get a list of administrators in a chat. On success, returns an Array of <a href="#chatmember">ChatMember</a> objects that contains information about all chat administrators except other bots. If the chat is a group or a supergroup and no administrators were appointed, only the creator will be returned.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target supergroup or channel (in the format <code>@channelusername</code>)
- * */
-@Serializable
-data class GetChatAdministratorsRequest(
-    val chat_id: String
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("getChatAdministrators"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to get the number of members in a chat. Returns <em>Int</em> on success.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target supergroup or channel (in the format <code>@channelusername</code>)
- * */
-@Serializable
-data class GetChatMembersCountRequest(
-    val chat_id: String
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("getChatMembersCount"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method when you need to tell the user that something is happening on the bot's side. The status is set for 5 seconds or less (when a message arrives from your bot, Telegram clients clear its typing status). Returns <em>True</em> on success.</p><blockquote>
+     *  <p>Example: The <a href="https://t.me/imagebot">ImageBot</a> needs some time to process a request and upload the image. Instead of sending a text message along the lines of “Retrieving image, please wait…”, the bot may use <a href="#sendchataction">sendChatAction</a> with <em>action</em> = <em>upload_photo</em>. The user will see a “sending photo” status for the bot.</p>
+     * </blockquote><p>We only recommend using this method when a response from the bot will take a <strong>noticeable</strong> amount of time to arrive.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property action Type of action to broadcast. Choose one, depending on what the user is about to receive: <em>typing</em> for <a href="#sendmessage">text messages</a>, <em>upload_photo</em> for <a href="#sendphoto">photos</a>, <em>record_video</em> or <em>upload_video</em> for <a href="#sendvideo">videos</a>, <em>record_voice</em> or <em>upload_voice</em> for <a href="#sendvoice">voice notes</a>, <em>upload_document</em> for <a href="#senddocument">general files</a>, <em>find_location</em> for <a href="#sendlocation">location data</a>, <em>record_video_note</em> or <em>upload_video_note</em> for <a href="#sendvideonote">video notes</a>.
+     * */
+    @Serializable
+    data class SendChatActionRequest(
+        val chat_id: String,
+        val action: String,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendChatAction"))
+        ).toString()
 
-/**
- * <p>Use this method to get information about a member of a chat. Returns a <a href="#chatmember">ChatMember</a> object on success.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target supergroup or channel (in the format <code>@channelusername</code>)
- * @property user_id Unique identifier of the target user
- * */
-@Serializable
-data class GetChatMemberRequest(
-    val chat_id: String,
-    val user_id: Int
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("getChatMember"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to set a new group sticker set for a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Use the field <em>can_set_sticker_set</em> optionally returned in <a href="#getchat">getChat</a> requests to check if the bot can use this method. Returns <em>True</em> on success.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
- * @property sticker_set_name Name of the sticker set to be set as the group sticker set
- * */
-@Serializable
-data class SetChatStickerSetRequest(
-    val chat_id: String,
-    val sticker_set_name: String
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("setChatStickerSet"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to get a list of profile pictures for a user. Returns a <a href="#userprofilephotos">UserProfilePhotos</a> object.</p>
+     *
+     * @property user_id Unique identifier of the target user
+     * @property offset Sequential number of the first photo to be returned. By default, all photos are returned.
+     * @property limit Limits the number of photos to be retrieved. Values between 1-100 are accepted. Defaults to 100.
+     * */
+    @Serializable
+    data class GetUserProfilePhotosRequest(
+        val user_id: Int,
+        val offset: Int? = null,
+        val limit: Int? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(
+                serializer(),
+                this
+            ).jsonObject + ("method" to JsonPrimitive("getUserProfilePhotos"))
+        ).toString()
 
-/**
- * <p>Use this method to delete a group sticker set from a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Use the field <em>can_set_sticker_set</em> optionally returned in <a href="#getchat">getChat</a> requests to check if the bot can use this method. Returns <em>True</em> on success.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
- * */
-@Serializable
-data class DeleteChatStickerSetRequest(
-    val chat_id: String
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("deleteChatStickerSet"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to send answers to callback queries sent from <a href="/bots#inline-keyboards-and-on-the-fly-updating">inline keyboards</a>. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, <em>True</em> is returned.</p><blockquote> 
- *  <p>Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via <a href="https://t.me/botfather">@Botfather</a> and accept the terms. Otherwise, you may use links like <code>t.me/your_bot?start=XXXX</code> that open your bot with a parameter.</p> 
- * </blockquote>
- *
- * @property callback_query_id Unique identifier for the query to be answered
- * @property text Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters
- * @property show_alert If <em>true</em>, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to <em>false</em>.
- * @property url URL that will be opened by the user's client. If you have created a <a href="#game">Game</a> and accepted the conditions via <a href="https://t.me/botfather">@Botfather</a>, specify the URL that opens your game — note that this will only work if the query comes from a <a href="#inlinekeyboardbutton"><em>callback_game</em></a> button.<br><br>Otherwise, you may use links like <code>t.me/your_bot?start=XXXX</code> that open your bot with a parameter.
- * @property cache_time The maximum amount of time in seconds that the result of the callback query may be cached client-side. Telegram apps will support caching starting in version 3.14. Defaults to 0.
- * */
-@Serializable
-data class AnswerCallbackQueryRequest(
-    val callback_query_id: String,
-    val text: String? = null,
-    val show_alert: Boolean? = null,
-    val url: String? = null,
-    val cache_time: Int? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("answerCallbackQuery"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to get basic info about a file and prepare it for downloading. For the moment, bots can download files of up to 20MB in size. On success, a <a href="#file">File</a> object is returned. The file can then be downloaded via the link <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code>, where <code>&lt;file_path&gt;</code> is taken from the response. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling <a href="#getfile">getFile</a> again.</p><p><strong>Note:</strong> This function may not preserve the original file name and MIME type. You should save the file's MIME type and name (if available) when the File object is received.</p>
+     *
+     * @property file_id File identifier to get info about
+     * */
+    @Serializable
+    data class GetFileRequest(
+        val file_id: String,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("getFile"))
+        ).toString()
 
-/**
- * <p>Use this method to change the list of the bot's commands. Returns <em>True</em> on success.</p>
- *
- * @property commands A JSON-serialized list of bot commands to be set as the list of the bot's commands. At most 100 commands can be specified.
- * */
-@Serializable
-data class SetMyCommandsRequest(
-    val commands: List<BotCommand>
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("setMyCommands"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
+
+    /**
+     * <p>Use this method to kick a user from a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless <a href="#unbanchatmember">unbanned</a> first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target group or username of the target supergroup or channel (in the format <code>@channelusername</code>)
+     * @property user_id Unique identifier of the target user
+     * @property until_date Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only.
+     * @property revoke_messages Pass <em>True</em> to delete all messages from the chat for the user that is being removed. If <em>False</em>, the user will be able to see messages in the group that were sent before the user was removed. Always <em>True</em> for supergroups and channels.
+     * */
+    @Serializable
+    data class KickChatMemberRequest(
+        val chat_id: String,
+        val user_id: Int,
+        val until_date: Int? = null,
+        val revoke_messages: Boolean? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("kickChatMember"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to unban a previously kicked user in a supergroup or channel. The user will <strong>not</strong> return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. By default, this method guarantees that after the call the user is not a member of the chat, but will be able to join it. So if the user is a member of the chat they will also be <strong>removed</strong> from the chat. If you don't want this, use the parameter <em>only_if_banned</em>. Returns <em>True</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target group or username of the target supergroup or channel (in the format <code>@username</code>)
+     * @property user_id Unique identifier of the target user
+     * @property only_if_banned Do nothing if the user is not banned
+     * */
+    @Serializable
+    data class UnbanChatMemberRequest(
+        val chat_id: String,
+        val user_id: Int,
+        val only_if_banned: Boolean? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("unbanChatMember"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights. Pass <em>True</em> for all permissions to lift restrictions from a user. Returns <em>True</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
+     * @property user_id Unique identifier of the target user
+     * @property permissions A JSON-serialized object for new user permissions
+     * @property until_date Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever
+     * */
+    @Serializable
+    data class RestrictChatMemberRequest(
+        val chat_id: String,
+        val user_id: Int,
+        val permissions: ChatPermissions,
+        val until_date: Int? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("restrictChatMember"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Pass <em>False</em> for all boolean parameters to demote a user. Returns <em>True</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property user_id Unique identifier of the target user
+     * @property is_anonymous Pass <em>True</em>, if the administrator's presence in the chat is hidden
+     * @property can_manage_chat Pass True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
+     * @property can_post_messages Pass True, if the administrator can create channel posts, channels only
+     * @property can_edit_messages Pass True, if the administrator can edit messages of other users and can pin messages, channels only
+     * @property can_delete_messages Pass True, if the administrator can delete messages of other users
+     * @property can_manage_voice_chats Pass True, if the administrator can manage voice chats
+     * @property can_restrict_members Pass True, if the administrator can restrict, ban or unban chat members
+     * @property can_promote_members Pass True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
+     * @property can_change_info Pass True, if the administrator can change chat title, photo and other settings
+     * @property can_invite_users Pass True, if the administrator can invite new users to the chat
+     * @property can_pin_messages Pass True, if the administrator can pin messages, supergroups only
+     * */
+    @Serializable
+    data class PromoteChatMemberRequest(
+        val chat_id: String,
+        val user_id: Int,
+        val is_anonymous: Boolean? = null,
+        val can_manage_chat: Boolean? = null,
+        val can_post_messages: Boolean? = null,
+        val can_edit_messages: Boolean? = null,
+        val can_delete_messages: Boolean? = null,
+        val can_manage_voice_chats: Boolean? = null,
+        val can_restrict_members: Boolean? = null,
+        val can_promote_members: Boolean? = null,
+        val can_change_info: Boolean? = null,
+        val can_invite_users: Boolean? = null,
+        val can_pin_messages: Boolean? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("promoteChatMember"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to set a custom title for an administrator in a supergroup promoted by the bot. Returns <em>True</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
+     * @property user_id Unique identifier of the target user
+     * @property custom_title New custom title for the administrator; 0-16 characters, emoji are not allowed
+     * */
+    @Serializable
+    data class SetChatAdministratorCustomTitleRequest(
+        val chat_id: String,
+        val user_id: Int,
+        val custom_title: String,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(
+                serializer(),
+                this
+            ).jsonObject + ("method" to JsonPrimitive("setChatAdministratorCustomTitle"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the <em>can_restrict_members</em> admin rights. Returns <em>True</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
+     * @property permissions New default chat permissions
+     * */
+    @Serializable
+    data class SetChatPermissionsRequest(
+        val chat_id: String,
+        val permissions: ChatPermissions,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("setChatPermissions"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to generate a new primary invite link for a chat; any previously generated primary link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as <em>String</em> on success.</p><blockquote>
+     *  <p>Note: Each administrator in a chat generates their own invite links. Bots can't use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using <a href="#exportchatinvitelink">exportChatInviteLink</a> or by calling the <a href="#getchat">getChat</a> method. If your bot needs to generate a new primary invite link replacing its previous one, use <a href="#exportchatinvitelink">exportChatInviteLink</a> again.</p>
+     * </blockquote>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * */
+    @Serializable
+    data class ExportChatInviteLinkRequest(
+        val chat_id: String,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(
+                serializer(),
+                this
+            ).jsonObject + ("method" to JsonPrimitive("exportChatInviteLink"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to create an additional invite link for a chat. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. The link can be revoked using the method <a href="#revokechatinvitelink">revokeChatInviteLink</a>. Returns the new invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property expire_date Point in time (Unix timestamp) when the link will expire
+     * @property member_limit Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+     * */
+    @Serializable
+    data class CreateChatInviteLinkRequest(
+        val chat_id: String,
+        val expire_date: Int? = null,
+        val member_limit: Int? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(
+                serializer(),
+                this
+            ).jsonObject + ("method" to JsonPrimitive("createChatInviteLink"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to edit a non-primary invite link created by the bot. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the edited invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property invite_link The invite link to edit
+     * @property expire_date Point in time (Unix timestamp) when the link will expire
+     * @property member_limit Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+     * */
+    @Serializable
+    data class EditChatInviteLinkRequest(
+        val chat_id: String,
+        val invite_link: String,
+        val expire_date: Int? = null,
+        val member_limit: Int? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("editChatInviteLink"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the revoked invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+     *
+     * @property chat_id Unique identifier of the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property invite_link The invite link to revoke
+     * */
+    @Serializable
+    data class RevokeChatInviteLinkRequest(
+        val chat_id: String,
+        val invite_link: String,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(
+                serializer(),
+                this
+            ).jsonObject + ("method" to JsonPrimitive("revokeChatInviteLink"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to set a new profile photo for the chat. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property photo New chat photo, uploaded using multipart/form-data
+     * */
+    @Serializable
+    data class SetChatPhotoRequest(
+        val chat_id: String,
+        val photo: @Contextual Any,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("setChatPhoto"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to delete a chat photo. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * */
+    @Serializable
+    data class DeleteChatPhotoRequest(
+        val chat_id: String,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("deleteChatPhoto"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to change the title of a chat. Titles can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property title New chat title, 1-255 characters
+     * */
+    @Serializable
+    data class SetChatTitleRequest(
+        val chat_id: String,
+        val title: String,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("setChatTitle"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to change the description of a group, a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property description New chat description, 0-255 characters
+     * */
+    @Serializable
+    data class SetChatDescriptionRequest(
+        val chat_id: String,
+        val description: String? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("setChatDescription"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in a supergroup or 'can_edit_messages' admin right in a channel. Returns <em>True</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property message_id Identifier of a message to pin
+     * @property disable_notification Pass <em>True</em>, if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.
+     * */
+    @Serializable
+    data class PinChatMessageRequest(
+        val chat_id: String,
+        val message_id: Int,
+        val disable_notification: Boolean? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("pinChatMessage"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in a supergroup or 'can_edit_messages' admin right in a channel. Returns <em>True</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property message_id Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned.
+     * */
+    @Serializable
+    data class UnpinChatMessageRequest(
+        val chat_id: String,
+        val message_id: Int? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("unpinChatMessage"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to clear the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in a supergroup or 'can_edit_messages' admin right in a channel. Returns <em>True</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * */
+    @Serializable
+    data class UnpinAllChatMessagesRequest(
+        val chat_id: String,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(
+                serializer(),
+                this
+            ).jsonObject + ("method" to JsonPrimitive("unpinAllChatMessages"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method for your bot to leave a group, supergroup or channel. Returns <em>True</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target supergroup or channel (in the format <code>@channelusername</code>)
+     * */
+    @Serializable
+    data class LeaveChatRequest(
+        val chat_id: String,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("leaveChat"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to get up to date information about the chat (current name of the user for one-on-one conversations, current username of a user, group or channel, etc.). Returns a <a href="#chat">Chat</a> object on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target supergroup or channel (in the format <code>@channelusername</code>)
+     * */
+    @Serializable
+    data class GetChatRequest(
+        val chat_id: String,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("getChat"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to get a list of administrators in a chat. On success, returns an Array of <a href="#chatmember">ChatMember</a> objects that contains information about all chat administrators except other bots. If the chat is a group or a supergroup and no administrators were appointed, only the creator will be returned.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target supergroup or channel (in the format <code>@channelusername</code>)
+     * */
+    @Serializable
+    data class GetChatAdministratorsRequest(
+        val chat_id: String,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(
+                serializer(),
+                this
+            ).jsonObject + ("method" to JsonPrimitive("getChatAdministrators"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to get the number of members in a chat. Returns <em>Int</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target supergroup or channel (in the format <code>@channelusername</code>)
+     * */
+    @Serializable
+    data class GetChatMembersCountRequest(
+        val chat_id: String,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("getChatMembersCount"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to get information about a member of a chat. Returns a <a href="#chatmember">ChatMember</a> object on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target supergroup or channel (in the format <code>@channelusername</code>)
+     * @property user_id Unique identifier of the target user
+     * */
+    @Serializable
+    data class GetChatMemberRequest(
+        val chat_id: String,
+        val user_id: Int,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("getChatMember"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to set a new group sticker set for a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Use the field <em>can_set_sticker_set</em> optionally returned in <a href="#getchat">getChat</a> requests to check if the bot can use this method. Returns <em>True</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
+     * @property sticker_set_name Name of the sticker set to be set as the group sticker set
+     * */
+    @Serializable
+    data class SetChatStickerSetRequest(
+        val chat_id: String,
+        val sticker_set_name: String,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("setChatStickerSet"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to delete a group sticker set from a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Use the field <em>can_set_sticker_set</em> optionally returned in <a href="#getchat">getChat</a> requests to check if the bot can use this method. Returns <em>True</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
+     * */
+    @Serializable
+    data class DeleteChatStickerSetRequest(
+        val chat_id: String,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(
+                serializer(),
+                this
+            ).jsonObject + ("method" to JsonPrimitive("deleteChatStickerSet"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to send answers to callback queries sent from <a href="/bots#inline-keyboards-and-on-the-fly-updating">inline keyboards</a>. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, <em>True</em> is returned.</p><blockquote>
+     *  <p>Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via <a href="https://t.me/botfather">@Botfather</a> and accept the terms. Otherwise, you may use links like <code>t.me/your_bot?start=XXXX</code> that open your bot with a parameter.</p>
+     * </blockquote>
+     *
+     * @property callback_query_id Unique identifier for the query to be answered
+     * @property text Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters
+     * @property show_alert If <em>true</em>, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to <em>false</em>.
+     * @property url URL that will be opened by the user's client. If you have created a <a href="#game">Game</a> and accepted the conditions via <a href="https://t.me/botfather">@Botfather</a>, specify the URL that opens your game — note that this will only work if the query comes from a <a href="#inlinekeyboardbutton"><em>callback_game</em></a> button.<br><br>Otherwise, you may use links like <code>t.me/your_bot?start=XXXX</code> that open your bot with a parameter.
+     * @property cache_time The maximum amount of time in seconds that the result of the callback query may be cached client-side. Telegram apps will support caching starting in version 3.14. Defaults to 0.
+     * */
+    @Serializable
+    data class AnswerCallbackQueryRequest(
+        val callback_query_id: String,
+        val text: String? = null,
+        val show_alert: Boolean? = null,
+        val url: String? = null,
+        val cache_time: Int? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("answerCallbackQuery"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to change the list of the bot's commands. Returns <em>True</em> on success.</p>
+     *
+     * @property commands A JSON-serialized list of bot commands to be set as the list of the bot's commands. At most 100 commands can be specified.
+     * */
+    @Serializable
+    data class SetMyCommandsRequest(
+        val commands: List<BotCommand>,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("setMyCommands"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
 
 
 // Updating messages
 
-/**
- * <p>Use this method to edit text and <a href="#games">game</a> messages. On success, if edited message is sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
- *
- * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
- * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
- * @property text New text of the message, 1-4096 characters after entities parsing
- * @property parse_mode Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details.
- * @property disable_web_page_preview Disables link previews for links in this message
- * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
- * */
-@Serializable
-data class EditMessageTextRequest(
-    val chat_id: String? = null,
-    val message_id: Int? = null,
-    val inline_message_id: String? = null,
-    val text: String,
-    val parse_mode: ParseMode? = null,
-    val disable_web_page_preview: Boolean? = null,
-    val reply_markup: InlineKeyboardMarkup? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("editMessageText"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to edit text and <a href="#games">game</a> messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+     *
+     * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
+     * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
+     * @property text New text of the message, 1-4096 characters after entities parsing
+     * @property parse_mode Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details.
+     * @property entities List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
+     * @property disable_web_page_preview Disables link previews for links in this message
+     * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
+     * */
+    @Serializable
+    data class EditMessageTextRequest(
+        val chat_id: String? = null,
+        val message_id: Int? = null,
+        val inline_message_id: String? = null,
+        val text: String,
+        val parse_mode: ParseMode? = null,
+        val entities: List<MessageEntity>? = null,
+        val disable_web_page_preview: Boolean? = null,
+        val reply_markup: InlineKeyboardMarkup? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("editMessageText"))
+        ).toString()
 
-/**
- * <p>Use this method to edit captions of messages. On success, if edited message is sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
- *
- * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
- * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
- * @property caption New caption of the message, 0-1024 characters after entities parsing
- * @property parse_mode Mode for parsing entities in the message caption. See <a href="#formatting-options">formatting options</a> for more details.
- * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
- * */
-@Serializable
-data class EditMessageCaptionRequest(
-    val chat_id: String? = null,
-    val message_id: Int? = null,
-    val inline_message_id: String? = null,
-    val caption: String? = null,
-    val parse_mode: ParseMode? = null,
-    val reply_markup: InlineKeyboardMarkup? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("editMessageCaption"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to edit animation, audio, document, photo, or video messages. If a message is a part of a message album, then it can be edited only to a photo or a video. Otherwise, message type can be changed arbitrarily. When inline message is edited, new file can't be uploaded. Use previously uploaded file via its file_id or specify a URL. On success, if the edited message was sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
- *
- * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
- * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
- * @property media A JSON-serialized object for a new media content of the message
- * @property reply_markup A JSON-serialized object for a new <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
- * */
-@Serializable
-data class EditMessageMediaRequest(
-    val chat_id: String? = null,
-    val message_id: Int? = null,
-    val inline_message_id: String? = null,
-    val media: @ContextualSerialization InputMedia,
-    val reply_markup: InlineKeyboardMarkup? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("editMessageMedia"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+     *
+     * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
+     * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
+     * @property caption New caption of the message, 0-1024 characters after entities parsing
+     * @property parse_mode Mode for parsing entities in the message caption. See <a href="#formatting-options">formatting options</a> for more details.
+     * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+     * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
+     * */
+    @Serializable
+    data class EditMessageCaptionRequest(
+        val chat_id: String? = null,
+        val message_id: Int? = null,
+        val inline_message_id: String? = null,
+        val caption: String? = null,
+        val parse_mode: ParseMode? = null,
+        val caption_entities: List<MessageEntity>? = null,
+        val reply_markup: InlineKeyboardMarkup? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("editMessageCaption"))
+        ).toString()
 
-/**
- * <p>Use this method to edit only the reply markup of messages. On success, if edited message is sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
- *
- * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
- * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
- * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
- * */
-@Serializable
-data class EditMessageReplyMarkupRequest(
-    val chat_id: String? = null,
-    val message_id: Int? = null,
-    val inline_message_id: String? = null,
-    val reply_markup: InlineKeyboardMarkup? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("editMessageReplyMarkup"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to stop a poll which was sent by the bot. On success, the stopped <a href="#poll">Poll</a> with the final results is returned.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property message_id Identifier of the original message with the poll
- * @property reply_markup A JSON-serialized object for a new message <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
- * */
-@Serializable
-data class StopPollRequest(
-    val chat_id: String,
-    val message_id: Int,
-    val reply_markup: InlineKeyboardMarkup? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("stopPoll"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded. Use a previously uploaded file via its file_id or specify a URL. On success, if the edited message was sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+     *
+     * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
+     * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
+     * @property media A JSON-serialized object for a new media content of the message
+     * @property reply_markup A JSON-serialized object for a new <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
+     * */
+    @Serializable
+    data class EditMessageMediaRequest(
+        val chat_id: String? = null,
+        val message_id: Int? = null,
+        val inline_message_id: String? = null,
+        val media: @Contextual InputMedia,
+        val reply_markup: InlineKeyboardMarkup? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("editMessageMedia"))
+        ).toString()
 
-/**
- * <p>Use this method to delete a message, including service messages, with the following limitations:<br>- A message can only be deleted if it was sent less than 48 hours ago.<br>- A dice message in a private chat can only be deleted if it was sent more than 24 hours ago.<br>- Bots can delete outgoing messages in private chats, groups, and supergroups.<br>- Bots can delete incoming messages in private chats.<br>- Bots granted <em>can_post_messages</em> permissions can delete outgoing messages in channels.<br>- If the bot is an administrator of a group, it can delete any message there.<br>- If the bot has <em>can_delete_messages</em> permission in a supergroup or a channel, it can delete any message there.<br>Returns <em>True</em> on success.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property message_id Identifier of the message to delete
- * */
-@Serializable
-data class DeleteMessageRequest(
-    val chat_id: String,
-    val message_id: Int
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("deleteMessage"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
+
+    /**
+     * <p>Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+     *
+     * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
+     * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
+     * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
+     * */
+    @Serializable
+    data class EditMessageReplyMarkupRequest(
+        val chat_id: String? = null,
+        val message_id: Int? = null,
+        val inline_message_id: String? = null,
+        val reply_markup: InlineKeyboardMarkup? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(
+                serializer(),
+                this
+            ).jsonObject + ("method" to JsonPrimitive("editMessageReplyMarkup"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to stop a poll which was sent by the bot. On success, the stopped <a href="#poll">Poll</a> with the final results is returned.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property message_id Identifier of the original message with the poll
+     * @property reply_markup A JSON-serialized object for a new message <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
+     * */
+    @Serializable
+    data class StopPollRequest(
+        val chat_id: String,
+        val message_id: Int,
+        val reply_markup: InlineKeyboardMarkup? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("stopPoll"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to delete a message, including service messages, with the following limitations:<br>- A message can only be deleted if it was sent less than 48 hours ago.<br>- A dice message in a private chat can only be deleted if it was sent more than 24 hours ago.<br>- Bots can delete outgoing messages in private chats, groups, and supergroups.<br>- Bots can delete incoming messages in private chats.<br>- Bots granted <em>can_post_messages</em> permissions can delete outgoing messages in channels.<br>- If the bot is an administrator of a group, it can delete any message there.<br>- If the bot has <em>can_delete_messages</em> permission in a supergroup or a channel, it can delete any message there.<br>Returns <em>True</em> on success.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property message_id Identifier of the message to delete
+     * */
+    @Serializable
+    data class DeleteMessageRequest(
+        val chat_id: String,
+        val message_id: Int,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("deleteMessage"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
 
 
 // Stickers
 
-/**
- * <p>Use this method to send static .WEBP or <a href="https://telegram.org/blog/animated-stickers">animated</a> .TGS stickers. On success, the sent <a href="#message">Message</a> is returned.</p>
- *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property sticker Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
- * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property reply_to_message_id If the message is a reply, ID of the original message
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
- * */
-@Serializable
-data class SendStickerRequest(
-    val chat_id: String,
-    val sticker: String,
-    val disable_notification: Boolean? = null,
-    val reply_to_message_id: Int? = null,
-    val reply_markup: @ContextualSerialization KeyboardOption? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendSticker"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to send static .WEBP or <a href="https://telegram.org/blog/animated-stickers">animated</a> .TGS stickers. On success, the sent <a href="#message">Message</a> is returned.</p>
+     *
+     * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property sticker Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the message is a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
+     * */
+    @Serializable
+    data class SendStickerRequest(
+        val chat_id: String,
+        val sticker: String,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+        val reply_markup: @Contextual KeyboardOption? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendSticker"))
+        ).toString()
 
-/**
- * <p>Use this method to get a sticker set. On success, a <a href="#stickerset">StickerSet</a> object is returned.</p>
- *
- * @property name Name of the sticker set
- * */
-@Serializable
-data class GetStickerSetRequest(
-    val name: String
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("getStickerSet"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to upload a .PNG file with a sticker for later use in <em>createNewStickerSet</em> and <em>addStickerToSet</em> methods (can be used multiple times). Returns the uploaded <a href="#file">File</a> on success.</p>
- *
- * @property user_id User identifier of sticker file owner
- * @property png_sticker <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. <a href="#sending-files">More info on Sending Files »</a>
- * */
-@Serializable
-data class UploadStickerFileRequest(
-    val user_id: Int,
-    val png_sticker: @ContextualSerialization Any
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("uploadStickerFile"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to get a sticker set. On success, a <a href="#stickerset">StickerSet</a> object is returned.</p>
+     *
+     * @property name Name of the sticker set
+     * */
+    @Serializable
+    data class GetStickerSetRequest(
+        val name: String,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("getStickerSet"))
+        ).toString()
 
-/**
- * <p>Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You <strong>must</strong> use exactly one of the fields <em>png_sticker</em> or <em>tgs_sticker</em>. Returns <em>True</em> on success.</p>
- *
- * @property user_id User identifier of created sticker set owner
- * @property name Short name of sticker set, to be used in <code>t.me/addstickers/</code> URLs (e.g., <em>animals</em>). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in <em>“_by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensitive. 1-64 characters.
- * @property title Sticker set title, 1-64 characters
- * @property png_sticker <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
- * @property tgs_sticker <strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/animated_stickers#technical-requirements"></a><a href="https://core.telegram.org/animated_stickers#technical-requirements">https://core.telegram.org/animated_stickers#technical-requirements</a> for technical requirements
- * @property emojis One or more emoji corresponding to the sticker
- * @property contains_masks Pass <em>True</em>, if a set of mask stickers should be created
- * @property mask_position A JSON-serialized object for position where the mask should be placed on faces
- * */
-@Serializable
-data class CreateNewStickerSetRequest(
-    val user_id: Int,
-    val name: String,
-    val title: String,
-    val png_sticker: String? = null,
-    val tgs_sticker: @ContextualSerialization Any? = null,
-    val emojis: String,
-    val contains_masks: Boolean? = null,
-    val mask_position: MaskPosition? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("createNewStickerSet"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to add a new sticker to a set created by the bot. You <strong>must</strong> use exactly one of the fields <em>png_sticker</em> or <em>tgs_sticker</em>. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns <em>True</em> on success.</p>
- *
- * @property user_id User identifier of sticker set owner
- * @property name Sticker set name
- * @property png_sticker <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
- * @property tgs_sticker <strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/animated_stickers#technical-requirements"></a><a href="https://core.telegram.org/animated_stickers#technical-requirements">https://core.telegram.org/animated_stickers#technical-requirements</a> for technical requirements
- * @property emojis One or more emoji corresponding to the sticker
- * @property mask_position A JSON-serialized object for position where the mask should be placed on faces
- * */
-@Serializable
-data class AddStickerToSetRequest(
-    val user_id: Int,
-    val name: String,
-    val png_sticker: String? = null,
-    val tgs_sticker: @ContextualSerialization Any? = null,
-    val emojis: String,
-    val mask_position: MaskPosition? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("addStickerToSet"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to upload a .PNG file with a sticker for later use in <em>createNewStickerSet</em> and <em>addStickerToSet</em> methods (can be used multiple times). Returns the uploaded <a href="#file">File</a> on success.</p>
+     *
+     * @property user_id User identifier of sticker file owner
+     * @property png_sticker <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. <a href="#sending-files">More info on Sending Files »</a>
+     * */
+    @Serializable
+    data class UploadStickerFileRequest(
+        val user_id: Int,
+        val png_sticker: @Contextual Any,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("uploadStickerFile"))
+        ).toString()
 
-/**
- * <p>Use this method to move a sticker in a set created by the bot to a specific position. Returns <em>True</em> on success.</p>
- *
- * @property sticker File identifier of the sticker
- * @property position New sticker position in the set, zero-based
- * */
-@Serializable
-data class SetStickerPositionInSetRequest(
-    val sticker: String,
-    val position: Int
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("setStickerPositionInSet"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to delete a sticker from a set created by the bot. Returns <em>True</em> on success.</p>
- *
- * @property sticker File identifier of the sticker
- * */
-@Serializable
-data class DeleteStickerFromSetRequest(
-    val sticker: String
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("deleteStickerFromSet"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You <strong>must</strong> use exactly one of the fields <em>png_sticker</em> or <em>tgs_sticker</em>. Returns <em>True</em> on success.</p>
+     *
+     * @property user_id User identifier of created sticker set owner
+     * @property name Short name of sticker set, to be used in <code>t.me/addstickers/</code> URLs (e.g., <em>animals</em>). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in <em>“_by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensitive. 1-64 characters.
+     * @property title Sticker set title, 1-64 characters
+     * @property png_sticker <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
+     * @property tgs_sticker <strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/animated_stickers#technical-requirements"></a><a href="https://core.telegram.org/animated_stickers#technical-requirements">https://core.telegram.org/animated_stickers#technical-requirements</a> for technical requirements
+     * @property emojis One or more emoji corresponding to the sticker
+     * @property contains_masks Pass <em>True</em>, if a set of mask stickers should be created
+     * @property mask_position A JSON-serialized object for position where the mask should be placed on faces
+     * */
+    @Serializable
+    data class CreateNewStickerSetRequest(
+        val user_id: Int,
+        val name: String,
+        val title: String,
+        val png_sticker: String? = null,
+        val tgs_sticker: @Contextual Any? = null,
+        val emojis: String,
+        val contains_masks: Boolean? = null,
+        val mask_position: MaskPosition? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("createNewStickerSet"))
+        ).toString()
 
-/**
- * <p>Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Returns <em>True</em> on success.</p>
- *
- * @property name Sticker set name
- * @property user_id User identifier of the sticker set owner
- * @property thumb A <strong>PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a <strong>TGS</strong> animation with the thumbnail up to 32 kilobytes in size; see <a href="https://core.telegram.org/animated_stickers#technical-requirements"></a><a href="https://core.telegram.org/animated_stickers#technical-requirements">https://core.telegram.org/animated_stickers#technical-requirements</a> for animated sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>. Animated sticker set thumbnail can't be uploaded via HTTP URL.
- * */
-@Serializable
-data class SetStickerSetThumbRequest(
-    val name: String,
-    val user_id: Int,
-    val thumb: String? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("setStickerSetThumb"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
+
+    /**
+     * <p>Use this method to add a new sticker to a set created by the bot. You <strong>must</strong> use exactly one of the fields <em>png_sticker</em> or <em>tgs_sticker</em>. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns <em>True</em> on success.</p>
+     *
+     * @property user_id User identifier of sticker set owner
+     * @property name Sticker set name
+     * @property png_sticker <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
+     * @property tgs_sticker <strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/animated_stickers#technical-requirements"></a><a href="https://core.telegram.org/animated_stickers#technical-requirements">https://core.telegram.org/animated_stickers#technical-requirements</a> for technical requirements
+     * @property emojis One or more emoji corresponding to the sticker
+     * @property mask_position A JSON-serialized object for position where the mask should be placed on faces
+     * */
+    @Serializable
+    data class AddStickerToSetRequest(
+        val user_id: Int,
+        val name: String,
+        val png_sticker: String? = null,
+        val tgs_sticker: @Contextual Any? = null,
+        val emojis: String,
+        val mask_position: MaskPosition? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("addStickerToSet"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to move a sticker in a set created by the bot to a specific position. Returns <em>True</em> on success.</p>
+     *
+     * @property sticker File identifier of the sticker
+     * @property position New sticker position in the set, zero-based
+     * */
+    @Serializable
+    data class SetStickerPositionInSetRequest(
+        val sticker: String,
+        val position: Int,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(
+                serializer(),
+                this
+            ).jsonObject + ("method" to JsonPrimitive("setStickerPositionInSet"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to delete a sticker from a set created by the bot. Returns <em>True</em> on success.</p>
+     *
+     * @property sticker File identifier of the sticker
+     * */
+    @Serializable
+    data class DeleteStickerFromSetRequest(
+        val sticker: String,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(
+                serializer(),
+                this
+            ).jsonObject + ("method" to JsonPrimitive("deleteStickerFromSet"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
+
+    /**
+     * <p>Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Returns <em>True</em> on success.</p>
+     *
+     * @property name Sticker set name
+     * @property user_id User identifier of the sticker set owner
+     * @property thumb A <strong>PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a <strong>TGS</strong> animation with the thumbnail up to 32 kilobytes in size; see <a href="https://core.telegram.org/animated_stickers#technical-requirements"></a><a href="https://core.telegram.org/animated_stickers#technical-requirements">https://core.telegram.org/animated_stickers#technical-requirements</a> for animated sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>. Animated sticker set thumbnail can't be uploaded via HTTP URL.
+     * */
+    @Serializable
+    data class SetStickerSetThumbRequest(
+        val name: String,
+        val user_id: Int,
+        val thumb: String? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("setStickerSetThumb"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
 
 
 // Inline mode
 
-/**
- * <p>Use this method to send answers to an inline query. On success, <em>True</em> is returned.<br>No more than <strong>50</strong> results per query are allowed.</p>
- *
- * @property inline_query_id Unique identifier for the answered query
- * @property results A JSON-serialized array of results for the inline query
- * @property cache_time The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300.
- * @property is_personal Pass <em>True</em>, if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query
- * @property next_offset Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes.
- * @property switch_pm_text If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter <em>switch_pm_parameter</em>
- * @property switch_pm_parameter <a href="/bots#deep-linking">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br><br><em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an oauth link. Once done, the bot can offer a <a href="#inlinekeyboardmarkup"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.
- * */
-@Serializable
-data class AnswerInlineQueryRequest(
-    val inline_query_id: String,
-    val results: List<@ContextualSerialization InlineQueryResult>,
-    val cache_time: Int? = null,
-    val is_personal: Boolean? = null,
-    val next_offset: String? = null,
-    val switch_pm_text: String? = null,
-    val switch_pm_parameter: String? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("answerInlineQuery"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+    /**
+     * <p>Use this method to send answers to an inline query. On success, <em>True</em> is returned.<br>No more than <strong>50</strong> results per query are allowed.</p>
+     *
+     * @property inline_query_id Unique identifier for the answered query
+     * @property results A JSON-serialized array of results for the inline query
+     * @property cache_time The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300.
+     * @property is_personal Pass <em>True</em>, if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query
+     * @property next_offset Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes.
+     * @property switch_pm_text If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter <em>switch_pm_parameter</em>
+     * @property switch_pm_parameter <a href="/bots#deep-linking">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br><br><em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an oauth link. Once done, the bot can offer a <a href="#inlinekeyboardmarkup"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.
+     * */
+    @Serializable
+    data class AnswerInlineQueryRequest(
+        val inline_query_id: String,
+        val results: List<@Contextual InlineQueryResult>,
+        val cache_time: Int? = null,
+        val is_personal: Boolean? = null,
+        val next_offset: String? = null,
+        val switch_pm_text: String? = null,
+        val switch_pm_parameter: String? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("answerInlineQuery"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
 
 // Payments
 
-/**
- * <p>Use this method to send invoices. On success, the sent <a href="#message">Message</a> is returned.</p>
- *
- * @property chat_id Unique identifier for the target private chat
- * @property title Product name, 1-32 characters
- * @property description Product description, 1-255 characters
- * @property payload Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
- * @property provider_token Payments provider token, obtained via <a href="https://t.me/botfather">Botfather</a>
- * @property start_parameter Unique deep-linking parameter that can be used to generate this invoice when used as a start parameter
- * @property currency Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>
- * @property prices Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
- * @property provider_data A JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
- * @property photo_url URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for.
- * @property photo_size Photo size
- * @property photo_width Photo width
- * @property photo_height Photo height
- * @property need_name Pass <em>True</em>, if you require the user's full name to complete the order
- * @property need_phone_number Pass <em>True</em>, if you require the user's phone number to complete the order
- * @property need_email Pass <em>True</em>, if you require the user's email address to complete the order
- * @property need_shipping_address Pass <em>True</em>, if you require the user's shipping address to complete the order
- * @property send_phone_number_to_provider Pass <em>True</em>, if user's phone number should be sent to provider
- * @property send_email_to_provider Pass <em>True</em>, if user's email address should be sent to provider
- * @property is_flexible Pass <em>True</em>, if the final price depends on the shipping method
- * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property reply_to_message_id If the message is a reply, ID of the original message
- * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If empty, one 'Pay <code>total price</code>' button will be shown. If not empty, the first button must be a Pay button.
- * */
-@Serializable
-data class SendInvoiceRequest(
-    val chat_id: Int,
-    val title: String,
-    val description: String,
-    val payload: String,
-    val provider_token: String,
-    val start_parameter: String,
-    val currency: String,
-    val prices: List<LabeledPrice>,
-    val provider_data: String? = null,
-    val photo_url: String? = null,
-    val photo_size: Int? = null,
-    val photo_width: Int? = null,
-    val photo_height: Int? = null,
-    val need_name: Boolean? = null,
-    val need_phone_number: Boolean? = null,
-    val need_email: Boolean? = null,
-    val need_shipping_address: Boolean? = null,
-    val send_phone_number_to_provider: Boolean? = null,
-    val send_email_to_provider: Boolean? = null,
-    val is_flexible: Boolean? = null,
-    val disable_notification: Boolean? = null,
-    val reply_to_message_id: Int? = null,
-    val reply_markup: InlineKeyboardMarkup? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendInvoice"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to send invoices. On success, the sent <a href="#message">Message</a> is returned.</p>
+     *
+     * @property chat_id Unique identifier for the target private chat
+     * @property title Product name, 1-32 characters
+     * @property description Product description, 1-255 characters
+     * @property payload Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+     * @property provider_token Payments provider token, obtained via <a href="https://t.me/botfather">Botfather</a>
+     * @property start_parameter Unique deep-linking parameter that can be used to generate this invoice when used as a start parameter
+     * @property currency Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>
+     * @property prices Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
+     * @property provider_data A JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
+     * @property photo_url URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for.
+     * @property photo_size Photo size
+     * @property photo_width Photo width
+     * @property photo_height Photo height
+     * @property need_name Pass <em>True</em>, if you require the user's full name to complete the order
+     * @property need_phone_number Pass <em>True</em>, if you require the user's phone number to complete the order
+     * @property need_email Pass <em>True</em>, if you require the user's email address to complete the order
+     * @property need_shipping_address Pass <em>True</em>, if you require the user's shipping address to complete the order
+     * @property send_phone_number_to_provider Pass <em>True</em>, if user's phone number should be sent to provider
+     * @property send_email_to_provider Pass <em>True</em>, if user's email address should be sent to provider
+     * @property is_flexible Pass <em>True</em>, if the final price depends on the shipping method
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the message is a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If empty, one 'Pay <code>total price</code>' button will be shown. If not empty, the first button must be a Pay button.
+     * */
+    @Serializable
+    data class SendInvoiceRequest(
+        val chat_id: Int,
+        val title: String,
+        val description: String,
+        val payload: String,
+        val provider_token: String,
+        val start_parameter: String,
+        val currency: String,
+        val prices: List<LabeledPrice>,
+        val provider_data: String? = null,
+        val photo_url: String? = null,
+        val photo_size: Int? = null,
+        val photo_width: Int? = null,
+        val photo_height: Int? = null,
+        val need_name: Boolean? = null,
+        val need_phone_number: Boolean? = null,
+        val need_email: Boolean? = null,
+        val need_shipping_address: Boolean? = null,
+        val send_phone_number_to_provider: Boolean? = null,
+        val send_email_to_provider: Boolean? = null,
+        val is_flexible: Boolean? = null,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+        val reply_markup: InlineKeyboardMarkup? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendInvoice"))
+        ).toString()
 
-/**
- * <p>If you sent an invoice requesting a shipping address and the parameter <em>is_flexible</em> was specified, the Bot API will send an <a href="#update">Update</a> with a <em>shipping_query</em> field to the bot. Use this method to reply to shipping queries. On success, True is returned.</p>
- *
- * @property shipping_query_id Unique identifier for the query to be answered
- * @property ok Specify True if delivery to the specified address is possible and False if there are any problems (for example, if delivery to the specified address is not possible)
- * @property shipping_options Required if <em>ok</em> is True. A JSON-serialized array of available shipping options.
- * @property error_message Required if <em>ok</em> is False. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.
- * */
-@Serializable
-data class AnswerShippingQueryRequest(
-    val shipping_query_id: String,
-    val ok: Boolean,
-    val shipping_options: List<ShippingOption>? = null,
-    val error_message: String? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("answerShippingQuery"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Once the user has confirmed their payment and shipping details, the Bot API sends the final confirmation in the form of an <a href="#update">Update</a> with the field <em>pre_checkout_query</em>. Use this method to respond to such pre-checkout queries. On success, True is returned. <strong>Note:</strong> The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.</p>
- *
- * @property pre_checkout_query_id Unique identifier for the query to be answered
- * @property ok Specify <em>True</em> if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order. Use <em>False</em> if there are any problems.
- * @property error_message Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user.
- * */
-@Serializable
-data class AnswerPreCheckoutQueryRequest(
-    val pre_checkout_query_id: String,
-    val ok: Boolean,
-    val error_message: String? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("answerPreCheckoutQuery"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+    /**
+     * <p>If you sent an invoice requesting a shipping address and the parameter <em>is_flexible</em> was specified, the Bot API will send an <a href="#update">Update</a> with a <em>shipping_query</em> field to the bot. Use this method to reply to shipping queries. On success, True is returned.</p>
+     *
+     * @property shipping_query_id Unique identifier for the query to be answered
+     * @property ok Specify True if delivery to the specified address is possible and False if there are any problems (for example, if delivery to the specified address is not possible)
+     * @property shipping_options Required if <em>ok</em> is True. A JSON-serialized array of available shipping options.
+     * @property error_message Required if <em>ok</em> is False. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.
+     * */
+    @Serializable
+    data class AnswerShippingQueryRequest(
+        val shipping_query_id: String,
+        val ok: Boolean,
+        val shipping_options: List<ShippingOption>? = null,
+        val error_message: String? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("answerShippingQuery"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
+
+    /**
+     * <p>Once the user has confirmed their payment and shipping details, the Bot API sends the final confirmation in the form of an <a href="#update">Update</a> with the field <em>pre_checkout_query</em>. Use this method to respond to such pre-checkout queries. On success, True is returned. <strong>Note:</strong> The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.</p>
+     *
+     * @property pre_checkout_query_id Unique identifier for the query to be answered
+     * @property ok Specify <em>True</em> if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order. Use <em>False</em> if there are any problems.
+     * @property error_message Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user.
+     * */
+    @Serializable
+    data class AnswerPreCheckoutQueryRequest(
+        val pre_checkout_query_id: String,
+        val ok: Boolean,
+        val error_message: String? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(
+                serializer(),
+                this
+            ).jsonObject + ("method" to JsonPrimitive("answerPreCheckoutQuery"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
 
 
 // Telegram Passport
 
-/**
- * <p>Informs a user that some of the Telegram Passport elements they provided contains errors. The user will not be able to re-submit their Passport to you until the errors are fixed (the contents of the field for which you returned the error must change). Returns <em>True</em> on success.</p><p>Use this if the data submitted by the user doesn't satisfy the standards your service requires for any reason. For example, if a birthday date seems invalid, a submitted document is blurry, a scan shows evidence of tampering, etc. Supply some details in the error message to make sure the user knows how to correct the issues.</p>
- *
- * @property user_id User identifier
- * @property errors A JSON-serialized array describing the errors
- * */
-@Serializable
-data class SetPassportDataErrorsRequest(
-    val user_id: Int,
-    val errors: List<@ContextualSerialization PassportElementError>
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("setPassportDataErrors"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+    /**
+     * <p>Informs a user that some of the Telegram Passport elements they provided contains errors. The user will not be able to re-submit their Passport to you until the errors are fixed (the contents of the field for which you returned the error must change). Returns <em>True</em> on success.</p><p>Use this if the data submitted by the user doesn't satisfy the standards your service requires for any reason. For example, if a birthday date seems invalid, a submitted document is blurry, a scan shows evidence of tampering, etc. Supply some details in the error message to make sure the user knows how to correct the issues.</p>
+     *
+     * @property user_id User identifier
+     * @property errors A JSON-serialized array describing the errors
+     * */
+    @Serializable
+    data class SetPassportDataErrorsRequest(
+        val user_id: Int,
+        val errors: List<@Contextual PassportElementError>,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(
+                serializer(),
+                this
+            ).jsonObject + ("method" to JsonPrimitive("setPassportDataErrors"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
 
 // Games
 
-/**
- * <p>Use this method to send a game. On success, the sent <a href="#message">Message</a> is returned.</p>
- *
- * @property chat_id Unique identifier for the target chat
- * @property game_short_name Short name of the game, serves as the unique identifier for the game. Set up your games via <a href="https://t.me/botfather">Botfather</a>.
- * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
- * @property reply_to_message_id If the message is a reply, ID of the original message
- * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.
- * */
-@Serializable
-data class SendGameRequest(
-    val chat_id: Int,
-    val game_short_name: String,
-    val disable_notification: Boolean? = null,
-    val reply_to_message_id: Int? = null,
-    val reply_markup: InlineKeyboardMarkup? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("sendGame"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
-    }
-}
+    /**
+     * <p>Use this method to send a game. On success, the sent <a href="#message">Message</a> is returned.</p>
+     *
+     * @property chat_id Unique identifier for the target chat
+     * @property game_short_name Short name of the game, serves as the unique identifier for the game. Set up your games via <a href="https://t.me/botfather">Botfather</a>.
+     * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property reply_to_message_id If the message is a reply, ID of the original message
+     * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
+     * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.
+     * */
+    @Serializable
+    data class SendGameRequest(
+        val chat_id: Int,
+        val game_short_name: String,
+        val disable_notification: Boolean? = null,
+        val reply_to_message_id: Int? = null,
+        val allow_sending_without_reply: Boolean? = null,
+        val reply_markup: InlineKeyboardMarkup? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("sendGame"))
+        ).toString()
 
-/**
- * <p>Use this method to set the score of the specified user in a game. On success, if the message was sent by the bot, returns the edited <a href="#message">Message</a>, otherwise returns <em>True</em>. Returns an error, if the new score is not greater than the user's current score in the chat and <em>force</em> is <em>False</em>.</p>
- *
- * @property user_id User identifier
- * @property score New score, must be non-negative
- * @property force Pass True, if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters
- * @property disable_edit_message Pass True, if the game message should not be automatically edited to include the current scoreboard
- * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat
- * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the sent message
- * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
- * */
-@Serializable
-data class SetGameScoreRequest(
-    val user_id: Int,
-    val score: Int,
-    val force: Boolean? = null,
-    val disable_edit_message: Boolean? = null,
-    val chat_id: Int? = null,
-    val message_id: Int? = null,
-    val inline_message_id: String? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("setGameScore"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
 
-/**
- * <p>Use this method to get data for high score tables. Will return the score of the specified user and several of their neighbors in a game. On success, returns an <em>Array</em> of <a href="#gamehighscore">GameHighScore</a> objects.</p><blockquote> 
- *  <p>This method will currently return scores for the target user, plus two of their closest neighbors on each side. Will also return the top three users if the user and his neighbors are not among them. Please note that this behavior is subject to change.</p> 
- * </blockquote>
- *
- * @property user_id Target user id
- * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat
- * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the sent message
- * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
- * */
-@Serializable
-data class GetGameHighScoresRequest(
-    val user_id: Int,
-    val chat_id: Int? = null,
-    val message_id: Int? = null,
-    val inline_message_id: String? = null
-) : TelegramRequest() {
-    override fun toJsonForRequest() = json.stringify(serializer(), this)
-    override fun toJsonForResponse() = JsonObject(
-        json.toJson(serializer(), this).jsonObject.content + ("method" to JsonLiteral("getGameHighScores"))
-    ).toString()
-    companion object {
-        fun fromJson(string: String) = json.parse(serializer(), string)
+    /**
+     * <p>Use this method to set the score of the specified user in a game. On success, if the message was sent by the bot, returns the edited <a href="#message">Message</a>, otherwise returns <em>True</em>. Returns an error, if the new score is not greater than the user's current score in the chat and <em>force</em> is <em>False</em>.</p>
+     *
+     * @property user_id User identifier
+     * @property score New score, must be non-negative
+     * @property force Pass True, if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters
+     * @property disable_edit_message Pass True, if the game message should not be automatically edited to include the current scoreboard
+     * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat
+     * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the sent message
+     * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
+     * */
+    @Serializable
+    data class SetGameScoreRequest(
+        val user_id: Int,
+        val score: Int,
+        val force: Boolean? = null,
+        val disable_edit_message: Boolean? = null,
+        val chat_id: Int? = null,
+        val message_id: Int? = null,
+        val inline_message_id: String? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("setGameScore"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
     }
-}
+
+    /**
+     * <p>Use this method to get data for high score tables. Will return the score of the specified user and several of their neighbors in a game. On success, returns an <em>Array</em> of <a href="#gamehighscore">GameHighScore</a> objects.</p><blockquote>
+     *  <p>This method will currently return scores for the target user, plus two of their closest neighbors on each side. Will also return the top three users if the user and his neighbors are not among them. Please note that this behavior is subject to change.</p>
+     * </blockquote>
+     *
+     * @property user_id Target user id
+     * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat
+     * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the sent message
+     * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
+     * */
+    @Serializable
+    data class GetGameHighScoresRequest(
+        val user_id: Int,
+        val chat_id: Int? = null,
+        val message_id: Int? = null,
+        val inline_message_id: String? = null,
+    ) : TelegramRequest() {
+        override fun toJsonForRequest() = json.encodeToString(serializer(), this)
+        override fun toJsonForResponse() = JsonObject(
+            json.encodeToJsonElement(serializer(), this).jsonObject + ("method" to JsonPrimitive("getGameHighScores"))
+        ).toString()
+
+        companion object {
+            fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+        }
+    }
 
 }
