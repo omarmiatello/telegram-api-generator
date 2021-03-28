@@ -69,7 +69,7 @@ fun Document.toSection(): List<DocSection> {
                             returnsRegex.firstOrNull {
                                 val find = it.find(text)
                                 if (find != null) {
-                                    docReturns = TelegramType.from(find.groups[1]!!.value.fixTypeStrig())
+                                    docReturns = TelegramType.from(find.groups[1]!!.value.fixTypeString())
                                 }
                                 find != null
                             }
@@ -84,13 +84,13 @@ fun Document.toSection(): List<DocSection> {
                                         it.getElementsByTag("td").let {
                                             val fieldDesc = it[2].html()
                                             val name = it[0].text()
-                                            var type = it[1].text().fixTypeStrig()
+                                            var type = it[1].text().fixTypeString()
                                             if (name == "parse_mode" && type == "String") {
                                                 type = "ParseMode"
                                             }
                                             DocField(
                                                 name = name,
-                                                description = fieldDesc,
+                                                description = fieldDesc.fixDescription(),
                                                 type = TelegramType.from(type),
                                                 required = "Optional" !in fieldDesc
                                             )
@@ -103,13 +103,13 @@ fun Document.toSection(): List<DocSection> {
                                         it.getElementsByTag("td").let {
                                             val fieldDesc = it[3].html()
                                             val name = it[0].text()
-                                            var type = it[1].text().fixTypeStrig()
+                                            var type = it[1].text().fixTypeString()
                                             if (name == "parse_mode" && type == "String") {
                                                 type = "ParseMode"
                                             }
                                             DocParameter(
                                                 name = name,
-                                                description = fieldDesc,
+                                                description = fieldDesc.fixDescription(),
                                                 type = TelegramType.from(type),
                                                 required = "Yes" == it[2].text()
                                             )
@@ -131,7 +131,7 @@ fun Document.toSection(): List<DocSection> {
             }
             DocSection(
                 name = h3,
-                description = h3content.getValue("").drop<Element?>(1).joinToString("\n"),
+                description = h3content.getValue("").drop<Element?>(1).joinToString("\n").fixDescription(),
                 docTypes = validData.filterIsInstance(DocType::class.java),
                 docMethods = validData.filterIsInstance(DocMethod::class.java)
             )
@@ -148,9 +148,9 @@ fun Document.toSection(): List<DocSection> {
         }
 }
 
-private fun String.fixTypeStrig() = when (this) {
+private fun String.fixTypeString() = when (this) {
     "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply" -> "KeyboardOption"
-    "Array of InputMediaPhoto and InputMediaVideo" -> "Array of InputMediaPhotoOrVideo"
+    "Array of InputMediaAudio, InputMediaDocument, InputMediaPhoto and InputMediaVideo" -> "Array of InputMedia"
     "InputFile or String" -> "InputFileOrString"
     "Integer or String" -> "IntegerOrString"
     "Messages" -> "Array of Message"
@@ -159,6 +159,9 @@ private fun String.fixTypeStrig() = when (this) {
     "True" -> "Boolean"
     else -> this
 }
+
+private fun String.fixDescription() = replace('‘' ,'\'')
+
 
 private fun List<DocSection>.findUnknownTypes(): List<String> {
     val declaredTypeMap = flatMap { section -> section.docTypes }.associateBy { type -> type.name }
