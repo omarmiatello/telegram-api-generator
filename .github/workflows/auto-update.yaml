@@ -1,0 +1,38 @@
+name: Auto Update
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update-job:
+    runs-on: [ubuntu-latest]
+    env:
+      GRADLE_OPTS: -Dorg.gradle.parallel=false
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Install Java 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+
+      - name: Launch Auto Update
+        run: ./gradlew run
+
+      # Commit modified files
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git update-index --chmod=+x gradlew
+          git commit -m "Auto update from https://core.telegram.org/bots/api"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          branch: ${{ github.ref }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
