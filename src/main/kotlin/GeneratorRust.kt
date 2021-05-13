@@ -1,24 +1,24 @@
 fun List<DocSection>.toRustModels() = buildString {
-    appendln(comment("--- Parameters & Responses ---"))
+    appendLine(comment("--- Parameters & Responses ---"))
     this@toRustModels.forEach { section ->
         if (section.docTypes.isNotEmpty()) {
-            appendln(comment(section.name))
+            appendLine(comment(section.name))
             section.docTypes.forEach { type ->
-                appendln(type.toRustDoc())
-                appendln(type.toRustDataClass())
-                appendln()
+                appendLine(type.toRustDoc())
+                appendLine(type.toRustDataClass())
+                appendLine()
             }
         }
     }
-    appendln(comment("--- Requests ---"))
+    appendLine(comment("--- Requests ---"))
     this@toRustModels.forEach { section ->
         if (section.docMethods.isNotEmpty()) {
-            appendln(comment(section.name))
+            appendLine(comment(section.name))
             section.docMethods.forEach { method ->
                 if (method.docParameters.isNotEmpty()) {
-                    appendln(method.toRustDoc(showReturn = false))
-                    appendln(method.toRustDataClass())
-                    appendln()
+                    appendLine(method.toRustDoc(showReturn = false))
+                    appendLine(method.toRustDataClass())
+                    appendLine()
                 }
             }
         }
@@ -26,65 +26,65 @@ fun List<DocSection>.toRustModels() = buildString {
 }
 
 private fun comment(text: String) = buildString {
-    appendln()
-    appendln("/// $text")
+    appendLine()
+    appendLine("/// $text")
 }
 
 private fun DocType.toRustDoc() = buildString {
-    appendln("/**")
-    appendln(" * ${description.replace("\n", "\n * ")}")
-    appendln(" *")
+    appendLine("/**")
+    appendLine(" * ${description.replace("\n", "\n * ")}")
+    appendLine(" *")
     docFields.forEach {
-        appendln(" * @property ${it.name} ${it.description}")
+        appendLine(" * @property ${it.name} ${it.description}")
     }
-    appendln(" *")
-    appendln(" * @constructor Creates a [$name].")
+    appendLine(" *")
+    appendLine(" * @constructor Creates a [$name].")
     append(" * */")
 }
 
 private fun DocMethod.toRustDoc(showReturn: Boolean = true) = buildString {
-    appendln("/**")
-    appendln(" * ${description.replace("\n", "\n * ")}")
-    appendln(" *")
+    appendLine("/**")
+    appendLine(" * ${description.replace("\n", "\n * ")}")
+    appendLine(" *")
     docParameters.forEach {
-        appendln(" * @property ${it.name} ${it.description}")
+        appendLine(" * @property ${it.name} ${it.description}")
     }
     if (showReturn) {
-        appendln(" *")
-        appendln(" * @return [${returns.toRustType()}]")
+        appendLine(" *")
+        appendLine(" * @return [${returns.toRustType()}]")
     }
     append(" * */")
 }
 
 private fun DocType.toRustDataClass() = buildString {
-    appendln("#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]")
-    appendln("pub struct $name {")
+    appendLine("#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]")
+    appendLine("pub struct $name {")
     docFields.forEachIndexed { index, field ->
-        appendln("    /// ${field.description}")
-        if (!field.required) appendln("    #[serde(skip_serializing_if = \"Option::is_none\")]")
+        appendLine("    /// ${field.description}")
+        if (!field.required) appendLine("    #[serde(skip_serializing_if = \"Option::is_none\")]")
         if (field.name == "type") {
-            appendln("    #[serde(rename = \"type\")]")
+            appendLine("    #[serde(rename = \"type\")]")
             append("    pub type_: ${field.toRustType()}")
         } else {
             append("    pub ${field.name}: ${field.toRustType()}")
         }
-        if (index == docFields.lastIndex) appendln() else appendln(",")
+        if (index == docFields.lastIndex) appendLine() else appendLine(",")
     }
     append("}")
 }
 
 private fun DocMethod.toRustDataClass() = buildString {
-    appendln("#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]")
-    appendln("pub struct ${name.capitalize()}Request {")
+    appendLine("#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]")
+    appendLine("pub struct ${name.capitalize()}Request {")
     docParameters.forEachIndexed { index, field ->
-        appendln("    /// ${field.description}")
+        appendLine("    /// ${field.description}")
         if (field.name == "type") {
-            appendln("    #[serde(rename = \"type\")]")
+            appendLine("    #[serde(rename = \"type\")]")
             append("    pub type_: ${field.toRustType()}")
         } else {
             append("    pub ${field.name}: ${field.toRustType()}")
         }
-        if (index == docParameters.lastIndex) appendln() else appendln(",")
+        if (index == docParameters.lastIndex) appendLine() else appendLine(",")
     }
     append("}")
 }

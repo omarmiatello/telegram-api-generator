@@ -1,143 +1,142 @@
 fun List<DocSection>.toKotlinModels(useKotlinXSerialization: Boolean) = buildString {
-    appendln("package com.github.omarmiatello.telegram\n")
+    appendLine("package com.github.omarmiatello.telegram\n")
     if (useKotlinXSerialization) {
-        appendln("import kotlinx.serialization.Contextual")
-        appendln("import kotlinx.serialization.Serializable")
-        appendln("import kotlinx.serialization.json.Json")
-        appendln("import kotlinx.serialization.json.JsonObject")
-        appendln("import kotlinx.serialization.json.JsonPrimitive")
-        appendln("import kotlinx.serialization.json.jsonObject")
-        appendln()
-        appendln("private val json = Json { ignoreUnknownKeys = true; prettyPrint = true; encodeDefaults = false }")
-        appendln("sealed class TelegramModel { abstract fun toJson(): String }")
+        appendLine("import kotlinx.serialization.Contextual")
+        appendLine("import kotlinx.serialization.Serializable")
+        appendLine("import kotlinx.serialization.json.Json")
+        appendLine("import kotlinx.serialization.json.JsonObject")
+        appendLine("import kotlinx.serialization.json.JsonPrimitive")
+        appendLine("import kotlinx.serialization.json.jsonObject")
+        appendLine()
+        appendLine("private val json = Json { ignoreUnknownKeys = true; prettyPrint = true; encodeDefaults = false }")
+        appendLine("sealed class TelegramModel { abstract fun toJson(): String }")
     } else {
-        appendln("sealed class TelegramModel")
+        appendLine("sealed class TelegramModel")
     }
     TelegramType.allSuper.forEach { type ->
         val superType = TelegramType.from(type.name).superType ?: "TelegramModel"
-        appendln("sealed class ${type.name} : $superType()")
+        appendLine("sealed class ${type.name} : $superType()")
     }
-    if (useKotlinXSerialization) appendln("@Serializable")
-    appendln("data class TelegramResponse<T>(val ok: Boolean, val result: T)")
-    appendln(comment("--- Utility ---"))
-    appendln("enum class ParseMode { MarkdownV2, Markdown, HTML }")
-    if (useKotlinXSerialization) appendln("fun String.parseTelegramRequest() = Update.fromJson(this)")
-    appendln(comment("--- Parameters & Responses ---"))
+    if (useKotlinXSerialization) appendLine("@Serializable")
+    appendLine("data class TelegramResponse<T>(val ok: Boolean, val result: T)")
+    appendLine(comment("--- Utility ---"))
+    appendLine("enum class ParseMode { MarkdownV2, Markdown, HTML }")
+    if (useKotlinXSerialization) appendLine("fun String.parseTelegramRequest() = Update.fromJson(this)")
+    appendLine(comment("--- Parameters & Responses ---"))
     this@toKotlinModels.forEach { section ->
         if (section.docTypes.isNotEmpty()) {
-            appendln(comment(section.name))
+            appendLine(comment(section.name))
             section.docTypes.forEach { type ->
-                appendln(type.toKotlinDoc())
-                if (useKotlinXSerialization) appendln("@Serializable")
-                appendln(type.toKotlinDataClass(useKotlinXSerialization))
-                appendln()
+                appendLine(type.toKotlinDoc())
+                if (useKotlinXSerialization) appendLine("@Serializable")
+                appendLine(type.toKotlinDataClass(useKotlinXSerialization))
+                appendLine()
             }
         }
     }
-    appendln(comment("--- Requests ---"))
-    appendln("sealed class TelegramRequest {")
-    if (useKotlinXSerialization) appendln("abstract fun toJsonForRequest(): String")
-    if (useKotlinXSerialization) appendln("abstract fun toJsonForResponse(): String")
+    appendLine(comment("--- Requests ---"))
+    appendLine("sealed class TelegramRequest {")
+    if (useKotlinXSerialization) appendLine("abstract fun toJsonForRequest(): String")
+    if (useKotlinXSerialization) appendLine("abstract fun toJsonForResponse(): String")
     this@toKotlinModels.forEach { section ->
         if (section.docMethods.isNotEmpty()) {
-            appendln(comment(section.name))
+            appendLine(comment(section.name))
             section.docMethods.forEach { method ->
                 if (method.docParameters.isNotEmpty()) {
-                    appendln(method.toKotlinDoc(showReturn = false))
-                    if (useKotlinXSerialization) appendln("@Serializable")
-                    appendln(method.toKotlinDataClass(useKotlinXSerialization))
-                    appendln()
+                    appendLine(method.toKotlinDoc(showReturn = false))
+                    if (useKotlinXSerialization) appendLine("@Serializable")
+                    appendLine(method.toKotlinDataClass(useKotlinXSerialization))
+                    appendLine()
                 }
             }
         }
     }
-    appendln("}")
+    appendLine("}")
 }
 
 fun List<DocSection>.toKotlinMethods() = buildString {
-    appendln("package com.github.omarmiatello.telegram\n")
-    appendln("import com.github.omarmiatello.telegram.TelegramRequest.*")
-    appendln("import io.ktor.client.HttpClient")
-    appendln("import io.ktor.client.request.get")
-    appendln("import io.ktor.client.request.post")
-    appendln("import io.ktor.http.ContentType")
-    appendln("import io.ktor.http.content.TextContent")
-    appendln("import kotlinx.serialization.KSerializer")
-    appendln("import kotlinx.serialization.builtins.ListSerializer")
-    appendln("import kotlinx.serialization.builtins.serializer")
-    appendln("import kotlinx.serialization.json.Json")
-    appendln("import kotlinx.serialization.json.JsonConfiguration")
-    appendln("class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpClient()) {")
-    appendln("""    private val basePath = "https://api.telegram.org/bot${"$"}apiKey"""")
-    appendln("    private val json = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true, prettyPrint = true, encodeDefaults = false))")
-    appendln()
-    appendln("    private suspend fun <T> telegramGet(path: String, response: KSerializer<T>): TelegramResponse<T> {")
-    appendln("        val responseString = httpClient.get<String>(path)")
-    appendln("        return json.decodeFromString(TelegramResponse.serializer(response), responseString)")
-    appendln("    }")
-    appendln()
-    appendln("    private suspend fun <T> telegramPost(path: String, body: String, response: KSerializer<T>): TelegramResponse<T> {")
-    appendln("        val responseString = httpClient.post<String>(path) {")
-    appendln("            this.body = TextContent(body, ContentType.Application.Json)")
-    appendln("        }")
-    appendln("        return json.decodeFromString(TelegramResponse.serializer(response), responseString)")
-    appendln("    }")
+    appendLine("package com.github.omarmiatello.telegram\n")
+    appendLine("import com.github.omarmiatello.telegram.TelegramRequest.*")
+    appendLine("import io.ktor.client.HttpClient")
+    appendLine("import io.ktor.client.request.get")
+    appendLine("import io.ktor.client.request.post")
+    appendLine("import io.ktor.http.ContentType")
+    appendLine("import io.ktor.http.content.TextContent")
+    appendLine("import kotlinx.serialization.KSerializer")
+    appendLine("import kotlinx.serialization.builtins.ListSerializer")
+    appendLine("import kotlinx.serialization.builtins.serializer")
+    appendLine("import kotlinx.serialization.json.Json")
+    appendLine("class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpClient()) {")
+    appendLine("""    private val basePath = "https://api.telegram.org/bot${"$"}apiKey"""")
+    appendLine("    private val json = Json { ignoreUnknownKeys = true; prettyPrint = true; encodeDefaults = false }")
+    appendLine()
+    appendLine("    private suspend fun <T> telegramGet(path: String, response: KSerializer<T>): TelegramResponse<T> {")
+    appendLine("        val responseString = httpClient.get<String>(path)")
+    appendLine("        return json.decodeFromString(TelegramResponse.serializer(response), responseString)")
+    appendLine("    }")
+    appendLine()
+    appendLine("    private suspend fun <T> telegramPost(path: String, body: String, response: KSerializer<T>): TelegramResponse<T> {")
+    appendLine("        val responseString = httpClient.post<String>(path) {")
+    appendLine("            this.body = TextContent(body, ContentType.Application.Json)")
+    appendLine("        }")
+    appendLine("        return json.decodeFromString(TelegramResponse.serializer(response), responseString)")
+    appendLine("    }")
 
     this@toKotlinMethods.forEach { section ->
         if (section.docMethods.isNotEmpty()) {
-            appendln(comment(section.name))
+            appendLine(comment(section.name))
             section.docMethods.forEach { method ->
-                appendln(method.toKotlinDoc())
-                appendln(method.toKotlinRequestMethod())
+                appendLine(method.toKotlinDoc())
+                appendLine(method.toKotlinRequestMethod())
             }
         }
     }
-    appendln("}")
+    appendLine("}")
 }
 
 private fun comment(text: String) = buildString {
-    appendln()
-    appendln("// $text")
+    appendLine()
+    appendLine("// $text")
 }
 
 private fun DocType.toKotlinDoc() = buildString {
-    appendln("/**")
-    appendln(" * ${description.replace("\n", "\n * ")}")
-    appendln(" *")
+    appendLine("/**")
+    appendLine(" * ${description.replace("\n", "\n * ")}")
+    appendLine(" *")
     docFields.forEach {
-        appendln(" * @property ${it.name} ${it.description}")
+        appendLine(" * @property ${it.name} ${it.description}")
     }
-    appendln(" *")
-    appendln(" * @constructor Creates a [$name].")
+    appendLine(" *")
+    appendLine(" * @constructor Creates a [$name].")
     append(" * */")
 }
 
 private fun DocMethod.toKotlinDoc(showReturn: Boolean = true) = buildString {
-    appendln("/**")
-    appendln(" * ${description.replace("\n", "\n * ")}")
-    appendln(" *")
+    appendLine("/**")
+    appendLine(" * ${description.replace("\n", "\n * ")}")
+    appendLine(" *")
     docParameters.forEach {
-        appendln(" * @property ${it.name} ${it.description}")
+        appendLine(" * @property ${it.name} ${it.description}")
     }
     if (showReturn) {
-        appendln(" *")
-        appendln(" * @return [${returns.toKotlinType()}]")
+        appendLine(" *")
+        appendLine(" * @return [${returns.toKotlinType()}]")
     }
     append(" * */")
 }
 
 private fun DocType.toKotlinDataClass(useKotlinXSerialization: Boolean) = buildString {
-    appendln("data class $name(")
+    appendLine("data class $name(")
     docFields.forEachIndexed { index, field ->
         appendLine("    val ${field.name}: ${field.toKotlinType(useKotlinXSerialization)},")
     }
     val superType = TelegramType.from(name).superType ?: "TelegramModel"
     if (useKotlinXSerialization) {
-        appendln(") : $superType() {")
-        appendln("    override fun toJson() = json.encodeToString(serializer(), this)")
-        appendln("    companion object {")
-        appendln("        fun fromJson(string: String) = json.decodeFromString(serializer(), string)")
-        appendln("    }")
+        appendLine(") : $superType() {")
+        appendLine("    override fun toJson() = json.encodeToString(serializer(), this)")
+        appendLine("    companion object {")
+        appendLine("        fun fromJson(string: String) = json.decodeFromString(serializer(), string)")
+        appendLine("    }")
         append("}")
     } else {
         append(") : $superType()")
@@ -145,19 +144,19 @@ private fun DocType.toKotlinDataClass(useKotlinXSerialization: Boolean) = buildS
 }
 
 private fun DocMethod.toKotlinDataClass(useKotlinXSerialization: Boolean) = buildString {
-    appendln("data class ${name.capitalize()}Request(")
+    appendLine("data class ${name.capitalize()}Request(")
     docParameters.forEachIndexed { index, field ->
-        appendln("    val ${field.name}: ${field.toKotlinType(useKotlinXSerialization)},")
+        appendLine("    val ${field.name}: ${field.toKotlinType(useKotlinXSerialization)},")
     }
     if (useKotlinXSerialization) {
-        appendln(") : TelegramRequest() {")
-        appendln("    override fun toJsonForRequest() = json.encodeToString(serializer(), this)")
-        appendln("    override fun toJsonForResponse() = JsonObject(")
-        appendln("        json.encodeToJsonElement(serializer(), this).jsonObject + (\"method\" to JsonPrimitive(\"$name\"))")
-        appendln("    ).toString()")
-        appendln("    companion object {")
-        appendln("        fun fromJson(string: String) = json.decodeFromString(serializer(), string)")
-        appendln("    }")
+        appendLine(") : TelegramRequest() {")
+        appendLine("    override fun toJsonForRequest() = json.encodeToString(serializer(), this)")
+        appendLine("    override fun toJsonForResponse() = JsonObject(")
+        appendLine("        json.encodeToJsonElement(serializer(), this).jsonObject + (\"method\" to JsonPrimitive(\"$name\"))")
+        appendLine("    ).toString()")
+        appendLine("    companion object {")
+        appendLine("        fun fromJson(string: String) = json.decodeFromString(serializer(), string)")
+        appendLine("    }")
         append("}")
     } else {
         append(") : TelegramRequest()")
@@ -170,18 +169,18 @@ private fun DocMethod.toKotlinRequestMethod() = buildString {
     if (docParameters.isEmpty()) {
         append("suspend fun $name() = telegramGet($path, ${returns.toKotlinSerializerType()})")
     } else {
-        appendln("suspend fun $name(")
+        appendLine("suspend fun $name(")
         docParameters.forEachIndexed { index, parameter ->
             appendLine("${parameter.name}: ${parameter.toKotlinType(useContextualSerialization = false)},")
         }
-        appendln(") = telegramPost(")
-        appendln("    $path,")
-        appendln("    ${name.capitalize()}Request(")
+        appendLine(") = telegramPost(")
+        appendLine("    $path,")
+        appendLine("    ${name.capitalize()}Request(")
         docParameters.forEachIndexed { index, parameter ->
             appendLine("        ${parameter.name},")
         }
-        appendln("    ).toJsonForRequest(),")
-        appendln("    ${returns.toKotlinSerializerType()}")
+        appendLine("    ).toJsonForRequest(),")
+        appendLine("    ${returns.toKotlinSerializerType()}")
         append(")")
     }
 }
@@ -195,7 +194,7 @@ private fun DocParameter.toKotlinType(useContextualSerialization: Boolean) =
 private fun TelegramType.toKotlinType(prefixPolymorphic: String = ""): String = when (this) {
     is TelegramType.Declared -> name
     is TelegramType.ListType<*> -> "List<${elementType.toKotlinType(prefixPolymorphic)}>"
-    TelegramType.Integer -> "Int"
+    TelegramType.Integer -> "Long"
     TelegramType.StringType -> name
     TelegramType.Boolean -> name
     TelegramType.Float -> name

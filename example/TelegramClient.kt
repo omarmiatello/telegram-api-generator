@@ -10,12 +10,10 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 
 class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpClient()) {
     private val basePath = "https://api.telegram.org/bot$apiKey"
-    private val json =
-        Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true, prettyPrint = true, encodeDefaults = false))
+    private val json = Json { ignoreUnknownKeys = true; prettyPrint = true; encodeDefaults = false }
 
     private suspend fun <T> telegramGet(path: String, response: KSerializer<T>): TelegramResponse<T> {
         val responseString = httpClient.get<String>(path)
@@ -44,9 +42,9 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * @return [List<Update>]
      * */
     suspend fun getUpdates(
-        offset: Int? = null,
-        limit: Int? = null,
-        timeout: Int? = null,
+        offset: Long? = null,
+        limit: Long? = null,
+        timeout: Long? = null,
         allowed_updates: List<String>? = null,
     ) = telegramPost(
         "$basePath/getUpdates",
@@ -78,7 +76,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
         url: String,
         certificate: Any? = null,
         ip_address: String? = null,
-        max_connections: Int? = null,
+        max_connections: Long? = null,
         allowed_updates: List<String>? = null,
         drop_pending_updates: Boolean? = null,
     ) = telegramPost(
@@ -159,7 +157,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
         entities: List<MessageEntity>? = null,
         disable_web_page_preview: Boolean? = null,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
         reply_markup: KeyboardOption? = null,
     ) = telegramPost(
@@ -192,7 +190,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
         chat_id: String,
         from_chat_id: String,
         disable_notification: Boolean? = null,
-        message_id: Int,
+        message_id: Long,
     ) = telegramPost(
         "$basePath/forwardMessage",
         ForwardMessageRequest(
@@ -223,12 +221,12 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
     suspend fun copyMessage(
         chat_id: String,
         from_chat_id: String,
-        message_id: Int,
+        message_id: Long,
         caption: String? = null,
         parse_mode: ParseMode? = null,
         caption_entities: List<MessageEntity>? = null,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
         reply_markup: KeyboardOption? = null,
     ) = telegramPost(
@@ -270,7 +268,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
         parse_mode: ParseMode? = null,
         caption_entities: List<MessageEntity>? = null,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
         reply_markup: KeyboardOption? = null,
     ) = telegramPost(
@@ -314,12 +312,12 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
         caption: String? = null,
         parse_mode: ParseMode? = null,
         caption_entities: List<MessageEntity>? = null,
-        duration: Int? = null,
+        duration: Long? = null,
         performer: String? = null,
         title: String? = null,
         thumb: String? = null,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
         reply_markup: KeyboardOption? = null,
     ) = telegramPost(
@@ -368,7 +366,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
         caption_entities: List<MessageEntity>? = null,
         disable_content_type_detection: Boolean? = null,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
         reply_markup: KeyboardOption? = null,
     ) = telegramPost(
@@ -412,16 +410,16 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
     suspend fun sendVideo(
         chat_id: String,
         video: String,
-        duration: Int? = null,
-        width: Int? = null,
-        height: Int? = null,
+        duration: Long? = null,
+        width: Long? = null,
+        height: Long? = null,
         thumb: String? = null,
         caption: String? = null,
         parse_mode: ParseMode? = null,
         caption_entities: List<MessageEntity>? = null,
         supports_streaming: Boolean? = null,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
         reply_markup: KeyboardOption? = null,
     ) = telegramPost(
@@ -467,15 +465,15 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
     suspend fun sendAnimation(
         chat_id: String,
         animation: String,
-        duration: Int? = null,
-        width: Int? = null,
-        height: Int? = null,
+        duration: Long? = null,
+        width: Long? = null,
+        height: Long? = null,
         thumb: String? = null,
         caption: String? = null,
         parse_mode: ParseMode? = null,
         caption_entities: List<MessageEntity>? = null,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
         reply_markup: KeyboardOption? = null,
     ) = telegramPost(
@@ -520,9 +518,9 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
         caption: String? = null,
         parse_mode: ParseMode? = null,
         caption_entities: List<MessageEntity>? = null,
-        duration: Int? = null,
+        duration: Long? = null,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
         reply_markup: KeyboardOption? = null,
     ) = telegramPost(
@@ -560,11 +558,11 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
     suspend fun sendVideoNote(
         chat_id: String,
         video_note: String,
-        duration: Int? = null,
-        length: Int? = null,
+        duration: Long? = null,
+        length: Long? = null,
         thumb: String? = null,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
         reply_markup: KeyboardOption? = null,
     ) = telegramPost(
@@ -598,7 +596,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
         chat_id: String,
         media: List<InputMedia>,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
     ) = telegramPost(
         "$basePath/sendMediaGroup",
@@ -634,11 +632,11 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
         latitude: Float,
         longitude: Float,
         horizontal_accuracy: Float? = null,
-        live_period: Int? = null,
-        heading: Int? = null,
-        proximity_alert_radius: Int? = null,
+        live_period: Long? = null,
+        heading: Long? = null,
+        proximity_alert_radius: Long? = null,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
         reply_markup: KeyboardOption? = null,
     ) = telegramPost(
@@ -676,13 +674,13 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun editMessageLiveLocation(
         chat_id: String? = null,
-        message_id: Int? = null,
+        message_id: Long? = null,
         inline_message_id: String? = null,
         latitude: Float,
         longitude: Float,
         horizontal_accuracy: Float? = null,
-        heading: Int? = null,
-        proximity_alert_radius: Int? = null,
+        heading: Long? = null,
+        proximity_alert_radius: Long? = null,
         reply_markup: InlineKeyboardMarkup? = null,
     ) = telegramPost(
         "$basePath/editMessageLiveLocation",
@@ -712,7 +710,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun stopMessageLiveLocation(
         chat_id: String? = null,
-        message_id: Int? = null,
+        message_id: Long? = null,
         inline_message_id: String? = null,
         reply_markup: InlineKeyboardMarkup? = null,
     ) = telegramPost(
@@ -756,7 +754,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
         google_place_id: String? = null,
         google_place_type: String? = null,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
         reply_markup: KeyboardOption? = null,
     ) = telegramPost(
@@ -801,7 +799,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
         last_name: String? = null,
         vcard: String? = null,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
         reply_markup: KeyboardOption? = null,
     ) = telegramPost(
@@ -850,15 +848,15 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
         is_anonymous: Boolean? = null,
         type: String? = null,
         allows_multiple_answers: Boolean? = null,
-        correct_option_id: Int? = null,
+        correct_option_id: Long? = null,
         explanation: String? = null,
         explanation_parse_mode: String? = null,
         explanation_entities: List<MessageEntity>? = null,
-        open_period: Int? = null,
-        close_date: Int? = null,
+        open_period: Long? = null,
+        close_date: Long? = null,
         is_closed: Boolean? = null,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
         reply_markup: KeyboardOption? = null,
     ) = telegramPost(
@@ -901,7 +899,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
         chat_id: String,
         emoji: String? = null,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
         reply_markup: KeyboardOption? = null,
     ) = telegramPost(
@@ -949,9 +947,9 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * @return [UserProfilePhotos]
      * */
     suspend fun getUserProfilePhotos(
-        user_id: Int,
-        offset: Int? = null,
-        limit: Int? = null,
+        user_id: Long,
+        offset: Long? = null,
+        limit: Long? = null,
     ) = telegramPost(
         "$basePath/getUserProfilePhotos",
         GetUserProfilePhotosRequest(
@@ -991,8 +989,8 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun kickChatMember(
         chat_id: String,
-        user_id: Int,
-        until_date: Int? = null,
+        user_id: Long,
+        until_date: Long? = null,
         revoke_messages: Boolean? = null,
     ) = telegramPost(
         "$basePath/kickChatMember",
@@ -1016,7 +1014,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun unbanChatMember(
         chat_id: String,
-        user_id: Int,
+        user_id: Long,
         only_if_banned: Boolean? = null,
     ) = telegramPost(
         "$basePath/unbanChatMember",
@@ -1040,9 +1038,9 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun restrictChatMember(
         chat_id: String,
-        user_id: Int,
+        user_id: Long,
         permissions: ChatPermissions,
-        until_date: Int? = null,
+        until_date: Long? = null,
     ) = telegramPost(
         "$basePath/restrictChatMember",
         RestrictChatMemberRequest(
@@ -1075,7 +1073,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun promoteChatMember(
         chat_id: String,
-        user_id: Int,
+        user_id: Long,
         is_anonymous: Boolean? = null,
         can_manage_chat: Boolean? = null,
         can_post_messages: Boolean? = null,
@@ -1118,7 +1116,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun setChatAdministratorCustomTitle(
         chat_id: String,
-        user_id: Int,
+        user_id: Long,
         custom_title: String,
     ) = telegramPost(
         "$basePath/setChatAdministratorCustomTitle",
@@ -1180,8 +1178,8 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun createChatInviteLink(
         chat_id: String,
-        expire_date: Int? = null,
-        member_limit: Int? = null,
+        expire_date: Long? = null,
+        member_limit: Long? = null,
     ) = telegramPost(
         "$basePath/createChatInviteLink",
         CreateChatInviteLinkRequest(
@@ -1205,8 +1203,8 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
     suspend fun editChatInviteLink(
         chat_id: String,
         invite_link: String,
-        expire_date: Int? = null,
-        member_limit: Int? = null,
+        expire_date: Long? = null,
+        member_limit: Long? = null,
     ) = telegramPost(
         "$basePath/editChatInviteLink",
         EditChatInviteLinkRequest(
@@ -1326,7 +1324,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun pinChatMessage(
         chat_id: String,
-        message_id: Int,
+        message_id: Long,
         disable_notification: Boolean? = null,
     ) = telegramPost(
         "$basePath/pinChatMessage",
@@ -1348,7 +1346,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun unpinChatMessage(
         chat_id: String,
-        message_id: Int? = null,
+        message_id: Long? = null,
     ) = telegramPost(
         "$basePath/unpinChatMessage",
         UnpinChatMessageRequest(
@@ -1453,7 +1451,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun getChatMember(
         chat_id: String,
-        user_id: Int,
+        user_id: Long,
     ) = telegramPost(
         "$basePath/getChatMember",
         GetChatMemberRequest(
@@ -1518,7 +1516,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
         text: String? = null,
         show_alert: Boolean? = null,
         url: String? = null,
-        cache_time: Int? = null,
+        cache_time: Long? = null,
     ) = telegramPost(
         "$basePath/answerCallbackQuery",
         AnswerCallbackQueryRequest(
@@ -1574,7 +1572,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun editMessageText(
         chat_id: String? = null,
-        message_id: Int? = null,
+        message_id: Long? = null,
         inline_message_id: String? = null,
         text: String,
         parse_mode: ParseMode? = null,
@@ -1611,7 +1609,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun editMessageCaption(
         chat_id: String? = null,
-        message_id: Int? = null,
+        message_id: Long? = null,
         inline_message_id: String? = null,
         caption: String? = null,
         parse_mode: ParseMode? = null,
@@ -1644,7 +1642,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun editMessageMedia(
         chat_id: String? = null,
-        message_id: Int? = null,
+        message_id: Long? = null,
         inline_message_id: String? = null,
         media: InputMedia,
         reply_markup: InlineKeyboardMarkup? = null,
@@ -1672,7 +1670,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun editMessageReplyMarkup(
         chat_id: String? = null,
-        message_id: Int? = null,
+        message_id: Long? = null,
         inline_message_id: String? = null,
         reply_markup: InlineKeyboardMarkup? = null,
     ) = telegramPost(
@@ -1697,7 +1695,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun stopPoll(
         chat_id: String,
-        message_id: Int,
+        message_id: Long,
         reply_markup: InlineKeyboardMarkup? = null,
     ) = telegramPost(
         "$basePath/stopPoll",
@@ -1719,7 +1717,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun deleteMessage(
         chat_id: String,
-        message_id: Int,
+        message_id: Long,
     ) = telegramPost(
         "$basePath/deleteMessage",
         DeleteMessageRequest(
@@ -1747,7 +1745,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
         chat_id: String,
         sticker: String,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
         reply_markup: KeyboardOption? = null,
     ) = telegramPost(
@@ -1789,7 +1787,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * @return [File]
      * */
     suspend fun uploadStickerFile(
-        user_id: Int,
+        user_id: Long,
         png_sticker: Any,
     ) = telegramPost(
         "$basePath/uploadStickerFile",
@@ -1815,7 +1813,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * @return [Boolean]
      * */
     suspend fun createNewStickerSet(
-        user_id: Int,
+        user_id: Long,
         name: String,
         title: String,
         png_sticker: String? = null,
@@ -1851,7 +1849,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * @return [Boolean]
      * */
     suspend fun addStickerToSet(
-        user_id: Int,
+        user_id: Long,
         name: String,
         png_sticker: String? = null,
         tgs_sticker: Any? = null,
@@ -1880,7 +1878,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun setStickerPositionInSet(
         sticker: String,
-        position: Int,
+        position: Long,
     ) = telegramPost(
         "$basePath/setStickerPositionInSet",
         SetStickerPositionInSetRequest(
@@ -1918,7 +1916,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * */
     suspend fun setStickerSetThumb(
         name: String,
-        user_id: Int,
+        user_id: Long,
         thumb: String? = null,
     ) = telegramPost(
         "$basePath/setStickerSetThumb",
@@ -1948,7 +1946,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
     suspend fun answerInlineQuery(
         inline_query_id: String,
         results: List<InlineQueryResult>,
-        cache_time: Int? = null,
+        cache_time: Long? = null,
         is_personal: Boolean? = null,
         next_offset: String? = null,
         switch_pm_text: String? = null,
@@ -2000,7 +1998,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * @return [Message]
      * */
     suspend fun sendInvoice(
-        chat_id: Int,
+        chat_id: Long,
         title: String,
         description: String,
         payload: String,
@@ -2010,9 +2008,9 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
         prices: List<LabeledPrice>,
         provider_data: String? = null,
         photo_url: String? = null,
-        photo_size: Int? = null,
-        photo_width: Int? = null,
-        photo_height: Int? = null,
+        photo_size: Long? = null,
+        photo_width: Long? = null,
+        photo_height: Long? = null,
         need_name: Boolean? = null,
         need_phone_number: Boolean? = null,
         need_email: Boolean? = null,
@@ -2021,7 +2019,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
         send_email_to_provider: Boolean? = null,
         is_flexible: Boolean? = null,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
         reply_markup: InlineKeyboardMarkup? = null,
     ) = telegramPost(
@@ -2115,7 +2113,7 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * @return [Boolean]
      * */
     suspend fun setPassportDataErrors(
-        user_id: Int,
+        user_id: Long,
         errors: List<PassportElementError>,
     ) = telegramPost(
         "$basePath/setPassportDataErrors",
@@ -2141,10 +2139,10 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * @return [Message]
      * */
     suspend fun sendGame(
-        chat_id: Int,
+        chat_id: Long,
         game_short_name: String,
         disable_notification: Boolean? = null,
-        reply_to_message_id: Int? = null,
+        reply_to_message_id: Long? = null,
         allow_sending_without_reply: Boolean? = null,
         reply_markup: InlineKeyboardMarkup? = null,
     ) = telegramPost(
@@ -2174,12 +2172,12 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * @return [Message]
      * */
     suspend fun setGameScore(
-        user_id: Int,
-        score: Int,
+        user_id: Long,
+        score: Long,
         force: Boolean? = null,
         disable_edit_message: Boolean? = null,
-        chat_id: Int? = null,
-        message_id: Int? = null,
+        chat_id: Long? = null,
+        message_id: Long? = null,
         inline_message_id: String? = null,
     ) = telegramPost(
         "$basePath/setGameScore",
@@ -2208,9 +2206,9 @@ class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpCl
      * @return [List<GameHighScore>]
      * */
     suspend fun getGameHighScores(
-        user_id: Int,
-        chat_id: Int? = null,
-        message_id: Int? = null,
+        user_id: Long,
+        chat_id: Long? = null,
+        message_id: Long? = null,
         inline_message_id: String? = null,
     ) = telegramPost(
         "$basePath/getGameHighScores",

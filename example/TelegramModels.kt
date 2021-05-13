@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.jsonObject
 
 private val json = Json { ignoreUnknownKeys = true; prettyPrint = true; encodeDefaults = false }
 
@@ -55,7 +56,7 @@ fun String.parseTelegramRequest() = Update.fromJson(this)
  * */
 @Serializable
 data class Update(
-    val update_id: Int,
+    val update_id: Long,
     val message: Message? = null,
     val edited_message: Message? = null,
     val channel_post: Message? = null,
@@ -95,11 +96,11 @@ data class Update(
 data class WebhookInfo(
     val url: String,
     val has_custom_certificate: Boolean,
-    val pending_update_count: Int,
+    val pending_update_count: Long,
     val ip_address: String? = null,
-    val last_error_date: Int? = null,
+    val last_error_date: Long? = null,
     val last_error_message: String? = null,
-    val max_connections: Int? = null,
+    val max_connections: Long? = null,
     val allowed_updates: List<String>? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
@@ -129,7 +130,7 @@ data class WebhookInfo(
  * */
 @Serializable
 data class User(
-    val id: Int,
+    val id: Long,
     val is_bot: Boolean,
     val first_name: String,
     val last_name: String? = null,
@@ -172,7 +173,7 @@ data class User(
  * */
 @Serializable
 data class Chat(
-    val id: Int,
+    val id: Long,
     val type: String,
     val title: String? = null,
     val username: String? = null,
@@ -184,11 +185,11 @@ data class Chat(
     val invite_link: String? = null,
     val pinned_message: Message? = null,
     val permissions: ChatPermissions? = null,
-    val slow_mode_delay: Int? = null,
-    val message_auto_delete_time: Int? = null,
+    val slow_mode_delay: Long? = null,
+    val message_auto_delete_time: Long? = null,
     val sticker_set_name: String? = null,
     val can_set_sticker_set: Boolean? = null,
-    val linked_chat_id: Int? = null,
+    val linked_chat_id: Long? = null,
     val location: ChatLocation? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
@@ -261,20 +262,20 @@ data class Chat(
  * */
 @Serializable
 data class Message(
-    val message_id: Int,
+    val message_id: Long,
     val from: User? = null,
     val sender_chat: Chat? = null,
-    val date: Int,
+    val date: Long,
     val chat: Chat,
     val forward_from: User? = null,
     val forward_from_chat: Chat? = null,
-    val forward_from_message_id: Int? = null,
+    val forward_from_message_id: Long? = null,
     val forward_signature: String? = null,
     val forward_sender_name: String? = null,
-    val forward_date: Int? = null,
+    val forward_date: Long? = null,
     val reply_to_message: Message? = null,
     val via_bot: User? = null,
-    val edit_date: Int? = null,
+    val edit_date: Long? = null,
     val media_group_id: String? = null,
     val author_signature: String? = null,
     val text: String? = null,
@@ -304,8 +305,8 @@ data class Message(
     val supergroup_chat_created: Boolean? = null,
     val channel_chat_created: Boolean? = null,
     val message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged? = null,
-    val migrate_to_chat_id: Int? = null,
-    val migrate_from_chat_id: Int? = null,
+    val migrate_to_chat_id: Long? = null,
+    val migrate_from_chat_id: Long? = null,
     val pinned_message: Message? = null,
     val invoice: Invoice? = null,
     val successful_payment: SuccessfulPayment? = null,
@@ -333,7 +334,7 @@ data class Message(
  * */
 @Serializable
 data class MessageId(
-    val message_id: Int,
+    val message_id: Long,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -357,8 +358,8 @@ data class MessageId(
 @Serializable
 data class MessageEntity(
     val type: String,
-    val offset: Int,
-    val length: Int,
+    val offset: Long,
+    val length: Long,
     val url: String? = null,
     val user: User? = null,
     val language: String? = null,
@@ -385,9 +386,9 @@ data class MessageEntity(
 data class PhotoSize(
     val file_id: String,
     val file_unique_id: String,
-    val width: Int,
-    val height: Int,
-    val file_size: Int? = null,
+    val width: Long,
+    val height: Long,
+    val file_size: Long? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -415,13 +416,13 @@ data class PhotoSize(
 data class Animation(
     val file_id: String,
     val file_unique_id: String,
-    val width: Int,
-    val height: Int,
-    val duration: Int,
+    val width: Long,
+    val height: Long,
+    val duration: Long,
     val thumb: PhotoSize? = null,
     val file_name: String? = null,
     val mime_type: String? = null,
-    val file_size: Int? = null,
+    val file_size: Long? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -449,12 +450,12 @@ data class Animation(
 data class Audio(
     val file_id: String,
     val file_unique_id: String,
-    val duration: Int,
+    val duration: Long,
     val performer: String? = null,
     val title: String? = null,
     val file_name: String? = null,
     val mime_type: String? = null,
-    val file_size: Int? = null,
+    val file_size: Long? = null,
     val thumb: PhotoSize? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
@@ -483,7 +484,7 @@ data class Document(
     val thumb: PhotoSize? = null,
     val file_name: String? = null,
     val mime_type: String? = null,
-    val file_size: Int? = null,
+    val file_size: Long? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -511,13 +512,13 @@ data class Document(
 data class Video(
     val file_id: String,
     val file_unique_id: String,
-    val width: Int,
-    val height: Int,
-    val duration: Int,
+    val width: Long,
+    val height: Long,
+    val duration: Long,
     val thumb: PhotoSize? = null,
     val file_name: String? = null,
     val mime_type: String? = null,
-    val file_size: Int? = null,
+    val file_size: Long? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -542,10 +543,10 @@ data class Video(
 data class VideoNote(
     val file_id: String,
     val file_unique_id: String,
-    val length: Int,
-    val duration: Int,
+    val length: Long,
+    val duration: Long,
     val thumb: PhotoSize? = null,
-    val file_size: Int? = null,
+    val file_size: Long? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -569,9 +570,9 @@ data class VideoNote(
 data class Voice(
     val file_id: String,
     val file_unique_id: String,
-    val duration: Int,
+    val duration: Long,
     val mime_type: String? = null,
-    val file_size: Int? = null,
+    val file_size: Long? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -596,7 +597,7 @@ data class Contact(
     val phone_number: String,
     val first_name: String,
     val last_name: String? = null,
-    val user_id: Int? = null,
+    val user_id: Long? = null,
     val vcard: String? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
@@ -617,7 +618,7 @@ data class Contact(
 @Serializable
 data class Dice(
     val emoji: String,
-    val value: Int,
+    val value: Long,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -637,7 +638,7 @@ data class Dice(
 @Serializable
 data class PollOption(
     val text: String,
-    val voter_count: Int,
+    val voter_count: Long,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -659,7 +660,7 @@ data class PollOption(
 data class PollAnswer(
     val poll_id: String,
     val user: User,
-    val option_ids: List<Int>,
+    val option_ids: List<Long>,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -692,16 +693,16 @@ data class Poll(
     val id: String,
     val question: String,
     val options: List<PollOption>,
-    val total_voter_count: Int,
+    val total_voter_count: Long,
     val is_closed: Boolean,
     val is_anonymous: Boolean,
     val type: String,
     val allows_multiple_answers: Boolean,
-    val correct_option_id: Int? = null,
+    val correct_option_id: Long? = null,
     val explanation: String? = null,
     val explanation_entities: List<MessageEntity>? = null,
-    val open_period: Int? = null,
-    val close_date: Int? = null,
+    val open_period: Long? = null,
+    val close_date: Long? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -727,9 +728,9 @@ data class Location(
     val longitude: Float,
     val latitude: Float,
     val horizontal_accuracy: Float? = null,
-    val live_period: Int? = null,
-    val heading: Int? = null,
-    val proximity_alert_radius: Int? = null,
+    val live_period: Long? = null,
+    val heading: Long? = null,
+    val proximity_alert_radius: Long? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -781,7 +782,7 @@ data class Venue(
 data class ProximityAlertTriggered(
     val traveler: User,
     val watcher: User,
-    val distance: Int,
+    val distance: Long,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -799,7 +800,7 @@ data class ProximityAlertTriggered(
  * */
 @Serializable
 data class MessageAutoDeleteTimerChanged(
-    val message_auto_delete_time: Int,
+    val message_auto_delete_time: Long,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -817,7 +818,7 @@ data class MessageAutoDeleteTimerChanged(
  * */
 @Serializable
 data class VoiceChatEnded(
-    val duration: Int,
+    val duration: Long,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -854,7 +855,7 @@ data class VoiceChatParticipantsInvited(
  * */
 @Serializable
 data class UserProfilePhotos(
-    val total_count: Int,
+    val total_count: Long,
     val photos: List<List<PhotoSize>>,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
@@ -880,7 +881,7 @@ data class UserProfilePhotos(
 data class File(
     val file_id: String,
     val file_unique_id: String,
-    val file_size: Int? = null,
+    val file_size: Long? = null,
     val file_path: String? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
@@ -1153,8 +1154,8 @@ data class ChatInviteLink(
     val creator: User,
     val is_primary: Boolean,
     val is_revoked: Boolean,
-    val expire_date: Int? = null,
-    val member_limit: Int? = null,
+    val expire_date: Long? = null,
+    val member_limit: Long? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -1214,7 +1215,7 @@ data class ChatMember(
     val can_send_polls: Boolean? = null,
     val can_send_other_messages: Boolean? = null,
     val can_add_web_page_previews: Boolean? = null,
-    val until_date: Int? = null,
+    val until_date: Long? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -1239,7 +1240,7 @@ data class ChatMember(
 data class ChatMemberUpdated(
     val chat: Chat,
     val from: User,
-    val date: Int,
+    val date: Long,
     val old_chat_member: ChatMember,
     val new_chat_member: ChatMember,
     val invite_link: ChatInviteLink? = null,
@@ -1333,8 +1334,8 @@ data class BotCommand(
  * */
 @Serializable
 data class ResponseParameters(
-    val migrate_to_chat_id: Int? = null,
-    val retry_after: Int? = null,
+    val migrate_to_chat_id: Long? = null,
+    val retry_after: Long? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -1393,9 +1394,9 @@ data class InputMediaVideo(
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
     val caption_entities: List<MessageEntity>? = null,
-    val width: Int? = null,
-    val height: Int? = null,
-    val duration: Int? = null,
+    val width: Long? = null,
+    val height: Long? = null,
+    val duration: Long? = null,
     val supports_streaming: Boolean? = null,
 ) : InputMedia() {
     override fun toJson() = json.encodeToString(serializer(), this)
@@ -1428,9 +1429,9 @@ data class InputMediaAnimation(
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
     val caption_entities: List<MessageEntity>? = null,
-    val width: Int? = null,
-    val height: Int? = null,
-    val duration: Int? = null,
+    val width: Long? = null,
+    val height: Long? = null,
+    val duration: Long? = null,
 ) : InputMedia() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -1462,7 +1463,7 @@ data class InputMediaAudio(
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
     val caption_entities: List<MessageEntity>? = null,
-    val duration: Int? = null,
+    val duration: Long? = null,
     val performer: String? = null,
     val title: String? = null,
 ) : InputMedia() {
@@ -1526,14 +1527,14 @@ data class InputMediaDocument(
 data class Sticker(
     val file_id: String,
     val file_unique_id: String,
-    val width: Int,
-    val height: Int,
+    val width: Long,
+    val height: Long,
     val is_animated: Boolean,
     val thumb: PhotoSize? = null,
     val emoji: String? = null,
     val set_name: String? = null,
     val mask_position: MaskPosition? = null,
-    val file_size: Int? = null,
+    val file_size: Long? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -1651,8 +1652,8 @@ data class InlineQueryResultArticle(
     val hide_url: Boolean? = null,
     val description: String? = null,
     val thumb_url: String? = null,
-    val thumb_width: Int? = null,
-    val thumb_height: Int? = null,
+    val thumb_width: Long? = null,
+    val thumb_height: Long? = null,
 ) : InlineQueryResult() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -1686,8 +1687,8 @@ data class InlineQueryResultPhoto(
     val id: String,
     val photo_url: String,
     val thumb_url: String,
-    val photo_width: Int? = null,
-    val photo_height: Int? = null,
+    val photo_width: Long? = null,
+    val photo_height: Long? = null,
     val title: String? = null,
     val description: String? = null,
     val caption: String? = null,
@@ -1728,9 +1729,9 @@ data class InlineQueryResultGif(
     val type: String,
     val id: String,
     val gif_url: String,
-    val gif_width: Int? = null,
-    val gif_height: Int? = null,
-    val gif_duration: Int? = null,
+    val gif_width: Long? = null,
+    val gif_height: Long? = null,
+    val gif_duration: Long? = null,
     val thumb_url: String,
     val thumb_mime_type: String? = null,
     val title: String? = null,
@@ -1772,9 +1773,9 @@ data class InlineQueryResultMpeg4Gif(
     val type: String,
     val id: String,
     val mpeg4_url: String,
-    val mpeg4_width: Int? = null,
-    val mpeg4_height: Int? = null,
-    val mpeg4_duration: Int? = null,
+    val mpeg4_width: Long? = null,
+    val mpeg4_height: Long? = null,
+    val mpeg4_duration: Long? = null,
     val thumb_url: String,
     val thumb_mime_type: String? = null,
     val title: String? = null,
@@ -1825,9 +1826,9 @@ data class InlineQueryResultVideo(
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
     val caption_entities: List<MessageEntity>? = null,
-    val video_width: Int? = null,
-    val video_height: Int? = null,
-    val video_duration: Int? = null,
+    val video_width: Long? = null,
+    val video_height: Long? = null,
+    val video_duration: Long? = null,
     val description: String? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
     val input_message_content: @Contextual InputMessageContent? = null,
@@ -1866,7 +1867,7 @@ data class InlineQueryResultAudio(
     val parse_mode: ParseMode? = null,
     val caption_entities: List<MessageEntity>? = null,
     val performer: String? = null,
-    val audio_duration: Int? = null,
+    val audio_duration: Long? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
     val input_message_content: @Contextual InputMessageContent? = null,
 ) : InlineQueryResult() {
@@ -1902,7 +1903,7 @@ data class InlineQueryResultVoice(
     val caption: String? = null,
     val parse_mode: ParseMode? = null,
     val caption_entities: List<MessageEntity>? = null,
-    val voice_duration: Int? = null,
+    val voice_duration: Long? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
     val input_message_content: @Contextual InputMessageContent? = null,
 ) : InlineQueryResult() {
@@ -1947,8 +1948,8 @@ data class InlineQueryResultDocument(
     val reply_markup: InlineKeyboardMarkup? = null,
     val input_message_content: @Contextual InputMessageContent? = null,
     val thumb_url: String? = null,
-    val thumb_width: Int? = null,
-    val thumb_height: Int? = null,
+    val thumb_width: Long? = null,
+    val thumb_height: Long? = null,
 ) : InlineQueryResult() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -1985,14 +1986,14 @@ data class InlineQueryResultLocation(
     val longitude: Float,
     val title: String,
     val horizontal_accuracy: Float? = null,
-    val live_period: Int? = null,
-    val heading: Int? = null,
-    val proximity_alert_radius: Int? = null,
+    val live_period: Long? = null,
+    val heading: Long? = null,
+    val proximity_alert_radius: Long? = null,
     val reply_markup: InlineKeyboardMarkup? = null,
     val input_message_content: @Contextual InputMessageContent? = null,
     val thumb_url: String? = null,
-    val thumb_width: Int? = null,
-    val thumb_height: Int? = null,
+    val thumb_width: Long? = null,
+    val thumb_height: Long? = null,
 ) : InlineQueryResult() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -2037,8 +2038,8 @@ data class InlineQueryResultVenue(
     val reply_markup: InlineKeyboardMarkup? = null,
     val input_message_content: @Contextual InputMessageContent? = null,
     val thumb_url: String? = null,
-    val thumb_width: Int? = null,
-    val thumb_height: Int? = null,
+    val thumb_width: Long? = null,
+    val thumb_height: Long? = null,
 ) : InlineQueryResult() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -2075,8 +2076,8 @@ data class InlineQueryResultContact(
     val reply_markup: InlineKeyboardMarkup? = null,
     val input_message_content: @Contextual InputMessageContent? = null,
     val thumb_url: String? = null,
-    val thumb_width: Int? = null,
-    val thumb_height: Int? = null,
+    val thumb_width: Long? = null,
+    val thumb_height: Long? = null,
 ) : InlineQueryResult() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -2418,9 +2419,9 @@ data class InputLocationMessageContent(
     val latitude: Float,
     val longitude: Float,
     val horizontal_accuracy: Float? = null,
-    val live_period: Int? = null,
-    val heading: Int? = null,
-    val proximity_alert_radius: Int? = null,
+    val live_period: Long? = null,
+    val heading: Long? = null,
+    val proximity_alert_radius: Long? = null,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -2525,7 +2526,7 @@ data class ChosenInlineResult(
 @Serializable
 data class LabeledPrice(
     val label: String,
-    val amount: Int,
+    val amount: Long,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -2551,7 +2552,7 @@ data class Invoice(
     val description: String,
     val start_parameter: String,
     val currency: String,
-    val total_amount: Int,
+    val total_amount: Long,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -2650,7 +2651,7 @@ data class ShippingOption(
 @Serializable
 data class SuccessfulPayment(
     val currency: String,
-    val total_amount: Int,
+    val total_amount: Long,
     val invoice_payload: String,
     val shipping_option_id: String? = null,
     val order_info: OrderInfo? = null,
@@ -2706,7 +2707,7 @@ data class PreCheckoutQuery(
     val id: String,
     val from: User,
     val currency: String,
-    val total_amount: Int,
+    val total_amount: Long,
     val invoice_payload: String,
     val shipping_option_id: String? = null,
     val order_info: OrderInfo? = null,
@@ -2755,8 +2756,8 @@ data class PassportData(
 data class PassportFile(
     val file_id: String,
     val file_unique_id: String,
-    val file_size: Int,
-    val file_date: Int,
+    val file_size: Long,
+    val file_date: Long,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -3083,9 +3084,9 @@ data class Game(
  * */
 @Serializable
 data class GameHighScore(
-    val position: Int,
+    val position: Long,
     val user: User,
-    val score: Int,
+    val score: Long,
 ) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
 
@@ -3115,9 +3116,9 @@ sealed class TelegramRequest {
      * */
     @Serializable
     data class GetUpdatesRequest(
-        val offset: Int? = null,
-        val limit: Int? = null,
-        val timeout: Int? = null,
+        val offset: Long? = null,
+        val limit: Long? = null,
+        val timeout: Long? = null,
         val allowed_updates: List<String>? = null,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
@@ -3148,7 +3149,7 @@ sealed class TelegramRequest {
         val url: String,
         val certificate: @Contextual Any? = null,
         val ip_address: String? = null,
-        val max_connections: Int? = null,
+        val max_connections: Long? = null,
         val allowed_updates: List<String>? = null,
         val drop_pending_updates: Boolean? = null,
     ) : TelegramRequest() {
@@ -3205,7 +3206,7 @@ sealed class TelegramRequest {
         val entities: List<MessageEntity>? = null,
         val disable_web_page_preview: Boolean? = null,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
         val reply_markup: @Contextual KeyboardOption? = null,
     ) : TelegramRequest() {
@@ -3232,7 +3233,7 @@ sealed class TelegramRequest {
         val chat_id: String,
         val from_chat_id: String,
         val disable_notification: Boolean? = null,
-        val message_id: Int,
+        val message_id: Long,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
         override fun toJsonForResponse() = JsonObject(
@@ -3262,12 +3263,12 @@ sealed class TelegramRequest {
     data class CopyMessageRequest(
         val chat_id: String,
         val from_chat_id: String,
-        val message_id: Int,
+        val message_id: Long,
         val caption: String? = null,
         val parse_mode: ParseMode? = null,
         val caption_entities: List<MessageEntity>? = null,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
         val reply_markup: @Contextual KeyboardOption? = null,
     ) : TelegramRequest() {
@@ -3302,7 +3303,7 @@ sealed class TelegramRequest {
         val parse_mode: ParseMode? = null,
         val caption_entities: List<MessageEntity>? = null,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
         val reply_markup: @Contextual KeyboardOption? = null,
     ) : TelegramRequest() {
@@ -3340,12 +3341,12 @@ sealed class TelegramRequest {
         val caption: String? = null,
         val parse_mode: ParseMode? = null,
         val caption_entities: List<MessageEntity>? = null,
-        val duration: Int? = null,
+        val duration: Long? = null,
         val performer: String? = null,
         val title: String? = null,
         val thumb: String? = null,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
         val reply_markup: @Contextual KeyboardOption? = null,
     ) : TelegramRequest() {
@@ -3384,7 +3385,7 @@ sealed class TelegramRequest {
         val caption_entities: List<MessageEntity>? = null,
         val disable_content_type_detection: Boolean? = null,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
         val reply_markup: @Contextual KeyboardOption? = null,
     ) : TelegramRequest() {
@@ -3420,16 +3421,16 @@ sealed class TelegramRequest {
     data class SendVideoRequest(
         val chat_id: String,
         val video: String,
-        val duration: Int? = null,
-        val width: Int? = null,
-        val height: Int? = null,
+        val duration: Long? = null,
+        val width: Long? = null,
+        val height: Long? = null,
         val thumb: String? = null,
         val caption: String? = null,
         val parse_mode: ParseMode? = null,
         val caption_entities: List<MessageEntity>? = null,
         val supports_streaming: Boolean? = null,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
         val reply_markup: @Contextual KeyboardOption? = null,
     ) : TelegramRequest() {
@@ -3464,15 +3465,15 @@ sealed class TelegramRequest {
     data class SendAnimationRequest(
         val chat_id: String,
         val animation: String,
-        val duration: Int? = null,
-        val width: Int? = null,
-        val height: Int? = null,
+        val duration: Long? = null,
+        val width: Long? = null,
+        val height: Long? = null,
         val thumb: String? = null,
         val caption: String? = null,
         val parse_mode: ParseMode? = null,
         val caption_entities: List<MessageEntity>? = null,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
         val reply_markup: @Contextual KeyboardOption? = null,
     ) : TelegramRequest() {
@@ -3507,9 +3508,9 @@ sealed class TelegramRequest {
         val caption: String? = null,
         val parse_mode: ParseMode? = null,
         val caption_entities: List<MessageEntity>? = null,
-        val duration: Int? = null,
+        val duration: Long? = null,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
         val reply_markup: @Contextual KeyboardOption? = null,
     ) : TelegramRequest() {
@@ -3540,11 +3541,11 @@ sealed class TelegramRequest {
     data class SendVideoNoteRequest(
         val chat_id: String,
         val video_note: String,
-        val duration: Int? = null,
-        val length: Int? = null,
+        val duration: Long? = null,
+        val length: Long? = null,
         val thumb: String? = null,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
         val reply_markup: @Contextual KeyboardOption? = null,
     ) : TelegramRequest() {
@@ -3572,7 +3573,7 @@ sealed class TelegramRequest {
         val chat_id: String,
         val media: List<@Contextual InputMedia>,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
@@ -3606,11 +3607,11 @@ sealed class TelegramRequest {
         val latitude: Float,
         val longitude: Float,
         val horizontal_accuracy: Float? = null,
-        val live_period: Int? = null,
-        val heading: Int? = null,
-        val proximity_alert_radius: Int? = null,
+        val live_period: Long? = null,
+        val heading: Long? = null,
+        val proximity_alert_radius: Long? = null,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
         val reply_markup: @Contextual KeyboardOption? = null,
     ) : TelegramRequest() {
@@ -3640,13 +3641,13 @@ sealed class TelegramRequest {
     @Serializable
     data class EditMessageLiveLocationRequest(
         val chat_id: String? = null,
-        val message_id: Int? = null,
+        val message_id: Long? = null,
         val inline_message_id: String? = null,
         val latitude: Float,
         val longitude: Float,
         val horizontal_accuracy: Float? = null,
-        val heading: Int? = null,
-        val proximity_alert_radius: Int? = null,
+        val heading: Long? = null,
+        val proximity_alert_radius: Long? = null,
         val reply_markup: InlineKeyboardMarkup? = null,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
@@ -3673,7 +3674,7 @@ sealed class TelegramRequest {
     @Serializable
     data class StopMessageLiveLocationRequest(
         val chat_id: String? = null,
-        val message_id: Int? = null,
+        val message_id: Long? = null,
         val inline_message_id: String? = null,
         val reply_markup: InlineKeyboardMarkup? = null,
     ) : TelegramRequest() {
@@ -3719,7 +3720,7 @@ sealed class TelegramRequest {
         val google_place_id: String? = null,
         val google_place_type: String? = null,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
         val reply_markup: @Contextual KeyboardOption? = null,
     ) : TelegramRequest() {
@@ -3754,7 +3755,7 @@ sealed class TelegramRequest {
         val last_name: String? = null,
         val vcard: String? = null,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
         val reply_markup: @Contextual KeyboardOption? = null,
     ) : TelegramRequest() {
@@ -3797,15 +3798,15 @@ sealed class TelegramRequest {
         val is_anonymous: Boolean? = null,
         val type: String? = null,
         val allows_multiple_answers: Boolean? = null,
-        val correct_option_id: Int? = null,
+        val correct_option_id: Long? = null,
         val explanation: String? = null,
         val explanation_parse_mode: String? = null,
         val explanation_entities: List<MessageEntity>? = null,
-        val open_period: Int? = null,
-        val close_date: Int? = null,
+        val open_period: Long? = null,
+        val close_date: Long? = null,
         val is_closed: Boolean? = null,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
         val reply_markup: @Contextual KeyboardOption? = null,
     ) : TelegramRequest() {
@@ -3834,7 +3835,7 @@ sealed class TelegramRequest {
         val chat_id: String,
         val emoji: String? = null,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
         val reply_markup: @Contextual KeyboardOption? = null,
     ) : TelegramRequest() {
@@ -3880,9 +3881,9 @@ sealed class TelegramRequest {
      * */
     @Serializable
     data class GetUserProfilePhotosRequest(
-        val user_id: Int,
-        val offset: Int? = null,
-        val limit: Int? = null,
+        val user_id: Long,
+        val offset: Long? = null,
+        val limit: Long? = null,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
         override fun toJsonForResponse() = JsonObject(
@@ -3927,8 +3928,8 @@ sealed class TelegramRequest {
     @Serializable
     data class KickChatMemberRequest(
         val chat_id: String,
-        val user_id: Int,
-        val until_date: Int? = null,
+        val user_id: Long,
+        val until_date: Long? = null,
         val revoke_messages: Boolean? = null,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
@@ -3951,7 +3952,7 @@ sealed class TelegramRequest {
     @Serializable
     data class UnbanChatMemberRequest(
         val chat_id: String,
-        val user_id: Int,
+        val user_id: Long,
         val only_if_banned: Boolean? = null,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
@@ -3975,9 +3976,9 @@ sealed class TelegramRequest {
     @Serializable
     data class RestrictChatMemberRequest(
         val chat_id: String,
-        val user_id: Int,
+        val user_id: Long,
         val permissions: ChatPermissions,
-        val until_date: Int? = null,
+        val until_date: Long? = null,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
         override fun toJsonForResponse() = JsonObject(
@@ -4009,7 +4010,7 @@ sealed class TelegramRequest {
     @Serializable
     data class PromoteChatMemberRequest(
         val chat_id: String,
-        val user_id: Int,
+        val user_id: Long,
         val is_anonymous: Boolean? = null,
         val can_manage_chat: Boolean? = null,
         val can_post_messages: Boolean? = null,
@@ -4042,7 +4043,7 @@ sealed class TelegramRequest {
     @Serializable
     data class SetChatAdministratorCustomTitleRequest(
         val chat_id: String,
-        val user_id: Int,
+        val user_id: Long,
         val custom_title: String,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
@@ -4113,8 +4114,8 @@ sealed class TelegramRequest {
     @Serializable
     data class CreateChatInviteLinkRequest(
         val chat_id: String,
-        val expire_date: Int? = null,
-        val member_limit: Int? = null,
+        val expire_date: Long? = null,
+        val member_limit: Long? = null,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
         override fun toJsonForResponse() = JsonObject(
@@ -4141,8 +4142,8 @@ sealed class TelegramRequest {
     data class EditChatInviteLinkRequest(
         val chat_id: String,
         val invite_link: String,
-        val expire_date: Int? = null,
-        val member_limit: Int? = null,
+        val expire_date: Long? = null,
+        val member_limit: Long? = null,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
         override fun toJsonForResponse() = JsonObject(
@@ -4270,7 +4271,7 @@ sealed class TelegramRequest {
     @Serializable
     data class PinChatMessageRequest(
         val chat_id: String,
-        val message_id: Int,
+        val message_id: Long,
         val disable_notification: Boolean? = null,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
@@ -4292,7 +4293,7 @@ sealed class TelegramRequest {
     @Serializable
     data class UnpinChatMessageRequest(
         val chat_id: String,
-        val message_id: Int? = null,
+        val message_id: Long? = null,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
         override fun toJsonForResponse() = JsonObject(
@@ -4414,7 +4415,7 @@ sealed class TelegramRequest {
     @Serializable
     data class GetChatMemberRequest(
         val chat_id: String,
-        val user_id: Int,
+        val user_id: Long,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
         override fun toJsonForResponse() = JsonObject(
@@ -4486,7 +4487,7 @@ sealed class TelegramRequest {
         val text: String? = null,
         val show_alert: Boolean? = null,
         val url: String? = null,
-        val cache_time: Int? = null,
+        val cache_time: Long? = null,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
         override fun toJsonForResponse() = JsonObject(
@@ -4535,7 +4536,7 @@ sealed class TelegramRequest {
     @Serializable
     data class EditMessageTextRequest(
         val chat_id: String? = null,
-        val message_id: Int? = null,
+        val message_id: Long? = null,
         val inline_message_id: String? = null,
         val text: String,
         val parse_mode: ParseMode? = null,
@@ -4567,7 +4568,7 @@ sealed class TelegramRequest {
     @Serializable
     data class EditMessageCaptionRequest(
         val chat_id: String? = null,
-        val message_id: Int? = null,
+        val message_id: Long? = null,
         val inline_message_id: String? = null,
         val caption: String? = null,
         val parse_mode: ParseMode? = null,
@@ -4596,7 +4597,7 @@ sealed class TelegramRequest {
     @Serializable
     data class EditMessageMediaRequest(
         val chat_id: String? = null,
-        val message_id: Int? = null,
+        val message_id: Long? = null,
         val inline_message_id: String? = null,
         val media: @Contextual InputMedia,
         val reply_markup: InlineKeyboardMarkup? = null,
@@ -4622,7 +4623,7 @@ sealed class TelegramRequest {
     @Serializable
     data class EditMessageReplyMarkupRequest(
         val chat_id: String? = null,
-        val message_id: Int? = null,
+        val message_id: Long? = null,
         val inline_message_id: String? = null,
         val reply_markup: InlineKeyboardMarkup? = null,
     ) : TelegramRequest() {
@@ -4649,7 +4650,7 @@ sealed class TelegramRequest {
     @Serializable
     data class StopPollRequest(
         val chat_id: String,
-        val message_id: Int,
+        val message_id: Long,
         val reply_markup: InlineKeyboardMarkup? = null,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
@@ -4671,7 +4672,7 @@ sealed class TelegramRequest {
     @Serializable
     data class DeleteMessageRequest(
         val chat_id: String,
-        val message_id: Int,
+        val message_id: Long,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
         override fun toJsonForResponse() = JsonObject(
@@ -4701,7 +4702,7 @@ sealed class TelegramRequest {
         val chat_id: String,
         val sticker: String,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
         val reply_markup: @Contextual KeyboardOption? = null,
     ) : TelegramRequest() {
@@ -4742,7 +4743,7 @@ sealed class TelegramRequest {
      * */
     @Serializable
     data class UploadStickerFileRequest(
-        val user_id: Int,
+        val user_id: Long,
         val png_sticker: @Contextual Any,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
@@ -4769,7 +4770,7 @@ sealed class TelegramRequest {
      * */
     @Serializable
     data class CreateNewStickerSetRequest(
-        val user_id: Int,
+        val user_id: Long,
         val name: String,
         val title: String,
         val png_sticker: String? = null,
@@ -4800,7 +4801,7 @@ sealed class TelegramRequest {
      * */
     @Serializable
     data class AddStickerToSetRequest(
-        val user_id: Int,
+        val user_id: Long,
         val name: String,
         val png_sticker: String? = null,
         val tgs_sticker: @Contextual Any? = null,
@@ -4826,7 +4827,7 @@ sealed class TelegramRequest {
     @Serializable
     data class SetStickerPositionInSetRequest(
         val sticker: String,
-        val position: Int,
+        val position: Long,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
         override fun toJsonForResponse() = JsonObject(
@@ -4873,7 +4874,7 @@ sealed class TelegramRequest {
     @Serializable
     data class SetStickerSetThumbRequest(
         val name: String,
-        val user_id: Int,
+        val user_id: Long,
         val thumb: String? = null,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
@@ -4904,7 +4905,7 @@ sealed class TelegramRequest {
     data class AnswerInlineQueryRequest(
         val inline_query_id: String,
         val results: List<@Contextual InlineQueryResult>,
-        val cache_time: Int? = null,
+        val cache_time: Long? = null,
         val is_personal: Boolean? = null,
         val next_offset: String? = null,
         val switch_pm_text: String? = null,
@@ -4953,7 +4954,7 @@ sealed class TelegramRequest {
      * */
     @Serializable
     data class SendInvoiceRequest(
-        val chat_id: Int,
+        val chat_id: Long,
         val title: String,
         val description: String,
         val payload: String,
@@ -4963,9 +4964,9 @@ sealed class TelegramRequest {
         val prices: List<LabeledPrice>,
         val provider_data: String? = null,
         val photo_url: String? = null,
-        val photo_size: Int? = null,
-        val photo_width: Int? = null,
-        val photo_height: Int? = null,
+        val photo_size: Long? = null,
+        val photo_width: Long? = null,
+        val photo_height: Long? = null,
         val need_name: Boolean? = null,
         val need_phone_number: Boolean? = null,
         val need_email: Boolean? = null,
@@ -4974,7 +4975,7 @@ sealed class TelegramRequest {
         val send_email_to_provider: Boolean? = null,
         val is_flexible: Boolean? = null,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
         val reply_markup: InlineKeyboardMarkup? = null,
     ) : TelegramRequest() {
@@ -5050,7 +5051,7 @@ sealed class TelegramRequest {
      * */
     @Serializable
     data class SetPassportDataErrorsRequest(
-        val user_id: Int,
+        val user_id: Long,
         val errors: List<@Contextual PassportElementError>,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
@@ -5081,10 +5082,10 @@ sealed class TelegramRequest {
      * */
     @Serializable
     data class SendGameRequest(
-        val chat_id: Int,
+        val chat_id: Long,
         val game_short_name: String,
         val disable_notification: Boolean? = null,
-        val reply_to_message_id: Int? = null,
+        val reply_to_message_id: Long? = null,
         val allow_sending_without_reply: Boolean? = null,
         val reply_markup: InlineKeyboardMarkup? = null,
     ) : TelegramRequest() {
@@ -5111,12 +5112,12 @@ sealed class TelegramRequest {
      * */
     @Serializable
     data class SetGameScoreRequest(
-        val user_id: Int,
-        val score: Int,
+        val user_id: Long,
+        val score: Long,
         val force: Boolean? = null,
         val disable_edit_message: Boolean? = null,
-        val chat_id: Int? = null,
-        val message_id: Int? = null,
+        val chat_id: Long? = null,
+        val message_id: Long? = null,
         val inline_message_id: String? = null,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)
@@ -5141,9 +5142,9 @@ sealed class TelegramRequest {
      * */
     @Serializable
     data class GetGameHighScoresRequest(
-        val user_id: Int,
-        val chat_id: Int? = null,
-        val message_id: Int? = null,
+        val user_id: Long,
+        val chat_id: Long? = null,
+        val message_id: Long? = null,
         val inline_message_id: String? = null,
     ) : TelegramRequest() {
         override fun toJsonForRequest() = json.encodeToString(serializer(), this)

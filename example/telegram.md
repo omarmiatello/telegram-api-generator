@@ -1,7 +1,8 @@
+
+
 ## Getting updates
 
 ### Data Types
-
 <p>This <a href="#available-types">object</a> represents an incoming update.<br>At most <strong>one</strong> of the optional parameters can be present in any given update.</p>
 
     Update(update_id: Integer, message: Message, edited_message: Message, channel_post: Message, edited_channel_post: Message, inline_query: InlineQuery, chosen_inline_result: ChosenInlineResult, callback_query: CallbackQuery, shipping_query: ShippingQuery, pre_checkout_query: PreCheckoutQuery, poll: Poll, poll_answer: PollAnswer, my_chat_member: ChatMemberUpdated, chat_member: ChatMemberUpdated)
@@ -10,8 +11,8 @@
 
     WebhookInfo(url: String, has_custom_certificate: Boolean, pending_update_count: Integer, ip_address: String, last_error_date: Integer, last_error_message: String, max_connections: Integer, allowed_updates: List<String>)
 
-### Methods
 
+### Methods
 <p>Use this method to receive incoming updates using long polling (<a href="https://en.wikipedia.org/wiki/Push_technology#Long_polling">wiki</a>). An Array of <a href="#update">Update</a> objects is returned.</p><blockquote> 
  <p><strong>Notes</strong><br><strong>1.</strong> This method will not work if an outgoing webhook is set up.<br><strong>2.</strong> In order to avoid getting duplicate updates, recalculate <em>offset</em> after each server response.</p> 
 </blockquote>
@@ -33,10 +34,11 @@
 
     getWebhookInfo()
 
+
+
 ## Available types
 
 ### Data Types
-
 <p>This object represents a Telegram user or bot.</p>
 
     User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String, can_join_groups: Boolean, can_read_all_group_messages: Boolean, supports_inline_queries: Boolean)
@@ -238,10 +240,11 @@
 
     InputMediaDocument(type: String, media: String, thumb: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_content_type_detection: Boolean)
 
+
+
 ## Available methods
 
 ### Methods
-
 <p>Use this method to log out from the cloud Bot API server before launching the bot locally. You <strong>must</strong> log out the bot before running it locally, otherwise there is no guarantee that the bot will receive updates. After a successful call, you can immediately log in on a local server, but will not be able to log in back to the cloud Bot API server for 10 minutes. Returns <em>True</em> on success. Requires no parameters.</p>
 
     logOut()
@@ -448,10 +451,11 @@
 
     getMyCommands()
 
+
+
 ## Updating messages
 
 ### Methods
-
 <p>Use this method to edit text and <a href="#games">game</a> messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
 
     editMessageText(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, text: String, parse_mode: ParseMode, entities: List<MessageEntity>, disable_web_page_preview: Boolean, reply_markup: InlineKeyboardMarkup)
@@ -476,10 +480,11 @@
 
     deleteMessage(chat_id: IntegerOrString, message_id: Integer)
 
+
+
 ## Stickers
 
 ### Data Types
-
 <p>This object represents a sticker.</p>
 
     Sticker(file_id: String, file_unique_id: String, width: Integer, height: Integer, is_animated: Boolean, thumb: PhotoSize, emoji: String, set_name: String, mask_position: MaskPosition, file_size: Integer)
@@ -492,8 +497,8 @@
 
     MaskPosition(point: String, x_shift: Float, y_shift: Float, scale: Float)
 
-### Methods
 
+### Methods
 <p>Use this method to send static .WEBP or <a href="https://telegram.org/blog/animated-stickers">animated</a> .TGS stickers. On success, the sent <a href="#message">Message</a> is returned.</p>
 
     sendSticker(chat_id: IntegerOrString, sticker: InputFileOrString, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
@@ -526,10 +531,11 @@
 
     setStickerSetThumb(name: String, user_id: Integer, thumb: InputFileOrString)
 
+
+
 ## Inline mode
 
 ### Data Types
-
 <p>This object represents an incoming inline query. When the user sends an empty query, your bot could return some default or trending results.</p>
 
     InlineQuery(id: String, from: User, location: Location, query: String, offset: String)
@@ -636,16 +642,17 @@
 
     ChosenInlineResult(result_id: String, from: User, location: Location, inline_message_id: String, query: String)
 
-### Methods
 
+### Methods
 <p>Use this method to send answers to an inline query. On success, <em>True</em> is returned.<br>No more than <strong>50</strong> results per query are allowed.</p>
 
     answerInlineQuery(inline_query_id: String, results: List<InlineQueryResult>, cache_time: Integer, is_personal: Boolean, next_offset: String, switch_pm_text: String, switch_pm_parameter: String)
 
+
+
 ## Payments
 
 ### Data Types
-
 <p>This object represents a portion of the price for goods or services.</p>
 
     LabeledPrice(label: String, amount: Integer)
@@ -678,8 +685,8 @@
 
     PreCheckoutQuery(id: String, from: User, currency: String, total_amount: Integer, invoice_payload: String, shipping_option_id: String, order_info: OrderInfo)
 
-### Methods
 
+### Methods
 <p>Use this method to send invoices. On success, the sent <a href="#message">Message</a> is returned.</p>
 
     sendInvoice(chat_id: Integer, title: String, description: String, payload: String, provider_token: String, start_parameter: String, currency: String, prices: List<LabeledPrice>, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: InlineKeyboardMarkup)
@@ -692,10 +699,11 @@
 
     answerPreCheckoutQuery(pre_checkout_query_id: String, ok: Boolean, error_message: String)
 
+
+
 ## Telegram Passport
 
 ### Data Types
-
 <p>Contains information about Telegram Passport data shared with the bot by the user.</p>
 
     PassportData(data: List<EncryptedPassportElement>, credentials: EncryptedCredentials)
@@ -748,16 +756,17 @@
 
     PassportElementErrorUnspecified(source: String, type: String, element_hash: String, message: String)
 
-### Methods
 
+### Methods
 <p>Informs a user that some of the Telegram Passport elements they provided contains errors. The user will not be able to re-submit their Passport to you until the errors are fixed (the contents of the field for which you returned the error must change). Returns <em>True</em> on success.</p><p>Use this if the data submitted by the user doesn't satisfy the standards your service requires for any reason. For example, if a birthday date seems invalid, a submitted document is blurry, a scan shows evidence of tampering, etc. Supply some details in the error message to make sure the user knows how to correct the issues.</p>
 
     setPassportDataErrors(user_id: Integer, errors: List<PassportElementError>)
 
+
+
 ## Games
 
 ### Data Types
-
 <p>This object represents a game. Use BotFather to create and edit games, their short names will act as unique identifiers.</p>
 
     Game(title: String, description: String, photo: List<PhotoSize>, text: String, text_entities: List<MessageEntity>, animation: Animation)
@@ -766,8 +775,8 @@
 
     GameHighScore(position: Integer, user: User, score: Integer)
 
-### Methods
 
+### Methods
 <p>Use this method to send a game. On success, the sent <a href="#message">Message</a> is returned.</p>
 
     sendGame(chat_id: Integer, game_short_name: String, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: InlineKeyboardMarkup)

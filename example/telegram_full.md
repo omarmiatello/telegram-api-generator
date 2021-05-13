@@ -1,7 +1,8 @@
+
+
 ## Getting updates
 
 ### Data Types
-
 #### Update
 
     Update(update_id: Integer, message: Message, edited_message: Message, channel_post: Message, edited_channel_post: Message, inline_query: InlineQuery, chosen_inline_result: ChosenInlineResult, callback_query: CallbackQuery, shipping_query: ShippingQuery, pre_checkout_query: PreCheckoutQuery, poll: Poll, poll_answer: PollAnswer, my_chat_member: ChatMemberUpdated, chat_member: ChatMemberUpdated)
@@ -42,8 +43,8 @@
 | max_connections | Integer | false | <em>Optional</em>. Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery |
 | allowed_updates | List<String> | false | <em>Optional</em>. A list of update types the bot is subscribed to. Defaults to all update types except <em>chat_member</em> |
 
-### Methods
 
+### Methods
 #### getUpdates
 
     getUpdates(offset: Integer, limit: Integer, timeout: Integer, allowed_updates: List<String>)
@@ -93,10 +94,11 @@
 
 <p>Use this method to get current webhook status. Requires no parameters. On success, returns a <a href="#webhookinfo">WebhookInfo</a> object. If the bot is using <a href="#getupdates">getUpdates</a>, will return an object with the <em>url</em> field empty.</p>
 
+
+
 ## Available types
 
 ### Data Types
-
 #### User
 
     User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String, can_join_groups: Boolean, can_read_all_group_messages: Boolean, supports_inline_queries: Boolean)
@@ -846,10 +848,11 @@
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | disable_content_type_detection | Boolean | false | <em>Optional</em>. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always true, if the document is sent as part of an album. |
 
+
+
 ## Available methods
 
 ### Methods
-
 #### logOut
 
     logOut()
@@ -1546,10 +1549,11 @@
 
 <p>Use this method to get the current list of the bot's commands. Requires no parameters. Returns Array of <a href="#botcommand">BotCommand</a> on success.</p>
 
+
+
 ## Updating messages
 
 ### Methods
-
 #### editMessageText
 
     editMessageText(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, text: String, parse_mode: ParseMode, entities: List<MessageEntity>, disable_web_page_preview: Boolean, reply_markup: InlineKeyboardMarkup)
@@ -1633,10 +1637,11 @@
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | true | Identifier of the message to delete |
 
+
+
 ## Stickers
 
 ### Data Types
-
 #### Sticker
 
     Sticker(file_id: String, file_unique_id: String, width: Integer, height: Integer, is_animated: Boolean, thumb: PhotoSize, emoji: String, set_name: String, mask_position: MaskPosition, file_size: Integer)
@@ -1684,8 +1689,8 @@
 | y_shift | Float | true | Shift by Y-axis measured in heights of the mask scaled to the face size, from top to bottom. For example, 1.0 will place the mask just below the default mask position. |
 | scale | Float | true | Mask scaling coefficient. For example, 2.0 means double size. |
 
-### Methods
 
+### Methods
 #### sendSticker
 
     sendSticker(chat_id: IntegerOrString, sticker: InputFileOrString, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
@@ -1731,8 +1736,7 @@
 | name | type | required | description |
 |---|---|---|---|
 | user_id | Integer | true | User identifier of created sticker set owner |
-| name | String | true | Short name of sticker set, to be used in <code>t.me/addstickers/</code> URLs (e.g., <em>animals</em>). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in <em>“_
-by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensitive. 1-64 characters. |
+| name | String | true | Short name of sticker set, to be used in <code>t.me/addstickers/</code> URLs (e.g., <em>animals</em>). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in <em>“_by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensitive. 1-64 characters. |
 | title | String | true | Sticker set title, 1-64 characters |
 | png_sticker | InputFileOrString | false | <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
 | tgs_sticker | InputFile | false | <strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/animated_stickers#technical-requirements"></a><a href="https://core.telegram.org/animated_stickers#technical-requirements">https://core.telegram.org/animated_stickers#technical-requirements</a> for technical requirements |
@@ -1788,10 +1792,11 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 | user_id | Integer | true | User identifier of the sticker set owner |
 | thumb | InputFileOrString | false | A <strong>PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a <strong>TGS</strong> animation with the thumbnail up to 32 kilobytes in size; see <a href="https://core.telegram.org/animated_stickers#technical-requirements"></a><a href="https://core.telegram.org/animated_stickers#technical-requirements">https://core.telegram.org/animated_stickers#technical-requirements</a> for animated sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>. Animated sticker set thumbnail can't be uploaded via HTTP URL. |
 
+
+
 ## Inline mode
 
 ### Data Types
-
 #### InlineQuery
 
     InlineQuery(id: String, from: User, location: Location, query: String, offset: String)
@@ -2276,8 +2281,8 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 | inline_message_id | String | false | <em>Optional</em>. Identifier of the sent inline message. Available only if there is an <a href="#inlinekeyboardmarkup">inline keyboard</a> attached to the message. Will be also received in <a href="#callbackquery">callback queries</a> and can be used to <a href="#updating-messages">edit</a> the message. |
 | query | String | true | The query that was used to obtain the result |
 
-### Methods
 
+### Methods
 #### answerInlineQuery
 
     answerInlineQuery(inline_query_id: String, results: List<InlineQueryResult>, cache_time: Integer, is_personal: Boolean, next_offset: String, switch_pm_text: String, switch_pm_parameter: String)
@@ -2294,10 +2299,11 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 | switch_pm_text | String | false | If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter <em>switch_pm_parameter</em> |
 | switch_pm_parameter | String | false | <a href="/bots#deep-linking">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br><br><em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an oauth link. Once done, the bot can offer a <a href="#inlinekeyboardmarkup"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities. |
 
+
+
 ## Payments
 
 ### Data Types
-
 #### LabeledPrice
 
     LabeledPrice(label: String, amount: Integer)
@@ -2408,8 +2414,8 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 | shipping_option_id | String | false | <em>Optional</em>. Identifier of the shipping option chosen by the user |
 | order_info | OrderInfo | false | <em>Optional</em>. Order info provided by the user |
 
-### Methods
 
+### Methods
 #### sendInvoice
 
     sendInvoice(chat_id: Integer, title: String, description: String, payload: String, provider_token: String, start_parameter: String, currency: String, prices: List<LabeledPrice>, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: InlineKeyboardMarkup)
@@ -2468,10 +2474,11 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 | ok | Boolean | true | Specify <em>True</em> if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order. Use <em>False</em> if there are any problems. |
 | error_message | String | false | Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user. |
 
+
+
 ## Telegram Passport
 
 ### Data Types
-
 #### PassportData
 
     PassportData(data: List<EncryptedPassportElement>, credentials: EncryptedCredentials)
@@ -2645,8 +2652,8 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 | element_hash | String | true | Base64-encoded element hash |
 | message | String | true | Error message |
 
-### Methods
 
+### Methods
 #### setPassportDataErrors
 
     setPassportDataErrors(user_id: Integer, errors: List<PassportElementError>)
@@ -2658,10 +2665,11 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 | user_id | Integer | true | User identifier |
 | errors | List<PassportElementError> | true | A JSON-serialized array describing the errors |
 
+
+
 ## Games
 
 ### Data Types
-
 #### Game
 
     Game(title: String, description: String, photo: List<PhotoSize>, text: String, text_entities: List<MessageEntity>, animation: Animation)
@@ -2689,8 +2697,8 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 | user | User | true | User |
 | score | Integer | true | Score |
 
-### Methods
 
+### Methods
 #### sendGame
 
     sendGame(chat_id: Integer, game_short_name: String, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: InlineKeyboardMarkup)
