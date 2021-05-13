@@ -146,7 +146,7 @@
 
 #### Message
 
-    Message(message_id: Integer, from: User, sender_chat: Chat, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_sender_name: String, forward_date: Integer, reply_to_message: Message, via_bot: User, edit_date: Integer, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, voice_chat_started: VoiceChatStarted, voice_chat_ended: VoiceChatEnded, voice_chat_participants_invited: VoiceChatParticipantsInvited, reply_markup: InlineKeyboardMarkup)
+    Message(message_id: Integer, from: User, sender_chat: Chat, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_sender_name: String, forward_date: Integer, reply_to_message: Message, via_bot: User, edit_date: Integer, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, voice_chat_scheduled: VoiceChatScheduled, voice_chat_started: VoiceChatStarted, voice_chat_ended: VoiceChatEnded, voice_chat_participants_invited: VoiceChatParticipantsInvited, reply_markup: InlineKeyboardMarkup)
 
 <p>This object represents a message.</p>
 
@@ -203,6 +203,7 @@
 | connected_website | String | false | <em>Optional</em>. The domain name of the website on which the user has logged in. <a href="/widgets/login">More about Telegram Login »</a> |
 | passport_data | PassportData | false | <em>Optional</em>. Telegram Passport data |
 | proximity_alert_triggered | ProximityAlertTriggered | false | <em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location. |
+| voice_chat_scheduled | VoiceChatScheduled | false | <em>Optional</em>. Service message: voice chat scheduled |
 | voice_chat_started | VoiceChatStarted | false | <em>Optional</em>. Service message: voice chat started |
 | voice_chat_ended | VoiceChatEnded | false | <em>Optional</em>. Service message: voice chat ended |
 | voice_chat_participants_invited | VoiceChatParticipantsInvited | false | <em>Optional</em>. Service message: new participants invited to a voice chat |
@@ -467,6 +468,16 @@
 | name | type | required | description |
 |---|---|---|---|
 | message_auto_delete_time | Integer | true | New auto-delete time for messages in the chat |
+
+#### VoiceChatScheduled
+
+    VoiceChatScheduled(start_date: Integer)
+
+<p>This object represents a service message about a voice chat scheduled in the chat.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| start_date | Integer | true | Point in time (Unix timestamp) when the voice chat is supposed to be started by a chat administrator |
 
 #### VoiceChatEnded
 
@@ -887,7 +898,7 @@
 
     forwardMessage(chat_id: IntegerOrString, from_chat_id: IntegerOrString, disable_notification: Boolean, message_id: Integer)
 
-<p>Use this method to forward messages of any kind. On success, the sent <a href="#message">Message</a> is returned.</p>
+<p>Use this method to forward messages of any kind. Service messages can't be forwarded. On success, the sent <a href="#message">Message</a> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -900,7 +911,7 @@
 
     copyMessage(chat_id: IntegerOrString, from_chat_id: IntegerOrString, message_id: Integer, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
-<p>Use this method to copy messages of any kind. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
+<p>Use this method to copy messages of any kind. Service messages and invoice messages can't be copied. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1799,7 +1810,7 @@
 ### Data Types
 #### InlineQuery
 
-    InlineQuery(id: String, from: User, location: Location, query: String, offset: String)
+    InlineQuery(id: String, from: User, query: String, offset: String, chat_type: String, location: Location)
 
 <p>This object represents an incoming inline query. When the user sends an empty query, your bot could return some default or trending results.</p>
 
@@ -1807,9 +1818,10 @@
 |---|---|---|---|
 | id | String | true | Unique identifier for this query |
 | from | User | true | Sender |
-| location | Location | false | <em>Optional</em>. Sender location, only for bots that request user location |
 | query | String | true | Text of the query (up to 256 characters) |
 | offset | String | true | Offset of the results to be returned, can be controlled by the bot |
+| chat_type | String | false | <em>Optional</em>. Type of the chat, from which the inline query was sent. Can be either “sender” for a private chat with the inline query sender, “private”, “group”, “supergroup”, or “channel”. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat |
+| location | Location | false | <em>Optional</em>. Sender location, only for bots that request user location |
 
 #### InlineQueryResultArticle
 
@@ -2267,6 +2279,35 @@
 | last_name | String | false | <em>Optional</em>. Contact's last name |
 | vcard | String | false | <em>Optional</em>. Additional data about the contact in the form of a <a href="https://en.wikipedia.org/wiki/VCard">vCard</a>, 0-2048 bytes |
 
+#### InputInvoiceMessageContent
+
+    InputInvoiceMessageContent(title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean)
+
+<p>Represents the <a href="#inputmessagecontent">content</a> of an invoice message to be sent as the result of an inline query.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| title | String | true | Product name, 1-32 characters |
+| description | String | true | Product description, 1-255 characters |
+| payload | String | true | Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes. |
+| provider_token | String | true | Payment provider token, obtained via <a href="https://t.me/botfather">Botfather</a> |
+| currency | String | true | Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a> |
+| prices | List<LabeledPrice> | true | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.) |
+| max_tip_amount | Integer | false | <em>Optional</em>. The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="https://core.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0 |
+| suggested_tip_amounts | List<Integer> | false | <em>Optional</em>. A JSON-serialized array of suggested amounts of tip in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>. |
+| provider_data | String | false | <em>Optional</em>. A JSON-serialized object for data about the invoice, which will be shared with the payment provider. A detailed description of the required fields should be provided by the payment provider. |
+| photo_url | String | false | <em>Optional</em>. URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for. |
+| photo_size | Integer | false | <em>Optional</em>. Photo size |
+| photo_width | Integer | false | <em>Optional</em>. Photo width |
+| photo_height | Integer | false | <em>Optional</em>. Photo height |
+| need_name | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if you require the user's full name to complete the order |
+| need_phone_number | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if you require the user's phone number to complete the order |
+| need_email | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if you require the user's email address to complete the order |
+| need_shipping_address | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if you require the user's shipping address to complete the order |
+| send_phone_number_to_provider | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if user's phone number should be sent to provider |
+| send_email_to_provider | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if user's email address should be sent to provider |
+| is_flexible | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the final price depends on the shipping method |
+
 #### ChosenInlineResult
 
     ChosenInlineResult(result_id: String, from: User, location: Location, inline_message_id: String, query: String)
@@ -2418,20 +2459,22 @@
 ### Methods
 #### sendInvoice
 
-    sendInvoice(chat_id: Integer, title: String, description: String, payload: String, provider_token: String, start_parameter: String, currency: String, prices: List<LabeledPrice>, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: InlineKeyboardMarkup)
+    sendInvoice(chat_id: IntegerOrString, title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, start_parameter: String, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to send invoices. On success, the sent <a href="#message">Message</a> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
-| chat_id | Integer | true | Unique identifier for the target private chat |
+| chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | title | String | true | Product name, 1-32 characters |
 | description | String | true | Product description, 1-255 characters |
 | payload | String | true | Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes. |
 | provider_token | String | true | Payments provider token, obtained via <a href="https://t.me/botfather">Botfather</a> |
-| start_parameter | String | true | Unique deep-linking parameter that can be used to generate this invoice when used as a start parameter |
 | currency | String | true | Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a> |
 | prices | List<LabeledPrice> | true | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.) |
+| max_tip_amount | Integer | false | The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="https://core.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0 |
+| suggested_tip_amounts | List<Integer> | false | A JSON-serialized array of suggested amounts of tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>. |
+| start_parameter | String | false | Unique deep-linking parameter. If left empty, <strong>forwarded copies</strong> of the sent message will have a <em>Pay</em> button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a <em>URL</em> button with a deep link to the bot (instead of a <em>Pay</em> button), with the value used as the start parameter |
 | provider_data | String | false | A JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider. |
 | photo_url | String | false | URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for. |
 | photo_size | Integer | false | Photo size |

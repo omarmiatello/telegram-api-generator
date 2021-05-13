@@ -990,6 +990,14 @@
             "required": false
           },
           {
+            "name": "voice_chat_scheduled",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: voice chat scheduled",
+            "type": {
+              "name": "VoiceChatScheduled"
+            },
+            "required": false
+          },
+          {
             "name": "voice_chat_started",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: voice chat started",
             "type": {
@@ -1934,6 +1942,20 @@
           {
             "name": "message_auto_delete_time",
             "description": "New auto-delete time for messages in the chat",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "VoiceChatScheduled",
+        "description": "\u003cp\u003eThis object represents a service message about a voice chat scheduled in the chat.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "start_date",
+            "description": "Point in time (Unix timestamp) when the voice chat is supposed to be started by a chat administrator",
             "type": {
               "name": "Integer"
             },
@@ -3361,7 +3383,7 @@
       },
       {
         "name": "forwardMessage",
-        "description": "\u003cp\u003eUse this method to forward messages of any kind. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to forward messages of any kind. Service messages can\u0027t be forwarded. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -3418,7 +3440,7 @@
       },
       {
         "name": "copyMessage",
-        "description": "\u003cp\u003eUse this method to copy messages of any kind. The method is analogous to the method \u003ca href\u003d\"#forwardmessage\"\u003eforwardMessage\u003c/a\u003e, but the copied message doesn\u0027t have a link to the original message. Returns the \u003ca href\u003d\"#messageid\"\u003eMessageId\u003c/a\u003e of the sent message on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to copy messages of any kind. Service messages and invoice messages can\u0027t be copied. The method is analogous to the method \u003ca href\u003d\"#forwardmessage\"\u003eforwardMessage\u003c/a\u003e, but the copied message doesn\u0027t have a link to the original message. Returns the \u003ca href\u003d\"#messageid\"\u003eMessageId\u003c/a\u003e of the sent message on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -7410,14 +7432,6 @@
             "required": true
           },
           {
-            "name": "location",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Sender location, only for bots that request user location",
-            "type": {
-              "name": "Location"
-            },
-            "required": false
-          },
-          {
             "name": "query",
             "description": "Text of the query (up to 256 characters)",
             "type": {
@@ -7432,6 +7446,22 @@
               "name": "String"
             },
             "required": true
+          },
+          {
+            "name": "chat_type",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Type of the chat, from which the inline query was sent. Can be either “sender” for a private chat with the inline query sender, “private”, “group”, “supergroup”, or “channel”. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "location",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Sender location, only for bots that request user location",
+            "type": {
+              "name": "Location"
+            },
+            "required": false
           }
         ]
       },
@@ -9869,6 +9899,178 @@
         ]
       },
       {
+        "name": "InputInvoiceMessageContent",
+        "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#inputmessagecontent\"\u003econtent\u003c/a\u003e of an invoice message to be sent as the result of an inline query.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "title",
+            "description": "Product name, 1-32 characters",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "description",
+            "description": "Product description, 1-255 characters",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "payload",
+            "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "provider_token",
+            "description": "Payment provider token, obtained via \u003ca href\u003d\"https://t.me/botfather\"\u003eBotfather\u003c/a\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "currency",
+            "description": "Three-letter ISO 4217 currency code, see \u003ca href\u003d\"/bots/payments#supported-currencies\"\u003emore on currencies\u003c/a\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "prices",
+            "description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)",
+            "type": {
+              "elementType": {
+                "name": "LabeledPrice"
+              },
+              "name": "List\u003cLabeledPrice\u003e"
+            },
+            "required": true
+          },
+          {
+            "name": "max_tip_amount",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. The maximum accepted amount for tips in the \u003cem\u003esmallest units\u003c/em\u003e of the currency (integer, \u003cstrong\u003enot\u003c/strong\u003e float/double). For example, for a maximum tip of \u003ccode\u003eUS$ 1.45\u003c/code\u003e pass \u003ccode\u003emax_tip_amount \u003d 145\u003c/code\u003e. See the \u003cem\u003eexp\u003c/em\u003e parameter in \u003ca href\u003d\"https://core.telegram.org/bots/payments/currencies.json\"\u003ecurrencies.json\u003c/a\u003e, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "suggested_tip_amounts",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. A JSON-serialized array of suggested amounts of tip in the \u003cem\u003esmallest units\u003c/em\u003e of the currency (integer, \u003cstrong\u003enot\u003c/strong\u003e float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed \u003cem\u003emax_tip_amount\u003c/em\u003e.",
+            "type": {
+              "elementType": {
+                "name": "Integer"
+              },
+              "name": "List\u003cInteger\u003e"
+            },
+            "required": false
+          },
+          {
+            "name": "provider_data",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. A JSON-serialized object for data about the invoice, which will be shared with the payment provider. A detailed description of the required fields should be provided by the payment provider.",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "photo_url",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for.",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "photo_size",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Photo size",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "photo_width",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Photo width",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "photo_height",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Photo height",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "need_name",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e, if you require the user\u0027s full name to complete the order",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "need_phone_number",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e, if you require the user\u0027s phone number to complete the order",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "need_email",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e, if you require the user\u0027s email address to complete the order",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "need_shipping_address",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e, if you require the user\u0027s shipping address to complete the order",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "send_phone_number_to_provider",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e, if user\u0027s phone number should be sent to provider",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "send_email_to_provider",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e, if user\u0027s email address should be sent to provider",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "is_flexible",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e, if the final price depends on the shipping method",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          }
+        ]
+      },
+      {
         "name": "ChosenInlineResult",
         "description": "\u003cp\u003eRepresents a \u003ca href\u003d\"#inlinequeryresult\"\u003eresult\u003c/a\u003e of an inline query that was chosen by the user and sent to their chat partner.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e It is necessary to enable \u003ca href\u003d\"/bots/inline#collecting-feedback\"\u003einline feedback\u003c/a\u003e via \u003ca href\u003d\"https://t.me/botfather\"\u003e@Botfather\u003c/a\u003e in order to receive these objects in updates.\u003c/p\u003e",
         "docFields": [
@@ -10353,9 +10555,17 @@
         "docParameters": [
           {
             "name": "chat_id",
-            "description": "Unique identifier for the target private chat",
+            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
-              "name": "Integer"
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
             },
             "required": true
           },
@@ -10392,14 +10602,6 @@
             "required": true
           },
           {
-            "name": "start_parameter",
-            "description": "Unique deep-linking parameter that can be used to generate this invoice when used as a start parameter",
-            "type": {
-              "name": "String"
-            },
-            "required": true
-          },
-          {
             "name": "currency",
             "description": "Three-letter ISO 4217 currency code, see \u003ca href\u003d\"/bots/payments#supported-currencies\"\u003emore on currencies\u003c/a\u003e",
             "type": {
@@ -10417,6 +10619,33 @@
               "name": "List\u003cLabeledPrice\u003e"
             },
             "required": true
+          },
+          {
+            "name": "max_tip_amount",
+            "description": "The maximum accepted amount for tips in the \u003cem\u003esmallest units\u003c/em\u003e of the currency (integer, \u003cstrong\u003enot\u003c/strong\u003e float/double). For example, for a maximum tip of \u003ccode\u003eUS$ 1.45\u003c/code\u003e pass \u003ccode\u003emax_tip_amount \u003d 145\u003c/code\u003e. See the \u003cem\u003eexp\u003c/em\u003e parameter in \u003ca href\u003d\"https://core.telegram.org/bots/payments/currencies.json\"\u003ecurrencies.json\u003c/a\u003e, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "suggested_tip_amounts",
+            "description": "A JSON-serialized array of suggested amounts of tips in the \u003cem\u003esmallest units\u003c/em\u003e of the currency (integer, \u003cstrong\u003enot\u003c/strong\u003e float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed \u003cem\u003emax_tip_amount\u003c/em\u003e.",
+            "type": {
+              "elementType": {
+                "name": "Integer"
+              },
+              "name": "List\u003cInteger\u003e"
+            },
+            "required": false
+          },
+          {
+            "name": "start_parameter",
+            "description": "Unique deep-linking parameter. If left empty, \u003cstrong\u003eforwarded copies\u003c/strong\u003e of the sent message will have a \u003cem\u003ePay\u003c/em\u003e button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a \u003cem\u003eURL\u003c/em\u003e button with a deep link to the bot (instead of a \u003cem\u003ePay\u003c/em\u003e button), with the value used as the start parameter",
+            "type": {
+              "name": "String"
+            },
+            "required": false
           },
           {
             "name": "provider_data",

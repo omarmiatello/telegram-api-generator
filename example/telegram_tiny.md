@@ -1,10 +1,9 @@
 ### Data Types
-
     Update(update_id: Integer, message: Message, edited_message: Message, channel_post: Message, edited_channel_post: Message, inline_query: InlineQuery, chosen_inline_result: ChosenInlineResult, callback_query: CallbackQuery, shipping_query: ShippingQuery, pre_checkout_query: PreCheckoutQuery, poll: Poll, poll_answer: PollAnswer, my_chat_member: ChatMemberUpdated, chat_member: ChatMemberUpdated)
     WebhookInfo(url: String, has_custom_certificate: Boolean, pending_update_count: Integer, ip_address: String, last_error_date: Integer, last_error_message: String, max_connections: Integer, allowed_updates: List<String>)
     User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String, can_join_groups: Boolean, can_read_all_group_messages: Boolean, supports_inline_queries: Boolean)
     Chat(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, photo: ChatPhoto, bio: String, description: String, invite_link: String, pinned_message: Message, permissions: ChatPermissions, slow_mode_delay: Integer, message_auto_delete_time: Integer, sticker_set_name: String, can_set_sticker_set: Boolean, linked_chat_id: Integer, location: ChatLocation)
-    Message(message_id: Integer, from: User, sender_chat: Chat, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_sender_name: String, forward_date: Integer, reply_to_message: Message, via_bot: User, edit_date: Integer, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, voice_chat_started: VoiceChatStarted, voice_chat_ended: VoiceChatEnded, voice_chat_participants_invited: VoiceChatParticipantsInvited, reply_markup: InlineKeyboardMarkup)
+    Message(message_id: Integer, from: User, sender_chat: Chat, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_sender_name: String, forward_date: Integer, reply_to_message: Message, via_bot: User, edit_date: Integer, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, voice_chat_scheduled: VoiceChatScheduled, voice_chat_started: VoiceChatStarted, voice_chat_ended: VoiceChatEnded, voice_chat_participants_invited: VoiceChatParticipantsInvited, reply_markup: InlineKeyboardMarkup)
     MessageId(message_id: Integer)
     MessageEntity(type: String, offset: Integer, length: Integer, url: String, user: User, language: String)
     PhotoSize(file_id: String, file_unique_id: String, width: Integer, height: Integer, file_size: Integer)
@@ -23,6 +22,7 @@
     Venue(location: Location, title: String, address: String, foursquare_id: String, foursquare_type: String, google_place_id: String, google_place_type: String)
     ProximityAlertTriggered(traveler: User, watcher: User, distance: Integer)
     MessageAutoDeleteTimerChanged(message_auto_delete_time: Integer)
+    VoiceChatScheduled(start_date: Integer)
     VoiceChatEnded(duration: Integer)
     VoiceChatParticipantsInvited(users: List<User>)
     UserProfilePhotos(total_count: Integer, photos: List<List<PhotoSize>>)
@@ -52,7 +52,7 @@
     Sticker(file_id: String, file_unique_id: String, width: Integer, height: Integer, is_animated: Boolean, thumb: PhotoSize, emoji: String, set_name: String, mask_position: MaskPosition, file_size: Integer)
     StickerSet(name: String, title: String, is_animated: Boolean, contains_masks: Boolean, stickers: List<Sticker>, thumb: PhotoSize)
     MaskPosition(point: String, x_shift: Float, y_shift: Float, scale: Float)
-    InlineQuery(id: String, from: User, location: Location, query: String, offset: String)
+    InlineQuery(id: String, from: User, query: String, offset: String, chat_type: String, location: Location)
     InlineQueryResultArticle(type: String, id: String, title: String, input_message_content: InputMessageContent, reply_markup: InlineKeyboardMarkup, url: String, hide_url: Boolean, description: String, thumb_url: String, thumb_width: Integer, thumb_height: Integer)
     InlineQueryResultPhoto(type: String, id: String, photo_url: String, thumb_url: String, photo_width: Integer, photo_height: Integer, title: String, description: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
     InlineQueryResultGif(type: String, id: String, gif_url: String, gif_width: Integer, gif_height: Integer, gif_duration: Integer, thumb_url: String, thumb_mime_type: String, title: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
@@ -77,6 +77,7 @@
     InputLocationMessageContent(latitude: Float, longitude: Float, horizontal_accuracy: Float, live_period: Integer, heading: Integer, proximity_alert_radius: Integer)
     InputVenueMessageContent(latitude: Float, longitude: Float, title: String, address: String, foursquare_id: String, foursquare_type: String, google_place_id: String, google_place_type: String)
     InputContactMessageContent(phone_number: String, first_name: String, last_name: String, vcard: String)
+    InputInvoiceMessageContent(title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean)
     ChosenInlineResult(result_id: String, from: User, location: Location, inline_message_id: String, query: String)
     LabeledPrice(label: String, amount: Integer)
     Invoice(title: String, description: String, start_parameter: String, currency: String, total_amount: Integer)
@@ -103,7 +104,6 @@
     GameHighScore(position: Integer, user: User, score: Integer)
 
 ### Methods
-
     getUpdates(offset: Integer, limit: Integer, timeout: Integer, allowed_updates: List<String>)
     setWebhook(url: String, certificate: InputFile, ip_address: String, max_connections: Integer, allowed_updates: List<String>, drop_pending_updates: Boolean)
     deleteWebhook(drop_pending_updates: Boolean)
@@ -173,7 +173,7 @@
     deleteStickerFromSet(sticker: String)
     setStickerSetThumb(name: String, user_id: Integer, thumb: InputFileOrString)
     answerInlineQuery(inline_query_id: String, results: List<InlineQueryResult>, cache_time: Integer, is_personal: Boolean, next_offset: String, switch_pm_text: String, switch_pm_parameter: String)
-    sendInvoice(chat_id: Integer, title: String, description: String, payload: String, provider_token: String, start_parameter: String, currency: String, prices: List<LabeledPrice>, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: InlineKeyboardMarkup)
+    sendInvoice(chat_id: IntegerOrString, title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, start_parameter: String, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: InlineKeyboardMarkup)
     answerShippingQuery(shipping_query_id: String, ok: Boolean, shipping_options: List<ShippingOption>, error_message: String)
     answerPreCheckoutQuery(pre_checkout_query_id: String, ok: Boolean, error_message: String)
     setPassportDataErrors(user_id: Integer, errors: List<PassportElementError>)

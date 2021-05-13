@@ -289,6 +289,7 @@ pub struct Chat {
  * @property connected_website <em>Optional</em>. The domain name of the website on which the user has logged in. <a href="/widgets/login">More about Telegram Login »</a>
  * @property passport_data <em>Optional</em>. Telegram Passport data
  * @property proximity_alert_triggered <em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.
+ * @property voice_chat_scheduled <em>Optional</em>. Service message: voice chat scheduled
  * @property voice_chat_started <em>Optional</em>. Service message: voice chat started
  * @property voice_chat_ended <em>Optional</em>. Service message: voice chat ended
  * @property voice_chat_participants_invited <em>Optional</em>. Service message: new participants invited to a voice chat
@@ -448,6 +449,9 @@ pub struct Message {
     /// <em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proximity_alert_triggered: Option<ProximityAlertTriggered>,
+    /// <em>Optional</em>. Service message: voice chat scheduled
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub voice_chat_scheduled: Option<VoiceChatScheduled>,
     /// <em>Optional</em>. Service message: voice chat started
     #[serde(skip_serializing_if = "Option::is_none")]
     pub voice_chat_started: Option<VoiceChatStarted>,
@@ -978,6 +982,19 @@ pub struct ProximityAlertTriggered {
 pub struct MessageAutoDeleteTimerChanged {
     /// New auto-delete time for messages in the chat
     pub message_auto_delete_time: Integer
+}
+
+/**
+ * <p>This object represents a service message about a voice chat scheduled in the chat.</p>
+ *
+ * @property start_date Point in time (Unix timestamp) when the voice chat is supposed to be started by a chat administrator
+ *
+ * @constructor Creates a [VoiceChatScheduled].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct VoiceChatScheduled {
+    /// Point in time (Unix timestamp) when the voice chat is supposed to be started by a chat administrator
+    pub start_date: Integer
 }
 
 /**
@@ -1854,9 +1871,10 @@ pub struct MaskPosition {
  *
  * @property id Unique identifier for this query
  * @property from Sender
- * @property location <em>Optional</em>. Sender location, only for bots that request user location
  * @property query Text of the query (up to 256 characters)
  * @property offset Offset of the results to be returned, can be controlled by the bot
+ * @property chat_type <em>Optional</em>. Type of the chat, from which the inline query was sent. Can be either “sender” for a private chat with the inline query sender, “private”, “group”, “supergroup”, or “channel”. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat
+ * @property location <em>Optional</em>. Sender location, only for bots that request user location
  *
  * @constructor Creates a [InlineQuery].
  * */
@@ -1866,13 +1884,16 @@ pub struct InlineQuery {
     pub id: String,
     /// Sender
     pub from: User,
-    /// <em>Optional</em>. Sender location, only for bots that request user location
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub location: Option<Location>,
     /// Text of the query (up to 256 characters)
     pub query: String,
     /// Offset of the results to be returned, can be controlled by the bot
-    pub offset: String
+    pub offset: String,
+    /// <em>Optional</em>. Type of the chat, from which the inline query was sent. Can be either “sender” for a private chat with the inline query sender, “private”, “group”, “supergroup”, or “channel”. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub chat_type: Option<String>,
+    /// <em>Optional</em>. Sender location, only for bots that request user location
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub location: Option<Location>
 }
 
 /**
@@ -3001,6 +3022,90 @@ pub struct InputContactMessageContent {
 }
 
 /**
+ * <p>Represents the <a href="#inputmessagecontent">content</a> of an invoice message to be sent as the result of an inline query.</p>
+ *
+ * @property title Product name, 1-32 characters
+ * @property description Product description, 1-255 characters
+ * @property payload Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+ * @property provider_token Payment provider token, obtained via <a href="https://t.me/botfather">Botfather</a>
+ * @property currency Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>
+ * @property prices Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
+ * @property max_tip_amount <em>Optional</em>. The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="https://core.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0
+ * @property suggested_tip_amounts <em>Optional</em>. A JSON-serialized array of suggested amounts of tip in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>.
+ * @property provider_data <em>Optional</em>. A JSON-serialized object for data about the invoice, which will be shared with the payment provider. A detailed description of the required fields should be provided by the payment provider.
+ * @property photo_url <em>Optional</em>. URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for.
+ * @property photo_size <em>Optional</em>. Photo size
+ * @property photo_width <em>Optional</em>. Photo width
+ * @property photo_height <em>Optional</em>. Photo height
+ * @property need_name <em>Optional</em>. Pass <em>True</em>, if you require the user's full name to complete the order
+ * @property need_phone_number <em>Optional</em>. Pass <em>True</em>, if you require the user's phone number to complete the order
+ * @property need_email <em>Optional</em>. Pass <em>True</em>, if you require the user's email address to complete the order
+ * @property need_shipping_address <em>Optional</em>. Pass <em>True</em>, if you require the user's shipping address to complete the order
+ * @property send_phone_number_to_provider <em>Optional</em>. Pass <em>True</em>, if user's phone number should be sent to provider
+ * @property send_email_to_provider <em>Optional</em>. Pass <em>True</em>, if user's email address should be sent to provider
+ * @property is_flexible <em>Optional</em>. Pass <em>True</em>, if the final price depends on the shipping method
+ *
+ * @constructor Creates a [InputInvoiceMessageContent].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct InputInvoiceMessageContent {
+    /// Product name, 1-32 characters
+    pub title: String,
+    /// Product description, 1-255 characters
+    pub description: String,
+    /// Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+    pub payload: String,
+    /// Payment provider token, obtained via <a href="https://t.me/botfather">Botfather</a>
+    pub provider_token: String,
+    /// Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>
+    pub currency: String,
+    /// Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
+    pub prices: Vec<LabeledPrice>,
+    /// <em>Optional</em>. The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="https://core.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_tip_amount: Option<Integer>,
+    /// <em>Optional</em>. A JSON-serialized array of suggested amounts of tip in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub suggested_tip_amounts: Option<Vec<Integer>>,
+    /// <em>Optional</em>. A JSON-serialized object for data about the invoice, which will be shared with the payment provider. A detailed description of the required fields should be provided by the payment provider.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub provider_data: Option<String>,
+    /// <em>Optional</em>. URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub photo_url: Option<String>,
+    /// <em>Optional</em>. Photo size
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub photo_size: Option<Integer>,
+    /// <em>Optional</em>. Photo width
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub photo_width: Option<Integer>,
+    /// <em>Optional</em>. Photo height
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub photo_height: Option<Integer>,
+    /// <em>Optional</em>. Pass <em>True</em>, if you require the user's full name to complete the order
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_name: Option<bool>,
+    /// <em>Optional</em>. Pass <em>True</em>, if you require the user's phone number to complete the order
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_phone_number: Option<bool>,
+    /// <em>Optional</em>. Pass <em>True</em>, if you require the user's email address to complete the order
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_email: Option<bool>,
+    /// <em>Optional</em>. Pass <em>True</em>, if you require the user's shipping address to complete the order
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_shipping_address: Option<bool>,
+    /// <em>Optional</em>. Pass <em>True</em>, if user's phone number should be sent to provider
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub send_phone_number_to_provider: Option<bool>,
+    /// <em>Optional</em>. Pass <em>True</em>, if user's email address should be sent to provider
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub send_email_to_provider: Option<bool>,
+    /// <em>Optional</em>. Pass <em>True</em>, if the final price depends on the shipping method
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_flexible: Option<bool>
+}
+
+/**
  * <p>Represents a <a href="#inlinequeryresult">result</a> of an inline query that was chosen by the user and sent to their chat partner.</p><p><strong>Note:</strong> It is necessary to enable <a href="/bots/inline#collecting-feedback">inline feedback</a> via <a href="https://t.me/botfather">@Botfather</a> in order to receive these objects in updates.</p>
  *
  * @property result_id The unique identifier for the result that was chosen
@@ -3711,7 +3816,7 @@ pub struct SendMessageRequest {
 }
 
 /**
- * <p>Use this method to forward messages of any kind. On success, the sent <a href="#message">Message</a> is returned.</p>
+ * <p>Use this method to forward messages of any kind. Service messages can't be forwarded. On success, the sent <a href="#message">Message</a> is returned.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property from_chat_id Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>)
@@ -3731,7 +3836,7 @@ pub struct ForwardMessageRequest {
 }
 
 /**
- * <p>Use this method to copy messages of any kind. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
+ * <p>Use this method to copy messages of any kind. Service messages and invoice messages can't be copied. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property from_chat_id Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>)
@@ -5135,14 +5240,16 @@ pub struct AnswerInlineQueryRequest {
 /**
  * <p>Use this method to send invoices. On success, the sent <a href="#message">Message</a> is returned.</p>
  *
- * @property chat_id Unique identifier for the target private chat
+ * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property title Product name, 1-32 characters
  * @property description Product description, 1-255 characters
  * @property payload Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
  * @property provider_token Payments provider token, obtained via <a href="https://t.me/botfather">Botfather</a>
- * @property start_parameter Unique deep-linking parameter that can be used to generate this invoice when used as a start parameter
  * @property currency Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>
  * @property prices Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
+ * @property max_tip_amount The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="https://core.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0
+ * @property suggested_tip_amounts A JSON-serialized array of suggested amounts of tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>.
+ * @property start_parameter Unique deep-linking parameter. If left empty, <strong>forwarded copies</strong> of the sent message will have a <em>Pay</em> button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a <em>URL</em> button with a deep link to the bot (instead of a <em>Pay</em> button), with the value used as the start parameter
  * @property provider_data A JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
  * @property photo_url URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for.
  * @property photo_size Photo size
@@ -5162,8 +5269,8 @@ pub struct AnswerInlineQueryRequest {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendInvoiceRequest {
-    /// Unique identifier for the target private chat
-    pub chat_id: Integer,
+    /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+    pub chat_id: String,
     /// Product name, 1-32 characters
     pub title: String,
     /// Product description, 1-255 characters
@@ -5172,12 +5279,16 @@ pub struct SendInvoiceRequest {
     pub payload: String,
     /// Payments provider token, obtained via <a href="https://t.me/botfather">Botfather</a>
     pub provider_token: String,
-    /// Unique deep-linking parameter that can be used to generate this invoice when used as a start parameter
-    pub start_parameter: String,
     /// Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>
     pub currency: String,
     /// Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
     pub prices: Vec<LabeledPrice>,
+    /// The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="https://core.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0
+    pub max_tip_amount: Option<Integer>,
+    /// A JSON-serialized array of suggested amounts of tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>.
+    pub suggested_tip_amounts: Option<Vec<Integer>>,
+    /// Unique deep-linking parameter. If left empty, <strong>forwarded copies</strong> of the sent message will have a <em>Pay</em> button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a <em>URL</em> button with a deep link to the bot (instead of a <em>Pay</em> button), with the value used as the start parameter
+    pub start_parameter: Option<String>,
     /// A JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
     pub provider_data: Option<String>,
     /// URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for.
