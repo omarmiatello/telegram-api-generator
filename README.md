@@ -108,7 +108,6 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 ## Getting updates
 
 ### Data Types
-
 #### Update
 
     Update(update_id: Integer, message: Message, edited_message: Message, channel_post: Message, edited_channel_post: Message, inline_query: InlineQuery, chosen_inline_result: ChosenInlineResult, callback_query: CallbackQuery, shipping_query: ShippingQuery, pre_checkout_query: PreCheckoutQuery, poll: Poll, poll_answer: PollAnswer, my_chat_member: ChatMemberUpdated, chat_member: ChatMemberUpdated)
@@ -149,8 +148,8 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | max_connections | Integer | false | <em>Optional</em>. Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery |
 | allowed_updates | List<String> | false | <em>Optional</em>. A list of update types the bot is subscribed to. Defaults to all update types except <em>chat_member</em> |
 
-### Methods
 
+### Methods
 #### getUpdates
 
     getUpdates(offset: Integer, limit: Integer, timeout: Integer, allowed_updates: List<String>)
@@ -200,10 +199,11 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
 <p>Use this method to get current webhook status. Requires no parameters. On success, returns a <a href="#webhookinfo">WebhookInfo</a> object. If the bot is using <a href="#getupdates">getUpdates</a>, will return an object with the <em>url</em> field empty.</p>
 
+
+
 ## Available types
 
 ### Data Types
-
 #### User
 
     User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String, can_join_groups: Boolean, can_read_all_group_messages: Boolean, supports_inline_queries: Boolean)
@@ -251,7 +251,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
 #### Message
 
-    Message(message_id: Integer, from: User, sender_chat: Chat, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_sender_name: String, forward_date: Integer, reply_to_message: Message, via_bot: User, edit_date: Integer, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, voice_chat_started: VoiceChatStarted, voice_chat_ended: VoiceChatEnded, voice_chat_participants_invited: VoiceChatParticipantsInvited, reply_markup: InlineKeyboardMarkup)
+    Message(message_id: Integer, from: User, sender_chat: Chat, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_sender_name: String, forward_date: Integer, reply_to_message: Message, via_bot: User, edit_date: Integer, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, voice_chat_scheduled: VoiceChatScheduled, voice_chat_started: VoiceChatStarted, voice_chat_ended: VoiceChatEnded, voice_chat_participants_invited: VoiceChatParticipantsInvited, reply_markup: InlineKeyboardMarkup)
 
 <p>This object represents a message.</p>
 
@@ -308,6 +308,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | connected_website | String | false | <em>Optional</em>. The domain name of the website on which the user has logged in. <a href="/widgets/login">More about Telegram Login »</a> |
 | passport_data | PassportData | false | <em>Optional</em>. Telegram Passport data |
 | proximity_alert_triggered | ProximityAlertTriggered | false | <em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location. |
+| voice_chat_scheduled | VoiceChatScheduled | false | <em>Optional</em>. Service message: voice chat scheduled |
 | voice_chat_started | VoiceChatStarted | false | <em>Optional</em>. Service message: voice chat started |
 | voice_chat_ended | VoiceChatEnded | false | <em>Optional</em>. Service message: voice chat ended |
 | voice_chat_participants_invited | VoiceChatParticipantsInvited | false | <em>Optional</em>. Service message: new participants invited to a voice chat |
@@ -572,6 +573,16 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | name | type | required | description |
 |---|---|---|---|
 | message_auto_delete_time | Integer | true | New auto-delete time for messages in the chat |
+
+#### VoiceChatScheduled
+
+    VoiceChatScheduled(start_date: Integer)
+
+<p>This object represents a service message about a voice chat scheduled in the chat.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| start_date | Integer | true | Point in time (Unix timestamp) when the voice chat is supposed to be started by a chat administrator |
 
 #### VoiceChatEnded
 
@@ -953,10 +964,11 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | disable_content_type_detection | Boolean | false | <em>Optional</em>. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always true, if the document is sent as part of an album. |
 
+
+
 ## Available methods
 
 ### Methods
-
 #### logOut
 
     logOut()
@@ -991,7 +1003,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
     forwardMessage(chat_id: IntegerOrString, from_chat_id: IntegerOrString, disable_notification: Boolean, message_id: Integer)
 
-<p>Use this method to forward messages of any kind. On success, the sent <a href="#message">Message</a> is returned.</p>
+<p>Use this method to forward messages of any kind. Service messages can't be forwarded. On success, the sent <a href="#message">Message</a> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1004,7 +1016,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
     copyMessage(chat_id: IntegerOrString, from_chat_id: IntegerOrString, message_id: Integer, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
-<p>Use this method to copy messages of any kind. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
+<p>Use this method to copy messages of any kind. Service messages and invoice messages can't be copied. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1653,10 +1665,11 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
 <p>Use this method to get the current list of the bot's commands. Requires no parameters. Returns Array of <a href="#botcommand">BotCommand</a> on success.</p>
 
+
+
 ## Updating messages
 
 ### Methods
-
 #### editMessageText
 
     editMessageText(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, text: String, parse_mode: ParseMode, entities: List<MessageEntity>, disable_web_page_preview: Boolean, reply_markup: InlineKeyboardMarkup)
@@ -1740,10 +1753,11 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | true | Identifier of the message to delete |
 
+
+
 ## Stickers
 
 ### Data Types
-
 #### Sticker
 
     Sticker(file_id: String, file_unique_id: String, width: Integer, height: Integer, is_animated: Boolean, thumb: PhotoSize, emoji: String, set_name: String, mask_position: MaskPosition, file_size: Integer)
@@ -1791,8 +1805,8 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | y_shift | Float | true | Shift by Y-axis measured in heights of the mask scaled to the face size, from top to bottom. For example, 1.0 will place the mask just below the default mask position. |
 | scale | Float | true | Mask scaling coefficient. For example, 2.0 means double size. |
 
-### Methods
 
+### Methods
 #### sendSticker
 
     sendSticker(chat_id: IntegerOrString, sticker: InputFileOrString, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
@@ -1838,8 +1852,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | name | type | required | description |
 |---|---|---|---|
 | user_id | Integer | true | User identifier of created sticker set owner |
-| name | String | true | Short name of sticker set, to be used in <code>t.me/addstickers/</code> URLs (e.g., <em>animals</em>). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in <em>“_
-by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensitive. 1-64 characters. |
+| name | String | true | Short name of sticker set, to be used in <code>t.me/addstickers/</code> URLs (e.g., <em>animals</em>). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in <em>“_by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensitive. 1-64 characters. |
 | title | String | true | Sticker set title, 1-64 characters |
 | png_sticker | InputFileOrString | false | <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
 | tgs_sticker | InputFile | false | <strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/animated_stickers#technical-requirements"></a><a href="https://core.telegram.org/animated_stickers#technical-requirements">https://core.telegram.org/animated_stickers#technical-requirements</a> for technical requirements |
@@ -1895,13 +1908,14 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 | user_id | Integer | true | User identifier of the sticker set owner |
 | thumb | InputFileOrString | false | A <strong>PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a <strong>TGS</strong> animation with the thumbnail up to 32 kilobytes in size; see <a href="https://core.telegram.org/animated_stickers#technical-requirements"></a><a href="https://core.telegram.org/animated_stickers#technical-requirements">https://core.telegram.org/animated_stickers#technical-requirements</a> for animated sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>. Animated sticker set thumbnail can't be uploaded via HTTP URL. |
 
+
+
 ## Inline mode
 
 ### Data Types
-
 #### InlineQuery
 
-    InlineQuery(id: String, from: User, location: Location, query: String, offset: String)
+    InlineQuery(id: String, from: User, query: String, offset: String, chat_type: String, location: Location)
 
 <p>This object represents an incoming inline query. When the user sends an empty query, your bot could return some default or trending results.</p>
 
@@ -1909,9 +1923,10 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 |---|---|---|---|
 | id | String | true | Unique identifier for this query |
 | from | User | true | Sender |
-| location | Location | false | <em>Optional</em>. Sender location, only for bots that request user location |
 | query | String | true | Text of the query (up to 256 characters) |
 | offset | String | true | Offset of the results to be returned, can be controlled by the bot |
+| chat_type | String | false | <em>Optional</em>. Type of the chat, from which the inline query was sent. Can be either “sender” for a private chat with the inline query sender, “private”, “group”, “supergroup”, or “channel”. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat |
+| location | Location | false | <em>Optional</em>. Sender location, only for bots that request user location |
 
 #### InlineQueryResultArticle
 
@@ -2369,6 +2384,35 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 | last_name | String | false | <em>Optional</em>. Contact's last name |
 | vcard | String | false | <em>Optional</em>. Additional data about the contact in the form of a <a href="https://en.wikipedia.org/wiki/VCard">vCard</a>, 0-2048 bytes |
 
+#### InputInvoiceMessageContent
+
+    InputInvoiceMessageContent(title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean)
+
+<p>Represents the <a href="#inputmessagecontent">content</a> of an invoice message to be sent as the result of an inline query.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| title | String | true | Product name, 1-32 characters |
+| description | String | true | Product description, 1-255 characters |
+| payload | String | true | Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes. |
+| provider_token | String | true | Payment provider token, obtained via <a href="https://t.me/botfather">Botfather</a> |
+| currency | String | true | Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a> |
+| prices | List<LabeledPrice> | true | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.) |
+| max_tip_amount | Integer | false | <em>Optional</em>. The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="https://core.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0 |
+| suggested_tip_amounts | List<Integer> | false | <em>Optional</em>. A JSON-serialized array of suggested amounts of tip in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>. |
+| provider_data | String | false | <em>Optional</em>. A JSON-serialized object for data about the invoice, which will be shared with the payment provider. A detailed description of the required fields should be provided by the payment provider. |
+| photo_url | String | false | <em>Optional</em>. URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for. |
+| photo_size | Integer | false | <em>Optional</em>. Photo size |
+| photo_width | Integer | false | <em>Optional</em>. Photo width |
+| photo_height | Integer | false | <em>Optional</em>. Photo height |
+| need_name | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if you require the user's full name to complete the order |
+| need_phone_number | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if you require the user's phone number to complete the order |
+| need_email | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if you require the user's email address to complete the order |
+| need_shipping_address | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if you require the user's shipping address to complete the order |
+| send_phone_number_to_provider | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if user's phone number should be sent to provider |
+| send_email_to_provider | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if user's email address should be sent to provider |
+| is_flexible | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the final price depends on the shipping method |
+
 #### ChosenInlineResult
 
     ChosenInlineResult(result_id: String, from: User, location: Location, inline_message_id: String, query: String)
@@ -2383,8 +2427,8 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 | inline_message_id | String | false | <em>Optional</em>. Identifier of the sent inline message. Available only if there is an <a href="#inlinekeyboardmarkup">inline keyboard</a> attached to the message. Will be also received in <a href="#callbackquery">callback queries</a> and can be used to <a href="#updating-messages">edit</a> the message. |
 | query | String | true | The query that was used to obtain the result |
 
-### Methods
 
+### Methods
 #### answerInlineQuery
 
     answerInlineQuery(inline_query_id: String, results: List<InlineQueryResult>, cache_time: Integer, is_personal: Boolean, next_offset: String, switch_pm_text: String, switch_pm_parameter: String)
@@ -2401,10 +2445,11 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 | switch_pm_text | String | false | If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter <em>switch_pm_parameter</em> |
 | switch_pm_parameter | String | false | <a href="/bots#deep-linking">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br><br><em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an oauth link. Once done, the bot can offer a <a href="#inlinekeyboardmarkup"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities. |
 
+
+
 ## Payments
 
 ### Data Types
-
 #### LabeledPrice
 
     LabeledPrice(label: String, amount: Integer)
@@ -2515,24 +2560,26 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 | shipping_option_id | String | false | <em>Optional</em>. Identifier of the shipping option chosen by the user |
 | order_info | OrderInfo | false | <em>Optional</em>. Order info provided by the user |
 
-### Methods
 
+### Methods
 #### sendInvoice
 
-    sendInvoice(chat_id: Integer, title: String, description: String, payload: String, provider_token: String, start_parameter: String, currency: String, prices: List<LabeledPrice>, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: InlineKeyboardMarkup)
+    sendInvoice(chat_id: IntegerOrString, title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, start_parameter: String, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to send invoices. On success, the sent <a href="#message">Message</a> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
-| chat_id | Integer | true | Unique identifier for the target private chat |
+| chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | title | String | true | Product name, 1-32 characters |
 | description | String | true | Product description, 1-255 characters |
 | payload | String | true | Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes. |
 | provider_token | String | true | Payments provider token, obtained via <a href="https://t.me/botfather">Botfather</a> |
-| start_parameter | String | true | Unique deep-linking parameter that can be used to generate this invoice when used as a start parameter |
 | currency | String | true | Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a> |
 | prices | List<LabeledPrice> | true | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.) |
+| max_tip_amount | Integer | false | The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="https://core.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0 |
+| suggested_tip_amounts | List<Integer> | false | A JSON-serialized array of suggested amounts of tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>. |
+| start_parameter | String | false | Unique deep-linking parameter. If left empty, <strong>forwarded copies</strong> of the sent message will have a <em>Pay</em> button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a <em>URL</em> button with a deep link to the bot (instead of a <em>Pay</em> button), with the value used as the start parameter |
 | provider_data | String | false | A JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider. |
 | photo_url | String | false | URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for. |
 | photo_size | Integer | false | Photo size |
@@ -2575,10 +2622,11 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 | ok | Boolean | true | Specify <em>True</em> if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order. Use <em>False</em> if there are any problems. |
 | error_message | String | false | Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user. |
 
+
+
 ## Telegram Passport
 
 ### Data Types
-
 #### PassportData
 
     PassportData(data: List<EncryptedPassportElement>, credentials: EncryptedCredentials)
@@ -2752,8 +2800,8 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 | element_hash | String | true | Base64-encoded element hash |
 | message | String | true | Error message |
 
-### Methods
 
+### Methods
 #### setPassportDataErrors
 
     setPassportDataErrors(user_id: Integer, errors: List<PassportElementError>)
@@ -2765,10 +2813,11 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 | user_id | Integer | true | User identifier |
 | errors | List<PassportElementError> | true | A JSON-serialized array describing the errors |
 
+
+
 ## Games
 
 ### Data Types
-
 #### Game
 
     Game(title: String, description: String, photo: List<PhotoSize>, text: String, text_entities: List<MessageEntity>, animation: Animation)
@@ -2796,8 +2845,8 @@ by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensiti
 | user | User | true | User |
 | score | Integer | true | Score |
 
-### Methods
 
+### Methods
 #### sendGame
 
     sendGame(chat_id: Integer, game_short_name: String, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: InlineKeyboardMarkup)
