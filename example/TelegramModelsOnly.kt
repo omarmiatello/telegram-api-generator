@@ -2,12 +2,12 @@ package com.github.omarmiatello.telegram
 
 sealed class TelegramModel
 sealed class InputMedia : TelegramModel()
-sealed class InputMessageContent : TelegramModel()
 sealed class InlineQueryResult : TelegramModel()
 sealed class PassportElementError : TelegramModel()
 sealed class ChatMember : TelegramModel()
 sealed class BotCommandScope : TelegramModel()
 sealed class KeyboardOption : TelegramModel()
+sealed class InputMessageContent : TelegramModel()
 sealed class VoiceChatStarted : TelegramModel()
 data class TelegramResponse<T>(val ok: Boolean, val result: T)
 
@@ -2049,7 +2049,7 @@ data class InputTextMessageContent(
     val parse_mode: ParseMode? = null,
     val entities: List<MessageEntity>? = null,
     val disable_web_page_preview: Boolean? = null,
-) : TelegramModel()
+) : InputMessageContent()
 
 /**
  * <p>Represents the <a href="#inputmessagecontent">content</a> of a location message to be sent as the result of an inline query.</p>

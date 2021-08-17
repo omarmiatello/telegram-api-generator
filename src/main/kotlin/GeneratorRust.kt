@@ -122,7 +122,8 @@ private fun TelegramType.toRustType(): String = when (this) {
             // Example 2: TelegramType.WithAlternative.InputFileOrString -> "${prefixPolymorphic}Any"
             TelegramType.WithAlternative.InputFileOrString -> "String"
             TelegramType.WithAlternative.IntegerOrString -> "String"
-            TelegramType.WithAlternative.KeyboardOption -> name
+            TelegramType.WithAlternative.KeyboardOption,
+            TelegramType.WithAlternative.InputMessageContent -> name
         }
     }
 }

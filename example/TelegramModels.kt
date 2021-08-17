@@ -1,22 +1,159 @@
+@file:UseSerializers(
+    InputMediaSerializer::class,
+    InlineQueryResultSerializer::class,
+    PassportElementErrorSerializer::class,
+    ChatMemberSerializer::class,
+    BotCommandScopeSerializer::class,
+    KeyboardOptionSerializer::class,
+    InputMessageContentSerializer::class,
+    VoiceChatStartedSerializer::class,
+)
+
 package com.github.omarmiatello.telegram
 
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.UseSerializers
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.serializer
 
-private val json = Json { ignoreUnknownKeys = true; prettyPrint = true; encodeDefaults = false }
+private val json = Json {
+    ignoreUnknownKeys = true
+    prettyPrint = true
+    encodeDefaults = false
+}
+
 sealed class TelegramModel { abstract fun toJson(): String }
+@Serializable
 sealed class InputMedia : TelegramModel()
-sealed class InputMessageContent : TelegramModel()
+object InputMediaSerializer : KSerializer<InputMedia> {
+    override val descriptor: SerialDescriptor = InputMedia.serializer().descriptor
+    override fun serialize(encoder: Encoder, value: InputMedia) = when (value) {
+        is InputMediaPhoto -> encoder.encodeSerializableValue(serializer(), value)
+        is InputMediaVideo -> encoder.encodeSerializableValue(serializer(), value)
+        is InputMediaAnimation -> encoder.encodeSerializableValue(serializer(), value)
+        is InputMediaAudio -> encoder.encodeSerializableValue(serializer(), value)
+        is InputMediaDocument -> encoder.encodeSerializableValue(serializer(), value)
+    }
+
+    override fun deserialize(decoder: Decoder): InputMedia = TODO()
+}
+@Serializable
 sealed class InlineQueryResult : TelegramModel()
+object InlineQueryResultSerializer : KSerializer<InlineQueryResult> {
+    override val descriptor: SerialDescriptor = InlineQueryResult.serializer().descriptor
+    override fun serialize(encoder: Encoder, value: InlineQueryResult) = when (value) {
+        is InlineQueryResultArticle -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultPhoto -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultGif -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultMpeg4Gif -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultVideo -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultAudio -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultVoice -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultDocument -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultLocation -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultVenue -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultContact -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultGame -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultCachedPhoto -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultCachedGif -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultCachedMpeg4Gif -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultCachedSticker -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultCachedDocument -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultCachedVideo -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultCachedVoice -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineQueryResultCachedAudio -> encoder.encodeSerializableValue(serializer(), value)
+    }
+
+    override fun deserialize(decoder: Decoder): InlineQueryResult = TODO()
+}
+@Serializable
 sealed class PassportElementError : TelegramModel()
+object PassportElementErrorSerializer : KSerializer<PassportElementError> {
+    override val descriptor: SerialDescriptor = PassportElementError.serializer().descriptor
+    override fun serialize(encoder: Encoder, value: PassportElementError) = when (value) {
+        is PassportElementErrorDataField -> encoder.encodeSerializableValue(serializer(), value)
+        is PassportElementErrorFrontSide -> encoder.encodeSerializableValue(serializer(), value)
+        is PassportElementErrorReverseSide -> encoder.encodeSerializableValue(serializer(), value)
+        is PassportElementErrorSelfie -> encoder.encodeSerializableValue(serializer(), value)
+        is PassportElementErrorFile -> encoder.encodeSerializableValue(serializer(), value)
+        is PassportElementErrorFiles -> encoder.encodeSerializableValue(serializer(), value)
+        is PassportElementErrorTranslationFile -> encoder.encodeSerializableValue(serializer(), value)
+        is PassportElementErrorTranslationFiles -> encoder.encodeSerializableValue(serializer(), value)
+        is PassportElementErrorUnspecified -> encoder.encodeSerializableValue(serializer(), value)
+    }
+
+    override fun deserialize(decoder: Decoder): PassportElementError = TODO()
+}
+@Serializable
 sealed class ChatMember : TelegramModel()
+object ChatMemberSerializer : KSerializer<ChatMember> {
+    override val descriptor: SerialDescriptor = ChatMember.serializer().descriptor
+    override fun serialize(encoder: Encoder, value: ChatMember) = when (value) {
+        is ChatMemberOwner -> encoder.encodeSerializableValue(serializer(), value)
+        is ChatMemberAdministrator -> encoder.encodeSerializableValue(serializer(), value)
+        is ChatMemberMember -> encoder.encodeSerializableValue(serializer(), value)
+        is ChatMemberRestricted -> encoder.encodeSerializableValue(serializer(), value)
+        is ChatMemberLeft -> encoder.encodeSerializableValue(serializer(), value)
+        is ChatMemberBanned -> encoder.encodeSerializableValue(serializer(), value)
+        is ChatMemberUpdated -> encoder.encodeSerializableValue(serializer(), value)
+    }
+
+    override fun deserialize(decoder: Decoder): ChatMember = TODO()
+}
+@Serializable
 sealed class BotCommandScope : TelegramModel()
+object BotCommandScopeSerializer : KSerializer<BotCommandScope> {
+    override val descriptor: SerialDescriptor = BotCommandScope.serializer().descriptor
+    override fun serialize(encoder: Encoder, value: BotCommandScope) = when (value) {
+        is BotCommandScopeDefault -> encoder.encodeSerializableValue(serializer(), value)
+        is BotCommandScopeAllPrivateChats -> encoder.encodeSerializableValue(serializer(), value)
+        is BotCommandScopeAllGroupChats -> encoder.encodeSerializableValue(serializer(), value)
+        is BotCommandScopeAllChatAdministrators -> encoder.encodeSerializableValue(serializer(), value)
+        is BotCommandScopeChat -> encoder.encodeSerializableValue(serializer(), value)
+        is BotCommandScopeChatAdministrators -> encoder.encodeSerializableValue(serializer(), value)
+        is BotCommandScopeChatMember -> encoder.encodeSerializableValue(serializer(), value)
+    }
+
+    override fun deserialize(decoder: Decoder): BotCommandScope = TODO()
+}
+@Serializable
 sealed class KeyboardOption : TelegramModel()
+object KeyboardOptionSerializer : KSerializer<KeyboardOption> {
+    override val descriptor: SerialDescriptor = KeyboardOption.serializer().descriptor
+    override fun serialize(encoder: Encoder, value: KeyboardOption) = when (value) {
+        is ReplyKeyboardMarkup -> encoder.encodeSerializableValue(serializer(), value)
+        is ReplyKeyboardRemove -> encoder.encodeSerializableValue(serializer(), value)
+        is InlineKeyboardMarkup -> encoder.encodeSerializableValue(serializer(), value)
+        is ForceReply -> encoder.encodeSerializableValue(serializer(), value)
+    }
+
+    override fun deserialize(decoder: Decoder): KeyboardOption = TODO()
+}
+@Serializable
+sealed class InputMessageContent : TelegramModel()
+object InputMessageContentSerializer : KSerializer<InputMessageContent> {
+    override val descriptor: SerialDescriptor = InputMessageContent.serializer().descriptor
+    override fun serialize(encoder: Encoder, value: InputMessageContent) = when (value) {
+        is InputTextMessageContent -> encoder.encodeSerializableValue(serializer(), value)
+    }
+
+    override fun deserialize(decoder: Decoder): InputMessageContent = TODO()
+}
+@Serializable
 sealed class VoiceChatStarted : TelegramModel()
+object VoiceChatStartedSerializer : KSerializer<VoiceChatStarted> {
+    override val descriptor: SerialDescriptor = VoiceChatStarted.serializer().descriptor
+    override fun serialize(encoder: Encoder, value: VoiceChatStarted) = TODO()
+    override fun deserialize(decoder: Decoder): VoiceChatStarted = TODO()
+}
 @Serializable
 data class TelegramResponse<T>(val ok: Boolean, val result: T)
 
@@ -2576,7 +2713,7 @@ data class InputTextMessageContent(
     val parse_mode: ParseMode? = null,
     val entities: List<MessageEntity>? = null,
     val disable_web_page_preview: Boolean? = null,
-) : TelegramModel() {
+) : InputMessageContent() {
     override fun toJson() = json.encodeToString(serializer(), this)
     companion object {
         fun fromJson(string: String) = json.decodeFromString(serializer(), string)

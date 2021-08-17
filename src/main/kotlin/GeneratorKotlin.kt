@@ -1,21 +1,57 @@
 fun List<DocSection>.toKotlinModels(useKotlinXSerialization: Boolean) = buildString {
+    val allType = this@toKotlinModels.flatMap { section ->
+        section.docTypes.map { TelegramType.from(it.name) }
+    }
+    if (useKotlinXSerialization) {
+        appendLine("@file:UseSerializers(")
+        TelegramType.allSuper.forEach { type ->
+            appendLine("    ${type.name}Serializer::class,")
+        }
+        appendLine(")\n")
+    }
     appendLine("package com.github.omarmiatello.telegram\n")
     if (useKotlinXSerialization) {
         appendLine("import kotlinx.serialization.Contextual")
+        appendLine("import kotlinx.serialization.KSerializer")
         appendLine("import kotlinx.serialization.Serializable")
+        appendLine("import kotlinx.serialization.UseSerializers")
+        appendLine("import kotlinx.serialization.descriptors.SerialDescriptor")
+        appendLine("import kotlinx.serialization.encoding.Decoder")
+        appendLine("import kotlinx.serialization.encoding.Encoder")
         appendLine("import kotlinx.serialization.json.Json")
         appendLine("import kotlinx.serialization.json.JsonObject")
         appendLine("import kotlinx.serialization.json.JsonPrimitive")
         appendLine("import kotlinx.serialization.json.jsonObject")
-        appendLine()
-        appendLine("private val json = Json { ignoreUnknownKeys = true; prettyPrint = true; encodeDefaults = false }")
+        appendLine("import kotlinx.serialization.serializer\n")
+        appendLine("private val json = Json {")
+        appendLine("    ignoreUnknownKeys = true")
+        appendLine("    prettyPrint = true")
+        appendLine("    encodeDefaults = false")
+        appendLine("}\n")
         appendLine("sealed class TelegramModel { abstract fun toJson(): String }")
     } else {
         appendLine("sealed class TelegramModel")
     }
     TelegramType.allSuper.forEach { type ->
         val superType = TelegramType.from(type.name).superType ?: "TelegramModel"
+        if (useKotlinXSerialization) appendLine("@Serializable")
         appendLine("sealed class ${type.name} : $superType()")
+        if (useKotlinXSerialization) {
+            appendLine("object ${type.name}Serializer : KSerializer<${type.name}> {")
+            appendLine("    override val descriptor: SerialDescriptor = ${type.name}.serializer().descriptor")
+            val allSubtype = allType.filter { it.superType?.name == type.name }
+            if (allSubtype.isEmpty()) {
+                appendLine("    override fun serialize(encoder: Encoder, value: ${type.name}) = TODO()")
+            } else {
+                appendLine("    override fun serialize(encoder: Encoder, value: ${type.name}) = when (value) {")
+                allSubtype.forEach { subtype ->
+                    appendLine("        is ${subtype.name} -> encoder.encodeSerializableValue(serializer(), value)")
+                }
+                appendLine("    }\n")
+            }
+            appendLine("    override fun deserialize(decoder: Decoder): ${type.name} = TODO()")
+            appendLine("}")
+        }
     }
     if (useKotlinXSerialization) appendLine("@Serializable")
     appendLine("data class TelegramResponse<T>(val ok: Boolean, val result: T)")
@@ -218,7 +254,8 @@ private fun TelegramType.toKotlinType(prefixPolymorphic: String = ""): String = 
             // Example 2: TelegramType.WithAlternative.InputFileOrString -> "${prefixPolymorphic}Any"
             TelegramType.WithAlternative.InputFileOrString -> "String"
             TelegramType.WithAlternative.IntegerOrString -> "String"
-            TelegramType.WithAlternative.KeyboardOption -> "${prefixPolymorphic}$name"
+            TelegramType.WithAlternative.KeyboardOption,
+            TelegramType.WithAlternative.InputMessageContent -> "${prefixPolymorphic}$name"
         }
     }
 }

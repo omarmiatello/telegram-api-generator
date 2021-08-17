@@ -47,7 +47,15 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
                 Declared("InlineKeyboardMarkup", KeyboardOption),
                 Declared("ReplyKeyboardMarkup", KeyboardOption),
                 Declared("ReplyKeyboardRemove", KeyboardOption),
-                Declared("ForceReply", KeyboardOption)
+                Declared("ForceReply", KeyboardOption),
+            ),
+            superType = null
+        )
+
+        object InputMessageContent : WithAlternative(
+            name = "InputMessageContent",
+            validTypes = listOf(
+                Declared("InputTextMessageContent", InputMessageContent),
             ),
             superType = null
         )
@@ -60,12 +68,12 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
     companion object {
         val allSuper = listOf(
             Super.InputMedia,
-            Super.InputMessageContent,
             Super.InlineQueryResult,
             Super.PassportElementError,
             Super.ChatMember,
             Super.BotCommandScope,
             WithAlternative.KeyboardOption,
+            WithAlternative.InputMessageContent,
             VoiceChatStarted,
         )
 
