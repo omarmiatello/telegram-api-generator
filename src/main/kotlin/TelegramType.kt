@@ -18,6 +18,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
         object InputMessageContent : Super("InputMessageContent")
         object InlineQueryResult : Super("InlineQueryResult")
         object PassportElementError : Super("PassportElementError")
+        object ChatMember : Super("ChatMember")
+        object BotCommandScope : Super("BotCommandScope")
     }
 
     sealed class WithAlternative(name: String, val validTypes: List<TelegramType>, superType: TelegramType?) : TelegramType(name, superType) {
@@ -61,6 +63,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             Super.InputMessageContent,
             Super.InlineQueryResult,
             Super.PassportElementError,
+            Super.ChatMember,
+            Super.BotCommandScope,
             WithAlternative.KeyboardOption,
             VoiceChatStarted,
         )
@@ -82,6 +86,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             "InputMessageContent" -> Super.InputMessageContent
             "InlineQueryResult" -> Super.InlineQueryResult
             "PassportElementError" -> Super.PassportElementError
+            "ChatMember" -> Super.ChatMember
+            "BotCommandScope" -> Super.BotCommandScope
             "InputFileOrString" -> WithAlternative.InputFileOrString
             "IntegerOrString" -> WithAlternative.IntegerOrString
             "KeyboardOption" -> WithAlternative.KeyboardOption

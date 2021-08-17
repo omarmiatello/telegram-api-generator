@@ -207,7 +207,9 @@ private fun TelegramType.toKotlinType(prefixPolymorphic: String = ""): String = 
             TelegramType.Super.InputMedia,
             TelegramType.Super.InputMessageContent,
             TelegramType.Super.InlineQueryResult,
-            TelegramType.Super.PassportElementError -> "${prefixPolymorphic}$name"
+            TelegramType.Super.PassportElementError,
+            TelegramType.Super.BotCommandScope,
+            TelegramType.Super.ChatMember -> "${prefixPolymorphic}$name"
         }
     }
     is TelegramType.WithAlternative -> {

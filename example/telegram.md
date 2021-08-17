@@ -147,7 +147,7 @@
 
 <p>This object represents a <a href="https://core.telegram.org/bots#keyboards">custom keyboard</a> with reply options (see <a href="https://core.telegram.org/bots#keyboards">Introduction to bots</a> for details and examples).</p>
 
-    ReplyKeyboardMarkup(keyboard: List<List<KeyboardButton>>, resize_keyboard: Boolean, one_time_keyboard: Boolean, selective: Boolean)
+    ReplyKeyboardMarkup(keyboard: List<List<KeyboardButton>>, resize_keyboard: Boolean, one_time_keyboard: Boolean, input_field_placeholder: String, selective: Boolean)
 
 <p>This object represents one button of the reply keyboard. For simple text buttons <em>String</em> can be used instead of this object to specify text of the button. Optional fields <em>request_contact</em>, <em>request_location</em>, and <em>request_poll</em> are mutually exclusive.</p><p><strong>Note:</strong> <em>request_contact</em> and <em>request_location</em> options will only work in Telegram versions released after 9 April, 2016. Older clients will display <em>unsupported message</em>.<br><strong>Note:</strong> <em>request_poll</em> option will only work in Telegram versions released after 23 January, 2020. Older clients will display <em>unsupported message</em>.</p>
 
@@ -190,7 +190,7 @@
  <p>The last option is definitely more attractive. And if you use <a href="#forcereply">ForceReply</a> in your bot's questions, it will receive the user's answers even if it only receives replies, commands and mentions — without any extra work for the user.</p> 
 </blockquote>
 
-    ForceReply(force_reply: Boolean, selective: Boolean)
+    ForceReply(force_reply: Boolean, input_field_placeholder: String, selective: Boolean)
 
 <p>This object represents a chat photo.</p>
 
@@ -200,9 +200,29 @@
 
     ChatInviteLink(invite_link: String, creator: User, is_primary: Boolean, is_revoked: Boolean, expire_date: Integer, member_limit: Integer)
 
-<p>This object contains information about one member of a chat.</p>
+<p>Represents a <a href="#chatmember">chat member</a> that owns the chat and has all administrator privileges.</p>
 
-    ChatMember(user: User, status: String, custom_title: String, is_anonymous: Boolean, can_be_edited: Boolean, can_manage_chat: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_delete_messages: Boolean, can_manage_voice_chats: Boolean, can_restrict_members: Boolean, can_promote_members: Boolean, can_change_info: Boolean, can_invite_users: Boolean, can_pin_messages: Boolean, is_member: Boolean, can_send_messages: Boolean, can_send_media_messages: Boolean, can_send_polls: Boolean, can_send_other_messages: Boolean, can_add_web_page_previews: Boolean, until_date: Integer)
+    ChatMemberOwner(status: String, user: User, is_anonymous: Boolean, custom_title: String)
+
+<p>Represents a <a href="#chatmember">chat member</a> that has some additional privileges.</p>
+
+    ChatMemberAdministrator(status: String, user: User, can_be_edited: Boolean, is_anonymous: Boolean, can_manage_chat: Boolean, can_delete_messages: Boolean, can_manage_voice_chats: Boolean, can_restrict_members: Boolean, can_promote_members: Boolean, can_change_info: Boolean, can_invite_users: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_pin_messages: Boolean, custom_title: String)
+
+<p>Represents a <a href="#chatmember">chat member</a> that has no additional privileges or restrictions.</p>
+
+    ChatMemberMember(status: String, user: User)
+
+<p>Represents a <a href="#chatmember">chat member</a> that is under certain restrictions in the chat. Supergroups only.</p>
+
+    ChatMemberRestricted(status: String, user: User, is_member: Boolean, can_change_info: Boolean, can_invite_users: Boolean, can_pin_messages: Boolean, can_send_messages: Boolean, can_send_media_messages: Boolean, can_send_polls: Boolean, can_send_other_messages: Boolean, can_add_web_page_previews: Boolean, until_date: Integer)
+
+<p>Represents a <a href="#chatmember">chat member</a> that isn't currently a member of the chat, but may join it themselves.</p>
+
+    ChatMemberLeft(status: String, user: User)
+
+<p>Represents a <a href="#chatmember">chat member</a> that was banned in the chat and can't return to the chat or view chat messages.</p>
+
+    ChatMemberBanned(status: String, user: User, until_date: Integer)
 
 <p>This object represents changes in the status of a chat member.</p>
 
@@ -219,6 +239,34 @@
 <p>This object represents a bot command.</p>
 
     BotCommand(command: String, description: String)
+
+<p>Represents the default <a href="#botcommandscope">scope</a> of bot commands. Default commands are used if no commands with a <a href="#determining-list-of-commands">narrower scope</a> are specified for the user.</p>
+
+    BotCommandScopeDefault(type: String)
+
+<p>Represents the <a href="#botcommandscope">scope</a> of bot commands, covering all private chats.</p>
+
+    BotCommandScopeAllPrivateChats(type: String)
+
+<p>Represents the <a href="#botcommandscope">scope</a> of bot commands, covering all group and supergroup chats.</p>
+
+    BotCommandScopeAllGroupChats(type: String)
+
+<p>Represents the <a href="#botcommandscope">scope</a> of bot commands, covering all group and supergroup chat administrators.</p>
+
+    BotCommandScopeAllChatAdministrators(type: String)
+
+<p>Represents the <a href="#botcommandscope">scope</a> of bot commands, covering a specific chat.</p>
+
+    BotCommandScopeChat(type: String, chat_id: IntegerOrString)
+
+<p>Represents the <a href="#botcommandscope">scope</a> of bot commands, covering all administrators of a specific group or supergroup chat.</p>
+
+    BotCommandScopeChatAdministrators(type: String, chat_id: IntegerOrString)
+
+<p>Represents the <a href="#botcommandscope">scope</a> of bot commands, covering a specific member of a group or supergroup chat.</p>
+
+    BotCommandScopeChatMember(type: String, chat_id: IntegerOrString, user_id: Integer)
 
 <p>Contains information about why a request was unsuccessful.</p>
 
@@ -309,7 +357,7 @@
 
     editMessageLiveLocation(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, latitude: Float, longitude: Float, horizontal_accuracy: Float, heading: Integer, proximity_alert_radius: Integer, reply_markup: InlineKeyboardMarkup)
 
-<p>Use this method to stop updating a live location message before <em>live_period</em> expires. On success, if the message was sent by the bot, the sent <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to stop updating a live location message before <em>live_period</em> expires. On success, if the message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
 
     stopMessageLiveLocation(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
 
@@ -343,11 +391,11 @@
 
     getFile(file_id: String)
 
-<p>Use this method to kick a user from a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless <a href="#unbanchatmember">unbanned</a> first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+<p>Use this method to ban a user in a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless <a href="#unbanchatmember">unbanned</a> first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
 
-    kickChatMember(chat_id: IntegerOrString, user_id: Integer, until_date: Integer, revoke_messages: Boolean)
+    banChatMember(chat_id: IntegerOrString, user_id: Integer, until_date: Integer, revoke_messages: Boolean)
 
-<p>Use this method to unban a previously kicked user in a supergroup or channel. The user will <strong>not</strong> return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. By default, this method guarantees that after the call the user is not a member of the chat, but will be able to join it. So if the user is a member of the chat they will also be <strong>removed</strong> from the chat. If you don't want this, use the parameter <em>only_if_banned</em>. Returns <em>True</em> on success.</p>
+<p>Use this method to unban a previously banned user in a supergroup or channel. The user will <strong>not</strong> return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. By default, this method guarantees that after the call the user is not a member of the chat, but will be able to join it. So if the user is a member of the chat they will also be <strong>removed</strong> from the chat. If you don't want this, use the parameter <em>only_if_banned</em>. Returns <em>True</em> on success.</p>
 
     unbanChatMember(chat_id: IntegerOrString, user_id: Integer, only_if_banned: Boolean)
 
@@ -427,7 +475,7 @@
 
 <p>Use this method to get the number of members in a chat. Returns <em>Int</em> on success.</p>
 
-    getChatMembersCount(chat_id: IntegerOrString)
+    getChatMemberCount(chat_id: IntegerOrString)
 
 <p>Use this method to get information about a member of a chat. Returns a <a href="#chatmember">ChatMember</a> object on success.</p>
 
@@ -447,13 +495,17 @@
 
     answerCallbackQuery(callback_query_id: String, text: String, show_alert: Boolean, url: String, cache_time: Integer)
 
-<p>Use this method to change the list of the bot's commands. Returns <em>True</em> on success.</p>
+<p>Use this method to change the list of the bot's commands. See <a href="https://core.telegram.org/bots#commands"></a><a href="https://core.telegram.org/bots#commands">https://core.telegram.org/bots#commands</a> for more details about bot commands. Returns <em>True</em> on success.</p>
 
-    setMyCommands(commands: List<BotCommand>)
+    setMyCommands(commands: List<BotCommand>, scope: BotCommandScope, language_code: String)
 
-<p>Use this method to get the current list of the bot's commands. Requires no parameters. Returns Array of <a href="#botcommand">BotCommand</a> on success.</p>
+<p>Use this method to delete the list of the bot's commands for the given scope and user language. After deletion, <a href="#determining-list-of-commands">higher level commands</a> will be shown to affected users. Returns <em>True</em> on success.</p>
 
-    getMyCommands()
+    deleteMyCommands(scope: BotCommandScope, language_code: String)
+
+<p>Use this method to get the current list of the bot's commands for the given scope and user language. Returns Array of <a href="#botcommand">BotCommand</a> on success. If commands aren't set, an empty list is returned.</p>
+
+    getMyCommands(scope: BotCommandScope, language_code: String)
 
 
 
@@ -468,7 +520,7 @@
 
     editMessageCaption(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, reply_markup: InlineKeyboardMarkup)
 
-<p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded. Use a previously uploaded file via its file_id or specify a URL. On success, if the edited message was sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
 
     editMessageMedia(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, media: InputMedia, reply_markup: InlineKeyboardMarkup)
 
@@ -476,7 +528,7 @@
 
     editMessageReplyMarkup(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
 
-<p>Use this method to stop a poll which was sent by the bot. On success, the stopped <a href="#poll">Poll</a> with the final results is returned.</p>
+<p>Use this method to stop a poll which was sent by the bot. On success, the stopped <a href="#poll">Poll</a> is returned.</p>
 
     stopPoll(chat_id: IntegerOrString, message_id: Integer, reply_markup: InlineKeyboardMarkup)
 
@@ -789,7 +841,7 @@
 
     sendGame(chat_id: Integer, game_short_name: String, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: InlineKeyboardMarkup)
 
-<p>Use this method to set the score of the specified user in a game. On success, if the message was sent by the bot, returns the edited <a href="#message">Message</a>, otherwise returns <em>True</em>. Returns an error, if the new score is not greater than the user's current score in the chat and <em>force</em> is <em>False</em>.</p>
+<p>Use this method to set the score of the specified user in a game message. On success, if the message is not an inline message, the <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Returns an error, if the new score is not greater than the user's current score in the chat and <em>force</em> is <em>False</em>.</p>
 
     setGameScore(user_id: Integer, score: Integer, force: Boolean, disable_edit_message: Boolean, chat_id: Integer, message_id: Integer, inline_message_id: String)
 

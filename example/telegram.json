@@ -107,7 +107,10 @@
             "name": "my_chat_member",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. The bot\u0027s chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user.",
             "type": {
-              "name": "ChatMemberUpdated"
+              "name": "ChatMemberUpdated",
+              "superType": {
+                "name": "ChatMember"
+              }
             },
             "required": false
           },
@@ -115,7 +118,10 @@
             "name": "chat_member",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. A chat member\u0027s status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify “chat_member” in the list of \u003cem\u003eallowed_updates\u003c/em\u003e to receive these updates.",
             "type": {
-              "name": "ChatMemberUpdated"
+              "name": "ChatMemberUpdated",
+              "superType": {
+                "name": "ChatMember"
+              }
             },
             "required": false
           }
@@ -2095,6 +2101,14 @@
             "required": false
           },
           {
+            "name": "input_field_placeholder",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. The placeholder to be shown in the input field when the keyboard is active; 1-64 characters",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
             "name": "selective",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the \u003cem\u003etext\u003c/em\u003e of the \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e object; 2) if the bot\u0027s message is a reply (has \u003cem\u003ereply_to_message_id\u003c/em\u003e), sender of the original message.\u003cbr\u003e\u003cbr\u003e\u003cem\u003eExample:\u003c/em\u003e A user requests to change the bot\u0027s language, bot replies to the request with a keyboard to select the new language. Other users in the group don\u0027t see the keyboard.",
             "type": {
@@ -2381,6 +2395,14 @@
             "required": true
           },
           {
+            "name": "input_field_placeholder",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. The placeholder to be shown in the input field when the reply is active; 1-64 characters",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
             "name": "selective",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the \u003cem\u003etext\u003c/em\u003e of the \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e object; 2) if the bot\u0027s message is a reply (has \u003cem\u003ereply_to_message_id\u003c/em\u003e), sender of the original message.",
             "type": {
@@ -2483,9 +2505,17 @@
         ]
       },
       {
-        "name": "ChatMember",
-        "description": "\u003cp\u003eThis object contains information about one member of a chat.\u003c/p\u003e",
+        "name": "ChatMemberOwner",
+        "description": "\u003cp\u003eRepresents a \u003ca href\u003d\"#chatmember\"\u003echat member\u003c/a\u003e that owns the chat and has all administrator privileges.\u003c/p\u003e",
         "docFields": [
+          {
+            "name": "status",
+            "description": "The member\u0027s status in the chat, always “creator”",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
           {
             "name": "user",
             "description": "Information about the user",
@@ -2495,48 +2525,118 @@
             "required": true
           },
           {
+            "name": "is_anonymous",
+            "description": "True, if the user\u0027s presence in the chat is hidden",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "custom_title",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Custom title for this user",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          }
+        ]
+      },
+      {
+        "name": "ChatMemberAdministrator",
+        "description": "\u003cp\u003eRepresents a \u003ca href\u003d\"#chatmember\"\u003echat member\u003c/a\u003e that has some additional privileges.\u003c/p\u003e",
+        "docFields": [
+          {
             "name": "status",
-            "description": "The member\u0027s status in the chat. Can be “creator”, “administrator”, “member”, “restricted”, “left” or “kicked”",
+            "description": "The member\u0027s status in the chat, always “administrator”",
             "type": {
               "name": "String"
             },
             "required": true
           },
           {
-            "name": "custom_title",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Owner and administrators only. Custom title for this user",
+            "name": "user",
+            "description": "Information about the user",
             "type": {
-              "name": "String"
+              "name": "User"
             },
-            "required": false
-          },
-          {
-            "name": "is_anonymous",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Owner and administrators only. True, if the user\u0027s presence in the chat is hidden",
-            "type": {
-              "name": "Boolean"
-            },
-            "required": false
+            "required": true
           },
           {
             "name": "can_be_edited",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the bot is allowed to edit administrator privileges of that user",
+            "description": "True, if the bot is allowed to edit administrator privileges of that user",
             "type": {
               "name": "Boolean"
             },
-            "required": false
+            "required": true
+          },
+          {
+            "name": "is_anonymous",
+            "description": "True, if the user\u0027s presence in the chat is hidden",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
           },
           {
             "name": "can_manage_chat",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
+            "description": "True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
             "type": {
               "name": "Boolean"
             },
-            "required": false
+            "required": true
+          },
+          {
+            "name": "can_delete_messages",
+            "description": "True, if the administrator can delete messages of other users",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "can_manage_voice_chats",
+            "description": "True, if the administrator can manage voice chats",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "can_restrict_members",
+            "description": "True, if the administrator can restrict, ban or unban chat members",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "can_promote_members",
+            "description": "True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "can_change_info",
+            "description": "True, if the user is allowed to change the chat title, photo and other settings",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "can_invite_users",
+            "description": "True, if the user is allowed to invite new users to the chat",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
           },
           {
             "name": "can_post_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can post in the channel; channels only",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the administrator can post in the channel; channels only",
             "type": {
               "name": "Boolean"
             },
@@ -2544,55 +2644,7 @@
           },
           {
             "name": "can_edit_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can edit messages of other users and can pin messages; channels only",
-            "type": {
-              "name": "Boolean"
-            },
-            "required": false
-          },
-          {
-            "name": "can_delete_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can delete messages of other users",
-            "type": {
-              "name": "Boolean"
-            },
-            "required": false
-          },
-          {
-            "name": "can_manage_voice_chats",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can manage voice chats",
-            "type": {
-              "name": "Boolean"
-            },
-            "required": false
-          },
-          {
-            "name": "can_restrict_members",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can restrict, ban or unban chat members",
-            "type": {
-              "name": "Boolean"
-            },
-            "required": false
-          },
-          {
-            "name": "can_promote_members",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators only. True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)",
-            "type": {
-              "name": "Boolean"
-            },
-            "required": false
-          },
-          {
-            "name": "can_change_info",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators and restricted only. True, if the user is allowed to change the chat title, photo and other settings",
-            "type": {
-              "name": "Boolean"
-            },
-            "required": false
-          },
-          {
-            "name": "can_invite_users",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators and restricted only. True, if the user is allowed to invite new users to the chat",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the administrator can edit messages of other users and can pin messages; channels only",
             "type": {
               "name": "Boolean"
             },
@@ -2600,67 +2652,195 @@
           },
           {
             "name": "can_pin_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Administrators and restricted only. True, if the user is allowed to pin messages; groups and supergroups only",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to pin messages; groups and supergroups only",
             "type": {
               "name": "Boolean"
             },
             "required": false
+          },
+          {
+            "name": "custom_title",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Custom title for this user",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          }
+        ]
+      },
+      {
+        "name": "ChatMemberMember",
+        "description": "\u003cp\u003eRepresents a \u003ca href\u003d\"#chatmember\"\u003echat member\u003c/a\u003e that has no additional privileges or restrictions.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "status",
+            "description": "The member\u0027s status in the chat, always “member”",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "user",
+            "description": "Information about the user",
+            "type": {
+              "name": "User"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "ChatMemberRestricted",
+        "description": "\u003cp\u003eRepresents a \u003ca href\u003d\"#chatmember\"\u003echat member\u003c/a\u003e that is under certain restrictions in the chat. Supergroups only.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "status",
+            "description": "The member\u0027s status in the chat, always “restricted”",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "user",
+            "description": "Information about the user",
+            "type": {
+              "name": "User"
+            },
+            "required": true
           },
           {
             "name": "is_member",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted only. True, if the user is a member of the chat at the moment of the request",
+            "description": "True, if the user is a member of the chat at the moment of the request",
             "type": {
               "name": "Boolean"
             },
-            "required": false
+            "required": true
+          },
+          {
+            "name": "can_change_info",
+            "description": "True, if the user is allowed to change the chat title, photo and other settings",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "can_invite_users",
+            "description": "True, if the user is allowed to invite new users to the chat",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "can_pin_messages",
+            "description": "True, if the user is allowed to pin messages",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
           },
           {
             "name": "can_send_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted only. True, if the user is allowed to send text messages, contacts, locations and venues",
+            "description": "True, if the user is allowed to send text messages, contacts, locations and venues",
             "type": {
               "name": "Boolean"
             },
-            "required": false
+            "required": true
           },
           {
             "name": "can_send_media_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted only. True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes",
+            "description": "True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes",
             "type": {
               "name": "Boolean"
             },
-            "required": false
+            "required": true
           },
           {
             "name": "can_send_polls",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted only. True, if the user is allowed to send polls",
+            "description": "True, if the user is allowed to send polls",
             "type": {
               "name": "Boolean"
             },
-            "required": false
+            "required": true
           },
           {
             "name": "can_send_other_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted only. True, if the user is allowed to send animations, games, stickers and use inline bots",
+            "description": "True, if the user is allowed to send animations, games, stickers and use inline bots",
             "type": {
               "name": "Boolean"
             },
-            "required": false
+            "required": true
           },
           {
             "name": "can_add_web_page_previews",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted only. True, if the user is allowed to add web page previews to their messages",
+            "description": "True, if the user is allowed to add web page previews to their messages",
             "type": {
               "name": "Boolean"
             },
-            "required": false
+            "required": true
           },
           {
             "name": "until_date",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time",
+            "description": "Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever",
             "type": {
               "name": "Integer"
             },
-            "required": false
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "ChatMemberLeft",
+        "description": "\u003cp\u003eRepresents a \u003ca href\u003d\"#chatmember\"\u003echat member\u003c/a\u003e that isn\u0027t currently a member of the chat, but may join it themselves.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "status",
+            "description": "The member\u0027s status in the chat, always “left”",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "user",
+            "description": "Information about the user",
+            "type": {
+              "name": "User"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "ChatMemberBanned",
+        "description": "\u003cp\u003eRepresents a \u003ca href\u003d\"#chatmember\"\u003echat member\u003c/a\u003e that was banned in the chat and can\u0027t return to the chat or view chat messages.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "status",
+            "description": "The member\u0027s status in the chat, always “kicked”",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "user",
+            "description": "Information about the user",
+            "type": {
+              "name": "User"
+            },
+            "required": true
+          },
+          {
+            "name": "until_date",
+            "description": "Date when restrictions will be lifted for this user; unix time. If 0, then the user is banned forever",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
           }
         ]
       },
@@ -2827,6 +3007,160 @@
             "description": "Description of the command, 3-256 characters.",
             "type": {
               "name": "String"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "BotCommandScopeDefault",
+        "description": "\u003cp\u003eRepresents the default \u003ca href\u003d\"#botcommandscope\"\u003escope\u003c/a\u003e of bot commands. Default commands are used if no commands with a \u003ca href\u003d\"#determining-list-of-commands\"\u003enarrower scope\u003c/a\u003e are specified for the user.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "Scope type, must be \u003cem\u003edefault\u003c/em\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "BotCommandScopeAllPrivateChats",
+        "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#botcommandscope\"\u003escope\u003c/a\u003e of bot commands, covering all private chats.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "Scope type, must be \u003cem\u003eall_private_chats\u003c/em\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "BotCommandScopeAllGroupChats",
+        "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#botcommandscope\"\u003escope\u003c/a\u003e of bot commands, covering all group and supergroup chats.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "Scope type, must be \u003cem\u003eall_group_chats\u003c/em\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "BotCommandScopeAllChatAdministrators",
+        "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#botcommandscope\"\u003escope\u003c/a\u003e of bot commands, covering all group and supergroup chat administrators.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "Scope type, must be \u003cem\u003eall_chat_administrators\u003c/em\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "BotCommandScopeChat",
+        "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#botcommandscope\"\u003escope\u003c/a\u003e of bot commands, covering a specific chat.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "Scope type, must be \u003cem\u003echat\u003c/em\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target supergroup (in the format \u003ccode\u003e@supergroupusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "BotCommandScopeChatAdministrators",
+        "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#botcommandscope\"\u003escope\u003c/a\u003e of bot commands, covering all administrators of a specific group or supergroup chat.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "Scope type, must be \u003cem\u003echat_administrators\u003c/em\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target supergroup (in the format \u003ccode\u003e@supergroupusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "BotCommandScopeChatMember",
+        "description": "\u003cp\u003eRepresents the \u003ca href\u003d\"#botcommandscope\"\u003escope\u003c/a\u003e of bot commands, covering a specific member of a group or supergroup chat.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "Scope type, must be \u003cem\u003echat_member\u003c/em\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target supergroup (in the format \u003ccode\u003e@supergroupusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          },
+          {
+            "name": "user_id",
+            "description": "Unique identifier of the target user",
+            "type": {
+              "name": "Integer"
             },
             "required": true
           }
@@ -4810,7 +5144,7 @@
       },
       {
         "name": "stopMessageLiveLocation",
-        "description": "\u003cp\u003eUse this method to stop updating a live location message before \u003cem\u003elive_period\u003c/em\u003e expires. On success, if the message was sent by the bot, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to stop updating a live location message before \u003cem\u003elive_period\u003c/em\u003e expires. On success, if the message is not an inline message, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -5448,8 +5782,8 @@
         }
       },
       {
-        "name": "kickChatMember",
-        "description": "\u003cp\u003eUse this method to kick a user from a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless \u003ca href\u003d\"#unbanchatmember\"\u003eunbanned\u003c/a\u003e first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "name": "banChatMember",
+        "description": "\u003cp\u003eUse this method to ban a user in a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless \u003ca href\u003d\"#unbanchatmember\"\u003eunbanned\u003c/a\u003e first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -5498,7 +5832,7 @@
       },
       {
         "name": "unbanChatMember",
-        "description": "\u003cp\u003eUse this method to unban a previously kicked user in a supergroup or channel. The user will \u003cstrong\u003enot\u003c/strong\u003e return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. By default, this method guarantees that after the call the user is not a member of the chat, but will be able to join it. So if the user is a member of the chat they will also be \u003cstrong\u003eremoved\u003c/strong\u003e from the chat. If you don\u0027t want this, use the parameter \u003cem\u003eonly_if_banned\u003c/em\u003e. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to unban a previously banned user in a supergroup or channel. The user will \u003cstrong\u003enot\u003c/strong\u003e return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. By default, this method guarantees that after the call the user is not a member of the chat, but will be able to join it. So if the user is a member of the chat they will also be \u003cstrong\u003eremoved\u003c/strong\u003e from the chat. If you don\u0027t want this, use the parameter \u003cem\u003eonly_if_banned\u003c/em\u003e. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6231,7 +6565,7 @@
         }
       },
       {
-        "name": "getChatMembersCount",
+        "name": "getChatMemberCount",
         "description": "\u003cp\u003eUse this method to get the number of members in a chat. Returns \u003cem\u003eInt\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
@@ -6397,7 +6731,7 @@
       },
       {
         "name": "setMyCommands",
-        "description": "\u003cp\u003eUse this method to change the list of the bot\u0027s commands. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to change the list of the bot\u0027s commands. See \u003ca href\u003d\"https://core.telegram.org/bots#commands\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/bots#commands\"\u003ehttps://core.telegram.org/bots#commands\u003c/a\u003e for more details about bot commands. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "commands",
@@ -6409,6 +6743,47 @@
               "name": "List\u003cBotCommand\u003e"
             },
             "required": true
+          },
+          {
+            "name": "scope",
+            "description": "A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to \u003ca href\u003d\"#botcommandscopedefault\"\u003eBotCommandScopeDefault\u003c/a\u003e.",
+            "type": {
+              "name": "BotCommandScope"
+            },
+            "required": false
+          },
+          {
+            "name": "language_code",
+            "description": "A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
+      },
+      {
+        "name": "deleteMyCommands",
+        "description": "\u003cp\u003eUse this method to delete the list of the bot\u0027s commands for the given scope and user language. After deletion, \u003ca href\u003d\"#determining-list-of-commands\"\u003ehigher level commands\u003c/a\u003e will be shown to affected users. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "scope",
+            "description": "A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to \u003ca href\u003d\"#botcommandscopedefault\"\u003eBotCommandScopeDefault\u003c/a\u003e.",
+            "type": {
+              "name": "BotCommandScope"
+            },
+            "required": false
+          },
+          {
+            "name": "language_code",
+            "description": "A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands",
+            "type": {
+              "name": "String"
+            },
+            "required": false
           }
         ],
         "returns": {
@@ -6417,13 +6792,27 @@
       },
       {
         "name": "getMyCommands",
-        "description": "\u003cp\u003eUse this method to get the current list of the bot\u0027s commands. Requires no parameters. Returns Array of \u003ca href\u003d\"#botcommand\"\u003eBotCommand\u003c/a\u003e on success.\u003c/p\u003e",
-        "docParameters": [],
-        "returns": {
-          "elementType": {
-            "name": "BotCommand"
+        "description": "\u003cp\u003eUse this method to get the current list of the bot\u0027s commands for the given scope and user language. Returns Array of \u003ca href\u003d\"#botcommand\"\u003eBotCommand\u003c/a\u003e on success. If commands aren\u0027t set, an empty list is returned.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "scope",
+            "description": "A JSON-serialized object, describing scope of users. Defaults to \u003ca href\u003d\"#botcommandscopedefault\"\u003eBotCommandScopeDefault\u003c/a\u003e.",
+            "type": {
+              "name": "BotCommandScope"
+            },
+            "required": false
           },
-          "name": "List\u003cBotCommand\u003e"
+          {
+            "name": "language_code",
+            "description": "A two-letter ISO 639-1 language code or an empty string",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "name": "list"
         }
       }
     ]
@@ -6629,7 +7018,7 @@
       },
       {
         "name": "editMessageMedia",
-        "description": "\u003cp\u003eUse this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can\u0027t be uploaded. Use a previously uploaded file via its file_id or specify a URL. On success, if the edited message was sent by the bot, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can\u0027t be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6769,7 +7158,7 @@
       },
       {
         "name": "stopPoll",
-        "description": "\u003cp\u003eUse this method to stop a poll which was sent by the bot. On success, the stopped \u003ca href\u003d\"#poll\"\u003ePoll\u003c/a\u003e with the final results is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to stop a poll which was sent by the bot. On success, the stopped \u003ca href\u003d\"#poll\"\u003ePoll\u003c/a\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -11625,7 +12014,7 @@
       },
       {
         "name": "setGameScore",
-        "description": "\u003cp\u003eUse this method to set the score of the specified user in a game. On success, if the message was sent by the bot, returns the edited \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e, otherwise returns \u003cem\u003eTrue\u003c/em\u003e. Returns an error, if the new score is not greater than the user\u0027s current score in the chat and \u003cem\u003eforce\u003c/em\u003e is \u003cem\u003eFalse\u003c/em\u003e.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to set the score of the specified user in a game message. On success, if the message is not an inline message, the \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned, otherwise \u003cem\u003eTrue\u003c/em\u003e is returned. Returns an error, if the new score is not greater than the user\u0027s current score in the chat and \u003cem\u003eforce\u003c/em\u003e is \u003cem\u003eFalse\u003c/em\u003e.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "user_id",

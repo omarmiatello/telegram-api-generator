@@ -1072,6 +1072,7 @@ pub struct File {
  * @property keyboard Array of button rows, each represented by an Array of <a href="#keyboardbutton">KeyboardButton</a> objects
  * @property resize_keyboard <em>Optional</em>. Requests clients to resize the keyboard vertically for optimal fit (e.g., make the keyboard smaller if there are just two rows of buttons). Defaults to <em>false</em>, in which case the custom keyboard is always of the same height as the app's standard keyboard.
  * @property one_time_keyboard <em>Optional</em>. Requests clients to hide the keyboard as soon as it's been used. The keyboard will still be available, but clients will automatically display the usual letter-keyboard in the chat – the user can press a special button in the input field to see the custom keyboard again. Defaults to <em>false</em>.
+ * @property input_field_placeholder <em>Optional</em>. The placeholder to be shown in the input field when the keyboard is active; 1-64 characters
  * @property selective <em>Optional</em>. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the <em>text</em> of the <a href="#message">Message</a> object; 2) if the bot's message is a reply (has <em>reply_to_message_id</em>), sender of the original message.<br><br><em>Example:</em> A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.
  *
  * @constructor Creates a [ReplyKeyboardMarkup].
@@ -1086,6 +1087,9 @@ pub struct ReplyKeyboardMarkup {
     /// <em>Optional</em>. Requests clients to hide the keyboard as soon as it's been used. The keyboard will still be available, but clients will automatically display the usual letter-keyboard in the chat – the user can press a special button in the input field to see the custom keyboard again. Defaults to <em>false</em>.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub one_time_keyboard: Option<bool>,
+    /// <em>Optional</em>. The placeholder to be shown in the input field when the keyboard is active; 1-64 characters
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub input_field_placeholder: Option<String>,
     /// <em>Optional</em>. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the <em>text</em> of the <a href="#message">Message</a> object; 2) if the bot's message is a reply (has <em>reply_to_message_id</em>), sender of the original message.<br><br><em>Example:</em> A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub selective: Option<bool>
@@ -1277,6 +1281,7 @@ pub struct CallbackQuery {
  * </blockquote>
  *
  * @property force_reply Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply'
+ * @property input_field_placeholder <em>Optional</em>. The placeholder to be shown in the input field when the reply is active; 1-64 characters
  * @property selective <em>Optional</em>. Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the <em>text</em> of the <a href="#message">Message</a> object; 2) if the bot's message is a reply (has <em>reply_to_message_id</em>), sender of the original message.
  *
  * @constructor Creates a [ForceReply].
@@ -1285,6 +1290,9 @@ pub struct CallbackQuery {
 pub struct ForceReply {
     /// Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply'
     pub force_reply: bool,
+    /// <em>Optional</em>. The placeholder to be shown in the input field when the reply is active; 1-64 characters
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub input_field_placeholder: Option<String>,
     /// <em>Optional</em>. Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the <em>text</em> of the <a href="#message">Message</a> object; 2) if the bot's message is a reply (has <em>reply_to_message_id</em>), sender of the original message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub selective: Option<bool>
@@ -1343,99 +1351,182 @@ pub struct ChatInviteLink {
 }
 
 /**
- * <p>This object contains information about one member of a chat.</p>
+ * <p>Represents a <a href="#chatmember">chat member</a> that owns the chat and has all administrator privileges.</p>
  *
+ * @property status The member's status in the chat, always “creator”
  * @property user Information about the user
- * @property status The member's status in the chat. Can be “creator”, “administrator”, “member”, “restricted”, “left” or “kicked”
- * @property custom_title <em>Optional</em>. Owner and administrators only. Custom title for this user
- * @property is_anonymous <em>Optional</em>. Owner and administrators only. True, if the user's presence in the chat is hidden
- * @property can_be_edited <em>Optional</em>. Administrators only. True, if the bot is allowed to edit administrator privileges of that user
- * @property can_manage_chat <em>Optional</em>. Administrators only. True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
- * @property can_post_messages <em>Optional</em>. Administrators only. True, if the administrator can post in the channel; channels only
- * @property can_edit_messages <em>Optional</em>. Administrators only. True, if the administrator can edit messages of other users and can pin messages; channels only
- * @property can_delete_messages <em>Optional</em>. Administrators only. True, if the administrator can delete messages of other users
- * @property can_manage_voice_chats <em>Optional</em>. Administrators only. True, if the administrator can manage voice chats
- * @property can_restrict_members <em>Optional</em>. Administrators only. True, if the administrator can restrict, ban or unban chat members
- * @property can_promote_members <em>Optional</em>. Administrators only. True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)
- * @property can_change_info <em>Optional</em>. Administrators and restricted only. True, if the user is allowed to change the chat title, photo and other settings
- * @property can_invite_users <em>Optional</em>. Administrators and restricted only. True, if the user is allowed to invite new users to the chat
- * @property can_pin_messages <em>Optional</em>. Administrators and restricted only. True, if the user is allowed to pin messages; groups and supergroups only
- * @property is_member <em>Optional</em>. Restricted only. True, if the user is a member of the chat at the moment of the request
- * @property can_send_messages <em>Optional</em>. Restricted only. True, if the user is allowed to send text messages, contacts, locations and venues
- * @property can_send_media_messages <em>Optional</em>. Restricted only. True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes
- * @property can_send_polls <em>Optional</em>. Restricted only. True, if the user is allowed to send polls
- * @property can_send_other_messages <em>Optional</em>. Restricted only. True, if the user is allowed to send animations, games, stickers and use inline bots
- * @property can_add_web_page_previews <em>Optional</em>. Restricted only. True, if the user is allowed to add web page previews to their messages
- * @property until_date <em>Optional</em>. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time
+ * @property is_anonymous True, if the user's presence in the chat is hidden
+ * @property custom_title <em>Optional</em>. Custom title for this user
  *
- * @constructor Creates a [ChatMember].
+ * @constructor Creates a [ChatMemberOwner].
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
-pub struct ChatMember {
+pub struct ChatMemberOwner {
+    /// The member's status in the chat, always “creator”
+    pub status: String,
     /// Information about the user
     pub user: User,
-    /// The member's status in the chat. Can be “creator”, “administrator”, “member”, “restricted”, “left” or “kicked”
+    /// True, if the user's presence in the chat is hidden
+    pub is_anonymous: bool,
+    /// <em>Optional</em>. Custom title for this user
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_title: Option<String>
+}
+
+/**
+ * <p>Represents a <a href="#chatmember">chat member</a> that has some additional privileges.</p>
+ *
+ * @property status The member's status in the chat, always “administrator”
+ * @property user Information about the user
+ * @property can_be_edited True, if the bot is allowed to edit administrator privileges of that user
+ * @property is_anonymous True, if the user's presence in the chat is hidden
+ * @property can_manage_chat True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
+ * @property can_delete_messages True, if the administrator can delete messages of other users
+ * @property can_manage_voice_chats True, if the administrator can manage voice chats
+ * @property can_restrict_members True, if the administrator can restrict, ban or unban chat members
+ * @property can_promote_members True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)
+ * @property can_change_info True, if the user is allowed to change the chat title, photo and other settings
+ * @property can_invite_users True, if the user is allowed to invite new users to the chat
+ * @property can_post_messages <em>Optional</em>. True, if the administrator can post in the channel; channels only
+ * @property can_edit_messages <em>Optional</em>. True, if the administrator can edit messages of other users and can pin messages; channels only
+ * @property can_pin_messages <em>Optional</em>. True, if the user is allowed to pin messages; groups and supergroups only
+ * @property custom_title <em>Optional</em>. Custom title for this user
+ *
+ * @constructor Creates a [ChatMemberAdministrator].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ChatMemberAdministrator {
+    /// The member's status in the chat, always “administrator”
     pub status: String,
-    /// <em>Optional</em>. Owner and administrators only. Custom title for this user
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_title: Option<String>,
-    /// <em>Optional</em>. Owner and administrators only. True, if the user's presence in the chat is hidden
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub is_anonymous: Option<bool>,
-    /// <em>Optional</em>. Administrators only. True, if the bot is allowed to edit administrator privileges of that user
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_be_edited: Option<bool>,
-    /// <em>Optional</em>. Administrators only. True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_manage_chat: Option<bool>,
-    /// <em>Optional</em>. Administrators only. True, if the administrator can post in the channel; channels only
+    /// Information about the user
+    pub user: User,
+    /// True, if the bot is allowed to edit administrator privileges of that user
+    pub can_be_edited: bool,
+    /// True, if the user's presence in the chat is hidden
+    pub is_anonymous: bool,
+    /// True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
+    pub can_manage_chat: bool,
+    /// True, if the administrator can delete messages of other users
+    pub can_delete_messages: bool,
+    /// True, if the administrator can manage voice chats
+    pub can_manage_voice_chats: bool,
+    /// True, if the administrator can restrict, ban or unban chat members
+    pub can_restrict_members: bool,
+    /// True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)
+    pub can_promote_members: bool,
+    /// True, if the user is allowed to change the chat title, photo and other settings
+    pub can_change_info: bool,
+    /// True, if the user is allowed to invite new users to the chat
+    pub can_invite_users: bool,
+    /// <em>Optional</em>. True, if the administrator can post in the channel; channels only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_post_messages: Option<bool>,
-    /// <em>Optional</em>. Administrators only. True, if the administrator can edit messages of other users and can pin messages; channels only
+    /// <em>Optional</em>. True, if the administrator can edit messages of other users and can pin messages; channels only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_edit_messages: Option<bool>,
-    /// <em>Optional</em>. Administrators only. True, if the administrator can delete messages of other users
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_delete_messages: Option<bool>,
-    /// <em>Optional</em>. Administrators only. True, if the administrator can manage voice chats
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_manage_voice_chats: Option<bool>,
-    /// <em>Optional</em>. Administrators only. True, if the administrator can restrict, ban or unban chat members
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_restrict_members: Option<bool>,
-    /// <em>Optional</em>. Administrators only. True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_promote_members: Option<bool>,
-    /// <em>Optional</em>. Administrators and restricted only. True, if the user is allowed to change the chat title, photo and other settings
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_change_info: Option<bool>,
-    /// <em>Optional</em>. Administrators and restricted only. True, if the user is allowed to invite new users to the chat
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_invite_users: Option<bool>,
-    /// <em>Optional</em>. Administrators and restricted only. True, if the user is allowed to pin messages; groups and supergroups only
+    /// <em>Optional</em>. True, if the user is allowed to pin messages; groups and supergroups only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
-    /// <em>Optional</em>. Restricted only. True, if the user is a member of the chat at the moment of the request
+    /// <em>Optional</em>. Custom title for this user
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub is_member: Option<bool>,
-    /// <em>Optional</em>. Restricted only. True, if the user is allowed to send text messages, contacts, locations and venues
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_send_messages: Option<bool>,
-    /// <em>Optional</em>. Restricted only. True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_send_media_messages: Option<bool>,
-    /// <em>Optional</em>. Restricted only. True, if the user is allowed to send polls
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_send_polls: Option<bool>,
-    /// <em>Optional</em>. Restricted only. True, if the user is allowed to send animations, games, stickers and use inline bots
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_send_other_messages: Option<bool>,
-    /// <em>Optional</em>. Restricted only. True, if the user is allowed to add web page previews to their messages
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_add_web_page_previews: Option<bool>,
-    /// <em>Optional</em>. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub until_date: Option<Integer>
+    pub custom_title: Option<String>
+}
+
+/**
+ * <p>Represents a <a href="#chatmember">chat member</a> that has no additional privileges or restrictions.</p>
+ *
+ * @property status The member's status in the chat, always “member”
+ * @property user Information about the user
+ *
+ * @constructor Creates a [ChatMemberMember].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ChatMemberMember {
+    /// The member's status in the chat, always “member”
+    pub status: String,
+    /// Information about the user
+    pub user: User
+}
+
+/**
+ * <p>Represents a <a href="#chatmember">chat member</a> that is under certain restrictions in the chat. Supergroups only.</p>
+ *
+ * @property status The member's status in the chat, always “restricted”
+ * @property user Information about the user
+ * @property is_member True, if the user is a member of the chat at the moment of the request
+ * @property can_change_info True, if the user is allowed to change the chat title, photo and other settings
+ * @property can_invite_users True, if the user is allowed to invite new users to the chat
+ * @property can_pin_messages True, if the user is allowed to pin messages
+ * @property can_send_messages True, if the user is allowed to send text messages, contacts, locations and venues
+ * @property can_send_media_messages True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes
+ * @property can_send_polls True, if the user is allowed to send polls
+ * @property can_send_other_messages True, if the user is allowed to send animations, games, stickers and use inline bots
+ * @property can_add_web_page_previews True, if the user is allowed to add web page previews to their messages
+ * @property until_date Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever
+ *
+ * @constructor Creates a [ChatMemberRestricted].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ChatMemberRestricted {
+    /// The member's status in the chat, always “restricted”
+    pub status: String,
+    /// Information about the user
+    pub user: User,
+    /// True, if the user is a member of the chat at the moment of the request
+    pub is_member: bool,
+    /// True, if the user is allowed to change the chat title, photo and other settings
+    pub can_change_info: bool,
+    /// True, if the user is allowed to invite new users to the chat
+    pub can_invite_users: bool,
+    /// True, if the user is allowed to pin messages
+    pub can_pin_messages: bool,
+    /// True, if the user is allowed to send text messages, contacts, locations and venues
+    pub can_send_messages: bool,
+    /// True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes
+    pub can_send_media_messages: bool,
+    /// True, if the user is allowed to send polls
+    pub can_send_polls: bool,
+    /// True, if the user is allowed to send animations, games, stickers and use inline bots
+    pub can_send_other_messages: bool,
+    /// True, if the user is allowed to add web page previews to their messages
+    pub can_add_web_page_previews: bool,
+    /// Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever
+    pub until_date: Integer
+}
+
+/**
+ * <p>Represents a <a href="#chatmember">chat member</a> that isn't currently a member of the chat, but may join it themselves.</p>
+ *
+ * @property status The member's status in the chat, always “left”
+ * @property user Information about the user
+ *
+ * @constructor Creates a [ChatMemberLeft].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ChatMemberLeft {
+    /// The member's status in the chat, always “left”
+    pub status: String,
+    /// Information about the user
+    pub user: User
+}
+
+/**
+ * <p>Represents a <a href="#chatmember">chat member</a> that was banned in the chat and can't return to the chat or view chat messages.</p>
+ *
+ * @property status The member's status in the chat, always “kicked”
+ * @property user Information about the user
+ * @property until_date Date when restrictions will be lifted for this user; unix time. If 0, then the user is banned forever
+ *
+ * @constructor Creates a [ChatMemberBanned].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ChatMemberBanned {
+    /// The member's status in the chat, always “kicked”
+    pub status: String,
+    /// Information about the user
+    pub user: User,
+    /// Date when restrictions will be lifted for this user; unix time. If 0, then the user is banned forever
+    pub until_date: Integer
 }
 
 /**
@@ -1539,6 +1630,116 @@ pub struct BotCommand {
     pub command: String,
     /// Description of the command, 3-256 characters.
     pub description: String
+}
+
+/**
+ * <p>Represents the default <a href="#botcommandscope">scope</a> of bot commands. Default commands are used if no commands with a <a href="#determining-list-of-commands">narrower scope</a> are specified for the user.</p>
+ *
+ * @property type Scope type, must be <em>default</em>
+ *
+ * @constructor Creates a [BotCommandScopeDefault].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct BotCommandScopeDefault {
+    /// Scope type, must be <em>default</em>
+    #[serde(rename = "type")]
+    pub type_: String
+}
+
+/**
+ * <p>Represents the <a href="#botcommandscope">scope</a> of bot commands, covering all private chats.</p>
+ *
+ * @property type Scope type, must be <em>all_private_chats</em>
+ *
+ * @constructor Creates a [BotCommandScopeAllPrivateChats].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct BotCommandScopeAllPrivateChats {
+    /// Scope type, must be <em>all_private_chats</em>
+    #[serde(rename = "type")]
+    pub type_: String
+}
+
+/**
+ * <p>Represents the <a href="#botcommandscope">scope</a> of bot commands, covering all group and supergroup chats.</p>
+ *
+ * @property type Scope type, must be <em>all_group_chats</em>
+ *
+ * @constructor Creates a [BotCommandScopeAllGroupChats].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct BotCommandScopeAllGroupChats {
+    /// Scope type, must be <em>all_group_chats</em>
+    #[serde(rename = "type")]
+    pub type_: String
+}
+
+/**
+ * <p>Represents the <a href="#botcommandscope">scope</a> of bot commands, covering all group and supergroup chat administrators.</p>
+ *
+ * @property type Scope type, must be <em>all_chat_administrators</em>
+ *
+ * @constructor Creates a [BotCommandScopeAllChatAdministrators].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct BotCommandScopeAllChatAdministrators {
+    /// Scope type, must be <em>all_chat_administrators</em>
+    #[serde(rename = "type")]
+    pub type_: String
+}
+
+/**
+ * <p>Represents the <a href="#botcommandscope">scope</a> of bot commands, covering a specific chat.</p>
+ *
+ * @property type Scope type, must be <em>chat</em>
+ * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
+ *
+ * @constructor Creates a [BotCommandScopeChat].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct BotCommandScopeChat {
+    /// Scope type, must be <em>chat</em>
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
+    pub chat_id: String
+}
+
+/**
+ * <p>Represents the <a href="#botcommandscope">scope</a> of bot commands, covering all administrators of a specific group or supergroup chat.</p>
+ *
+ * @property type Scope type, must be <em>chat_administrators</em>
+ * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
+ *
+ * @constructor Creates a [BotCommandScopeChatAdministrators].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct BotCommandScopeChatAdministrators {
+    /// Scope type, must be <em>chat_administrators</em>
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
+    pub chat_id: String
+}
+
+/**
+ * <p>Represents the <a href="#botcommandscope">scope</a> of bot commands, covering a specific member of a group or supergroup chat.</p>
+ *
+ * @property type Scope type, must be <em>chat_member</em>
+ * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
+ * @property user_id Unique identifier of the target user
+ *
+ * @constructor Creates a [BotCommandScopeChatMember].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct BotCommandScopeChatMember {
+    /// Scope type, must be <em>chat_member</em>
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
+    pub chat_id: String,
+    /// Unique identifier of the target user
+    pub user_id: Integer
 }
 
 /**
@@ -4266,7 +4467,7 @@ pub struct EditMessageLiveLocationRequest {
 }
 
 /**
- * <p>Use this method to stop updating a live location message before <em>live_period</em> expires. On success, if the message was sent by the bot, the sent <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+ * <p>Use this method to stop updating a live location message before <em>live_period</em> expires. On success, if the message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
  *
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message with live location to stop
@@ -4498,7 +4699,7 @@ pub struct GetFileRequest {
 }
 
 /**
- * <p>Use this method to kick a user from a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless <a href="#unbanchatmember">unbanned</a> first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+ * <p>Use this method to ban a user in a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless <a href="#unbanchatmember">unbanned</a> first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target group or username of the target supergroup or channel (in the format <code>@channelusername</code>)
  * @property user_id Unique identifier of the target user
@@ -4506,7 +4707,7 @@ pub struct GetFileRequest {
  * @property revoke_messages Pass <em>True</em> to delete all messages from the chat for the user that is being removed. If <em>False</em>, the user will be able to see messages in the group that were sent before the user was removed. Always <em>True</em> for supergroups and channels.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
-pub struct KickChatMemberRequest {
+pub struct BanChatMemberRequest {
     /// Unique identifier for the target group or username of the target supergroup or channel (in the format <code>@channelusername</code>)
     pub chat_id: String,
     /// Unique identifier of the target user
@@ -4518,7 +4719,7 @@ pub struct KickChatMemberRequest {
 }
 
 /**
- * <p>Use this method to unban a previously kicked user in a supergroup or channel. The user will <strong>not</strong> return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. By default, this method guarantees that after the call the user is not a member of the chat, but will be able to join it. So if the user is a member of the chat they will also be <strong>removed</strong> from the chat. If you don't want this, use the parameter <em>only_if_banned</em>. Returns <em>True</em> on success.</p>
+ * <p>Use this method to unban a previously banned user in a supergroup or channel. The user will <strong>not</strong> return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. By default, this method guarantees that after the call the user is not a member of the chat, but will be able to join it. So if the user is a member of the chat they will also be <strong>removed</strong> from the chat. If you don't want this, use the parameter <em>only_if_banned</em>. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target group or username of the target supergroup or channel (in the format <code>@username</code>)
  * @property user_id Unique identifier of the target user
@@ -4830,7 +5031,7 @@ pub struct GetChatAdministratorsRequest {
  * @property chat_id Unique identifier for the target chat or username of the target supergroup or channel (in the format <code>@channelusername</code>)
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
-pub struct GetChatMembersCountRequest {
+pub struct GetChatMemberCountRequest {
     /// Unique identifier for the target chat or username of the target supergroup or channel (in the format <code>@channelusername</code>)
     pub chat_id: String
 }
@@ -4900,14 +5101,48 @@ pub struct AnswerCallbackQueryRequest {
 }
 
 /**
- * <p>Use this method to change the list of the bot's commands. Returns <em>True</em> on success.</p>
+ * <p>Use this method to change the list of the bot's commands. See <a href="https://core.telegram.org/bots#commands"></a><a href="https://core.telegram.org/bots#commands">https://core.telegram.org/bots#commands</a> for more details about bot commands. Returns <em>True</em> on success.</p>
  *
  * @property commands A JSON-serialized list of bot commands to be set as the list of the bot's commands. At most 100 commands can be specified.
+ * @property scope A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to <a href="#botcommandscopedefault">BotCommandScopeDefault</a>.
+ * @property language_code A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SetMyCommandsRequest {
     /// A JSON-serialized list of bot commands to be set as the list of the bot's commands. At most 100 commands can be specified.
-    pub commands: Vec<BotCommand>
+    pub commands: Vec<BotCommand>,
+    /// A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to <a href="#botcommandscopedefault">BotCommandScopeDefault</a>.
+    pub scope: Option<BotCommandScope>,
+    /// A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands
+    pub language_code: Option<String>
+}
+
+/**
+ * <p>Use this method to delete the list of the bot's commands for the given scope and user language. After deletion, <a href="#determining-list-of-commands">higher level commands</a> will be shown to affected users. Returns <em>True</em> on success.</p>
+ *
+ * @property scope A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to <a href="#botcommandscopedefault">BotCommandScopeDefault</a>.
+ * @property language_code A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct DeleteMyCommandsRequest {
+    /// A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to <a href="#botcommandscopedefault">BotCommandScopeDefault</a>.
+    pub scope: Option<BotCommandScope>,
+    /// A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands
+    pub language_code: Option<String>
+}
+
+/**
+ * <p>Use this method to get the current list of the bot's commands for the given scope and user language. Returns Array of <a href="#botcommand">BotCommand</a> on success. If commands aren't set, an empty list is returned.</p>
+ *
+ * @property scope A JSON-serialized object, describing scope of users. Defaults to <a href="#botcommandscopedefault">BotCommandScopeDefault</a>.
+ * @property language_code A two-letter ISO 639-1 language code or an empty string
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct GetMyCommandsRequest {
+    /// A JSON-serialized object, describing scope of users. Defaults to <a href="#botcommandscopedefault">BotCommandScopeDefault</a>.
+    pub scope: Option<BotCommandScope>,
+    /// A two-letter ISO 639-1 language code or an empty string
+    pub language_code: Option<String>
 }
 
 
@@ -4975,7 +5210,7 @@ pub struct EditMessageCaptionRequest {
 }
 
 /**
- * <p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded. Use a previously uploaded file via its file_id or specify a URL. On success, if the edited message was sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+ * <p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
  *
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
@@ -5018,7 +5253,7 @@ pub struct EditMessageReplyMarkupRequest {
 }
 
 /**
- * <p>Use this method to stop a poll which was sent by the bot. On success, the stopped <a href="#poll">Poll</a> with the final results is returned.</p>
+ * <p>Use this method to stop a poll which was sent by the bot. On success, the stopped <a href="#poll">Poll</a> is returned.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Identifier of the original message with the poll
@@ -5407,7 +5642,7 @@ pub struct SendGameRequest {
 }
 
 /**
- * <p>Use this method to set the score of the specified user in a game. On success, if the message was sent by the bot, returns the edited <a href="#message">Message</a>, otherwise returns <em>True</em>. Returns an error, if the new score is not greater than the user's current score in the chat and <em>force</em> is <em>False</em>.</p>
+ * <p>Use this method to set the score of the specified user in a game message. On success, if the message is not an inline message, the <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Returns an error, if the new score is not greater than the user's current score in the chat and <em>force</em> is <em>False</em>.</p>
  *
  * @property user_id User identifier
  * @property score New score, must be non-negative

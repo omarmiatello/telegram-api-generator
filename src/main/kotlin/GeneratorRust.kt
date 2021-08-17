@@ -111,7 +111,9 @@ private fun TelegramType.toRustType(): String = when (this) {
             TelegramType.Super.InputMedia,
             TelegramType.Super.InputMessageContent,
             TelegramType.Super.InlineQueryResult,
-            TelegramType.Super.PassportElementError -> name
+            TelegramType.Super.PassportElementError,
+            TelegramType.Super.ChatMember,
+            TelegramType.Super.BotCommandScope -> name
         }
     }
     is TelegramType.WithAlternative -> {
