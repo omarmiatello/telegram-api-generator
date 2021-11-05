@@ -124,6 +124,14 @@
               }
             },
             "required": false
+          },
+          {
+            "name": "chat_join_request",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. A request to join the chat has been sent. The bot must have the \u003cem\u003ecan_invite_users\u003c/em\u003e administrator right in the chat to receive these updates.",
+            "type": {
+              "name": "ChatJoinRequest"
+            },
+            "required": false
           }
         ]
       },
@@ -141,7 +149,7 @@
           },
           {
             "name": "has_custom_certificate",
-            "description": "True, if a custom certificate was provided for webhook certificate checks",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if a custom certificate was provided for webhook certificate checks",
             "type": {
               "name": "Boolean"
             },
@@ -354,7 +362,7 @@
           },
           {
             "name": "is_bot",
-            "description": "True, if this user is a bot",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if this user is a bot",
             "type": {
               "name": "Boolean"
             },
@@ -394,7 +402,7 @@
           },
           {
             "name": "can_join_groups",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the bot can be invited to groups. Returned only in \u003ca href\u003d\"#getme\"\u003egetMe\u003c/a\u003e.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the bot can be invited to groups. Returned only in \u003ca href\u003d\"#getme\"\u003egetMe\u003c/a\u003e.",
             "type": {
               "name": "Boolean"
             },
@@ -402,7 +410,7 @@
           },
           {
             "name": "can_read_all_group_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if \u003ca href\u003d\"https://core.telegram.org/bots#privacy-mode\"\u003eprivacy mode\u003c/a\u003e is disabled for the bot. Returned only in \u003ca href\u003d\"#getme\"\u003egetMe\u003c/a\u003e.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if \u003ca href\u003d\"https://core.telegram.org/bots#privacy-mode\"\u003eprivacy mode\u003c/a\u003e is disabled for the bot. Returned only in \u003ca href\u003d\"#getme\"\u003egetMe\u003c/a\u003e.",
             "type": {
               "name": "Boolean"
             },
@@ -410,7 +418,7 @@
           },
           {
             "name": "supports_inline_queries",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the bot supports inline queries. Returned only in \u003ca href\u003d\"#getme\"\u003egetMe\u003c/a\u003e.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the bot supports inline queries. Returned only in \u003ca href\u003d\"#getme\"\u003egetMe\u003c/a\u003e.",
             "type": {
               "name": "Boolean"
             },
@@ -520,7 +528,7 @@
           },
           {
             "name": "slow_mode_delay",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user; in seconds. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
               "name": "Integer"
             },
@@ -544,7 +552,7 @@
           },
           {
             "name": "can_set_sticker_set",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the bot can change the group sticker set. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the bot can change the group sticker set. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
               "name": "Boolean"
             },
@@ -1160,7 +1168,7 @@
           },
           {
             "name": "file_size",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes",
             "type": {
               "name": "Integer"
             },
@@ -1238,7 +1246,7 @@
           },
           {
             "name": "file_size",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes",
             "type": {
               "name": "Integer"
             },
@@ -1308,7 +1316,7 @@
           },
           {
             "name": "file_size",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes",
             "type": {
               "name": "Integer"
             },
@@ -1370,7 +1378,7 @@
           },
           {
             "name": "file_size",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes",
             "type": {
               "name": "Integer"
             },
@@ -1448,7 +1456,7 @@
           },
           {
             "name": "file_size",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes",
             "type": {
               "name": "Integer"
             },
@@ -1502,7 +1510,7 @@
           },
           {
             "name": "file_size",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes",
             "type": {
               "name": "Integer"
             },
@@ -1548,7 +1556,7 @@
           },
           {
             "name": "file_size",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes",
             "type": {
               "name": "Integer"
             },
@@ -1720,7 +1728,7 @@
           },
           {
             "name": "is_closed",
-            "description": "True, if the poll is closed",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the poll is closed",
             "type": {
               "name": "Boolean"
             },
@@ -1728,7 +1736,7 @@
           },
           {
             "name": "is_anonymous",
-            "description": "True, if the poll is anonymous",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the poll is anonymous",
             "type": {
               "name": "Boolean"
             },
@@ -1744,7 +1752,7 @@
           },
           {
             "name": "allows_multiple_answers",
-            "description": "True, if the poll allows multiple answers",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the poll allows multiple answers",
             "type": {
               "name": "Boolean"
             },
@@ -1825,7 +1833,7 @@
           },
           {
             "name": "live_period",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Time relative to the message sending date, during which the location can be updated, in seconds. For active live locations only.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only.",
             "type": {
               "name": "Integer"
             },
@@ -1947,7 +1955,7 @@
         "docFields": [
           {
             "name": "message_auto_delete_time",
-            "description": "New auto-delete time for messages in the chat",
+            "description": "New auto-delete time for messages in the chat; in seconds",
             "type": {
               "name": "Integer"
             },
@@ -1975,7 +1983,7 @@
         "docFields": [
           {
             "name": "duration",
-            "description": "Voice chat duration; in seconds",
+            "description": "Voice chat duration in seconds",
             "type": {
               "name": "Integer"
             },
@@ -2050,7 +2058,7 @@
           },
           {
             "name": "file_size",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size, if known",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes, if known",
             "type": {
               "name": "Integer"
             },
@@ -2274,7 +2282,7 @@
           },
           {
             "name": "pay",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Specify True, to send a \u003ca href\u003d\"#payments\"\u003ePay button\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e\u003cstrong\u003eNOTE:\u003c/strong\u003e This type of button \u003cstrong\u003emust\u003c/strong\u003e always be the first button in the first row.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Specify \u003cem\u003eTrue\u003c/em\u003e, to send a \u003ca href\u003d\"#payments\"\u003ePay button\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e\u003cstrong\u003eNOTE:\u003c/strong\u003e This type of button \u003cstrong\u003emust\u003c/strong\u003e always be the first button in the first row.",
             "type": {
               "name": "Boolean"
             },
@@ -2312,7 +2320,7 @@
           },
           {
             "name": "request_write_access",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass True to request the permission for your bot to send messages to the user.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e to request the permission for your bot to send messages to the user.",
             "type": {
               "name": "Boolean"
             },
@@ -2471,8 +2479,16 @@
             "required": true
           },
           {
+            "name": "creates_join_request",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if users joining the chat via the link need to be approved by chat administrators",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
             "name": "is_primary",
-            "description": "True, if the link is primary",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the link is primary",
             "type": {
               "name": "Boolean"
             },
@@ -2480,11 +2496,19 @@
           },
           {
             "name": "is_revoked",
-            "description": "True, if the link is revoked",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the link is revoked",
             "type": {
               "name": "Boolean"
             },
             "required": true
+          },
+          {
+            "name": "name",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Invite link name",
+            "type": {
+              "name": "String"
+            },
+            "required": false
           },
           {
             "name": "expire_date",
@@ -2497,6 +2521,14 @@
           {
             "name": "member_limit",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "pending_join_request_count",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Number of pending join requests created using this link",
             "type": {
               "name": "Integer"
             },
@@ -2526,7 +2558,7 @@
           },
           {
             "name": "is_anonymous",
-            "description": "True, if the user\u0027s presence in the chat is hidden",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the user\u0027s presence in the chat is hidden",
             "type": {
               "name": "Boolean"
             },
@@ -2564,7 +2596,7 @@
           },
           {
             "name": "can_be_edited",
-            "description": "True, if the bot is allowed to edit administrator privileges of that user",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the bot is allowed to edit administrator privileges of that user",
             "type": {
               "name": "Boolean"
             },
@@ -2572,7 +2604,7 @@
           },
           {
             "name": "is_anonymous",
-            "description": "True, if the user\u0027s presence in the chat is hidden",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the user\u0027s presence in the chat is hidden",
             "type": {
               "name": "Boolean"
             },
@@ -2580,7 +2612,7 @@
           },
           {
             "name": "can_manage_chat",
-            "description": "True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
             "type": {
               "name": "Boolean"
             },
@@ -2588,7 +2620,7 @@
           },
           {
             "name": "can_delete_messages",
-            "description": "True, if the administrator can delete messages of other users",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the administrator can delete messages of other users",
             "type": {
               "name": "Boolean"
             },
@@ -2596,7 +2628,7 @@
           },
           {
             "name": "can_manage_voice_chats",
-            "description": "True, if the administrator can manage voice chats",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the administrator can manage voice chats",
             "type": {
               "name": "Boolean"
             },
@@ -2604,7 +2636,7 @@
           },
           {
             "name": "can_restrict_members",
-            "description": "True, if the administrator can restrict, ban or unban chat members",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the administrator can restrict, ban or unban chat members",
             "type": {
               "name": "Boolean"
             },
@@ -2612,7 +2644,7 @@
           },
           {
             "name": "can_promote_members",
-            "description": "True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)",
             "type": {
               "name": "Boolean"
             },
@@ -2620,7 +2652,7 @@
           },
           {
             "name": "can_change_info",
-            "description": "True, if the user is allowed to change the chat title, photo and other settings",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to change the chat title, photo and other settings",
             "type": {
               "name": "Boolean"
             },
@@ -2628,7 +2660,7 @@
           },
           {
             "name": "can_invite_users",
-            "description": "True, if the user is allowed to invite new users to the chat",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to invite new users to the chat",
             "type": {
               "name": "Boolean"
             },
@@ -2636,7 +2668,7 @@
           },
           {
             "name": "can_post_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the administrator can post in the channel; channels only",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the administrator can post in the channel; channels only",
             "type": {
               "name": "Boolean"
             },
@@ -2644,7 +2676,7 @@
           },
           {
             "name": "can_edit_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the administrator can edit messages of other users and can pin messages; channels only",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the administrator can edit messages of other users and can pin messages; channels only",
             "type": {
               "name": "Boolean"
             },
@@ -2652,7 +2684,7 @@
           },
           {
             "name": "can_pin_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to pin messages; groups and supergroups only",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to pin messages; groups and supergroups only",
             "type": {
               "name": "Boolean"
             },
@@ -2712,7 +2744,7 @@
           },
           {
             "name": "is_member",
-            "description": "True, if the user is a member of the chat at the moment of the request",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the user is a member of the chat at the moment of the request",
             "type": {
               "name": "Boolean"
             },
@@ -2720,7 +2752,7 @@
           },
           {
             "name": "can_change_info",
-            "description": "True, if the user is allowed to change the chat title, photo and other settings",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to change the chat title, photo and other settings",
             "type": {
               "name": "Boolean"
             },
@@ -2728,7 +2760,7 @@
           },
           {
             "name": "can_invite_users",
-            "description": "True, if the user is allowed to invite new users to the chat",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to invite new users to the chat",
             "type": {
               "name": "Boolean"
             },
@@ -2736,7 +2768,7 @@
           },
           {
             "name": "can_pin_messages",
-            "description": "True, if the user is allowed to pin messages",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to pin messages",
             "type": {
               "name": "Boolean"
             },
@@ -2744,7 +2776,7 @@
           },
           {
             "name": "can_send_messages",
-            "description": "True, if the user is allowed to send text messages, contacts, locations and venues",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to send text messages, contacts, locations and venues",
             "type": {
               "name": "Boolean"
             },
@@ -2752,7 +2784,7 @@
           },
           {
             "name": "can_send_media_messages",
-            "description": "True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes",
             "type": {
               "name": "Boolean"
             },
@@ -2760,7 +2792,7 @@
           },
           {
             "name": "can_send_polls",
-            "description": "True, if the user is allowed to send polls",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to send polls",
             "type": {
               "name": "Boolean"
             },
@@ -2768,7 +2800,7 @@
           },
           {
             "name": "can_send_other_messages",
-            "description": "True, if the user is allowed to send animations, games, stickers and use inline bots",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to send animations, games, stickers and use inline bots",
             "type": {
               "name": "Boolean"
             },
@@ -2776,7 +2808,7 @@
           },
           {
             "name": "can_add_web_page_previews",
-            "description": "True, if the user is allowed to add web page previews to their messages",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to add web page previews to their messages",
             "type": {
               "name": "Boolean"
             },
@@ -2899,12 +2931,58 @@
         ]
       },
       {
+        "name": "ChatJoinRequest",
+        "description": "\u003cp\u003eRepresents a join request sent to a chat.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "chat",
+            "description": "Chat to which the request was sent",
+            "type": {
+              "name": "Chat"
+            },
+            "required": true
+          },
+          {
+            "name": "from",
+            "description": "User that sent the join request",
+            "type": {
+              "name": "User"
+            },
+            "required": true
+          },
+          {
+            "name": "date",
+            "description": "Date the request was sent in Unix time",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          },
+          {
+            "name": "bio",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Bio of the user.",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "invite_link",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Chat invite link that was used by the user to send the join request",
+            "type": {
+              "name": "ChatInviteLink"
+            },
+            "required": false
+          }
+        ]
+      },
+      {
         "name": "ChatPermissions",
         "description": "\u003cp\u003eDescribes actions that a non-administrator user is allowed to take in a chat.\u003c/p\u003e",
         "docFields": [
           {
             "name": "can_send_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to send text messages, contacts, locations and venues",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to send text messages, contacts, locations and venues",
             "type": {
               "name": "Boolean"
             },
@@ -2912,7 +2990,7 @@
           },
           {
             "name": "can_send_media_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages",
             "type": {
               "name": "Boolean"
             },
@@ -2920,7 +2998,7 @@
           },
           {
             "name": "can_send_polls",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to send polls, implies can_send_messages",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to send polls, implies can_send_messages",
             "type": {
               "name": "Boolean"
             },
@@ -2928,7 +3006,7 @@
           },
           {
             "name": "can_send_other_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages",
             "type": {
               "name": "Boolean"
             },
@@ -2936,7 +3014,7 @@
           },
           {
             "name": "can_add_web_page_previews",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to add web page previews to their messages, implies can_send_media_messages",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to add web page previews to their messages, implies can_send_media_messages",
             "type": {
               "name": "Boolean"
             },
@@ -2944,7 +3022,7 @@
           },
           {
             "name": "can_change_info",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups",
             "type": {
               "name": "Boolean"
             },
@@ -2952,7 +3030,7 @@
           },
           {
             "name": "can_invite_users",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to invite new users to the chat",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to invite new users to the chat",
             "type": {
               "name": "Boolean"
             },
@@ -2960,7 +3038,7 @@
           },
           {
             "name": "can_pin_messages",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the user is allowed to pin messages. Ignored in public supergroups",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to pin messages. Ignored in public supergroups",
             "type": {
               "name": "Boolean"
             },
@@ -3318,7 +3396,7 @@
           },
           {
             "name": "duration",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Video duration",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Video duration in seconds",
             "type": {
               "name": "Integer"
             },
@@ -3415,7 +3493,7 @@
           },
           {
             "name": "duration",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Animation duration",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Animation duration in seconds",
             "type": {
               "name": "Integer"
             },
@@ -3577,7 +3655,7 @@
           },
           {
             "name": "disable_content_type_detection",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always true, if the document is sent as part of an album.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always \u003cem\u003eTrue\u003c/em\u003e, if the document is sent as part of an album.",
             "type": {
               "name": "Boolean"
             },
@@ -3647,7 +3725,7 @@
           },
           {
             "name": "entities",
-            "description": "List of special entities that appear in message text, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "description": "A JSON-serialized list of special entities that appear in message text, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
             "type": {
               "elementType": {
                 "name": "MessageEntity"
@@ -3834,7 +3912,7 @@
           },
           {
             "name": "caption_entities",
-            "description": "List of special entities that appear in the new caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "description": "A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
             "type": {
               "elementType": {
                 "name": "MessageEntity"
@@ -3948,7 +4026,7 @@
           },
           {
             "name": "caption_entities",
-            "description": "List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
             "type": {
               "elementType": {
                 "name": "MessageEntity"
@@ -4062,7 +4140,7 @@
           },
           {
             "name": "caption_entities",
-            "description": "List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
             "type": {
               "elementType": {
                 "name": "MessageEntity"
@@ -4232,7 +4310,7 @@
           },
           {
             "name": "caption_entities",
-            "description": "List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
             "type": {
               "elementType": {
                 "name": "MessageEntity"
@@ -4394,7 +4472,7 @@
           },
           {
             "name": "caption_entities",
-            "description": "List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
             "type": {
               "elementType": {
                 "name": "MessageEntity"
@@ -4556,7 +4634,7 @@
           },
           {
             "name": "caption_entities",
-            "description": "List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
             "type": {
               "elementType": {
                 "name": "MessageEntity"
@@ -4670,7 +4748,7 @@
           },
           {
             "name": "caption_entities",
-            "description": "List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
             "type": {
               "elementType": {
                 "name": "MessageEntity"
@@ -5487,7 +5565,7 @@
           },
           {
             "name": "is_anonymous",
-            "description": "True, if the poll needs to be anonymous, defaults to \u003cem\u003eTrue\u003c/em\u003e",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the poll needs to be anonymous, defaults to \u003cem\u003eTrue\u003c/em\u003e",
             "type": {
               "name": "Boolean"
             },
@@ -5503,7 +5581,7 @@
           },
           {
             "name": "allows_multiple_answers",
-            "description": "True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to \u003cem\u003eFalse\u003c/em\u003e",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to \u003cem\u003eFalse\u003c/em\u003e",
             "type": {
               "name": "Boolean"
             },
@@ -5535,7 +5613,7 @@
           },
           {
             "name": "explanation_entities",
-            "description": "List of special entities that appear in the poll explanation, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "description": "A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
             "type": {
               "elementType": {
                 "name": "MessageEntity"
@@ -5720,7 +5798,7 @@
           },
           {
             "name": "action",
-            "description": "Type of action to broadcast. Choose one, depending on what the user is about to receive: \u003cem\u003etyping\u003c/em\u003e for \u003ca href\u003d\"#sendmessage\"\u003etext messages\u003c/a\u003e, \u003cem\u003eupload_photo\u003c/em\u003e for \u003ca href\u003d\"#sendphoto\"\u003ephotos\u003c/a\u003e, \u003cem\u003erecord_video\u003c/em\u003e or \u003cem\u003eupload_video\u003c/em\u003e for \u003ca href\u003d\"#sendvideo\"\u003evideos\u003c/a\u003e, \u003cem\u003erecord_voice\u003c/em\u003e or \u003cem\u003eupload_voice\u003c/em\u003e for \u003ca href\u003d\"#sendvoice\"\u003evoice notes\u003c/a\u003e, \u003cem\u003eupload_document\u003c/em\u003e for \u003ca href\u003d\"#senddocument\"\u003egeneral files\u003c/a\u003e, \u003cem\u003efind_location\u003c/em\u003e for \u003ca href\u003d\"#sendlocation\"\u003elocation data\u003c/a\u003e, \u003cem\u003erecord_video_note\u003c/em\u003e or \u003cem\u003eupload_video_note\u003c/em\u003e for \u003ca href\u003d\"#sendvideonote\"\u003evideo notes\u003c/a\u003e.",
+            "description": "Type of action to broadcast. Choose one, depending on what the user is about to receive: \u003cem\u003etyping\u003c/em\u003e for \u003ca href\u003d\"#sendmessage\"\u003etext messages\u003c/a\u003e, \u003cem\u003eupload_photo\u003c/em\u003e for \u003ca href\u003d\"#sendphoto\"\u003ephotos\u003c/a\u003e, \u003cem\u003erecord_video\u003c/em\u003e or \u003cem\u003eupload_video\u003c/em\u003e for \u003ca href\u003d\"#sendvideo\"\u003evideos\u003c/a\u003e, \u003cem\u003erecord_voice\u003c/em\u003e or \u003cem\u003eupload_voice\u003c/em\u003e for \u003ca href\u003d\"#sendvoice\"\u003evoice notes\u003c/a\u003e, \u003cem\u003eupload_document\u003c/em\u003e for \u003ca href\u003d\"#senddocument\"\u003egeneral files\u003c/a\u003e, \u003cem\u003echoose_sticker\u003c/em\u003e for \u003ca href\u003d\"#sendsticker\"\u003estickers\u003c/a\u003e, \u003cem\u003efind_location\u003c/em\u003e for \u003ca href\u003d\"#sendlocation\"\u003elocation data\u003c/a\u003e, \u003cem\u003erecord_video_note\u003c/em\u003e or \u003cem\u003eupload_video_note\u003c/em\u003e for \u003ca href\u003d\"#sendvideonote\"\u003evideo notes\u003c/a\u003e.",
             "type": {
               "name": "String"
             },
@@ -5783,7 +5861,7 @@
       },
       {
         "name": "banChatMember",
-        "description": "\u003cp\u003eUse this method to ban a user in a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless \u003ca href\u003d\"#unbanchatmember\"\u003eunbanned\u003c/a\u003e first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to ban a user in a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless \u003ca href\u003d\"#unbanchatmember\"\u003eunbanned\u003c/a\u003e first. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -5873,7 +5951,7 @@
       },
       {
         "name": "restrictChatMember",
-        "description": "\u003cp\u003eUse this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights. Pass \u003cem\u003eTrue\u003c/em\u003e for all permissions to lift restrictions from a user. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate administrator rights. Pass \u003cem\u003eTrue\u003c/em\u003e for all permissions to lift restrictions from a user. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -5922,7 +6000,7 @@
       },
       {
         "name": "promoteChatMember",
-        "description": "\u003cp\u003eUse this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Pass \u003cem\u003eFalse\u003c/em\u003e for all boolean parameters to demote a user. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Pass \u003cem\u003eFalse\u003c/em\u003e for all boolean parameters to demote a user. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -5958,7 +6036,7 @@
           },
           {
             "name": "can_manage_chat",
-            "description": "Pass True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
             "type": {
               "name": "Boolean"
             },
@@ -5966,7 +6044,7 @@
           },
           {
             "name": "can_post_messages",
-            "description": "Pass True, if the administrator can create channel posts, channels only",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the administrator can create channel posts, channels only",
             "type": {
               "name": "Boolean"
             },
@@ -5974,7 +6052,7 @@
           },
           {
             "name": "can_edit_messages",
-            "description": "Pass True, if the administrator can edit messages of other users and can pin messages, channels only",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the administrator can edit messages of other users and can pin messages, channels only",
             "type": {
               "name": "Boolean"
             },
@@ -5982,7 +6060,7 @@
           },
           {
             "name": "can_delete_messages",
-            "description": "Pass True, if the administrator can delete messages of other users",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the administrator can delete messages of other users",
             "type": {
               "name": "Boolean"
             },
@@ -5990,7 +6068,7 @@
           },
           {
             "name": "can_manage_voice_chats",
-            "description": "Pass True, if the administrator can manage voice chats",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the administrator can manage voice chats",
             "type": {
               "name": "Boolean"
             },
@@ -5998,7 +6076,7 @@
           },
           {
             "name": "can_restrict_members",
-            "description": "Pass True, if the administrator can restrict, ban or unban chat members",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the administrator can restrict, ban or unban chat members",
             "type": {
               "name": "Boolean"
             },
@@ -6006,7 +6084,7 @@
           },
           {
             "name": "can_promote_members",
-            "description": "Pass True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)",
             "type": {
               "name": "Boolean"
             },
@@ -6014,7 +6092,7 @@
           },
           {
             "name": "can_change_info",
-            "description": "Pass True, if the administrator can change chat title, photo and other settings",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the administrator can change chat title, photo and other settings",
             "type": {
               "name": "Boolean"
             },
@@ -6022,7 +6100,7 @@
           },
           {
             "name": "can_invite_users",
-            "description": "Pass True, if the administrator can invite new users to the chat",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the administrator can invite new users to the chat",
             "type": {
               "name": "Boolean"
             },
@@ -6030,7 +6108,7 @@
           },
           {
             "name": "can_pin_messages",
-            "description": "Pass True, if the administrator can pin messages, supergroups only",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the administrator can pin messages, supergroups only",
             "type": {
               "name": "Boolean"
             },
@@ -6084,7 +6162,7 @@
       },
       {
         "name": "setChatPermissions",
-        "description": "\u003cp\u003eUse this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the \u003cem\u003ecan_restrict_members\u003c/em\u003e admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the \u003cem\u003ecan_restrict_members\u003c/em\u003e administrator rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6104,7 +6182,7 @@
           },
           {
             "name": "permissions",
-            "description": "New default chat permissions",
+            "description": "A JSON-serialized object for new default chat permissions",
             "type": {
               "name": "ChatPermissions"
             },
@@ -6117,7 +6195,7 @@
       },
       {
         "name": "exportChatInviteLink",
-        "description": "\u003cp\u003eUse this method to generate a new primary invite link for a chat; any previously generated primary link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as \u003cem\u003eString\u003c/em\u003e on success.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: Each administrator in a chat generates their own invite links. Bots can\u0027t use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using \u003ca href\u003d\"#exportchatinvitelink\"\u003eexportChatInviteLink\u003c/a\u003e or by calling the \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e method. If your bot needs to generate a new primary invite link replacing its previous one, use \u003ca href\u003d\"#exportchatinvitelink\"\u003eexportChatInviteLink\u003c/a\u003e again.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUse this method to generate a new primary invite link for a chat; any previously generated primary link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the new invite link as \u003cem\u003eString\u003c/em\u003e on success.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eNote: Each administrator in a chat generates their own invite links. Bots can\u0027t use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using \u003ca href\u003d\"#exportchatinvitelink\"\u003eexportChatInviteLink\u003c/a\u003e or by calling the \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e method. If your bot needs to generate a new primary invite link replacing its previous one, use \u003ca href\u003d\"#exportchatinvitelink\"\u003eexportChatInviteLink\u003c/a\u003e again.\u003c/p\u003e \n\u003c/blockquote\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6142,7 +6220,7 @@
       },
       {
         "name": "createChatInviteLink",
-        "description": "\u003cp\u003eUse this method to create an additional invite link for a chat. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. The link can be revoked using the method \u003ca href\u003d\"#revokechatinvitelink\"\u003erevokeChatInviteLink\u003c/a\u003e. Returns the new invite link as \u003ca href\u003d\"#chatinvitelink\"\u003eChatInviteLink\u003c/a\u003e object.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to create an additional invite link for a chat. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. The link can be revoked using the method \u003ca href\u003d\"#revokechatinvitelink\"\u003erevokeChatInviteLink\u003c/a\u003e. Returns the new invite link as \u003ca href\u003d\"#chatinvitelink\"\u003eChatInviteLink\u003c/a\u003e object.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6161,6 +6239,14 @@
             "required": true
           },
           {
+            "name": "name",
+            "description": "Invite link name; 0-32 characters",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
             "name": "expire_date",
             "description": "Point in time (Unix timestamp) when the link will expire",
             "type": {
@@ -6175,6 +6261,14 @@
               "name": "Integer"
             },
             "required": false
+          },
+          {
+            "name": "creates_join_request",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if users joining the chat via the link need to be approved by chat administrators. If \u003cem\u003eTrue\u003c/em\u003e, \u003cem\u003emember_limit\u003c/em\u003e can\u0027t be specified",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
           }
         ],
         "returns": {
@@ -6183,7 +6277,7 @@
       },
       {
         "name": "editChatInviteLink",
-        "description": "\u003cp\u003eUse this method to edit a non-primary invite link created by the bot. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the edited invite link as a \u003ca href\u003d\"#chatinvitelink\"\u003eChatInviteLink\u003c/a\u003e object.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to edit a non-primary invite link created by the bot. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the edited invite link as a \u003ca href\u003d\"#chatinvitelink\"\u003eChatInviteLink\u003c/a\u003e object.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6210,6 +6304,14 @@
             "required": true
           },
           {
+            "name": "name",
+            "description": "Invite link name; 0-32 characters",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
             "name": "expire_date",
             "description": "Point in time (Unix timestamp) when the link will expire",
             "type": {
@@ -6224,6 +6326,14 @@
               "name": "Integer"
             },
             "required": false
+          },
+          {
+            "name": "creates_join_request",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if users joining the chat via the link need to be approved by chat administrators. If \u003cem\u003eTrue\u003c/em\u003e, \u003cem\u003emember_limit\u003c/em\u003e can\u0027t be specified",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
           }
         ],
         "returns": {
@@ -6232,7 +6342,7 @@
       },
       {
         "name": "revokeChatInviteLink",
-        "description": "\u003cp\u003eUse this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the revoked invite link as \u003ca href\u003d\"#chatinvitelink\"\u003eChatInviteLink\u003c/a\u003e object.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the revoked invite link as \u003ca href\u003d\"#chatinvitelink\"\u003eChatInviteLink\u003c/a\u003e object.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6264,8 +6374,74 @@
         }
       },
       {
+        "name": "approveChatJoinRequest",
+        "description": "\u003cp\u003eUse this method to approve a chat join request. The bot must be an administrator in the chat for this to work and must have the \u003cem\u003ecan_invite_users\u003c/em\u003e administrator right. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          },
+          {
+            "name": "user_id",
+            "description": "Unique identifier of the target user",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          }
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
+      },
+      {
+        "name": "declineChatJoinRequest",
+        "description": "\u003cp\u003eUse this method to decline a chat join request. The bot must be an administrator in the chat for this to work and must have the \u003cem\u003ecan_invite_users\u003c/em\u003e administrator right. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          },
+          {
+            "name": "user_id",
+            "description": "Unique identifier of the target user",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          }
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
+      },
+      {
         "name": "setChatPhoto",
-        "description": "\u003cp\u003eUse this method to set a new profile photo for the chat. Photos can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to set a new profile photo for the chat. Photos can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6298,7 +6474,7 @@
       },
       {
         "name": "deleteChatPhoto",
-        "description": "\u003cp\u003eUse this method to delete a chat photo. Photos can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to delete a chat photo. Photos can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6323,7 +6499,7 @@
       },
       {
         "name": "setChatTitle",
-        "description": "\u003cp\u003eUse this method to change the title of a chat. Titles can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to change the title of a chat. Titles can\u0027t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6356,7 +6532,7 @@
       },
       {
         "name": "setChatDescription",
-        "description": "\u003cp\u003eUse this method to change the description of a group, a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to change the description of a group, a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6389,7 +6565,7 @@
       },
       {
         "name": "pinChatMessage",
-        "description": "\u003cp\u003eUse this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the \u0027can_pin_messages\u0027 admin right in a supergroup or \u0027can_edit_messages\u0027 admin right in a channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the \u0027can_pin_messages\u0027 administrator right in a supergroup or \u0027can_edit_messages\u0027 administrator right in a channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6430,7 +6606,7 @@
       },
       {
         "name": "unpinChatMessage",
-        "description": "\u003cp\u003eUse this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the \u0027can_pin_messages\u0027 admin right in a supergroup or \u0027can_edit_messages\u0027 admin right in a channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the \u0027can_pin_messages\u0027 administrator right in a supergroup or \u0027can_edit_messages\u0027 administrator right in a channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6463,7 +6639,7 @@
       },
       {
         "name": "unpinAllChatMessages",
-        "description": "\u003cp\u003eUse this method to clear the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the \u0027can_pin_messages\u0027 admin right in a supergroup or \u0027can_edit_messages\u0027 admin right in a channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to clear the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the \u0027can_pin_messages\u0027 administrator right in a supergroup or \u0027can_edit_messages\u0027 administrator right in a channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6624,7 +6800,7 @@
       },
       {
         "name": "setChatStickerSet",
-        "description": "\u003cp\u003eUse this method to set a new group sticker set for a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Use the field \u003cem\u003ecan_set_sticker_set\u003c/em\u003e optionally returned in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e requests to check if the bot can use this method. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to set a new group sticker set for a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Use the field \u003cem\u003ecan_set_sticker_set\u003c/em\u003e optionally returned in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e requests to check if the bot can use this method. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6657,7 +6833,7 @@
       },
       {
         "name": "deleteChatStickerSet",
-        "description": "\u003cp\u003eUse this method to delete a group sticker set from a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Use the field \u003cem\u003ecan_set_sticker_set\u003c/em\u003e optionally returned in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e requests to check if the bot can use this method. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to delete a group sticker set from a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Use the field \u003cem\u003ecan_set_sticker_set\u003c/em\u003e optionally returned in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e requests to check if the bot can use this method. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -6702,7 +6878,7 @@
           },
           {
             "name": "show_alert",
-            "description": "If \u003cem\u003etrue\u003c/em\u003e, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to \u003cem\u003efalse\u003c/em\u003e.",
+            "description": "If \u003cem\u003eTrue\u003c/em\u003e, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to \u003cem\u003efalse\u003c/em\u003e.",
             "type": {
               "name": "Boolean"
             },
@@ -6876,7 +7052,7 @@
           },
           {
             "name": "entities",
-            "description": "List of special entities that appear in message text, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "description": "A JSON-serialized list of special entities that appear in message text, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
             "type": {
               "elementType": {
                 "name": "MessageEntity"
@@ -6977,7 +7153,7 @@
           },
           {
             "name": "caption_entities",
-            "description": "List of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
             "type": {
               "elementType": {
                 "name": "MessageEntity"
@@ -7331,7 +7507,7 @@
           },
           {
             "name": "file_size",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes",
             "type": {
               "name": "Integer"
             },
@@ -7987,7 +8163,7 @@
           },
           {
             "name": "photo_url",
-            "description": "A valid URL of the photo. Photo must be in \u003cstrong\u003ejpeg\u003c/strong\u003e format. Photo size must not exceed 5MB",
+            "description": "A valid URL of the photo. Photo must be in \u003cstrong\u003eJPEG\u003c/strong\u003e format. Photo size must not exceed 5MB",
             "type": {
               "name": "String"
             },
@@ -8141,7 +8317,7 @@
           },
           {
             "name": "gif_duration",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Duration of the GIF",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Duration of the GIF in seconds",
             "type": {
               "name": "Integer"
             },
@@ -8279,7 +8455,7 @@
           },
           {
             "name": "mpeg4_duration",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Video duration",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Video duration in seconds",
             "type": {
               "name": "Integer"
             },
@@ -8409,7 +8585,7 @@
           },
           {
             "name": "thumb_url",
-            "description": "URL of the thumbnail (jpeg only) for the video",
+            "description": "URL of the thumbnail (JPEG only) for the video",
             "type": {
               "name": "String"
             },
@@ -8851,7 +9027,7 @@
           },
           {
             "name": "thumb_url",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. URL of the thumbnail (jpeg only) for the file",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. URL of the thumbnail (JPEG only) for the file",
             "type": {
               "name": "String"
             },
@@ -10564,7 +10740,7 @@
           },
           {
             "name": "switch_pm_parameter",
-            "description": "\u003ca href\u003d\"/bots#deep-linking\"\u003eDeep-linking\u003c/a\u003e parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only \u003ccode\u003eA-Z\u003c/code\u003e, \u003ccode\u003ea-z\u003c/code\u003e, \u003ccode\u003e0-9\u003c/code\u003e, \u003ccode\u003e_\u003c/code\u003e and \u003ccode\u003e-\u003c/code\u003e are allowed.\u003cbr\u003e\u003cbr\u003e\u003cem\u003eExample:\u003c/em\u003e An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a \u0027Connect your YouTube account\u0027 button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an oauth link. Once done, the bot can offer a \u003ca href\u003d\"#inlinekeyboardmarkup\"\u003e\u003cem\u003eswitch_inline\u003c/em\u003e\u003c/a\u003e button so that the user can easily return to the chat where they wanted to use the bot\u0027s inline capabilities.",
+            "description": "\u003ca href\u003d\"/bots#deep-linking\"\u003eDeep-linking\u003c/a\u003e parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only \u003ccode\u003eA-Z\u003c/code\u003e, \u003ccode\u003ea-z\u003c/code\u003e, \u003ccode\u003e0-9\u003c/code\u003e, \u003ccode\u003e_\u003c/code\u003e and \u003ccode\u003e-\u003c/code\u003e are allowed.\u003cbr\u003e\u003cbr\u003e\u003cem\u003eExample:\u003c/em\u003e An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a \u0027Connect your YouTube account\u0027 button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a \u003ca href\u003d\"#inlinekeyboardmarkup\"\u003e\u003cem\u003eswitch_inline\u003c/em\u003e\u003c/a\u003e button so that the user can easily return to the chat where they wanted to use the bot\u0027s inline capabilities.",
             "type": {
               "name": "String"
             },
@@ -11188,7 +11364,7 @@
       },
       {
         "name": "answerShippingQuery",
-        "description": "\u003cp\u003eIf you sent an invoice requesting a shipping address and the parameter \u003cem\u003eis_flexible\u003c/em\u003e was specified, the Bot API will send an \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e with a \u003cem\u003eshipping_query\u003c/em\u003e field to the bot. Use this method to reply to shipping queries. On success, True is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eIf you sent an invoice requesting a shipping address and the parameter \u003cem\u003eis_flexible\u003c/em\u003e was specified, the Bot API will send an \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e with a \u003cem\u003eshipping_query\u003c/em\u003e field to the bot. Use this method to reply to shipping queries. On success, \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "shipping_query_id",
@@ -11200,7 +11376,7 @@
           },
           {
             "name": "ok",
-            "description": "Specify True if delivery to the specified address is possible and False if there are any problems (for example, if delivery to the specified address is not possible)",
+            "description": "Specify \u003cem\u003eTrue\u003c/em\u003e if delivery to the specified address is possible and False if there are any problems (for example, if delivery to the specified address is not possible)",
             "type": {
               "name": "Boolean"
             },
@@ -11208,7 +11384,7 @@
           },
           {
             "name": "shipping_options",
-            "description": "Required if \u003cem\u003eok\u003c/em\u003e is True. A JSON-serialized array of available shipping options.",
+            "description": "Required if \u003cem\u003eok\u003c/em\u003e is \u003cem\u003eTrue\u003c/em\u003e. A JSON-serialized array of available shipping options.",
             "type": {
               "elementType": {
                 "name": "ShippingOption"
@@ -11232,7 +11408,7 @@
       },
       {
         "name": "answerPreCheckoutQuery",
-        "description": "\u003cp\u003eOnce the user has confirmed their payment and shipping details, the Bot API sends the final confirmation in the form of an \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e with the field \u003cem\u003epre_checkout_query\u003c/em\u003e. Use this method to respond to such pre-checkout queries. On success, True is returned. \u003cstrong\u003eNote:\u003c/strong\u003e The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.\u003c/p\u003e",
+        "description": "\u003cp\u003eOnce the user has confirmed their payment and shipping details, the Bot API sends the final confirmation in the form of an \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e with the field \u003cem\u003epre_checkout_query\u003c/em\u003e. Use this method to respond to such pre-checkout queries. On success, \u003cem\u003eTrue\u003c/em\u003e is returned. \u003cstrong\u003eNote:\u003c/strong\u003e The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "pre_checkout_query_id",
@@ -11316,7 +11492,7 @@
           },
           {
             "name": "file_size",
-            "description": "File size",
+            "description": "File size in bytes",
             "type": {
               "name": "Integer"
             },
@@ -12034,7 +12210,7 @@
           },
           {
             "name": "force",
-            "description": "Pass True, if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters",
             "type": {
               "name": "Boolean"
             },
@@ -12042,7 +12218,7 @@
           },
           {
             "name": "disable_edit_message",
-            "description": "Pass True, if the game message should not be automatically edited to include the current scoreboard",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the game message should not be automatically edited to include the current scoreboard",
             "type": {
               "name": "Boolean"
             },

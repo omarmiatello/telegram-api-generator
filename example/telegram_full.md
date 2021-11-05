@@ -5,7 +5,7 @@
 ### Data Types
 #### Update
 
-    Update(update_id: Integer, message: Message, edited_message: Message, channel_post: Message, edited_channel_post: Message, inline_query: InlineQuery, chosen_inline_result: ChosenInlineResult, callback_query: CallbackQuery, shipping_query: ShippingQuery, pre_checkout_query: PreCheckoutQuery, poll: Poll, poll_answer: PollAnswer, my_chat_member: ChatMemberUpdated, chat_member: ChatMemberUpdated)
+    Update(update_id: Integer, message: Message, edited_message: Message, channel_post: Message, edited_channel_post: Message, inline_query: InlineQuery, chosen_inline_result: ChosenInlineResult, callback_query: CallbackQuery, shipping_query: ShippingQuery, pre_checkout_query: PreCheckoutQuery, poll: Poll, poll_answer: PollAnswer, my_chat_member: ChatMemberUpdated, chat_member: ChatMemberUpdated, chat_join_request: ChatJoinRequest)
 
 <p>This <a href="#available-types">object</a> represents an incoming update.<br>At most <strong>one</strong> of the optional parameters can be present in any given update.</p>
 
@@ -25,6 +25,7 @@
 | poll_answer | PollAnswer | false | <em>Optional</em>. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself. |
 | my_chat_member | ChatMemberUpdated | false | <em>Optional</em>. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user. |
 | chat_member | ChatMemberUpdated | false | <em>Optional</em>. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify “chat_member” in the list of <em>allowed_updates</em> to receive these updates. |
+| chat_join_request | ChatJoinRequest | false | <em>Optional</em>. A request to join the chat has been sent. The bot must have the <em>can_invite_users</em> administrator right in the chat to receive these updates. |
 
 #### WebhookInfo
 
@@ -35,7 +36,7 @@
 | name | type | required | description |
 |---|---|---|---|
 | url | String | true | Webhook URL, may be empty if webhook is not set up |
-| has_custom_certificate | Boolean | true | True, if a custom certificate was provided for webhook certificate checks |
+| has_custom_certificate | Boolean | true | <em>True</em>, if a custom certificate was provided for webhook certificate checks |
 | pending_update_count | Integer | true | Number of updates awaiting delivery |
 | ip_address | String | false | <em>Optional</em>. Currently used webhook IP address |
 | last_error_date | Integer | false | <em>Optional</em>. Unix time for the most recent error that happened when trying to deliver an update via webhook |
@@ -108,14 +109,14 @@
 | name | type | required | description |
 |---|---|---|---|
 | id | Integer | true | Unique identifier for this user or bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. |
-| is_bot | Boolean | true | True, if this user is a bot |
+| is_bot | Boolean | true | <em>True</em>, if this user is a bot |
 | first_name | String | true | User's or bot's first name |
 | last_name | String | false | <em>Optional</em>. User's or bot's last name |
 | username | String | false | <em>Optional</em>. User's or bot's username |
 | language_code | String | false | <em>Optional</em>. <a href="https://en.wikipedia.org/wiki/IETF_language_tag">IETF language tag</a> of the user's language |
-| can_join_groups | Boolean | false | <em>Optional</em>. True, if the bot can be invited to groups. Returned only in <a href="#getme">getMe</a>. |
-| can_read_all_group_messages | Boolean | false | <em>Optional</em>. True, if <a href="https://core.telegram.org/bots#privacy-mode">privacy mode</a> is disabled for the bot. Returned only in <a href="#getme">getMe</a>. |
-| supports_inline_queries | Boolean | false | <em>Optional</em>. True, if the bot supports inline queries. Returned only in <a href="#getme">getMe</a>. |
+| can_join_groups | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can be invited to groups. Returned only in <a href="#getme">getMe</a>. |
+| can_read_all_group_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if <a href="https://core.telegram.org/bots#privacy-mode">privacy mode</a> is disabled for the bot. Returned only in <a href="#getme">getMe</a>. |
+| supports_inline_queries | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot supports inline queries. Returned only in <a href="#getme">getMe</a>. |
 
 #### Chat
 
@@ -137,10 +138,10 @@
 | invite_link | String | false | <em>Optional</em>. Primary invite link, for groups, supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>. |
 | pinned_message | Message | false | <em>Optional</em>. The most recent pinned message (by sending date). Returned only in <a href="#getchat">getChat</a>. |
 | permissions | ChatPermissions | false | <em>Optional</em>. Default chat member permissions, for groups and supergroups. Returned only in <a href="#getchat">getChat</a>. |
-| slow_mode_delay | Integer | false | <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user. Returned only in <a href="#getchat">getChat</a>. |
+| slow_mode_delay | Integer | false | <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user; in seconds. Returned only in <a href="#getchat">getChat</a>. |
 | message_auto_delete_time | Integer | false | <em>Optional</em>. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in <a href="#getchat">getChat</a>. |
 | sticker_set_name | String | false | <em>Optional</em>. For supergroups, name of group sticker set. Returned only in <a href="#getchat">getChat</a>. |
-| can_set_sticker_set | Boolean | false | <em>Optional</em>. True, if the bot can change the group sticker set. Returned only in <a href="#getchat">getChat</a>. |
+| can_set_sticker_set | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can change the group sticker set. Returned only in <a href="#getchat">getChat</a>. |
 | linked_chat_id | Integer | false | <em>Optional</em>. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in <a href="#getchat">getChat</a>. |
 | location | ChatLocation | false | <em>Optional</em>. For supergroups, the location to which the supergroup is connected. Returned only in <a href="#getchat">getChat</a>. |
 
@@ -246,7 +247,7 @@
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
 | width | Integer | true | Photo width |
 | height | Integer | true | Photo height |
-| file_size | Integer | false | <em>Optional</em>. File size |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes |
 
 #### Animation
 
@@ -264,7 +265,7 @@
 | thumb | PhotoSize | false | <em>Optional</em>. Animation thumbnail as defined by sender |
 | file_name | String | false | <em>Optional</em>. Original animation filename as defined by sender |
 | mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
-| file_size | Integer | false | <em>Optional</em>. File size |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes |
 
 #### Audio
 
@@ -281,7 +282,7 @@
 | title | String | false | <em>Optional</em>. Title of the audio as defined by sender or by audio tags |
 | file_name | String | false | <em>Optional</em>. Original filename as defined by sender |
 | mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
-| file_size | Integer | false | <em>Optional</em>. File size |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes |
 | thumb | PhotoSize | false | <em>Optional</em>. Thumbnail of the album cover to which the music file belongs |
 
 #### Document
@@ -297,7 +298,7 @@
 | thumb | PhotoSize | false | <em>Optional</em>. Document thumbnail as defined by sender |
 | file_name | String | false | <em>Optional</em>. Original filename as defined by sender |
 | mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
-| file_size | Integer | false | <em>Optional</em>. File size |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes |
 
 #### Video
 
@@ -315,7 +316,7 @@
 | thumb | PhotoSize | false | <em>Optional</em>. Video thumbnail |
 | file_name | String | false | <em>Optional</em>. Original filename as defined by sender |
 | mime_type | String | false | <em>Optional</em>. Mime type of a file as defined by sender |
-| file_size | Integer | false | <em>Optional</em>. File size |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes |
 
 #### VideoNote
 
@@ -330,7 +331,7 @@
 | length | Integer | true | Video width and height (diameter of the video message) as defined by sender |
 | duration | Integer | true | Duration of the video in seconds as defined by sender |
 | thumb | PhotoSize | false | <em>Optional</em>. Video thumbnail |
-| file_size | Integer | false | <em>Optional</em>. File size |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes |
 
 #### Voice
 
@@ -344,7 +345,7 @@
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
 | duration | Integer | true | Duration of the audio in seconds as defined by sender |
 | mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
-| file_size | Integer | false | <em>Optional</em>. File size |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes |
 
 #### Contact
 
@@ -406,10 +407,10 @@
 | question | String | true | Poll question, 1-300 characters |
 | options | List<PollOption> | true | List of poll options |
 | total_voter_count | Integer | true | Total number of users that voted in the poll |
-| is_closed | Boolean | true | True, if the poll is closed |
-| is_anonymous | Boolean | true | True, if the poll is anonymous |
+| is_closed | Boolean | true | <em>True</em>, if the poll is closed |
+| is_anonymous | Boolean | true | <em>True</em>, if the poll is anonymous |
 | type | String | true | Poll type, currently can be “regular” or “quiz” |
-| allows_multiple_answers | Boolean | true | True, if the poll allows multiple answers |
+| allows_multiple_answers | Boolean | true | <em>True</em>, if the poll allows multiple answers |
 | correct_option_id | Integer | false | <em>Optional</em>. 0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot. |
 | explanation | String | false | <em>Optional</em>. Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters |
 | explanation_entities | List<MessageEntity> | false | <em>Optional</em>. Special entities like usernames, URLs, bot commands, etc. that appear in the <em>explanation</em> |
@@ -427,7 +428,7 @@
 | longitude | Float | true | Longitude as defined by sender |
 | latitude | Float | true | Latitude as defined by sender |
 | horizontal_accuracy | Float | false | <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500 |
-| live_period | Integer | false | <em>Optional</em>. Time relative to the message sending date, during which the location can be updated, in seconds. For active live locations only. |
+| live_period | Integer | false | <em>Optional</em>. Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only. |
 | heading | Integer | false | <em>Optional</em>. The direction in which user is moving, in degrees; 1-360. For active live locations only. |
 | proximity_alert_radius | Integer | false | <em>Optional</em>. Maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only. |
 
@@ -467,7 +468,7 @@
 
 | name | type | required | description |
 |---|---|---|---|
-| message_auto_delete_time | Integer | true | New auto-delete time for messages in the chat |
+| message_auto_delete_time | Integer | true | New auto-delete time for messages in the chat; in seconds |
 
 #### VoiceChatScheduled
 
@@ -487,7 +488,7 @@
 
 | name | type | required | description |
 |---|---|---|---|
-| duration | Integer | true | Voice chat duration; in seconds |
+| duration | Integer | true | Voice chat duration in seconds |
 
 #### VoiceChatParticipantsInvited
 
@@ -522,7 +523,7 @@
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| file_size | Integer | false | <em>Optional</em>. File size, if known |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes, if known |
 | file_path | String | false | <em>Optional</em>. File path. Use <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code> to get the file. |
 
 #### ReplyKeyboardMarkup
@@ -598,7 +599,7 @@
 | switch_inline_query | String | false | <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. Can be empty, in which case just the bot's username will be inserted.<br><br><strong>Note:</strong> This offers an easy way for users to start using your bot in <a href="/bots/inline">inline mode</a> when they are currently in a private chat with it. Especially useful when combined with <a href="#answerinlinequery"><em>switch_pm…</em></a> actions – in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen. |
 | switch_inline_query_current_chat | String | false | <em>Optional</em>. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. Can be empty, in which case only the bot's username will be inserted.<br><br>This offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options. |
 | callback_game | CallbackGame | false | <em>Optional</em>. Description of the game that will be launched when the user presses the button.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row. |
-| pay | Boolean | false | <em>Optional</em>. Specify True, to send a <a href="#payments">Pay button</a>.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row. |
+| pay | Boolean | false | <em>Optional</em>. Specify <em>True</em>, to send a <a href="#payments">Pay button</a>.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row. |
 
 #### LoginUrl
 
@@ -613,7 +614,7 @@
 | url | String | true | An HTTP URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in <a href="https://core.telegram.org/widgets/login#receiving-authorization-data">Receiving authorization data</a>.<br><br><strong>NOTE:</strong> You <strong>must</strong> always check the hash of the received data to verify the authentication and the integrity of the data as described in <a href="https://core.telegram.org/widgets/login#checking-authorization">Checking authorization</a>. |
 | forward_text | String | false | <em>Optional</em>. New text of the button in forwarded messages. |
 | bot_username | String | false | <em>Optional</em>. Username of a bot, which will be used for user authorization. See <a href="https://core.telegram.org/widgets/login#setting-up-a-bot">Setting up a bot</a> for more details. If not specified, the current bot's username will be assumed. The <em>url</em>'s domain must be the same as the domain linked with the bot. See <a href="https://core.telegram.org/widgets/login#linking-your-domain-to-the-bot">Linking your domain to the bot</a> for more details. |
-| request_write_access | Boolean | false | <em>Optional</em>. Pass True to request the permission for your bot to send messages to the user. |
+| request_write_access | Boolean | false | <em>Optional</em>. Pass <em>True</em> to request the permission for your bot to send messages to the user. |
 
 #### CallbackQuery
 
@@ -667,7 +668,7 @@
 
 #### ChatInviteLink
 
-    ChatInviteLink(invite_link: String, creator: User, is_primary: Boolean, is_revoked: Boolean, expire_date: Integer, member_limit: Integer)
+    ChatInviteLink(invite_link: String, creator: User, creates_join_request: Boolean, is_primary: Boolean, is_revoked: Boolean, name: String, expire_date: Integer, member_limit: Integer, pending_join_request_count: Integer)
 
 <p>Represents an invite link for a chat.</p>
 
@@ -675,10 +676,13 @@
 |---|---|---|---|
 | invite_link | String | true | The invite link. If the link was created by another chat administrator, then the second part of the link will be replaced with “…”. |
 | creator | User | true | Creator of the link |
-| is_primary | Boolean | true | True, if the link is primary |
-| is_revoked | Boolean | true | True, if the link is revoked |
+| creates_join_request | Boolean | true | <em>True</em>, if users joining the chat via the link need to be approved by chat administrators |
+| is_primary | Boolean | true | <em>True</em>, if the link is primary |
+| is_revoked | Boolean | true | <em>True</em>, if the link is revoked |
+| name | String | false | <em>Optional</em>. Invite link name |
 | expire_date | Integer | false | <em>Optional</em>. Point in time (Unix timestamp) when the link will expire or has been expired |
 | member_limit | Integer | false | <em>Optional</em>. Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999 |
+| pending_join_request_count | Integer | false | <em>Optional</em>. Number of pending join requests created using this link |
 
 #### ChatMemberOwner
 
@@ -690,7 +694,7 @@
 |---|---|---|---|
 | status | String | true | The member's status in the chat, always “creator” |
 | user | User | true | Information about the user |
-| is_anonymous | Boolean | true | True, if the user's presence in the chat is hidden |
+| is_anonymous | Boolean | true | <em>True</em>, if the user's presence in the chat is hidden |
 | custom_title | String | false | <em>Optional</em>. Custom title for this user |
 
 #### ChatMemberAdministrator
@@ -703,18 +707,18 @@
 |---|---|---|---|
 | status | String | true | The member's status in the chat, always “administrator” |
 | user | User | true | Information about the user |
-| can_be_edited | Boolean | true | True, if the bot is allowed to edit administrator privileges of that user |
-| is_anonymous | Boolean | true | True, if the user's presence in the chat is hidden |
-| can_manage_chat | Boolean | true | True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege |
-| can_delete_messages | Boolean | true | True, if the administrator can delete messages of other users |
-| can_manage_voice_chats | Boolean | true | True, if the administrator can manage voice chats |
-| can_restrict_members | Boolean | true | True, if the administrator can restrict, ban or unban chat members |
-| can_promote_members | Boolean | true | True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user) |
-| can_change_info | Boolean | true | True, if the user is allowed to change the chat title, photo and other settings |
-| can_invite_users | Boolean | true | True, if the user is allowed to invite new users to the chat |
-| can_post_messages | Boolean | false | <em>Optional</em>. True, if the administrator can post in the channel; channels only |
-| can_edit_messages | Boolean | false | <em>Optional</em>. True, if the administrator can edit messages of other users and can pin messages; channels only |
-| can_pin_messages | Boolean | false | <em>Optional</em>. True, if the user is allowed to pin messages; groups and supergroups only |
+| can_be_edited | Boolean | true | <em>True</em>, if the bot is allowed to edit administrator privileges of that user |
+| is_anonymous | Boolean | true | <em>True</em>, if the user's presence in the chat is hidden |
+| can_manage_chat | Boolean | true | <em>True</em>, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege |
+| can_delete_messages | Boolean | true | <em>True</em>, if the administrator can delete messages of other users |
+| can_manage_voice_chats | Boolean | true | <em>True</em>, if the administrator can manage voice chats |
+| can_restrict_members | Boolean | true | <em>True</em>, if the administrator can restrict, ban or unban chat members |
+| can_promote_members | Boolean | true | <em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user) |
+| can_change_info | Boolean | true | <em>True</em>, if the user is allowed to change the chat title, photo and other settings |
+| can_invite_users | Boolean | true | <em>True</em>, if the user is allowed to invite new users to the chat |
+| can_post_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the administrator can post in the channel; channels only |
+| can_edit_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; channels only |
+| can_pin_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; groups and supergroups only |
 | custom_title | String | false | <em>Optional</em>. Custom title for this user |
 
 #### ChatMemberMember
@@ -738,15 +742,15 @@
 |---|---|---|---|
 | status | String | true | The member's status in the chat, always “restricted” |
 | user | User | true | Information about the user |
-| is_member | Boolean | true | True, if the user is a member of the chat at the moment of the request |
-| can_change_info | Boolean | true | True, if the user is allowed to change the chat title, photo and other settings |
-| can_invite_users | Boolean | true | True, if the user is allowed to invite new users to the chat |
-| can_pin_messages | Boolean | true | True, if the user is allowed to pin messages |
-| can_send_messages | Boolean | true | True, if the user is allowed to send text messages, contacts, locations and venues |
-| can_send_media_messages | Boolean | true | True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes |
-| can_send_polls | Boolean | true | True, if the user is allowed to send polls |
-| can_send_other_messages | Boolean | true | True, if the user is allowed to send animations, games, stickers and use inline bots |
-| can_add_web_page_previews | Boolean | true | True, if the user is allowed to add web page previews to their messages |
+| is_member | Boolean | true | <em>True</em>, if the user is a member of the chat at the moment of the request |
+| can_change_info | Boolean | true | <em>True</em>, if the user is allowed to change the chat title, photo and other settings |
+| can_invite_users | Boolean | true | <em>True</em>, if the user is allowed to invite new users to the chat |
+| can_pin_messages | Boolean | true | <em>True</em>, if the user is allowed to pin messages |
+| can_send_messages | Boolean | true | <em>True</em>, if the user is allowed to send text messages, contacts, locations and venues |
+| can_send_media_messages | Boolean | true | <em>True</em>, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes |
+| can_send_polls | Boolean | true | <em>True</em>, if the user is allowed to send polls |
+| can_send_other_messages | Boolean | true | <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots |
+| can_add_web_page_previews | Boolean | true | <em>True</em>, if the user is allowed to add web page previews to their messages |
 | until_date | Integer | true | Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever |
 
 #### ChatMemberLeft
@@ -787,6 +791,20 @@
 | new_chat_member | ChatMember | true | New information about the chat member |
 | invite_link | ChatInviteLink | false | <em>Optional</em>. Chat invite link, which was used by the user to join the chat; for joining by invite link events only. |
 
+#### ChatJoinRequest
+
+    ChatJoinRequest(chat: Chat, from: User, date: Integer, bio: String, invite_link: ChatInviteLink)
+
+<p>Represents a join request sent to a chat.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat | Chat | true | Chat to which the request was sent |
+| from | User | true | User that sent the join request |
+| date | Integer | true | Date the request was sent in Unix time |
+| bio | String | false | <em>Optional</em>. Bio of the user. |
+| invite_link | ChatInviteLink | false | <em>Optional</em>. Chat invite link that was used by the user to send the join request |
+
 #### ChatPermissions
 
     ChatPermissions(can_send_messages: Boolean, can_send_media_messages: Boolean, can_send_polls: Boolean, can_send_other_messages: Boolean, can_add_web_page_previews: Boolean, can_change_info: Boolean, can_invite_users: Boolean, can_pin_messages: Boolean)
@@ -795,14 +813,14 @@
 
 | name | type | required | description |
 |---|---|---|---|
-| can_send_messages | Boolean | false | <em>Optional</em>. True, if the user is allowed to send text messages, contacts, locations and venues |
-| can_send_media_messages | Boolean | false | <em>Optional</em>. True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages |
-| can_send_polls | Boolean | false | <em>Optional</em>. True, if the user is allowed to send polls, implies can_send_messages |
-| can_send_other_messages | Boolean | false | <em>Optional</em>. True, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages |
-| can_add_web_page_previews | Boolean | false | <em>Optional</em>. True, if the user is allowed to add web page previews to their messages, implies can_send_media_messages |
-| can_change_info | Boolean | false | <em>Optional</em>. True, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups |
-| can_invite_users | Boolean | false | <em>Optional</em>. True, if the user is allowed to invite new users to the chat |
-| can_pin_messages | Boolean | false | <em>Optional</em>. True, if the user is allowed to pin messages. Ignored in public supergroups |
+| can_send_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to send text messages, contacts, locations and venues |
+| can_send_media_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages |
+| can_send_polls | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to send polls, implies can_send_messages |
+| can_send_other_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages |
+| can_add_web_page_previews | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to add web page previews to their messages, implies can_send_media_messages |
+| can_change_info | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups |
+| can_invite_users | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to invite new users to the chat |
+| can_pin_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to pin messages. Ignored in public supergroups |
 
 #### ChatLocation
 
@@ -941,7 +959,7 @@
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | width | Integer | false | <em>Optional</em>. Video width |
 | height | Integer | false | <em>Optional</em>. Video height |
-| duration | Integer | false | <em>Optional</em>. Video duration |
+| duration | Integer | false | <em>Optional</em>. Video duration in seconds |
 | supports_streaming | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the uploaded video is suitable for streaming |
 
 #### InputMediaAnimation
@@ -960,7 +978,7 @@
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | width | Integer | false | <em>Optional</em>. Animation width |
 | height | Integer | false | <em>Optional</em>. Animation height |
-| duration | Integer | false | <em>Optional</em>. Animation duration |
+| duration | Integer | false | <em>Optional</em>. Animation duration in seconds |
 
 #### InputMediaAudio
 
@@ -994,7 +1012,7 @@
 | caption | String | false | <em>Optional</em>. Caption of the document to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
-| disable_content_type_detection | Boolean | false | <em>Optional</em>. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always true, if the document is sent as part of an album. |
+| disable_content_type_detection | Boolean | false | <em>Optional</em>. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always <em>True</em>, if the document is sent as part of an album. |
 
 
 
@@ -1024,7 +1042,7 @@
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | text | String | true | Text of the message to be sent, 1-4096 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details. |
-| entities | List<MessageEntity> | false | List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em> |
+| entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in message text, which can be specified instead of <em>parse_mode</em> |
 | disable_web_page_preview | Boolean | false | Disables link previews for links in this message |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
@@ -1057,7 +1075,7 @@
 | message_id | Integer | true | Message identifier in the chat specified in <em>from_chat_id</em> |
 | caption | String | false | New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept |
 | parse_mode | ParseMode | false | Mode for parsing entities in the new caption. See <a href="#formatting-options">formatting options</a> for more details. |
-| caption_entities | List<MessageEntity> | false | List of special entities that appear in the new caption, which can be specified instead of <em>parse_mode</em> |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of <em>parse_mode</em> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
@@ -1075,7 +1093,7 @@
 | photo | InputFileOrString | true | Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | Photo caption (may also be used when resending photos by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details. |
-| caption_entities | List<MessageEntity> | false | List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
@@ -1093,7 +1111,7 @@
 | audio | InputFileOrString | true | Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | Audio caption, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details. |
-| caption_entities | List<MessageEntity> | false | List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | duration | Integer | false | Duration of the audio in seconds |
 | performer | String | false | Performer |
 | title | String | false | Track name |
@@ -1116,7 +1134,7 @@
 | thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | Document caption (may also be used when resending documents by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details. |
-| caption_entities | List<MessageEntity> | false | List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | disable_content_type_detection | Boolean | false | Disables automatic server-side content type detection for files uploaded using multipart/form-data |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
@@ -1139,7 +1157,7 @@
 | thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | Video caption (may also be used when resending videos by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details. |
-| caption_entities | List<MessageEntity> | false | List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | supports_streaming | Boolean | false | Pass <em>True</em>, if the uploaded video is suitable for streaming |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
@@ -1162,7 +1180,7 @@
 | thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | Animation caption (may also be used when resending animation by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details. |
-| caption_entities | List<MessageEntity> | false | List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
@@ -1180,7 +1198,7 @@
 | voice | InputFileOrString | true | Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | Voice message caption, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the voice message caption. See <a href="#formatting-options">formatting options</a> for more details. |
-| caption_entities | List<MessageEntity> | false | List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | duration | Integer | false | Duration of the voice message in seconds |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
@@ -1321,13 +1339,13 @@
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | question | String | true | Poll question, 1-300 characters |
 | options | List<String> | true | A JSON-serialized list of answer options, 2-10 strings 1-100 characters each |
-| is_anonymous | Boolean | false | True, if the poll needs to be anonymous, defaults to <em>True</em> |
+| is_anonymous | Boolean | false | <em>True</em>, if the poll needs to be anonymous, defaults to <em>True</em> |
 | type | String | false | Poll type, “quiz” or “regular”, defaults to “regular” |
-| allows_multiple_answers | Boolean | false | True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to <em>False</em> |
+| allows_multiple_answers | Boolean | false | <em>True</em>, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to <em>False</em> |
 | correct_option_id | Integer | false | 0-based identifier of the correct answer option, required for polls in quiz mode |
 | explanation | String | false | Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing |
 | explanation_parse_mode | String | false | Mode for parsing entities in the explanation. See <a href="#formatting-options">formatting options</a> for more details. |
-| explanation_entities | List<MessageEntity> | false | List of special entities that appear in the poll explanation, which can be specified instead of <em>parse_mode</em> |
+| explanation_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of <em>parse_mode</em> |
 | open_period | Integer | false | Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with <em>close_date</em>. |
 | close_date | Integer | false | Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with <em>open_period</em>. |
 | is_closed | Boolean | false | Pass <em>True</em>, if the poll needs to be immediately closed. This can be useful for poll preview. |
@@ -1362,7 +1380,7 @@
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| action | String | true | Type of action to broadcast. Choose one, depending on what the user is about to receive: <em>typing</em> for <a href="#sendmessage">text messages</a>, <em>upload_photo</em> for <a href="#sendphoto">photos</a>, <em>record_video</em> or <em>upload_video</em> for <a href="#sendvideo">videos</a>, <em>record_voice</em> or <em>upload_voice</em> for <a href="#sendvoice">voice notes</a>, <em>upload_document</em> for <a href="#senddocument">general files</a>, <em>find_location</em> for <a href="#sendlocation">location data</a>, <em>record_video_note</em> or <em>upload_video_note</em> for <a href="#sendvideonote">video notes</a>. |
+| action | String | true | Type of action to broadcast. Choose one, depending on what the user is about to receive: <em>typing</em> for <a href="#sendmessage">text messages</a>, <em>upload_photo</em> for <a href="#sendphoto">photos</a>, <em>record_video</em> or <em>upload_video</em> for <a href="#sendvideo">videos</a>, <em>record_voice</em> or <em>upload_voice</em> for <a href="#sendvoice">voice notes</a>, <em>upload_document</em> for <a href="#senddocument">general files</a>, <em>choose_sticker</em> for <a href="#sendsticker">stickers</a>, <em>find_location</em> for <a href="#sendlocation">location data</a>, <em>record_video_note</em> or <em>upload_video_note</em> for <a href="#sendvideonote">video notes</a>. |
 
 #### getUserProfilePhotos
 
@@ -1390,7 +1408,7 @@
 
     banChatMember(chat_id: IntegerOrString, user_id: Integer, until_date: Integer, revoke_messages: Boolean)
 
-<p>Use this method to ban a user in a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless <a href="#unbanchatmember">unbanned</a> first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+<p>Use this method to ban a user in a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless <a href="#unbanchatmember">unbanned</a> first. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1415,7 +1433,7 @@
 
     restrictChatMember(chat_id: IntegerOrString, user_id: Integer, permissions: ChatPermissions, until_date: Integer)
 
-<p>Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights. Pass <em>True</em> for all permissions to lift restrictions from a user. Returns <em>True</em> on success.</p>
+<p>Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate administrator rights. Pass <em>True</em> for all permissions to lift restrictions from a user. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1428,23 +1446,23 @@
 
     promoteChatMember(chat_id: IntegerOrString, user_id: Integer, is_anonymous: Boolean, can_manage_chat: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_delete_messages: Boolean, can_manage_voice_chats: Boolean, can_restrict_members: Boolean, can_promote_members: Boolean, can_change_info: Boolean, can_invite_users: Boolean, can_pin_messages: Boolean)
 
-<p>Use this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Pass <em>False</em> for all boolean parameters to demote a user. Returns <em>True</em> on success.</p>
+<p>Use this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Pass <em>False</em> for all boolean parameters to demote a user. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | user_id | Integer | true | Unique identifier of the target user |
 | is_anonymous | Boolean | false | Pass <em>True</em>, if the administrator's presence in the chat is hidden |
-| can_manage_chat | Boolean | false | Pass True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege |
-| can_post_messages | Boolean | false | Pass True, if the administrator can create channel posts, channels only |
-| can_edit_messages | Boolean | false | Pass True, if the administrator can edit messages of other users and can pin messages, channels only |
-| can_delete_messages | Boolean | false | Pass True, if the administrator can delete messages of other users |
-| can_manage_voice_chats | Boolean | false | Pass True, if the administrator can manage voice chats |
-| can_restrict_members | Boolean | false | Pass True, if the administrator can restrict, ban or unban chat members |
-| can_promote_members | Boolean | false | Pass True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him) |
-| can_change_info | Boolean | false | Pass True, if the administrator can change chat title, photo and other settings |
-| can_invite_users | Boolean | false | Pass True, if the administrator can invite new users to the chat |
-| can_pin_messages | Boolean | false | Pass True, if the administrator can pin messages, supergroups only |
+| can_manage_chat | Boolean | false | Pass <em>True</em>, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege |
+| can_post_messages | Boolean | false | Pass <em>True</em>, if the administrator can create channel posts, channels only |
+| can_edit_messages | Boolean | false | Pass <em>True</em>, if the administrator can edit messages of other users and can pin messages, channels only |
+| can_delete_messages | Boolean | false | Pass <em>True</em>, if the administrator can delete messages of other users |
+| can_manage_voice_chats | Boolean | false | Pass <em>True</em>, if the administrator can manage voice chats |
+| can_restrict_members | Boolean | false | Pass <em>True</em>, if the administrator can restrict, ban or unban chat members |
+| can_promote_members | Boolean | false | Pass <em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him) |
+| can_change_info | Boolean | false | Pass <em>True</em>, if the administrator can change chat title, photo and other settings |
+| can_invite_users | Boolean | false | Pass <em>True</em>, if the administrator can invite new users to the chat |
+| can_pin_messages | Boolean | false | Pass <em>True</em>, if the administrator can pin messages, supergroups only |
 
 #### setChatAdministratorCustomTitle
 
@@ -1462,18 +1480,18 @@
 
     setChatPermissions(chat_id: IntegerOrString, permissions: ChatPermissions)
 
-<p>Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the <em>can_restrict_members</em> admin rights. Returns <em>True</em> on success.</p>
+<p>Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the <em>can_restrict_members</em> administrator rights. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>) |
-| permissions | ChatPermissions | true | New default chat permissions |
+| permissions | ChatPermissions | true | A JSON-serialized object for new default chat permissions |
 
 #### exportChatInviteLink
 
     exportChatInviteLink(chat_id: IntegerOrString)
 
-<p>Use this method to generate a new primary invite link for a chat; any previously generated primary link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as <em>String</em> on success.</p><blockquote> 
+<p>Use this method to generate a new primary invite link for a chat; any previously generated primary link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the new invite link as <em>String</em> on success.</p><blockquote> 
  <p>Note: Each administrator in a chat generates their own invite links. Bots can't use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using <a href="#exportchatinvitelink">exportChatInviteLink</a> or by calling the <a href="#getchat">getChat</a> method. If your bot needs to generate a new primary invite link replacing its previous one, use <a href="#exportchatinvitelink">exportChatInviteLink</a> again.</p> 
 </blockquote>
 
@@ -1483,45 +1501,71 @@
 
 #### createChatInviteLink
 
-    createChatInviteLink(chat_id: IntegerOrString, expire_date: Integer, member_limit: Integer)
+    createChatInviteLink(chat_id: IntegerOrString, name: String, expire_date: Integer, member_limit: Integer, creates_join_request: Boolean)
 
-<p>Use this method to create an additional invite link for a chat. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. The link can be revoked using the method <a href="#revokechatinvitelink">revokeChatInviteLink</a>. Returns the new invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+<p>Use this method to create an additional invite link for a chat. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. The link can be revoked using the method <a href="#revokechatinvitelink">revokeChatInviteLink</a>. Returns the new invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
+| name | String | false | Invite link name; 0-32 characters |
 | expire_date | Integer | false | Point in time (Unix timestamp) when the link will expire |
 | member_limit | Integer | false | Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999 |
+| creates_join_request | Boolean | false | <em>True</em>, if users joining the chat via the link need to be approved by chat administrators. If <em>True</em>, <em>member_limit</em> can't be specified |
 
 #### editChatInviteLink
 
-    editChatInviteLink(chat_id: IntegerOrString, invite_link: String, expire_date: Integer, member_limit: Integer)
+    editChatInviteLink(chat_id: IntegerOrString, invite_link: String, name: String, expire_date: Integer, member_limit: Integer, creates_join_request: Boolean)
 
-<p>Use this method to edit a non-primary invite link created by the bot. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the edited invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+<p>Use this method to edit a non-primary invite link created by the bot. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the edited invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | invite_link | String | true | The invite link to edit |
+| name | String | false | Invite link name; 0-32 characters |
 | expire_date | Integer | false | Point in time (Unix timestamp) when the link will expire |
 | member_limit | Integer | false | Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999 |
+| creates_join_request | Boolean | false | <em>True</em>, if users joining the chat via the link need to be approved by chat administrators. If <em>True</em>, <em>member_limit</em> can't be specified |
 
 #### revokeChatInviteLink
 
     revokeChatInviteLink(chat_id: IntegerOrString, invite_link: String)
 
-<p>Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the revoked invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+<p>Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the revoked invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier of the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | invite_link | String | true | The invite link to revoke |
 
+#### approveChatJoinRequest
+
+    approveChatJoinRequest(chat_id: IntegerOrString, user_id: Integer)
+
+<p>Use this method to approve a chat join request. The bot must be an administrator in the chat for this to work and must have the <em>can_invite_users</em> administrator right. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
+| user_id | Integer | true | Unique identifier of the target user |
+
+#### declineChatJoinRequest
+
+    declineChatJoinRequest(chat_id: IntegerOrString, user_id: Integer)
+
+<p>Use this method to decline a chat join request. The bot must be an administrator in the chat for this to work and must have the <em>can_invite_users</em> administrator right. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
+| user_id | Integer | true | Unique identifier of the target user |
+
 #### setChatPhoto
 
     setChatPhoto(chat_id: IntegerOrString, photo: InputFile)
 
-<p>Use this method to set a new profile photo for the chat. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+<p>Use this method to set a new profile photo for the chat. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1532,7 +1576,7 @@
 
     deleteChatPhoto(chat_id: IntegerOrString)
 
-<p>Use this method to delete a chat photo. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+<p>Use this method to delete a chat photo. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1542,7 +1586,7 @@
 
     setChatTitle(chat_id: IntegerOrString, title: String)
 
-<p>Use this method to change the title of a chat. Titles can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+<p>Use this method to change the title of a chat. Titles can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1553,7 +1597,7 @@
 
     setChatDescription(chat_id: IntegerOrString, description: String)
 
-<p>Use this method to change the description of a group, a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+<p>Use this method to change the description of a group, a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1564,7 +1608,7 @@
 
     pinChatMessage(chat_id: IntegerOrString, message_id: Integer, disable_notification: Boolean)
 
-<p>Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in a supergroup or 'can_edit_messages' admin right in a channel. Returns <em>True</em> on success.</p>
+<p>Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1576,7 +1620,7 @@
 
     unpinChatMessage(chat_id: IntegerOrString, message_id: Integer)
 
-<p>Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in a supergroup or 'can_edit_messages' admin right in a channel. Returns <em>True</em> on success.</p>
+<p>Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1587,7 +1631,7 @@
 
     unpinAllChatMessages(chat_id: IntegerOrString)
 
-<p>Use this method to clear the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in a supergroup or 'can_edit_messages' admin right in a channel. Returns <em>True</em> on success.</p>
+<p>Use this method to clear the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1648,7 +1692,7 @@
 
     setChatStickerSet(chat_id: IntegerOrString, sticker_set_name: String)
 
-<p>Use this method to set a new group sticker set for a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Use the field <em>can_set_sticker_set</em> optionally returned in <a href="#getchat">getChat</a> requests to check if the bot can use this method. Returns <em>True</em> on success.</p>
+<p>Use this method to set a new group sticker set for a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Use the field <em>can_set_sticker_set</em> optionally returned in <a href="#getchat">getChat</a> requests to check if the bot can use this method. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1659,7 +1703,7 @@
 
     deleteChatStickerSet(chat_id: IntegerOrString)
 
-<p>Use this method to delete a group sticker set from a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Use the field <em>can_set_sticker_set</em> optionally returned in <a href="#getchat">getChat</a> requests to check if the bot can use this method. Returns <em>True</em> on success.</p>
+<p>Use this method to delete a group sticker set from a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Use the field <em>can_set_sticker_set</em> optionally returned in <a href="#getchat">getChat</a> requests to check if the bot can use this method. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1677,7 +1721,7 @@
 |---|---|---|---|
 | callback_query_id | String | true | Unique identifier for the query to be answered |
 | text | String | false | Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters |
-| show_alert | Boolean | false | If <em>true</em>, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to <em>false</em>. |
+| show_alert | Boolean | false | If <em>True</em>, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to <em>false</em>. |
 | url | String | false | URL that will be opened by the user's client. If you have created a <a href="#game">Game</a> and accepted the conditions via <a href="https://t.me/botfather">@Botfather</a>, specify the URL that opens your game — note that this will only work if the query comes from a <a href="#inlinekeyboardbutton"><em>callback_game</em></a> button.<br><br>Otherwise, you may use links like <code>t.me/your_bot?start=XXXX</code> that open your bot with a parameter. |
 | cache_time | Integer | false | The maximum amount of time in seconds that the result of the callback query may be cached client-side. Telegram apps will support caching starting in version 3.14. Defaults to 0. |
 
@@ -1733,7 +1777,7 @@
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |
 | text | String | true | New text of the message, 1-4096 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details. |
-| entities | List<MessageEntity> | false | List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em> |
+| entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in message text, which can be specified instead of <em>parse_mode</em> |
 | disable_web_page_preview | Boolean | false | Disables link previews for links in this message |
 | reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. |
 
@@ -1750,7 +1794,7 @@
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |
 | caption | String | false | New caption of the message, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the message caption. See <a href="#formatting-options">formatting options</a> for more details. |
-| caption_entities | List<MessageEntity> | false | List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. |
 
 #### editMessageMedia
@@ -1825,7 +1869,7 @@
 | emoji | String | false | <em>Optional</em>. Emoji associated with the sticker |
 | set_name | String | false | <em>Optional</em>. Name of the sticker set to which the sticker belongs |
 | mask_position | MaskPosition | false | <em>Optional</em>. For mask stickers, the position where the mask should be placed |
-| file_size | Integer | false | <em>Optional</em>. File size |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes |
 
 #### StickerSet
 
@@ -2008,7 +2052,7 @@
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>photo</em> |
 | id | String | true | Unique identifier for this result, 1-64 bytes |
-| photo_url | String | true | A valid URL of the photo. Photo must be in <strong>jpeg</strong> format. Photo size must not exceed 5MB |
+| photo_url | String | true | A valid URL of the photo. Photo must be in <strong>JPEG</strong> format. Photo size must not exceed 5MB |
 | thumb_url | String | true | URL of the thumbnail for the photo |
 | photo_width | Integer | false | <em>Optional</em>. Width of the photo |
 | photo_height | Integer | false | <em>Optional</em>. Height of the photo |
@@ -2033,7 +2077,7 @@
 | gif_url | String | true | A valid URL for the GIF file. File size must not exceed 1MB |
 | gif_width | Integer | false | <em>Optional</em>. Width of the GIF |
 | gif_height | Integer | false | <em>Optional</em>. Height of the GIF |
-| gif_duration | Integer | false | <em>Optional</em>. Duration of the GIF |
+| gif_duration | Integer | false | <em>Optional</em>. Duration of the GIF in seconds |
 | thumb_url | String | true | URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result |
 | thumb_mime_type | String | false | <em>Optional</em>. MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or “video/mp4”. Defaults to “image/jpeg” |
 | title | String | false | <em>Optional</em>. Title for the result |
@@ -2056,7 +2100,7 @@
 | mpeg4_url | String | true | A valid URL for the MP4 file. File size must not exceed 1MB |
 | mpeg4_width | Integer | false | <em>Optional</em>. Video width |
 | mpeg4_height | Integer | false | <em>Optional</em>. Video height |
-| mpeg4_duration | Integer | false | <em>Optional</em>. Video duration |
+| mpeg4_duration | Integer | false | <em>Optional</em>. Video duration in seconds |
 | thumb_url | String | true | URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result |
 | thumb_mime_type | String | false | <em>Optional</em>. MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or “video/mp4”. Defaults to “image/jpeg” |
 | title | String | false | <em>Optional</em>. Title for the result |
@@ -2080,7 +2124,7 @@
 | id | String | true | Unique identifier for this result, 1-64 bytes |
 | video_url | String | true | A valid URL for the embedded video player or video file |
 | mime_type | String | true | Mime type of the content of video url, “text/html” or “video/mp4” |
-| thumb_url | String | true | URL of the thumbnail (jpeg only) for the video |
+| thumb_url | String | true | URL of the thumbnail (JPEG only) for the video |
 | title | String | true | Title for the result |
 | caption | String | false | <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details. |
@@ -2150,7 +2194,7 @@
 | description | String | false | <em>Optional</em>. Short description of the result |
 | reply_markup | InlineKeyboardMarkup | false | <em>Optional</em>. Inline keyboard attached to the message |
 | input_message_content | InputMessageContent | false | <em>Optional</em>. Content of the message to be sent instead of the file |
-| thumb_url | String | false | <em>Optional</em>. URL of the thumbnail (jpeg only) for the file |
+| thumb_url | String | false | <em>Optional</em>. URL of the thumbnail (JPEG only) for the file |
 | thumb_width | Integer | false | <em>Optional</em>. Thumbnail width |
 | thumb_height | Integer | false | <em>Optional</em>. Thumbnail height |
 
@@ -2493,7 +2537,7 @@
 | is_personal | Boolean | false | Pass <em>True</em>, if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query |
 | next_offset | String | false | Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes. |
 | switch_pm_text | String | false | If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter <em>switch_pm_parameter</em> |
-| switch_pm_parameter | String | false | <a href="/bots#deep-linking">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br><br><em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an oauth link. Once done, the bot can offer a <a href="#inlinekeyboardmarkup"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities. |
+| switch_pm_parameter | String | false | <a href="/bots#deep-linking">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br><br><em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a <a href="#inlinekeyboardmarkup"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities. |
 
 
 
@@ -2651,20 +2695,20 @@
 
     answerShippingQuery(shipping_query_id: String, ok: Boolean, shipping_options: List<ShippingOption>, error_message: String)
 
-<p>If you sent an invoice requesting a shipping address and the parameter <em>is_flexible</em> was specified, the Bot API will send an <a href="#update">Update</a> with a <em>shipping_query</em> field to the bot. Use this method to reply to shipping queries. On success, True is returned.</p>
+<p>If you sent an invoice requesting a shipping address and the parameter <em>is_flexible</em> was specified, the Bot API will send an <a href="#update">Update</a> with a <em>shipping_query</em> field to the bot. Use this method to reply to shipping queries. On success, <em>True</em> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | shipping_query_id | String | true | Unique identifier for the query to be answered |
-| ok | Boolean | true | Specify True if delivery to the specified address is possible and False if there are any problems (for example, if delivery to the specified address is not possible) |
-| shipping_options | List<ShippingOption> | false | Required if <em>ok</em> is True. A JSON-serialized array of available shipping options. |
+| ok | Boolean | true | Specify <em>True</em> if delivery to the specified address is possible and False if there are any problems (for example, if delivery to the specified address is not possible) |
+| shipping_options | List<ShippingOption> | false | Required if <em>ok</em> is <em>True</em>. A JSON-serialized array of available shipping options. |
 | error_message | String | false | Required if <em>ok</em> is False. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user. |
 
 #### answerPreCheckoutQuery
 
     answerPreCheckoutQuery(pre_checkout_query_id: String, ok: Boolean, error_message: String)
 
-<p>Once the user has confirmed their payment and shipping details, the Bot API sends the final confirmation in the form of an <a href="#update">Update</a> with the field <em>pre_checkout_query</em>. Use this method to respond to such pre-checkout queries. On success, True is returned. <strong>Note:</strong> The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.</p>
+<p>Once the user has confirmed their payment and shipping details, the Bot API sends the final confirmation in the form of an <a href="#update">Update</a> with the field <em>pre_checkout_query</em>. Use this method to respond to such pre-checkout queries. On success, <em>True</em> is returned. <strong>Note:</strong> The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -2698,7 +2742,7 @@
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| file_size | Integer | true | File size |
+| file_size | Integer | true | File size in bytes |
 | file_date | Integer | true | Unix time when the file was uploaded |
 
 #### EncryptedPassportElement
@@ -2922,8 +2966,8 @@
 |---|---|---|---|
 | user_id | Integer | true | User identifier |
 | score | Integer | true | New score, must be non-negative |
-| force | Boolean | false | Pass True, if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters |
-| disable_edit_message | Boolean | false | Pass True, if the game message should not be automatically edited to include the current scoreboard |
+| force | Boolean | false | Pass <em>True</em>, if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters |
+| disable_edit_message | Boolean | false | Pass <em>True</em>, if the game message should not be automatically edited to include the current scoreboard |
 | chat_id | Integer | false | Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat |
 | message_id | Integer | false | Required if <em>inline_message_id</em> is not specified. Identifier of the sent message |
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |

@@ -21,6 +21,7 @@
  * @property poll_answer <em>Optional</em>. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.
  * @property my_chat_member <em>Optional</em>. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user.
  * @property chat_member <em>Optional</em>. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify “chat_member” in the list of <em>allowed_updates</em> to receive these updates.
+ * @property chat_join_request <em>Optional</em>. A request to join the chat has been sent. The bot must have the <em>can_invite_users</em> administrator right in the chat to receive these updates.
  *
  * @constructor Creates a [Update].
  * */
@@ -66,14 +67,17 @@ pub struct Update {
     pub my_chat_member: Option<ChatMemberUpdated>,
     /// <em>Optional</em>. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify “chat_member” in the list of <em>allowed_updates</em> to receive these updates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub chat_member: Option<ChatMemberUpdated>
+    pub chat_member: Option<ChatMemberUpdated>,
+    /// <em>Optional</em>. A request to join the chat has been sent. The bot must have the <em>can_invite_users</em> administrator right in the chat to receive these updates.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub chat_join_request: Option<ChatJoinRequest>
 }
 
 /**
  * <p>Contains information about the current status of a webhook.</p>
  *
  * @property url Webhook URL, may be empty if webhook is not set up
- * @property has_custom_certificate True, if a custom certificate was provided for webhook certificate checks
+ * @property has_custom_certificate <em>True</em>, if a custom certificate was provided for webhook certificate checks
  * @property pending_update_count Number of updates awaiting delivery
  * @property ip_address <em>Optional</em>. Currently used webhook IP address
  * @property last_error_date <em>Optional</em>. Unix time for the most recent error that happened when trying to deliver an update via webhook
@@ -87,7 +91,7 @@ pub struct Update {
 pub struct WebhookInfo {
     /// Webhook URL, may be empty if webhook is not set up
     pub url: String,
-    /// True, if a custom certificate was provided for webhook certificate checks
+    /// <em>True</em>, if a custom certificate was provided for webhook certificate checks
     pub has_custom_certificate: bool,
     /// Number of updates awaiting delivery
     pub pending_update_count: Integer,
@@ -115,14 +119,14 @@ pub struct WebhookInfo {
  * <p>This object represents a Telegram user or bot.</p>
  *
  * @property id Unique identifier for this user or bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
- * @property is_bot True, if this user is a bot
+ * @property is_bot <em>True</em>, if this user is a bot
  * @property first_name User's or bot's first name
  * @property last_name <em>Optional</em>. User's or bot's last name
  * @property username <em>Optional</em>. User's or bot's username
  * @property language_code <em>Optional</em>. <a href="https://en.wikipedia.org/wiki/IETF_language_tag">IETF language tag</a> of the user's language
- * @property can_join_groups <em>Optional</em>. True, if the bot can be invited to groups. Returned only in <a href="#getme">getMe</a>.
- * @property can_read_all_group_messages <em>Optional</em>. True, if <a href="https://core.telegram.org/bots#privacy-mode">privacy mode</a> is disabled for the bot. Returned only in <a href="#getme">getMe</a>.
- * @property supports_inline_queries <em>Optional</em>. True, if the bot supports inline queries. Returned only in <a href="#getme">getMe</a>.
+ * @property can_join_groups <em>Optional</em>. <em>True</em>, if the bot can be invited to groups. Returned only in <a href="#getme">getMe</a>.
+ * @property can_read_all_group_messages <em>Optional</em>. <em>True</em>, if <a href="https://core.telegram.org/bots#privacy-mode">privacy mode</a> is disabled for the bot. Returned only in <a href="#getme">getMe</a>.
+ * @property supports_inline_queries <em>Optional</em>. <em>True</em>, if the bot supports inline queries. Returned only in <a href="#getme">getMe</a>.
  *
  * @constructor Creates a [User].
  * */
@@ -130,7 +134,7 @@ pub struct WebhookInfo {
 pub struct User {
     /// Unique identifier for this user or bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
     pub id: Integer,
-    /// True, if this user is a bot
+    /// <em>True</em>, if this user is a bot
     pub is_bot: bool,
     /// User's or bot's first name
     pub first_name: String,
@@ -143,13 +147,13 @@ pub struct User {
     /// <em>Optional</em>. <a href="https://en.wikipedia.org/wiki/IETF_language_tag">IETF language tag</a> of the user's language
     #[serde(skip_serializing_if = "Option::is_none")]
     pub language_code: Option<String>,
-    /// <em>Optional</em>. True, if the bot can be invited to groups. Returned only in <a href="#getme">getMe</a>.
+    /// <em>Optional</em>. <em>True</em>, if the bot can be invited to groups. Returned only in <a href="#getme">getMe</a>.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_join_groups: Option<bool>,
-    /// <em>Optional</em>. True, if <a href="https://core.telegram.org/bots#privacy-mode">privacy mode</a> is disabled for the bot. Returned only in <a href="#getme">getMe</a>.
+    /// <em>Optional</em>. <em>True</em>, if <a href="https://core.telegram.org/bots#privacy-mode">privacy mode</a> is disabled for the bot. Returned only in <a href="#getme">getMe</a>.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_read_all_group_messages: Option<bool>,
-    /// <em>Optional</em>. True, if the bot supports inline queries. Returned only in <a href="#getme">getMe</a>.
+    /// <em>Optional</em>. <em>True</em>, if the bot supports inline queries. Returned only in <a href="#getme">getMe</a>.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub supports_inline_queries: Option<bool>
 }
@@ -169,10 +173,10 @@ pub struct User {
  * @property invite_link <em>Optional</em>. Primary invite link, for groups, supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>.
  * @property pinned_message <em>Optional</em>. The most recent pinned message (by sending date). Returned only in <a href="#getchat">getChat</a>.
  * @property permissions <em>Optional</em>. Default chat member permissions, for groups and supergroups. Returned only in <a href="#getchat">getChat</a>.
- * @property slow_mode_delay <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user. Returned only in <a href="#getchat">getChat</a>.
+ * @property slow_mode_delay <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user; in seconds. Returned only in <a href="#getchat">getChat</a>.
  * @property message_auto_delete_time <em>Optional</em>. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in <a href="#getchat">getChat</a>.
  * @property sticker_set_name <em>Optional</em>. For supergroups, name of group sticker set. Returned only in <a href="#getchat">getChat</a>.
- * @property can_set_sticker_set <em>Optional</em>. True, if the bot can change the group sticker set. Returned only in <a href="#getchat">getChat</a>.
+ * @property can_set_sticker_set <em>Optional</em>. <em>True</em>, if the bot can change the group sticker set. Returned only in <a href="#getchat">getChat</a>.
  * @property linked_chat_id <em>Optional</em>. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in <a href="#getchat">getChat</a>.
  * @property location <em>Optional</em>. For supergroups, the location to which the supergroup is connected. Returned only in <a href="#getchat">getChat</a>.
  *
@@ -215,7 +219,7 @@ pub struct Chat {
     /// <em>Optional</em>. Default chat member permissions, for groups and supergroups. Returned only in <a href="#getchat">getChat</a>.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<ChatPermissions>,
-    /// <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user. Returned only in <a href="#getchat">getChat</a>.
+    /// <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user; in seconds. Returned only in <a href="#getchat">getChat</a>.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub slow_mode_delay: Option<Integer>,
     /// <em>Optional</em>. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in <a href="#getchat">getChat</a>.
@@ -224,7 +228,7 @@ pub struct Chat {
     /// <em>Optional</em>. For supergroups, name of group sticker set. Returned only in <a href="#getchat">getChat</a>.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sticker_set_name: Option<String>,
-    /// <em>Optional</em>. True, if the bot can change the group sticker set. Returned only in <a href="#getchat">getChat</a>.
+    /// <em>Optional</em>. <em>True</em>, if the bot can change the group sticker set. Returned only in <a href="#getchat">getChat</a>.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_set_sticker_set: Option<bool>,
     /// <em>Optional</em>. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in <a href="#getchat">getChat</a>.
@@ -518,7 +522,7 @@ pub struct MessageEntity {
  * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
  * @property width Photo width
  * @property height Photo height
- * @property file_size <em>Optional</em>. File size
+ * @property file_size <em>Optional</em>. File size in bytes
  *
  * @constructor Creates a [PhotoSize].
  * */
@@ -532,7 +536,7 @@ pub struct PhotoSize {
     pub width: Integer,
     /// Photo height
     pub height: Integer,
-    /// <em>Optional</em>. File size
+    /// <em>Optional</em>. File size in bytes
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>
 }
@@ -548,7 +552,7 @@ pub struct PhotoSize {
  * @property thumb <em>Optional</em>. Animation thumbnail as defined by sender
  * @property file_name <em>Optional</em>. Original animation filename as defined by sender
  * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
- * @property file_size <em>Optional</em>. File size
+ * @property file_size <em>Optional</em>. File size in bytes
  *
  * @constructor Creates a [Animation].
  * */
@@ -573,7 +577,7 @@ pub struct Animation {
     /// <em>Optional</em>. MIME type of the file as defined by sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
-    /// <em>Optional</em>. File size
+    /// <em>Optional</em>. File size in bytes
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>
 }
@@ -588,7 +592,7 @@ pub struct Animation {
  * @property title <em>Optional</em>. Title of the audio as defined by sender or by audio tags
  * @property file_name <em>Optional</em>. Original filename as defined by sender
  * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
- * @property file_size <em>Optional</em>. File size
+ * @property file_size <em>Optional</em>. File size in bytes
  * @property thumb <em>Optional</em>. Thumbnail of the album cover to which the music file belongs
  *
  * @constructor Creates a [Audio].
@@ -613,7 +617,7 @@ pub struct Audio {
     /// <em>Optional</em>. MIME type of the file as defined by sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
-    /// <em>Optional</em>. File size
+    /// <em>Optional</em>. File size in bytes
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
     /// <em>Optional</em>. Thumbnail of the album cover to which the music file belongs
@@ -629,7 +633,7 @@ pub struct Audio {
  * @property thumb <em>Optional</em>. Document thumbnail as defined by sender
  * @property file_name <em>Optional</em>. Original filename as defined by sender
  * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
- * @property file_size <em>Optional</em>. File size
+ * @property file_size <em>Optional</em>. File size in bytes
  *
  * @constructor Creates a [Document].
  * */
@@ -648,7 +652,7 @@ pub struct Document {
     /// <em>Optional</em>. MIME type of the file as defined by sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
-    /// <em>Optional</em>. File size
+    /// <em>Optional</em>. File size in bytes
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>
 }
@@ -664,7 +668,7 @@ pub struct Document {
  * @property thumb <em>Optional</em>. Video thumbnail
  * @property file_name <em>Optional</em>. Original filename as defined by sender
  * @property mime_type <em>Optional</em>. Mime type of a file as defined by sender
- * @property file_size <em>Optional</em>. File size
+ * @property file_size <em>Optional</em>. File size in bytes
  *
  * @constructor Creates a [Video].
  * */
@@ -689,7 +693,7 @@ pub struct Video {
     /// <em>Optional</em>. Mime type of a file as defined by sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
-    /// <em>Optional</em>. File size
+    /// <em>Optional</em>. File size in bytes
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>
 }
@@ -702,7 +706,7 @@ pub struct Video {
  * @property length Video width and height (diameter of the video message) as defined by sender
  * @property duration Duration of the video in seconds as defined by sender
  * @property thumb <em>Optional</em>. Video thumbnail
- * @property file_size <em>Optional</em>. File size
+ * @property file_size <em>Optional</em>. File size in bytes
  *
  * @constructor Creates a [VideoNote].
  * */
@@ -719,7 +723,7 @@ pub struct VideoNote {
     /// <em>Optional</em>. Video thumbnail
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumb: Option<PhotoSize>,
-    /// <em>Optional</em>. File size
+    /// <em>Optional</em>. File size in bytes
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>
 }
@@ -731,7 +735,7 @@ pub struct VideoNote {
  * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
  * @property duration Duration of the audio in seconds as defined by sender
  * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
- * @property file_size <em>Optional</em>. File size
+ * @property file_size <em>Optional</em>. File size in bytes
  *
  * @constructor Creates a [Voice].
  * */
@@ -746,7 +750,7 @@ pub struct Voice {
     /// <em>Optional</em>. MIME type of the file as defined by sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
-    /// <em>Optional</em>. File size
+    /// <em>Optional</em>. File size in bytes
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>
 }
@@ -837,10 +841,10 @@ pub struct PollAnswer {
  * @property question Poll question, 1-300 characters
  * @property options List of poll options
  * @property total_voter_count Total number of users that voted in the poll
- * @property is_closed True, if the poll is closed
- * @property is_anonymous True, if the poll is anonymous
+ * @property is_closed <em>True</em>, if the poll is closed
+ * @property is_anonymous <em>True</em>, if the poll is anonymous
  * @property type Poll type, currently can be “regular” or “quiz”
- * @property allows_multiple_answers True, if the poll allows multiple answers
+ * @property allows_multiple_answers <em>True</em>, if the poll allows multiple answers
  * @property correct_option_id <em>Optional</em>. 0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot.
  * @property explanation <em>Optional</em>. Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters
  * @property explanation_entities <em>Optional</em>. Special entities like usernames, URLs, bot commands, etc. that appear in the <em>explanation</em>
@@ -859,14 +863,14 @@ pub struct Poll {
     pub options: Vec<PollOption>,
     /// Total number of users that voted in the poll
     pub total_voter_count: Integer,
-    /// True, if the poll is closed
+    /// <em>True</em>, if the poll is closed
     pub is_closed: bool,
-    /// True, if the poll is anonymous
+    /// <em>True</em>, if the poll is anonymous
     pub is_anonymous: bool,
     /// Poll type, currently can be “regular” or “quiz”
     #[serde(rename = "type")]
     pub type_: String,
-    /// True, if the poll allows multiple answers
+    /// <em>True</em>, if the poll allows multiple answers
     pub allows_multiple_answers: bool,
     /// <em>Optional</em>. 0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -891,7 +895,7 @@ pub struct Poll {
  * @property longitude Longitude as defined by sender
  * @property latitude Latitude as defined by sender
  * @property horizontal_accuracy <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500
- * @property live_period <em>Optional</em>. Time relative to the message sending date, during which the location can be updated, in seconds. For active live locations only.
+ * @property live_period <em>Optional</em>. Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only.
  * @property heading <em>Optional</em>. The direction in which user is moving, in degrees; 1-360. For active live locations only.
  * @property proximity_alert_radius <em>Optional</em>. Maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only.
  *
@@ -906,7 +910,7 @@ pub struct Location {
     /// <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500
     #[serde(skip_serializing_if = "Option::is_none")]
     pub horizontal_accuracy: Option<Float>,
-    /// <em>Optional</em>. Time relative to the message sending date, during which the location can be updated, in seconds. For active live locations only.
+    /// <em>Optional</em>. Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub live_period: Option<Integer>,
     /// <em>Optional</em>. The direction in which user is moving, in degrees; 1-360. For active live locations only.
@@ -974,13 +978,13 @@ pub struct ProximityAlertTriggered {
 /**
  * <p>This object represents a service message about a change in auto-delete timer settings.</p>
  *
- * @property message_auto_delete_time New auto-delete time for messages in the chat
+ * @property message_auto_delete_time New auto-delete time for messages in the chat; in seconds
  *
  * @constructor Creates a [MessageAutoDeleteTimerChanged].
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct MessageAutoDeleteTimerChanged {
-    /// New auto-delete time for messages in the chat
+    /// New auto-delete time for messages in the chat; in seconds
     pub message_auto_delete_time: Integer
 }
 
@@ -1000,13 +1004,13 @@ pub struct VoiceChatScheduled {
 /**
  * <p>This object represents a service message about a voice chat ended in the chat.</p>
  *
- * @property duration Voice chat duration; in seconds
+ * @property duration Voice chat duration in seconds
  *
  * @constructor Creates a [VoiceChatEnded].
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct VoiceChatEnded {
-    /// Voice chat duration; in seconds
+    /// Voice chat duration in seconds
     pub duration: Integer
 }
 
@@ -1047,7 +1051,7 @@ pub struct UserProfilePhotos {
  *
  * @property file_id Identifier for this file, which can be used to download or reuse the file
  * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property file_size <em>Optional</em>. File size, if known
+ * @property file_size <em>Optional</em>. File size in bytes, if known
  * @property file_path <em>Optional</em>. File path. Use <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code> to get the file.
  *
  * @constructor Creates a [File].
@@ -1058,7 +1062,7 @@ pub struct File {
     pub file_id: String,
     /// Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// <em>Optional</em>. File size, if known
+    /// <em>Optional</em>. File size in bytes, if known
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
     /// <em>Optional</em>. File path. Use <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code> to get the file.
@@ -1175,7 +1179,7 @@ pub struct InlineKeyboardMarkup {
  * @property switch_inline_query <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. Can be empty, in which case just the bot's username will be inserted.<br><br><strong>Note:</strong> This offers an easy way for users to start using your bot in <a href="/bots/inline">inline mode</a> when they are currently in a private chat with it. Especially useful when combined with <a href="#answerinlinequery"><em>switch_pm…</em></a> actions – in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen.
  * @property switch_inline_query_current_chat <em>Optional</em>. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. Can be empty, in which case only the bot's username will be inserted.<br><br>This offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options.
  * @property callback_game <em>Optional</em>. Description of the game that will be launched when the user presses the button.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row.
- * @property pay <em>Optional</em>. Specify True, to send a <a href="#payments">Pay button</a>.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row.
+ * @property pay <em>Optional</em>. Specify <em>True</em>, to send a <a href="#payments">Pay button</a>.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row.
  *
  * @constructor Creates a [InlineKeyboardButton].
  * */
@@ -1201,7 +1205,7 @@ pub struct InlineKeyboardButton {
     /// <em>Optional</em>. Description of the game that will be launched when the user presses the button.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub callback_game: Option<CallbackGame>,
-    /// <em>Optional</em>. Specify True, to send a <a href="#payments">Pay button</a>.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row.
+    /// <em>Optional</em>. Specify <em>True</em>, to send a <a href="#payments">Pay button</a>.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pay: Option<bool>
 }
@@ -1214,7 +1218,7 @@ pub struct InlineKeyboardButton {
  * @property url An HTTP URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in <a href="https://core.telegram.org/widgets/login#receiving-authorization-data">Receiving authorization data</a>.<br><br><strong>NOTE:</strong> You <strong>must</strong> always check the hash of the received data to verify the authentication and the integrity of the data as described in <a href="https://core.telegram.org/widgets/login#checking-authorization">Checking authorization</a>.
  * @property forward_text <em>Optional</em>. New text of the button in forwarded messages.
  * @property bot_username <em>Optional</em>. Username of a bot, which will be used for user authorization. See <a href="https://core.telegram.org/widgets/login#setting-up-a-bot">Setting up a bot</a> for more details. If not specified, the current bot's username will be assumed. The <em>url</em>'s domain must be the same as the domain linked with the bot. See <a href="https://core.telegram.org/widgets/login#linking-your-domain-to-the-bot">Linking your domain to the bot</a> for more details.
- * @property request_write_access <em>Optional</em>. Pass True to request the permission for your bot to send messages to the user.
+ * @property request_write_access <em>Optional</em>. Pass <em>True</em> to request the permission for your bot to send messages to the user.
  *
  * @constructor Creates a [LoginUrl].
  * */
@@ -1228,7 +1232,7 @@ pub struct LoginUrl {
     /// <em>Optional</em>. Username of a bot, which will be used for user authorization. See <a href="https://core.telegram.org/widgets/login#setting-up-a-bot">Setting up a bot</a> for more details. If not specified, the current bot's username will be assumed. The <em>url</em>'s domain must be the same as the domain linked with the bot. See <a href="https://core.telegram.org/widgets/login#linking-your-domain-to-the-bot">Linking your domain to the bot</a> for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bot_username: Option<String>,
-    /// <em>Optional</em>. Pass True to request the permission for your bot to send messages to the user.
+    /// <em>Optional</em>. Pass <em>True</em> to request the permission for your bot to send messages to the user.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_write_access: Option<bool>
 }
@@ -1325,10 +1329,13 @@ pub struct ChatPhoto {
  *
  * @property invite_link The invite link. If the link was created by another chat administrator, then the second part of the link will be replaced with “…”.
  * @property creator Creator of the link
- * @property is_primary True, if the link is primary
- * @property is_revoked True, if the link is revoked
+ * @property creates_join_request <em>True</em>, if users joining the chat via the link need to be approved by chat administrators
+ * @property is_primary <em>True</em>, if the link is primary
+ * @property is_revoked <em>True</em>, if the link is revoked
+ * @property name <em>Optional</em>. Invite link name
  * @property expire_date <em>Optional</em>. Point in time (Unix timestamp) when the link will expire or has been expired
  * @property member_limit <em>Optional</em>. Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+ * @property pending_join_request_count <em>Optional</em>. Number of pending join requests created using this link
  *
  * @constructor Creates a [ChatInviteLink].
  * */
@@ -1338,16 +1345,24 @@ pub struct ChatInviteLink {
     pub invite_link: String,
     /// Creator of the link
     pub creator: User,
-    /// True, if the link is primary
+    /// <em>True</em>, if users joining the chat via the link need to be approved by chat administrators
+    pub creates_join_request: bool,
+    /// <em>True</em>, if the link is primary
     pub is_primary: bool,
-    /// True, if the link is revoked
+    /// <em>True</em>, if the link is revoked
     pub is_revoked: bool,
+    /// <em>Optional</em>. Invite link name
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// <em>Optional</em>. Point in time (Unix timestamp) when the link will expire or has been expired
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expire_date: Option<Integer>,
     /// <em>Optional</em>. Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub member_limit: Option<Integer>
+    pub member_limit: Option<Integer>,
+    /// <em>Optional</em>. Number of pending join requests created using this link
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pending_join_request_count: Option<Integer>
 }
 
 /**
@@ -1355,7 +1370,7 @@ pub struct ChatInviteLink {
  *
  * @property status The member's status in the chat, always “creator”
  * @property user Information about the user
- * @property is_anonymous True, if the user's presence in the chat is hidden
+ * @property is_anonymous <em>True</em>, if the user's presence in the chat is hidden
  * @property custom_title <em>Optional</em>. Custom title for this user
  *
  * @constructor Creates a [ChatMemberOwner].
@@ -1366,7 +1381,7 @@ pub struct ChatMemberOwner {
     pub status: String,
     /// Information about the user
     pub user: User,
-    /// True, if the user's presence in the chat is hidden
+    /// <em>True</em>, if the user's presence in the chat is hidden
     pub is_anonymous: bool,
     /// <em>Optional</em>. Custom title for this user
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1378,18 +1393,18 @@ pub struct ChatMemberOwner {
  *
  * @property status The member's status in the chat, always “administrator”
  * @property user Information about the user
- * @property can_be_edited True, if the bot is allowed to edit administrator privileges of that user
- * @property is_anonymous True, if the user's presence in the chat is hidden
- * @property can_manage_chat True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
- * @property can_delete_messages True, if the administrator can delete messages of other users
- * @property can_manage_voice_chats True, if the administrator can manage voice chats
- * @property can_restrict_members True, if the administrator can restrict, ban or unban chat members
- * @property can_promote_members True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)
- * @property can_change_info True, if the user is allowed to change the chat title, photo and other settings
- * @property can_invite_users True, if the user is allowed to invite new users to the chat
- * @property can_post_messages <em>Optional</em>. True, if the administrator can post in the channel; channels only
- * @property can_edit_messages <em>Optional</em>. True, if the administrator can edit messages of other users and can pin messages; channels only
- * @property can_pin_messages <em>Optional</em>. True, if the user is allowed to pin messages; groups and supergroups only
+ * @property can_be_edited <em>True</em>, if the bot is allowed to edit administrator privileges of that user
+ * @property is_anonymous <em>True</em>, if the user's presence in the chat is hidden
+ * @property can_manage_chat <em>True</em>, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
+ * @property can_delete_messages <em>True</em>, if the administrator can delete messages of other users
+ * @property can_manage_voice_chats <em>True</em>, if the administrator can manage voice chats
+ * @property can_restrict_members <em>True</em>, if the administrator can restrict, ban or unban chat members
+ * @property can_promote_members <em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)
+ * @property can_change_info <em>True</em>, if the user is allowed to change the chat title, photo and other settings
+ * @property can_invite_users <em>True</em>, if the user is allowed to invite new users to the chat
+ * @property can_post_messages <em>Optional</em>. <em>True</em>, if the administrator can post in the channel; channels only
+ * @property can_edit_messages <em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; channels only
+ * @property can_pin_messages <em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; groups and supergroups only
  * @property custom_title <em>Optional</em>. Custom title for this user
  *
  * @constructor Creates a [ChatMemberAdministrator].
@@ -1400,31 +1415,31 @@ pub struct ChatMemberAdministrator {
     pub status: String,
     /// Information about the user
     pub user: User,
-    /// True, if the bot is allowed to edit administrator privileges of that user
+    /// <em>True</em>, if the bot is allowed to edit administrator privileges of that user
     pub can_be_edited: bool,
-    /// True, if the user's presence in the chat is hidden
+    /// <em>True</em>, if the user's presence in the chat is hidden
     pub is_anonymous: bool,
-    /// True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
+    /// <em>True</em>, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
     pub can_manage_chat: bool,
-    /// True, if the administrator can delete messages of other users
+    /// <em>True</em>, if the administrator can delete messages of other users
     pub can_delete_messages: bool,
-    /// True, if the administrator can manage voice chats
+    /// <em>True</em>, if the administrator can manage voice chats
     pub can_manage_voice_chats: bool,
-    /// True, if the administrator can restrict, ban or unban chat members
+    /// <em>True</em>, if the administrator can restrict, ban or unban chat members
     pub can_restrict_members: bool,
-    /// True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)
+    /// <em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)
     pub can_promote_members: bool,
-    /// True, if the user is allowed to change the chat title, photo and other settings
+    /// <em>True</em>, if the user is allowed to change the chat title, photo and other settings
     pub can_change_info: bool,
-    /// True, if the user is allowed to invite new users to the chat
+    /// <em>True</em>, if the user is allowed to invite new users to the chat
     pub can_invite_users: bool,
-    /// <em>Optional</em>. True, if the administrator can post in the channel; channels only
+    /// <em>Optional</em>. <em>True</em>, if the administrator can post in the channel; channels only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_post_messages: Option<bool>,
-    /// <em>Optional</em>. True, if the administrator can edit messages of other users and can pin messages; channels only
+    /// <em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; channels only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_edit_messages: Option<bool>,
-    /// <em>Optional</em>. True, if the user is allowed to pin messages; groups and supergroups only
+    /// <em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; groups and supergroups only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
     /// <em>Optional</em>. Custom title for this user
@@ -1453,15 +1468,15 @@ pub struct ChatMemberMember {
  *
  * @property status The member's status in the chat, always “restricted”
  * @property user Information about the user
- * @property is_member True, if the user is a member of the chat at the moment of the request
- * @property can_change_info True, if the user is allowed to change the chat title, photo and other settings
- * @property can_invite_users True, if the user is allowed to invite new users to the chat
- * @property can_pin_messages True, if the user is allowed to pin messages
- * @property can_send_messages True, if the user is allowed to send text messages, contacts, locations and venues
- * @property can_send_media_messages True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes
- * @property can_send_polls True, if the user is allowed to send polls
- * @property can_send_other_messages True, if the user is allowed to send animations, games, stickers and use inline bots
- * @property can_add_web_page_previews True, if the user is allowed to add web page previews to their messages
+ * @property is_member <em>True</em>, if the user is a member of the chat at the moment of the request
+ * @property can_change_info <em>True</em>, if the user is allowed to change the chat title, photo and other settings
+ * @property can_invite_users <em>True</em>, if the user is allowed to invite new users to the chat
+ * @property can_pin_messages <em>True</em>, if the user is allowed to pin messages
+ * @property can_send_messages <em>True</em>, if the user is allowed to send text messages, contacts, locations and venues
+ * @property can_send_media_messages <em>True</em>, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes
+ * @property can_send_polls <em>True</em>, if the user is allowed to send polls
+ * @property can_send_other_messages <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots
+ * @property can_add_web_page_previews <em>True</em>, if the user is allowed to add web page previews to their messages
  * @property until_date Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever
  *
  * @constructor Creates a [ChatMemberRestricted].
@@ -1472,23 +1487,23 @@ pub struct ChatMemberRestricted {
     pub status: String,
     /// Information about the user
     pub user: User,
-    /// True, if the user is a member of the chat at the moment of the request
+    /// <em>True</em>, if the user is a member of the chat at the moment of the request
     pub is_member: bool,
-    /// True, if the user is allowed to change the chat title, photo and other settings
+    /// <em>True</em>, if the user is allowed to change the chat title, photo and other settings
     pub can_change_info: bool,
-    /// True, if the user is allowed to invite new users to the chat
+    /// <em>True</em>, if the user is allowed to invite new users to the chat
     pub can_invite_users: bool,
-    /// True, if the user is allowed to pin messages
+    /// <em>True</em>, if the user is allowed to pin messages
     pub can_pin_messages: bool,
-    /// True, if the user is allowed to send text messages, contacts, locations and venues
+    /// <em>True</em>, if the user is allowed to send text messages, contacts, locations and venues
     pub can_send_messages: bool,
-    /// True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes
+    /// <em>True</em>, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes
     pub can_send_media_messages: bool,
-    /// True, if the user is allowed to send polls
+    /// <em>True</em>, if the user is allowed to send polls
     pub can_send_polls: bool,
-    /// True, if the user is allowed to send animations, games, stickers and use inline bots
+    /// <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots
     pub can_send_other_messages: bool,
-    /// True, if the user is allowed to add web page previews to their messages
+    /// <em>True</em>, if the user is allowed to add web page previews to their messages
     pub can_add_web_page_previews: bool,
     /// Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever
     pub until_date: Integer
@@ -1559,43 +1574,70 @@ pub struct ChatMemberUpdated {
 }
 
 /**
+ * <p>Represents a join request sent to a chat.</p>
+ *
+ * @property chat Chat to which the request was sent
+ * @property from User that sent the join request
+ * @property date Date the request was sent in Unix time
+ * @property bio <em>Optional</em>. Bio of the user.
+ * @property invite_link <em>Optional</em>. Chat invite link that was used by the user to send the join request
+ *
+ * @constructor Creates a [ChatJoinRequest].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ChatJoinRequest {
+    /// Chat to which the request was sent
+    pub chat: Chat,
+    /// User that sent the join request
+    pub from: User,
+    /// Date the request was sent in Unix time
+    pub date: Integer,
+    /// <em>Optional</em>. Bio of the user.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bio: Option<String>,
+    /// <em>Optional</em>. Chat invite link that was used by the user to send the join request
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invite_link: Option<ChatInviteLink>
+}
+
+/**
  * <p>Describes actions that a non-administrator user is allowed to take in a chat.</p>
  *
- * @property can_send_messages <em>Optional</em>. True, if the user is allowed to send text messages, contacts, locations and venues
- * @property can_send_media_messages <em>Optional</em>. True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages
- * @property can_send_polls <em>Optional</em>. True, if the user is allowed to send polls, implies can_send_messages
- * @property can_send_other_messages <em>Optional</em>. True, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages
- * @property can_add_web_page_previews <em>Optional</em>. True, if the user is allowed to add web page previews to their messages, implies can_send_media_messages
- * @property can_change_info <em>Optional</em>. True, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups
- * @property can_invite_users <em>Optional</em>. True, if the user is allowed to invite new users to the chat
- * @property can_pin_messages <em>Optional</em>. True, if the user is allowed to pin messages. Ignored in public supergroups
+ * @property can_send_messages <em>Optional</em>. <em>True</em>, if the user is allowed to send text messages, contacts, locations and venues
+ * @property can_send_media_messages <em>Optional</em>. <em>True</em>, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages
+ * @property can_send_polls <em>Optional</em>. <em>True</em>, if the user is allowed to send polls, implies can_send_messages
+ * @property can_send_other_messages <em>Optional</em>. <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages
+ * @property can_add_web_page_previews <em>Optional</em>. <em>True</em>, if the user is allowed to add web page previews to their messages, implies can_send_media_messages
+ * @property can_change_info <em>Optional</em>. <em>True</em>, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups
+ * @property can_invite_users <em>Optional</em>. <em>True</em>, if the user is allowed to invite new users to the chat
+ * @property can_pin_messages <em>Optional</em>. <em>True</em>, if the user is allowed to pin messages. Ignored in public supergroups
  *
  * @constructor Creates a [ChatPermissions].
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct ChatPermissions {
-    /// <em>Optional</em>. True, if the user is allowed to send text messages, contacts, locations and venues
+    /// <em>Optional</em>. <em>True</em>, if the user is allowed to send text messages, contacts, locations and venues
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_messages: Option<bool>,
-    /// <em>Optional</em>. True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages
+    /// <em>Optional</em>. <em>True</em>, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_media_messages: Option<bool>,
-    /// <em>Optional</em>. True, if the user is allowed to send polls, implies can_send_messages
+    /// <em>Optional</em>. <em>True</em>, if the user is allowed to send polls, implies can_send_messages
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_polls: Option<bool>,
-    /// <em>Optional</em>. True, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages
+    /// <em>Optional</em>. <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_other_messages: Option<bool>,
-    /// <em>Optional</em>. True, if the user is allowed to add web page previews to their messages, implies can_send_media_messages
+    /// <em>Optional</em>. <em>True</em>, if the user is allowed to add web page previews to their messages, implies can_send_media_messages
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_add_web_page_previews: Option<bool>,
-    /// <em>Optional</em>. True, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups
+    /// <em>Optional</em>. <em>True</em>, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_change_info: Option<bool>,
-    /// <em>Optional</em>. True, if the user is allowed to invite new users to the chat
+    /// <em>Optional</em>. <em>True</em>, if the user is allowed to invite new users to the chat
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_invite_users: Option<bool>,
-    /// <em>Optional</em>. True, if the user is allowed to pin messages. Ignored in public supergroups
+    /// <em>Optional</em>. <em>True</em>, if the user is allowed to pin messages. Ignored in public supergroups
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>
 }
@@ -1800,7 +1842,7 @@ pub struct InputMediaPhoto {
  * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property width <em>Optional</em>. Video width
  * @property height <em>Optional</em>. Video height
- * @property duration <em>Optional</em>. Video duration
+ * @property duration <em>Optional</em>. Video duration in seconds
  * @property supports_streaming <em>Optional</em>. Pass <em>True</em>, if the uploaded video is suitable for streaming
  *
  * @constructor Creates a [InputMediaVideo].
@@ -1830,7 +1872,7 @@ pub struct InputMediaVideo {
     /// <em>Optional</em>. Video height
     #[serde(skip_serializing_if = "Option::is_none")]
     pub height: Option<Integer>,
-    /// <em>Optional</em>. Video duration
+    /// <em>Optional</em>. Video duration in seconds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<Integer>,
     /// <em>Optional</em>. Pass <em>True</em>, if the uploaded video is suitable for streaming
@@ -1849,7 +1891,7 @@ pub struct InputMediaVideo {
  * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property width <em>Optional</em>. Animation width
  * @property height <em>Optional</em>. Animation height
- * @property duration <em>Optional</em>. Animation duration
+ * @property duration <em>Optional</em>. Animation duration in seconds
  *
  * @constructor Creates a [InputMediaAnimation].
  * */
@@ -1878,7 +1920,7 @@ pub struct InputMediaAnimation {
     /// <em>Optional</em>. Animation height
     #[serde(skip_serializing_if = "Option::is_none")]
     pub height: Option<Integer>,
-    /// <em>Optional</em>. Animation duration
+    /// <em>Optional</em>. Animation duration in seconds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<Integer>
 }
@@ -1937,7 +1979,7 @@ pub struct InputMediaAudio {
  * @property caption <em>Optional</em>. Caption of the document to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
  * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
- * @property disable_content_type_detection <em>Optional</em>. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always true, if the document is sent as part of an album.
+ * @property disable_content_type_detection <em>Optional</em>. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always <em>True</em>, if the document is sent as part of an album.
  *
  * @constructor Creates a [InputMediaDocument].
  * */
@@ -1960,7 +2002,7 @@ pub struct InputMediaDocument {
     /// <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption_entities: Option<Vec<MessageEntity>>,
-    /// <em>Optional</em>. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always true, if the document is sent as part of an album.
+    /// <em>Optional</em>. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always <em>True</em>, if the document is sent as part of an album.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_content_type_detection: Option<bool>
 }
@@ -1980,7 +2022,7 @@ pub struct InputMediaDocument {
  * @property emoji <em>Optional</em>. Emoji associated with the sticker
  * @property set_name <em>Optional</em>. Name of the sticker set to which the sticker belongs
  * @property mask_position <em>Optional</em>. For mask stickers, the position where the mask should be placed
- * @property file_size <em>Optional</em>. File size
+ * @property file_size <em>Optional</em>. File size in bytes
  *
  * @constructor Creates a [Sticker].
  * */
@@ -2008,7 +2050,7 @@ pub struct Sticker {
     /// <em>Optional</em>. For mask stickers, the position where the mask should be placed
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mask_position: Option<MaskPosition>,
-    /// <em>Optional</em>. File size
+    /// <em>Optional</em>. File size in bytes
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>
 }
@@ -2153,7 +2195,7 @@ pub struct InlineQueryResultArticle {
  *
  * @property type Type of the result, must be <em>photo</em>
  * @property id Unique identifier for this result, 1-64 bytes
- * @property photo_url A valid URL of the photo. Photo must be in <strong>jpeg</strong> format. Photo size must not exceed 5MB
+ * @property photo_url A valid URL of the photo. Photo must be in <strong>JPEG</strong> format. Photo size must not exceed 5MB
  * @property thumb_url URL of the thumbnail for the photo
  * @property photo_width <em>Optional</em>. Width of the photo
  * @property photo_height <em>Optional</em>. Height of the photo
@@ -2174,7 +2216,7 @@ pub struct InlineQueryResultPhoto {
     pub type_: String,
     /// Unique identifier for this result, 1-64 bytes
     pub id: String,
-    /// A valid URL of the photo. Photo must be in <strong>jpeg</strong> format. Photo size must not exceed 5MB
+    /// A valid URL of the photo. Photo must be in <strong>JPEG</strong> format. Photo size must not exceed 5MB
     pub photo_url: String,
     /// URL of the thumbnail for the photo
     pub thumb_url: String,
@@ -2215,7 +2257,7 @@ pub struct InlineQueryResultPhoto {
  * @property gif_url A valid URL for the GIF file. File size must not exceed 1MB
  * @property gif_width <em>Optional</em>. Width of the GIF
  * @property gif_height <em>Optional</em>. Height of the GIF
- * @property gif_duration <em>Optional</em>. Duration of the GIF
+ * @property gif_duration <em>Optional</em>. Duration of the GIF in seconds
  * @property thumb_url URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result
  * @property thumb_mime_type <em>Optional</em>. MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or “video/mp4”. Defaults to “image/jpeg”
  * @property title <em>Optional</em>. Title for the result
@@ -2242,7 +2284,7 @@ pub struct InlineQueryResultGif {
     /// <em>Optional</em>. Height of the GIF
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gif_height: Option<Integer>,
-    /// <em>Optional</em>. Duration of the GIF
+    /// <em>Optional</em>. Duration of the GIF in seconds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gif_duration: Option<Integer>,
     /// URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result
@@ -2278,7 +2320,7 @@ pub struct InlineQueryResultGif {
  * @property mpeg4_url A valid URL for the MP4 file. File size must not exceed 1MB
  * @property mpeg4_width <em>Optional</em>. Video width
  * @property mpeg4_height <em>Optional</em>. Video height
- * @property mpeg4_duration <em>Optional</em>. Video duration
+ * @property mpeg4_duration <em>Optional</em>. Video duration in seconds
  * @property thumb_url URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result
  * @property thumb_mime_type <em>Optional</em>. MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or “video/mp4”. Defaults to “image/jpeg”
  * @property title <em>Optional</em>. Title for the result
@@ -2305,7 +2347,7 @@ pub struct InlineQueryResultMpeg4Gif {
     /// <em>Optional</em>. Video height
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mpeg4_height: Option<Integer>,
-    /// <em>Optional</em>. Video duration
+    /// <em>Optional</em>. Video duration in seconds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mpeg4_duration: Option<Integer>,
     /// URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result
@@ -2342,7 +2384,7 @@ pub struct InlineQueryResultMpeg4Gif {
  * @property id Unique identifier for this result, 1-64 bytes
  * @property video_url A valid URL for the embedded video player or video file
  * @property mime_type Mime type of the content of video url, “text/html” or “video/mp4”
- * @property thumb_url URL of the thumbnail (jpeg only) for the video
+ * @property thumb_url URL of the thumbnail (JPEG only) for the video
  * @property title Title for the result
  * @property caption <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
@@ -2367,7 +2409,7 @@ pub struct InlineQueryResultVideo {
     pub video_url: String,
     /// Mime type of the content of video url, “text/html” or “video/mp4”
     pub mime_type: String,
-    /// URL of the thumbnail (jpeg only) for the video
+    /// URL of the thumbnail (JPEG only) for the video
     pub thumb_url: String,
     /// Title for the result
     pub title: String,
@@ -2512,7 +2554,7 @@ pub struct InlineQueryResultVoice {
  * @property description <em>Optional</em>. Short description of the result
  * @property reply_markup <em>Optional</em>. Inline keyboard attached to the message
  * @property input_message_content <em>Optional</em>. Content of the message to be sent instead of the file
- * @property thumb_url <em>Optional</em>. URL of the thumbnail (jpeg only) for the file
+ * @property thumb_url <em>Optional</em>. URL of the thumbnail (JPEG only) for the file
  * @property thumb_width <em>Optional</em>. Thumbnail width
  * @property thumb_height <em>Optional</em>. Thumbnail height
  *
@@ -2549,7 +2591,7 @@ pub struct InlineQueryResultDocument {
     /// <em>Optional</em>. Content of the message to be sent instead of the file
     #[serde(skip_serializing_if = "Option::is_none")]
     pub input_message_content: Option<InputMessageContent>,
-    /// <em>Optional</em>. URL of the thumbnail (jpeg only) for the file
+    /// <em>Optional</em>. URL of the thumbnail (JPEG only) for the file
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumb_url: Option<String>,
     /// <em>Optional</em>. Thumbnail width
@@ -3562,7 +3604,7 @@ pub struct PassportData {
  *
  * @property file_id Identifier for this file, which can be used to download or reuse the file
  * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property file_size File size
+ * @property file_size File size in bytes
  * @property file_date Unix time when the file was uploaded
  *
  * @constructor Creates a [PassportFile].
@@ -3573,7 +3615,7 @@ pub struct PassportFile {
     pub file_id: String,
     /// Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// File size
+    /// File size in bytes
     pub file_size: Integer,
     /// Unix time when the file was uploaded
     pub file_date: Integer
@@ -3987,7 +4029,7 @@ pub struct DeleteWebhookRequest {
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property text Text of the message to be sent, 1-4096 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details.
- * @property entities List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
+ * @property entities A JSON-serialized list of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
  * @property disable_web_page_preview Disables link previews for links in this message
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
@@ -4002,7 +4044,7 @@ pub struct SendMessageRequest {
     pub text: String,
     /// Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
-    /// List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
+    /// A JSON-serialized list of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
     pub entities: Option<Vec<MessageEntity>>,
     /// Disables link previews for links in this message
     pub disable_web_page_preview: Option<bool>,
@@ -4044,7 +4086,7 @@ pub struct ForwardMessageRequest {
  * @property message_id Message identifier in the chat specified in <em>from_chat_id</em>
  * @property caption New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept
  * @property parse_mode Mode for parsing entities in the new caption. See <a href="#formatting-options">formatting options</a> for more details.
- * @property caption_entities List of special entities that appear in the new caption, which can be specified instead of <em>parse_mode</em>
+ * @property caption_entities A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of <em>parse_mode</em>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
@@ -4062,7 +4104,7 @@ pub struct CopyMessageRequest {
     pub caption: Option<String>,
     /// Mode for parsing entities in the new caption. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
-    /// List of special entities that appear in the new caption, which can be specified instead of <em>parse_mode</em>
+    /// A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of <em>parse_mode</em>
     pub caption_entities: Option<Vec<MessageEntity>>,
     /// Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
     pub disable_notification: Option<bool>,
@@ -4081,7 +4123,7 @@ pub struct CopyMessageRequest {
  * @property photo Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption Photo caption (may also be used when resending photos by <em>file_id</em>), 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details.
- * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+ * @property caption_entities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
@@ -4097,7 +4139,7 @@ pub struct SendPhotoRequest {
     pub caption: Option<String>,
     /// Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
-    /// List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    /// A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
     pub caption_entities: Option<Vec<MessageEntity>>,
     /// Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
     pub disable_notification: Option<bool>,
@@ -4116,7 +4158,7 @@ pub struct SendPhotoRequest {
  * @property audio Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption Audio caption, 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details.
- * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+ * @property caption_entities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property duration Duration of the audio in seconds
  * @property performer Performer
  * @property title Track name
@@ -4136,7 +4178,7 @@ pub struct SendAudioRequest {
     pub caption: Option<String>,
     /// Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
-    /// List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    /// A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
     pub caption_entities: Option<Vec<MessageEntity>>,
     /// Duration of the audio in seconds
     pub duration: Option<Integer>,
@@ -4164,7 +4206,7 @@ pub struct SendAudioRequest {
  * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption Document caption (may also be used when resending documents by <em>file_id</em>), 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
- * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+ * @property caption_entities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property disable_content_type_detection Disables automatic server-side content type detection for files uploaded using multipart/form-data
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
@@ -4183,7 +4225,7 @@ pub struct SendDocumentRequest {
     pub caption: Option<String>,
     /// Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
-    /// List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    /// A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
     pub caption_entities: Option<Vec<MessageEntity>>,
     /// Disables automatic server-side content type detection for files uploaded using multipart/form-data
     pub disable_content_type_detection: Option<bool>,
@@ -4208,7 +4250,7 @@ pub struct SendDocumentRequest {
  * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption Video caption (may also be used when resending videos by <em>file_id</em>), 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
- * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+ * @property caption_entities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property supports_streaming Pass <em>True</em>, if the uploaded video is suitable for streaming
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
@@ -4233,7 +4275,7 @@ pub struct SendVideoRequest {
     pub caption: Option<String>,
     /// Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
-    /// List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    /// A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
     pub caption_entities: Option<Vec<MessageEntity>>,
     /// Pass <em>True</em>, if the uploaded video is suitable for streaming
     pub supports_streaming: Option<bool>,
@@ -4258,7 +4300,7 @@ pub struct SendVideoRequest {
  * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption Animation caption (may also be used when resending animation by <em>file_id</em>), 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details.
- * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+ * @property caption_entities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
@@ -4282,7 +4324,7 @@ pub struct SendAnimationRequest {
     pub caption: Option<String>,
     /// Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
-    /// List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    /// A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
     pub caption_entities: Option<Vec<MessageEntity>>,
     /// Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
     pub disable_notification: Option<bool>,
@@ -4301,7 +4343,7 @@ pub struct SendAnimationRequest {
  * @property voice Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
  * @property caption Voice message caption, 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the voice message caption. See <a href="#formatting-options">formatting options</a> for more details.
- * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+ * @property caption_entities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property duration Duration of the voice message in seconds
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property reply_to_message_id If the message is a reply, ID of the original message
@@ -4318,7 +4360,7 @@ pub struct SendVoiceRequest {
     pub caption: Option<String>,
     /// Mode for parsing entities in the voice message caption. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
-    /// List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    /// A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
     pub caption_entities: Option<Vec<MessageEntity>>,
     /// Duration of the voice message in seconds
     pub duration: Option<Integer>,
@@ -4574,13 +4616,13 @@ pub struct SendContactRequest {
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property question Poll question, 1-300 characters
  * @property options A JSON-serialized list of answer options, 2-10 strings 1-100 characters each
- * @property is_anonymous True, if the poll needs to be anonymous, defaults to <em>True</em>
+ * @property is_anonymous <em>True</em>, if the poll needs to be anonymous, defaults to <em>True</em>
  * @property type Poll type, “quiz” or “regular”, defaults to “regular”
- * @property allows_multiple_answers True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to <em>False</em>
+ * @property allows_multiple_answers <em>True</em>, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to <em>False</em>
  * @property correct_option_id 0-based identifier of the correct answer option, required for polls in quiz mode
  * @property explanation Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
  * @property explanation_parse_mode Mode for parsing entities in the explanation. See <a href="#formatting-options">formatting options</a> for more details.
- * @property explanation_entities List of special entities that appear in the poll explanation, which can be specified instead of <em>parse_mode</em>
+ * @property explanation_entities A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of <em>parse_mode</em>
  * @property open_period Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with <em>close_date</em>.
  * @property close_date Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with <em>open_period</em>.
  * @property is_closed Pass <em>True</em>, if the poll needs to be immediately closed. This can be useful for poll preview.
@@ -4597,12 +4639,12 @@ pub struct SendPollRequest {
     pub question: String,
     /// A JSON-serialized list of answer options, 2-10 strings 1-100 characters each
     pub options: Vec<String>,
-    /// True, if the poll needs to be anonymous, defaults to <em>True</em>
+    /// <em>True</em>, if the poll needs to be anonymous, defaults to <em>True</em>
     pub is_anonymous: Option<bool>,
     /// Poll type, “quiz” or “regular”, defaults to “regular”
     #[serde(rename = "type")]
     pub type_: Option<String>,
-    /// True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to <em>False</em>
+    /// <em>True</em>, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to <em>False</em>
     pub allows_multiple_answers: Option<bool>,
     /// 0-based identifier of the correct answer option, required for polls in quiz mode
     pub correct_option_id: Option<Integer>,
@@ -4610,7 +4652,7 @@ pub struct SendPollRequest {
     pub explanation: Option<String>,
     /// Mode for parsing entities in the explanation. See <a href="#formatting-options">formatting options</a> for more details.
     pub explanation_parse_mode: Option<String>,
-    /// List of special entities that appear in the poll explanation, which can be specified instead of <em>parse_mode</em>
+    /// A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of <em>parse_mode</em>
     pub explanation_entities: Option<Vec<MessageEntity>>,
     /// Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with <em>close_date</em>.
     pub open_period: Option<Integer>,
@@ -4660,13 +4702,13 @@ pub struct SendDiceRequest {
  * </blockquote><p>We only recommend using this method when a response from the bot will take a <strong>noticeable</strong> amount of time to arrive.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property action Type of action to broadcast. Choose one, depending on what the user is about to receive: <em>typing</em> for <a href="#sendmessage">text messages</a>, <em>upload_photo</em> for <a href="#sendphoto">photos</a>, <em>record_video</em> or <em>upload_video</em> for <a href="#sendvideo">videos</a>, <em>record_voice</em> or <em>upload_voice</em> for <a href="#sendvoice">voice notes</a>, <em>upload_document</em> for <a href="#senddocument">general files</a>, <em>find_location</em> for <a href="#sendlocation">location data</a>, <em>record_video_note</em> or <em>upload_video_note</em> for <a href="#sendvideonote">video notes</a>.
+ * @property action Type of action to broadcast. Choose one, depending on what the user is about to receive: <em>typing</em> for <a href="#sendmessage">text messages</a>, <em>upload_photo</em> for <a href="#sendphoto">photos</a>, <em>record_video</em> or <em>upload_video</em> for <a href="#sendvideo">videos</a>, <em>record_voice</em> or <em>upload_voice</em> for <a href="#sendvoice">voice notes</a>, <em>upload_document</em> for <a href="#senddocument">general files</a>, <em>choose_sticker</em> for <a href="#sendsticker">stickers</a>, <em>find_location</em> for <a href="#sendlocation">location data</a>, <em>record_video_note</em> or <em>upload_video_note</em> for <a href="#sendvideonote">video notes</a>.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendChatActionRequest {
     /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: String,
-    /// Type of action to broadcast. Choose one, depending on what the user is about to receive: <em>typing</em> for <a href="#sendmessage">text messages</a>, <em>upload_photo</em> for <a href="#sendphoto">photos</a>, <em>record_video</em> or <em>upload_video</em> for <a href="#sendvideo">videos</a>, <em>record_voice</em> or <em>upload_voice</em> for <a href="#sendvoice">voice notes</a>, <em>upload_document</em> for <a href="#senddocument">general files</a>, <em>find_location</em> for <a href="#sendlocation">location data</a>, <em>record_video_note</em> or <em>upload_video_note</em> for <a href="#sendvideonote">video notes</a>.
+    /// Type of action to broadcast. Choose one, depending on what the user is about to receive: <em>typing</em> for <a href="#sendmessage">text messages</a>, <em>upload_photo</em> for <a href="#sendphoto">photos</a>, <em>record_video</em> or <em>upload_video</em> for <a href="#sendvideo">videos</a>, <em>record_voice</em> or <em>upload_voice</em> for <a href="#sendvoice">voice notes</a>, <em>upload_document</em> for <a href="#senddocument">general files</a>, <em>choose_sticker</em> for <a href="#sendsticker">stickers</a>, <em>find_location</em> for <a href="#sendlocation">location data</a>, <em>record_video_note</em> or <em>upload_video_note</em> for <a href="#sendvideonote">video notes</a>.
     pub action: String
 }
 
@@ -4699,7 +4741,7 @@ pub struct GetFileRequest {
 }
 
 /**
- * <p>Use this method to ban a user in a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless <a href="#unbanchatmember">unbanned</a> first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+ * <p>Use this method to ban a user in a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless <a href="#unbanchatmember">unbanned</a> first. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target group or username of the target supergroup or channel (in the format <code>@channelusername</code>)
  * @property user_id Unique identifier of the target user
@@ -4736,7 +4778,7 @@ pub struct UnbanChatMemberRequest {
 }
 
 /**
- * <p>Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights. Pass <em>True</em> for all permissions to lift restrictions from a user. Returns <em>True</em> on success.</p>
+ * <p>Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate administrator rights. Pass <em>True</em> for all permissions to lift restrictions from a user. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
  * @property user_id Unique identifier of the target user
@@ -4756,21 +4798,21 @@ pub struct RestrictChatMemberRequest {
 }
 
 /**
- * <p>Use this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Pass <em>False</em> for all boolean parameters to demote a user. Returns <em>True</em> on success.</p>
+ * <p>Use this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Pass <em>False</em> for all boolean parameters to demote a user. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property user_id Unique identifier of the target user
  * @property is_anonymous Pass <em>True</em>, if the administrator's presence in the chat is hidden
- * @property can_manage_chat Pass True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
- * @property can_post_messages Pass True, if the administrator can create channel posts, channels only
- * @property can_edit_messages Pass True, if the administrator can edit messages of other users and can pin messages, channels only
- * @property can_delete_messages Pass True, if the administrator can delete messages of other users
- * @property can_manage_voice_chats Pass True, if the administrator can manage voice chats
- * @property can_restrict_members Pass True, if the administrator can restrict, ban or unban chat members
- * @property can_promote_members Pass True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
- * @property can_change_info Pass True, if the administrator can change chat title, photo and other settings
- * @property can_invite_users Pass True, if the administrator can invite new users to the chat
- * @property can_pin_messages Pass True, if the administrator can pin messages, supergroups only
+ * @property can_manage_chat Pass <em>True</em>, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
+ * @property can_post_messages Pass <em>True</em>, if the administrator can create channel posts, channels only
+ * @property can_edit_messages Pass <em>True</em>, if the administrator can edit messages of other users and can pin messages, channels only
+ * @property can_delete_messages Pass <em>True</em>, if the administrator can delete messages of other users
+ * @property can_manage_voice_chats Pass <em>True</em>, if the administrator can manage voice chats
+ * @property can_restrict_members Pass <em>True</em>, if the administrator can restrict, ban or unban chat members
+ * @property can_promote_members Pass <em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
+ * @property can_change_info Pass <em>True</em>, if the administrator can change chat title, photo and other settings
+ * @property can_invite_users Pass <em>True</em>, if the administrator can invite new users to the chat
+ * @property can_pin_messages Pass <em>True</em>, if the administrator can pin messages, supergroups only
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct PromoteChatMemberRequest {
@@ -4780,25 +4822,25 @@ pub struct PromoteChatMemberRequest {
     pub user_id: Integer,
     /// Pass <em>True</em>, if the administrator's presence in the chat is hidden
     pub is_anonymous: Option<bool>,
-    /// Pass True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
+    /// Pass <em>True</em>, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
     pub can_manage_chat: Option<bool>,
-    /// Pass True, if the administrator can create channel posts, channels only
+    /// Pass <em>True</em>, if the administrator can create channel posts, channels only
     pub can_post_messages: Option<bool>,
-    /// Pass True, if the administrator can edit messages of other users and can pin messages, channels only
+    /// Pass <em>True</em>, if the administrator can edit messages of other users and can pin messages, channels only
     pub can_edit_messages: Option<bool>,
-    /// Pass True, if the administrator can delete messages of other users
+    /// Pass <em>True</em>, if the administrator can delete messages of other users
     pub can_delete_messages: Option<bool>,
-    /// Pass True, if the administrator can manage voice chats
+    /// Pass <em>True</em>, if the administrator can manage voice chats
     pub can_manage_voice_chats: Option<bool>,
-    /// Pass True, if the administrator can restrict, ban or unban chat members
+    /// Pass <em>True</em>, if the administrator can restrict, ban or unban chat members
     pub can_restrict_members: Option<bool>,
-    /// Pass True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
+    /// Pass <em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
     pub can_promote_members: Option<bool>,
-    /// Pass True, if the administrator can change chat title, photo and other settings
+    /// Pass <em>True</em>, if the administrator can change chat title, photo and other settings
     pub can_change_info: Option<bool>,
-    /// Pass True, if the administrator can invite new users to the chat
+    /// Pass <em>True</em>, if the administrator can invite new users to the chat
     pub can_invite_users: Option<bool>,
-    /// Pass True, if the administrator can pin messages, supergroups only
+    /// Pass <em>True</em>, if the administrator can pin messages, supergroups only
     pub can_pin_messages: Option<bool>
 }
 
@@ -4820,21 +4862,21 @@ pub struct SetChatAdministratorCustomTitleRequest {
 }
 
 /**
- * <p>Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the <em>can_restrict_members</em> admin rights. Returns <em>True</em> on success.</p>
+ * <p>Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the <em>can_restrict_members</em> administrator rights. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
- * @property permissions New default chat permissions
+ * @property permissions A JSON-serialized object for new default chat permissions
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SetChatPermissionsRequest {
     /// Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
     pub chat_id: String,
-    /// New default chat permissions
+    /// A JSON-serialized object for new default chat permissions
     pub permissions: ChatPermissions
 }
 
 /**
- * <p>Use this method to generate a new primary invite link for a chat; any previously generated primary link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as <em>String</em> on success.</p><blockquote> 
+ * <p>Use this method to generate a new primary invite link for a chat; any previously generated primary link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the new invite link as <em>String</em> on success.</p><blockquote> 
  *  <p>Note: Each administrator in a chat generates their own invite links. Bots can't use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using <a href="#exportchatinvitelink">exportChatInviteLink</a> or by calling the <a href="#getchat">getChat</a> method. If your bot needs to generate a new primary invite link replacing its previous one, use <a href="#exportchatinvitelink">exportChatInviteLink</a> again.</p> 
  * </blockquote>
  *
@@ -4847,29 +4889,37 @@ pub struct ExportChatInviteLinkRequest {
 }
 
 /**
- * <p>Use this method to create an additional invite link for a chat. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. The link can be revoked using the method <a href="#revokechatinvitelink">revokeChatInviteLink</a>. Returns the new invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+ * <p>Use this method to create an additional invite link for a chat. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. The link can be revoked using the method <a href="#revokechatinvitelink">revokeChatInviteLink</a>. Returns the new invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+ * @property name Invite link name; 0-32 characters
  * @property expire_date Point in time (Unix timestamp) when the link will expire
  * @property member_limit Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+ * @property creates_join_request <em>True</em>, if users joining the chat via the link need to be approved by chat administrators. If <em>True</em>, <em>member_limit</em> can't be specified
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct CreateChatInviteLinkRequest {
     /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: String,
+    /// Invite link name; 0-32 characters
+    pub name: Option<String>,
     /// Point in time (Unix timestamp) when the link will expire
     pub expire_date: Option<Integer>,
     /// Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
-    pub member_limit: Option<Integer>
+    pub member_limit: Option<Integer>,
+    /// <em>True</em>, if users joining the chat via the link need to be approved by chat administrators. If <em>True</em>, <em>member_limit</em> can't be specified
+    pub creates_join_request: Option<bool>
 }
 
 /**
- * <p>Use this method to edit a non-primary invite link created by the bot. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the edited invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+ * <p>Use this method to edit a non-primary invite link created by the bot. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the edited invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property invite_link The invite link to edit
+ * @property name Invite link name; 0-32 characters
  * @property expire_date Point in time (Unix timestamp) when the link will expire
  * @property member_limit Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+ * @property creates_join_request <em>True</em>, if users joining the chat via the link need to be approved by chat administrators. If <em>True</em>, <em>member_limit</em> can't be specified
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct EditChatInviteLinkRequest {
@@ -4877,14 +4927,18 @@ pub struct EditChatInviteLinkRequest {
     pub chat_id: String,
     /// The invite link to edit
     pub invite_link: String,
+    /// Invite link name; 0-32 characters
+    pub name: Option<String>,
     /// Point in time (Unix timestamp) when the link will expire
     pub expire_date: Option<Integer>,
     /// Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
-    pub member_limit: Option<Integer>
+    pub member_limit: Option<Integer>,
+    /// <em>True</em>, if users joining the chat via the link need to be approved by chat administrators. If <em>True</em>, <em>member_limit</em> can't be specified
+    pub creates_join_request: Option<bool>
 }
 
 /**
- * <p>Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the revoked invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+ * <p>Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the revoked invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
  *
  * @property chat_id Unique identifier of the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property invite_link The invite link to revoke
@@ -4898,7 +4952,35 @@ pub struct RevokeChatInviteLinkRequest {
 }
 
 /**
- * <p>Use this method to set a new profile photo for the chat. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+ * <p>Use this method to approve a chat join request. The bot must be an administrator in the chat for this to work and must have the <em>can_invite_users</em> administrator right. Returns <em>True</em> on success.</p>
+ *
+ * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+ * @property user_id Unique identifier of the target user
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ApproveChatJoinRequestRequest {
+    /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+    pub chat_id: String,
+    /// Unique identifier of the target user
+    pub user_id: Integer
+}
+
+/**
+ * <p>Use this method to decline a chat join request. The bot must be an administrator in the chat for this to work and must have the <em>can_invite_users</em> administrator right. Returns <em>True</em> on success.</p>
+ *
+ * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+ * @property user_id Unique identifier of the target user
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct DeclineChatJoinRequestRequest {
+    /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+    pub chat_id: String,
+    /// Unique identifier of the target user
+    pub user_id: Integer
+}
+
+/**
+ * <p>Use this method to set a new profile photo for the chat. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property photo New chat photo, uploaded using multipart/form-data
@@ -4912,7 +4994,7 @@ pub struct SetChatPhotoRequest {
 }
 
 /**
- * <p>Use this method to delete a chat photo. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+ * <p>Use this method to delete a chat photo. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * */
@@ -4923,7 +5005,7 @@ pub struct DeleteChatPhotoRequest {
 }
 
 /**
- * <p>Use this method to change the title of a chat. Titles can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+ * <p>Use this method to change the title of a chat. Titles can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property title New chat title, 1-255 characters
@@ -4937,7 +5019,7 @@ pub struct SetChatTitleRequest {
 }
 
 /**
- * <p>Use this method to change the description of a group, a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+ * <p>Use this method to change the description of a group, a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property description New chat description, 0-255 characters
@@ -4951,7 +5033,7 @@ pub struct SetChatDescriptionRequest {
 }
 
 /**
- * <p>Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in a supergroup or 'can_edit_messages' admin right in a channel. Returns <em>True</em> on success.</p>
+ * <p>Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Identifier of a message to pin
@@ -4968,7 +5050,7 @@ pub struct PinChatMessageRequest {
 }
 
 /**
- * <p>Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in a supergroup or 'can_edit_messages' admin right in a channel. Returns <em>True</em> on success.</p>
+ * <p>Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned.
@@ -4982,7 +5064,7 @@ pub struct UnpinChatMessageRequest {
 }
 
 /**
- * <p>Use this method to clear the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in a supergroup or 'can_edit_messages' admin right in a channel. Returns <em>True</em> on success.</p>
+ * <p>Use this method to clear the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * */
@@ -5051,7 +5133,7 @@ pub struct GetChatMemberRequest {
 }
 
 /**
- * <p>Use this method to set a new group sticker set for a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Use the field <em>can_set_sticker_set</em> optionally returned in <a href="#getchat">getChat</a> requests to check if the bot can use this method. Returns <em>True</em> on success.</p>
+ * <p>Use this method to set a new group sticker set for a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Use the field <em>can_set_sticker_set</em> optionally returned in <a href="#getchat">getChat</a> requests to check if the bot can use this method. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
  * @property sticker_set_name Name of the sticker set to be set as the group sticker set
@@ -5065,7 +5147,7 @@ pub struct SetChatStickerSetRequest {
 }
 
 /**
- * <p>Use this method to delete a group sticker set from a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Use the field <em>can_set_sticker_set</em> optionally returned in <a href="#getchat">getChat</a> requests to check if the bot can use this method. Returns <em>True</em> on success.</p>
+ * <p>Use this method to delete a group sticker set from a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Use the field <em>can_set_sticker_set</em> optionally returned in <a href="#getchat">getChat</a> requests to check if the bot can use this method. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
  * */
@@ -5082,7 +5164,7 @@ pub struct DeleteChatStickerSetRequest {
  *
  * @property callback_query_id Unique identifier for the query to be answered
  * @property text Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters
- * @property show_alert If <em>true</em>, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to <em>false</em>.
+ * @property show_alert If <em>True</em>, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to <em>false</em>.
  * @property url URL that will be opened by the user's client. If you have created a <a href="#game">Game</a> and accepted the conditions via <a href="https://t.me/botfather">@Botfather</a>, specify the URL that opens your game — note that this will only work if the query comes from a <a href="#inlinekeyboardbutton"><em>callback_game</em></a> button.<br><br>Otherwise, you may use links like <code>t.me/your_bot?start=XXXX</code> that open your bot with a parameter.
  * @property cache_time The maximum amount of time in seconds that the result of the callback query may be cached client-side. Telegram apps will support caching starting in version 3.14. Defaults to 0.
  * */
@@ -5092,7 +5174,7 @@ pub struct AnswerCallbackQueryRequest {
     pub callback_query_id: String,
     /// Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters
     pub text: Option<String>,
-    /// If <em>true</em>, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to <em>false</em>.
+    /// If <em>True</em>, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to <em>false</em>.
     pub show_alert: Option<bool>,
     /// URL that will be opened by the user's client. If you have created a <a href="#game">Game</a> and accepted the conditions via <a href="https://t.me/botfather">@Botfather</a>, specify the URL that opens your game — note that this will only work if the query comes from a <a href="#inlinekeyboardbutton"><em>callback_game</em></a> button.<br><br>Otherwise, you may use links like <code>t.me/your_bot?start=XXXX</code> that open your bot with a parameter.
     pub url: Option<String>,
@@ -5156,7 +5238,7 @@ pub struct GetMyCommandsRequest {
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
  * @property text New text of the message, 1-4096 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details.
- * @property entities List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
+ * @property entities A JSON-serialized list of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
  * @property disable_web_page_preview Disables link previews for links in this message
  * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
  * */
@@ -5172,7 +5254,7 @@ pub struct EditMessageTextRequest {
     pub text: String,
     /// Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
-    /// List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
+    /// A JSON-serialized list of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
     pub entities: Option<Vec<MessageEntity>>,
     /// Disables link previews for links in this message
     pub disable_web_page_preview: Option<bool>,
@@ -5188,7 +5270,7 @@ pub struct EditMessageTextRequest {
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
  * @property caption New caption of the message, 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the message caption. See <a href="#formatting-options">formatting options</a> for more details.
- * @property caption_entities List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+ * @property caption_entities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -5203,7 +5285,7 @@ pub struct EditMessageCaptionRequest {
     pub caption: Option<String>,
     /// Mode for parsing entities in the message caption. See <a href="#formatting-options">formatting options</a> for more details.
     pub parse_mode: Option<ParseMode>,
-    /// List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    /// A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
     pub caption_entities: Option<Vec<MessageEntity>>,
     /// A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.
     pub reply_markup: Option<InlineKeyboardMarkup>
@@ -5449,7 +5531,7 @@ pub struct SetStickerSetThumbRequest {
  * @property is_personal Pass <em>True</em>, if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query
  * @property next_offset Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes.
  * @property switch_pm_text If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter <em>switch_pm_parameter</em>
- * @property switch_pm_parameter <a href="/bots#deep-linking">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br><br><em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an oauth link. Once done, the bot can offer a <a href="#inlinekeyboardmarkup"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.
+ * @property switch_pm_parameter <a href="/bots#deep-linking">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br><br><em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a <a href="#inlinekeyboardmarkup"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct AnswerInlineQueryRequest {
@@ -5465,7 +5547,7 @@ pub struct AnswerInlineQueryRequest {
     pub next_offset: Option<String>,
     /// If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter <em>switch_pm_parameter</em>
     pub switch_pm_text: Option<String>,
-    /// <a href="/bots#deep-linking">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br><br><em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an oauth link. Once done, the bot can offer a <a href="#inlinekeyboardmarkup"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.
+    /// <a href="/bots#deep-linking">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br><br><em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a <a href="#inlinekeyboardmarkup"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.
     pub switch_pm_parameter: Option<String>
 }
 
@@ -5559,27 +5641,27 @@ pub struct SendInvoiceRequest {
 }
 
 /**
- * <p>If you sent an invoice requesting a shipping address and the parameter <em>is_flexible</em> was specified, the Bot API will send an <a href="#update">Update</a> with a <em>shipping_query</em> field to the bot. Use this method to reply to shipping queries. On success, True is returned.</p>
+ * <p>If you sent an invoice requesting a shipping address and the parameter <em>is_flexible</em> was specified, the Bot API will send an <a href="#update">Update</a> with a <em>shipping_query</em> field to the bot. Use this method to reply to shipping queries. On success, <em>True</em> is returned.</p>
  *
  * @property shipping_query_id Unique identifier for the query to be answered
- * @property ok Specify True if delivery to the specified address is possible and False if there are any problems (for example, if delivery to the specified address is not possible)
- * @property shipping_options Required if <em>ok</em> is True. A JSON-serialized array of available shipping options.
+ * @property ok Specify <em>True</em> if delivery to the specified address is possible and False if there are any problems (for example, if delivery to the specified address is not possible)
+ * @property shipping_options Required if <em>ok</em> is <em>True</em>. A JSON-serialized array of available shipping options.
  * @property error_message Required if <em>ok</em> is False. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct AnswerShippingQueryRequest {
     /// Unique identifier for the query to be answered
     pub shipping_query_id: String,
-    /// Specify True if delivery to the specified address is possible and False if there are any problems (for example, if delivery to the specified address is not possible)
+    /// Specify <em>True</em> if delivery to the specified address is possible and False if there are any problems (for example, if delivery to the specified address is not possible)
     pub ok: bool,
-    /// Required if <em>ok</em> is True. A JSON-serialized array of available shipping options.
+    /// Required if <em>ok</em> is <em>True</em>. A JSON-serialized array of available shipping options.
     pub shipping_options: Option<Vec<ShippingOption>>,
     /// Required if <em>ok</em> is False. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.
     pub error_message: Option<String>
 }
 
 /**
- * <p>Once the user has confirmed their payment and shipping details, the Bot API sends the final confirmation in the form of an <a href="#update">Update</a> with the field <em>pre_checkout_query</em>. Use this method to respond to such pre-checkout queries. On success, True is returned. <strong>Note:</strong> The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.</p>
+ * <p>Once the user has confirmed their payment and shipping details, the Bot API sends the final confirmation in the form of an <a href="#update">Update</a> with the field <em>pre_checkout_query</em>. Use this method to respond to such pre-checkout queries. On success, <em>True</em> is returned. <strong>Note:</strong> The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.</p>
  *
  * @property pre_checkout_query_id Unique identifier for the query to be answered
  * @property ok Specify <em>True</em> if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order. Use <em>False</em> if there are any problems.
@@ -5646,8 +5728,8 @@ pub struct SendGameRequest {
  *
  * @property user_id User identifier
  * @property score New score, must be non-negative
- * @property force Pass True, if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters
- * @property disable_edit_message Pass True, if the game message should not be automatically edited to include the current scoreboard
+ * @property force Pass <em>True</em>, if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters
+ * @property disable_edit_message Pass <em>True</em>, if the game message should not be automatically edited to include the current scoreboard
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the sent message
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
@@ -5658,9 +5740,9 @@ pub struct SetGameScoreRequest {
     pub user_id: Integer,
     /// New score, must be non-negative
     pub score: Integer,
-    /// Pass True, if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters
+    /// Pass <em>True</em>, if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters
     pub force: Option<bool>,
-    /// Pass True, if the game message should not be automatically edited to include the current scoreboard
+    /// Pass <em>True</em>, if the game message should not be automatically edited to include the current scoreboard
     pub disable_edit_message: Option<bool>,
     /// Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat
     pub chat_id: Option<Integer>,
