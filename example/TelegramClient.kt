@@ -138,6 +138,7 @@ suspend fun close() = telegramGet("$basePath/close", Boolean.serializer())
  * @property entities A JSON-serialized list of special entities that appear in message text, which can be specified instead of <em>parse_mode</em>
  * @property disable_web_page_preview Disables link previews for links in this message
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
@@ -151,6 +152,7 @@ parse_mode: ParseMode? = null,
 entities: List<MessageEntity>? = null,
 disable_web_page_preview: Boolean? = null,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 reply_markup: KeyboardOption? = null,
@@ -163,6 +165,7 @@ reply_markup: KeyboardOption? = null,
         entities,
         disable_web_page_preview,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
         reply_markup,
@@ -175,6 +178,7 @@ reply_markup: KeyboardOption? = null,
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property from_chat_id Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>)
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the forwarded message from forwarding and saving
  * @property message_id Message identifier in the chat specified in <em>from_chat_id</em>
  *
  * @return [Message]
@@ -183,6 +187,7 @@ suspend fun forwardMessage(
 chat_id: String,
 from_chat_id: String,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 message_id: Long,
 ) = telegramPost(
     "$basePath/forwardMessage",
@@ -190,6 +195,7 @@ message_id: Long,
         chat_id,
         from_chat_id,
         disable_notification,
+        protect_content,
         message_id,
     ).toJsonForRequest(),
     Message.serializer()
@@ -204,6 +210,7 @@ message_id: Long,
  * @property parse_mode Mode for parsing entities in the new caption. See <a href="#formatting-options">formatting options</a> for more details.
  * @property caption_entities A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of <em>parse_mode</em>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
@@ -218,6 +225,7 @@ caption: String? = null,
 parse_mode: ParseMode? = null,
 caption_entities: List<MessageEntity>? = null,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 reply_markup: KeyboardOption? = null,
@@ -231,6 +239,7 @@ reply_markup: KeyboardOption? = null,
         parse_mode,
         caption_entities,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
         reply_markup,
@@ -246,6 +255,7 @@ reply_markup: KeyboardOption? = null,
  * @property parse_mode Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details.
  * @property caption_entities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
@@ -259,6 +269,7 @@ caption: String? = null,
 parse_mode: ParseMode? = null,
 caption_entities: List<MessageEntity>? = null,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 reply_markup: KeyboardOption? = null,
@@ -271,6 +282,7 @@ reply_markup: KeyboardOption? = null,
         parse_mode,
         caption_entities,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
         reply_markup,
@@ -290,6 +302,7 @@ reply_markup: KeyboardOption? = null,
  * @property title Track name
  * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
@@ -307,6 +320,7 @@ performer: String? = null,
 title: String? = null,
 thumb: String? = null,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 reply_markup: KeyboardOption? = null,
@@ -323,6 +337,7 @@ reply_markup: KeyboardOption? = null,
         title,
         thumb,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
         reply_markup,
@@ -340,6 +355,7 @@ reply_markup: KeyboardOption? = null,
  * @property caption_entities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property disable_content_type_detection Disables automatic server-side content type detection for files uploaded using multipart/form-data
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
@@ -355,6 +371,7 @@ parse_mode: ParseMode? = null,
 caption_entities: List<MessageEntity>? = null,
 disable_content_type_detection: Boolean? = null,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 reply_markup: KeyboardOption? = null,
@@ -369,6 +386,7 @@ reply_markup: KeyboardOption? = null,
         caption_entities,
         disable_content_type_detection,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
         reply_markup,
@@ -389,6 +407,7 @@ reply_markup: KeyboardOption? = null,
  * @property caption_entities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property supports_streaming Pass <em>True</em>, if the uploaded video is suitable for streaming
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
@@ -407,6 +426,7 @@ parse_mode: ParseMode? = null,
 caption_entities: List<MessageEntity>? = null,
 supports_streaming: Boolean? = null,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 reply_markup: KeyboardOption? = null,
@@ -424,6 +444,7 @@ reply_markup: KeyboardOption? = null,
         caption_entities,
         supports_streaming,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
         reply_markup,
@@ -443,6 +464,7 @@ reply_markup: KeyboardOption? = null,
  * @property parse_mode Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details.
  * @property caption_entities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
@@ -460,6 +482,7 @@ caption: String? = null,
 parse_mode: ParseMode? = null,
 caption_entities: List<MessageEntity>? = null,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 reply_markup: KeyboardOption? = null,
@@ -476,6 +499,7 @@ reply_markup: KeyboardOption? = null,
         parse_mode,
         caption_entities,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
         reply_markup,
@@ -492,6 +516,7 @@ reply_markup: KeyboardOption? = null,
  * @property caption_entities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
  * @property duration Duration of the voice message in seconds
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
@@ -506,6 +531,7 @@ parse_mode: ParseMode? = null,
 caption_entities: List<MessageEntity>? = null,
 duration: Long? = null,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 reply_markup: KeyboardOption? = null,
@@ -519,6 +545,7 @@ reply_markup: KeyboardOption? = null,
         caption_entities,
         duration,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
         reply_markup,
@@ -534,6 +561,7 @@ reply_markup: KeyboardOption? = null,
  * @property length Video width and height, i.e. diameter of the video message
  * @property thumb Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
@@ -547,6 +575,7 @@ duration: Long? = null,
 length: Long? = null,
 thumb: String? = null,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 reply_markup: KeyboardOption? = null,
@@ -559,6 +588,7 @@ reply_markup: KeyboardOption? = null,
         length,
         thumb,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
         reply_markup,
@@ -571,6 +601,7 @@ reply_markup: KeyboardOption? = null,
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property media A JSON-serialized array describing messages to be sent, must include 2-10 items
  * @property disable_notification Sends messages <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent messages from forwarding and saving
  * @property reply_to_message_id If the messages are a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  *
@@ -580,6 +611,7 @@ suspend fun sendMediaGroup(
 chat_id: String,
 media: List<InputMedia>,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 ) = telegramPost(
@@ -588,6 +620,7 @@ allow_sending_without_reply: Boolean? = null,
         chat_id,
         media,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
     ).toJsonForRequest(),
@@ -604,6 +637,7 @@ allow_sending_without_reply: Boolean? = null,
  * @property heading For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
  * @property proximity_alert_radius For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
@@ -619,6 +653,7 @@ live_period: Long? = null,
 heading: Long? = null,
 proximity_alert_radius: Long? = null,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 reply_markup: KeyboardOption? = null,
@@ -633,6 +668,7 @@ reply_markup: KeyboardOption? = null,
         heading,
         proximity_alert_radius,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
         reply_markup,
@@ -717,6 +753,7 @@ reply_markup: InlineKeyboardMarkup? = null,
  * @property google_place_id Google Places identifier of the venue
  * @property google_place_type Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.)
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
@@ -734,6 +771,7 @@ foursquare_type: String? = null,
 google_place_id: String? = null,
 google_place_type: String? = null,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 reply_markup: KeyboardOption? = null,
@@ -750,6 +788,7 @@ reply_markup: KeyboardOption? = null,
         google_place_id,
         google_place_type,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
         reply_markup,
@@ -765,6 +804,7 @@ reply_markup: KeyboardOption? = null,
  * @property last_name Contact's last name
  * @property vcard Additional data about the contact in the form of a <a href="https://en.wikipedia.org/wiki/VCard">vCard</a>, 0-2048 bytes
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove keyboard or to force a reply from the user.
@@ -778,6 +818,7 @@ first_name: String,
 last_name: String? = null,
 vcard: String? = null,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 reply_markup: KeyboardOption? = null,
@@ -790,6 +831,7 @@ reply_markup: KeyboardOption? = null,
         last_name,
         vcard,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
         reply_markup,
@@ -813,6 +855,7 @@ reply_markup: KeyboardOption? = null,
  * @property close_date Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with <em>open_period</em>.
  * @property is_closed Pass <em>True</em>, if the poll needs to be immediately closed. This can be useful for poll preview.
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
@@ -834,6 +877,7 @@ open_period: Long? = null,
 close_date: Long? = null,
 is_closed: Boolean? = null,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 reply_markup: KeyboardOption? = null,
@@ -854,6 +898,7 @@ reply_markup: KeyboardOption? = null,
         close_date,
         is_closed,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
         reply_markup,
@@ -866,6 +911,7 @@ reply_markup: KeyboardOption? = null,
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property emoji Emoji on which the dice throw animation is based. Currently, must be one of “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”, “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, or “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Dice can have values 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, values 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” and “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, and values 1-64 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Defaults to “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
@@ -876,6 +922,7 @@ suspend fun sendDice(
 chat_id: String,
 emoji: String? = null,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 reply_markup: KeyboardOption? = null,
@@ -885,6 +932,7 @@ reply_markup: KeyboardOption? = null,
         chat_id,
         emoji,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
         reply_markup,
@@ -1093,6 +1141,44 @@ custom_title: String,
         chat_id,
         user_id,
         custom_title,
+    ).toJsonForRequest(),
+    Boolean.serializer()
+)
+/**
+ * <p>Use this method to ban a channel chat in a supergroup or a channel. Until the chat is <a href="#unbanchatsenderchat">unbanned</a>, the owner of the banned chat won't be able to send messages on behalf of <strong>any of their channels</strong>. The bot must be an administrator in the supergroup or channel for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
+ *
+ * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+ * @property sender_chat_id Unique identifier of the target sender chat
+ *
+ * @return [Boolean]
+ * */
+suspend fun banChatSenderChat(
+chat_id: String,
+sender_chat_id: Long,
+) = telegramPost(
+    "$basePath/banChatSenderChat",
+    BanChatSenderChatRequest(
+        chat_id,
+        sender_chat_id,
+    ).toJsonForRequest(),
+    Boolean.serializer()
+)
+/**
+ * <p>Use this method to unban a previously banned channel chat in a supergroup or channel. The bot must be an administrator for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
+ *
+ * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+ * @property sender_chat_id Unique identifier of the target sender chat
+ *
+ * @return [Boolean]
+ * */
+suspend fun unbanChatSenderChat(
+chat_id: String,
+sender_chat_id: Long,
+) = telegramPost(
+    "$basePath/unbanChatSenderChat",
+    UnbanChatSenderChatRequest(
+        chat_id,
+        sender_chat_id,
     ).toJsonForRequest(),
     Boolean.serializer()
 )
@@ -1764,6 +1850,7 @@ message_id: Long,
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property sticker Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.
@@ -1774,6 +1861,7 @@ suspend fun sendSticker(
 chat_id: String,
 sticker: String,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 reply_markup: KeyboardOption? = null,
@@ -1783,6 +1871,7 @@ reply_markup: KeyboardOption? = null,
         chat_id,
         sticker,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
         reply_markup,
@@ -2015,6 +2104,7 @@ switch_pm_parameter: String? = null,
  * @property send_email_to_provider Pass <em>True</em>, if user's email address should be sent to provider
  * @property is_flexible Pass <em>True</em>, if the final price depends on the shipping method
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If empty, one 'Pay <code>total price</code>' button will be shown. If not empty, the first button must be a Pay button.
@@ -2045,6 +2135,7 @@ send_phone_number_to_provider: Boolean? = null,
 send_email_to_provider: Boolean? = null,
 is_flexible: Boolean? = null,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 reply_markup: InlineKeyboardMarkup? = null,
@@ -2074,6 +2165,7 @@ reply_markup: InlineKeyboardMarkup? = null,
         send_email_to_provider,
         is_flexible,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
         reply_markup,
@@ -2158,6 +2250,7 @@ errors: List<PassportElementError>,
  * @property chat_id Unique identifier for the target chat
  * @property game_short_name Short name of the game, serves as the unique identifier for the game. Set up your games via <a href="https://t.me/botfather">Botfather</a>.
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_to_message_id If the message is a reply, ID of the original message
  * @property allow_sending_without_reply Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found
  * @property reply_markup A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.
@@ -2168,6 +2261,7 @@ suspend fun sendGame(
 chat_id: Long,
 game_short_name: String,
 disable_notification: Boolean? = null,
+protect_content: Boolean? = null,
 reply_to_message_id: Long? = null,
 allow_sending_without_reply: Boolean? = null,
 reply_markup: InlineKeyboardMarkup? = null,
@@ -2177,6 +2271,7 @@ reply_markup: InlineKeyboardMarkup? = null,
         chat_id,
         game_short_name,
         disable_notification,
+        protect_content,
         reply_to_message_id,
         allow_sending_without_reply,
         reply_markup,

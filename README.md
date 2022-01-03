@@ -1,7 +1,7 @@
 # telegram-api-generator
 Parse https://core.telegram.org/bots/api page and generate a Kotlin class "DocSection" with "DocType" and "DocMethod"
 
-Last update: Telegram Bot API 5.3
+Last update: Telegram Bot API 5.6
 
 Example in:
 
@@ -66,7 +66,7 @@ class TelegramClient(apiKey: String, httpClient: HttpClient) {
 /**
  * <p>This <a href="#available-types">object</a> represents an incoming update.<br>At most <strong>one</strong> of the optional parameters can be present in any given update.</p>
  *
- * @property update_id The update‘s unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you’re using <a href="#setwebhook">Webhooks</a>, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.
+ * @property update_id The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you're using <a href="#setwebhook">Webhooks</a>, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.
  * @property message <em>Optional</em>. New incoming message of any kind — text, photo, sticker, etc.
  * @property edited_message <em>Optional</em>. New version of a message that is known to the bot and was edited
  * @property channel_post <em>Optional</em>. New incoming channel post of any kind — text, photo, sticker, etc.
@@ -77,12 +77,16 @@ class TelegramClient(apiKey: String, httpClient: HttpClient) {
  * @property shipping_query <em>Optional</em>. New incoming shipping query. Only for invoices with flexible price
  * @property pre_checkout_query <em>Optional</em>. New incoming pre-checkout query. Contains full information about checkout
  * @property poll <em>Optional</em>. New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot
+ * @property poll_answer <em>Optional</em>. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.
+ * @property my_chat_member <em>Optional</em>. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user.
+ * @property chat_member <em>Optional</em>. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify “chat_member” in the list of <em>allowed_updates</em> to receive these updates.
+ * @property chat_join_request <em>Optional</em>. A request to join the chat has been sent. The bot must have the <em>can_invite_users</em> administrator right in the chat to receive these updates.
  *
- * @constructor Creates a: Update.
+ * @constructor Creates a [Update].
  * */
 @Serializable
 data class Update(
-    val update_id: Int,
+    val update_id: Long,
     val message: Message? = null,
     val edited_message: Message? = null,
     val channel_post: Message? = null,
@@ -92,8 +96,17 @@ data class Update(
     val callback_query: CallbackQuery? = null,
     val shipping_query: ShippingQuery? = null,
     val pre_checkout_query: PreCheckoutQuery? = null,
-    val poll: Poll? = null
-) : TelegramModel()
+    val poll: Poll? = null,
+    val poll_answer: PollAnswer? = null,
+    val my_chat_member: ChatMemberUpdated? = null,
+    val chat_member: ChatMemberUpdated? = null,
+    val chat_join_request: ChatJoinRequest? = null,
+) : TelegramModel() {
+    override fun toJson() = json.encodeToString(serializer(), this)
+    companion object {
+        fun fromJson(string: String) = json.decodeFromString(serializer(), string)
+    }
+}
 
 // ...
 ```
@@ -111,7 +124,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 ### Data Types
 #### Update
 
-    Update(update_id: Integer, message: Message, edited_message: Message, channel_post: Message, edited_channel_post: Message, inline_query: InlineQuery, chosen_inline_result: ChosenInlineResult, callback_query: CallbackQuery, shipping_query: ShippingQuery, pre_checkout_query: PreCheckoutQuery, poll: Poll, poll_answer: PollAnswer, my_chat_member: ChatMemberUpdated, chat_member: ChatMemberUpdated)
+    Update(update_id: Integer, message: Message, edited_message: Message, channel_post: Message, edited_channel_post: Message, inline_query: InlineQuery, chosen_inline_result: ChosenInlineResult, callback_query: CallbackQuery, shipping_query: ShippingQuery, pre_checkout_query: PreCheckoutQuery, poll: Poll, poll_answer: PollAnswer, my_chat_member: ChatMemberUpdated, chat_member: ChatMemberUpdated, chat_join_request: ChatJoinRequest)
 
 <p>This <a href="#available-types">object</a> represents an incoming update.<br>At most <strong>one</strong> of the optional parameters can be present in any given update.</p>
 
@@ -131,6 +144,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | poll_answer | PollAnswer | false | <em>Optional</em>. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself. |
 | my_chat_member | ChatMemberUpdated | false | <em>Optional</em>. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user. |
 | chat_member | ChatMemberUpdated | false | <em>Optional</em>. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify “chat_member” in the list of <em>allowed_updates</em> to receive these updates. |
+| chat_join_request | ChatJoinRequest | false | <em>Optional</em>. A request to join the chat has been sent. The bot must have the <em>can_invite_users</em> administrator right in the chat to receive these updates. |
 
 #### WebhookInfo
 
@@ -141,7 +155,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | name | type | required | description |
 |---|---|---|---|
 | url | String | true | Webhook URL, may be empty if webhook is not set up |
-| has_custom_certificate | Boolean | true | True, if a custom certificate was provided for webhook certificate checks |
+| has_custom_certificate | Boolean | true | <em>True</em>, if a custom certificate was provided for webhook certificate checks |
 | pending_update_count | Integer | true | Number of updates awaiting delivery |
 | ip_address | String | false | <em>Optional</em>. Currently used webhook IP address |
 | last_error_date | Integer | false | <em>Optional</em>. Unix time for the most recent error that happened when trying to deliver an update via webhook |
@@ -214,18 +228,18 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | name | type | required | description |
 |---|---|---|---|
 | id | Integer | true | Unique identifier for this user or bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. |
-| is_bot | Boolean | true | True, if this user is a bot |
+| is_bot | Boolean | true | <em>True</em>, if this user is a bot |
 | first_name | String | true | User's or bot's first name |
 | last_name | String | false | <em>Optional</em>. User's or bot's last name |
 | username | String | false | <em>Optional</em>. User's or bot's username |
 | language_code | String | false | <em>Optional</em>. <a href="https://en.wikipedia.org/wiki/IETF_language_tag">IETF language tag</a> of the user's language |
-| can_join_groups | Boolean | false | <em>Optional</em>. True, if the bot can be invited to groups. Returned only in <a href="#getme">getMe</a>. |
-| can_read_all_group_messages | Boolean | false | <em>Optional</em>. True, if <a href="https://core.telegram.org/bots#privacy-mode">privacy mode</a> is disabled for the bot. Returned only in <a href="#getme">getMe</a>. |
-| supports_inline_queries | Boolean | false | <em>Optional</em>. True, if the bot supports inline queries. Returned only in <a href="#getme">getMe</a>. |
+| can_join_groups | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can be invited to groups. Returned only in <a href="#getme">getMe</a>. |
+| can_read_all_group_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if <a href="https://core.telegram.org/bots#privacy-mode">privacy mode</a> is disabled for the bot. Returned only in <a href="#getme">getMe</a>. |
+| supports_inline_queries | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot supports inline queries. Returned only in <a href="#getme">getMe</a>. |
 
 #### Chat
 
-    Chat(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, photo: ChatPhoto, bio: String, description: String, invite_link: String, pinned_message: Message, permissions: ChatPermissions, slow_mode_delay: Integer, message_auto_delete_time: Integer, sticker_set_name: String, can_set_sticker_set: Boolean, linked_chat_id: Integer, location: ChatLocation)
+    Chat(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, photo: ChatPhoto, bio: String, has_private_forwards: Boolean, description: String, invite_link: String, pinned_message: Message, permissions: ChatPermissions, slow_mode_delay: Integer, message_auto_delete_time: Integer, has_protected_content: Boolean, sticker_set_name: String, can_set_sticker_set: Boolean, linked_chat_id: Integer, location: ChatLocation)
 
 <p>This object represents a chat.</p>
 
@@ -239,39 +253,43 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | last_name | String | false | <em>Optional</em>. Last name of the other party in a private chat |
 | photo | ChatPhoto | false | <em>Optional</em>. Chat photo. Returned only in <a href="#getchat">getChat</a>. |
 | bio | String | false | <em>Optional</em>. Bio of the other party in a private chat. Returned only in <a href="#getchat">getChat</a>. |
+| has_private_forwards | Boolean | false | <em>Optional</em>. True, if privacy settings of the other party in the private chat allows to use <code>tg://user?id=&lt;user_id&gt;</code> links only in chats with the user. Returned only in <a href="#getchat">getChat</a>. |
 | description | String | false | <em>Optional</em>. Description, for groups, supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>. |
 | invite_link | String | false | <em>Optional</em>. Primary invite link, for groups, supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>. |
 | pinned_message | Message | false | <em>Optional</em>. The most recent pinned message (by sending date). Returned only in <a href="#getchat">getChat</a>. |
 | permissions | ChatPermissions | false | <em>Optional</em>. Default chat member permissions, for groups and supergroups. Returned only in <a href="#getchat">getChat</a>. |
-| slow_mode_delay | Integer | false | <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user. Returned only in <a href="#getchat">getChat</a>. |
+| slow_mode_delay | Integer | false | <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user; in seconds. Returned only in <a href="#getchat">getChat</a>. |
 | message_auto_delete_time | Integer | false | <em>Optional</em>. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in <a href="#getchat">getChat</a>. |
+| has_protected_content | Boolean | false | <em>Optional</em>. True, if messages from the chat can't be forwarded to other chats. Returned only in <a href="#getchat">getChat</a>. |
 | sticker_set_name | String | false | <em>Optional</em>. For supergroups, name of group sticker set. Returned only in <a href="#getchat">getChat</a>. |
-| can_set_sticker_set | Boolean | false | <em>Optional</em>. True, if the bot can change the group sticker set. Returned only in <a href="#getchat">getChat</a>. |
+| can_set_sticker_set | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can change the group sticker set. Returned only in <a href="#getchat">getChat</a>. |
 | linked_chat_id | Integer | false | <em>Optional</em>. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in <a href="#getchat">getChat</a>. |
 | location | ChatLocation | false | <em>Optional</em>. For supergroups, the location to which the supergroup is connected. Returned only in <a href="#getchat">getChat</a>. |
 
 #### Message
 
-    Message(message_id: Integer, from: User, sender_chat: Chat, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_sender_name: String, forward_date: Integer, reply_to_message: Message, via_bot: User, edit_date: Integer, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, voice_chat_scheduled: VoiceChatScheduled, voice_chat_started: VoiceChatStarted, voice_chat_ended: VoiceChatEnded, voice_chat_participants_invited: VoiceChatParticipantsInvited, reply_markup: InlineKeyboardMarkup)
+    Message(message_id: Integer, from: User, sender_chat: Chat, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_sender_name: String, forward_date: Integer, is_automatic_forward: Boolean, reply_to_message: Message, via_bot: User, edit_date: Integer, has_protected_content: Boolean, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, voice_chat_scheduled: VoiceChatScheduled, voice_chat_started: VoiceChatStarted, voice_chat_ended: VoiceChatEnded, voice_chat_participants_invited: VoiceChatParticipantsInvited, reply_markup: InlineKeyboardMarkup)
 
 <p>This object represents a message.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | message_id | Integer | true | Unique message identifier inside this chat |
-| from | User | false | <em>Optional</em>. Sender, empty for messages sent to channels |
-| sender_chat | Chat | false | <em>Optional</em>. Sender of the message, sent on behalf of a chat. The channel itself for channel messages. The supergroup itself for messages from anonymous group administrators. The linked channel for messages automatically forwarded to the discussion group |
+| from | User | false | <em>Optional</em>. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat. |
+| sender_chat | Chat | false | <em>Optional</em>. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field <em>from</em> contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat. |
 | date | Integer | true | Date the message was sent in Unix time |
 | chat | Chat | true | Conversation the message belongs to |
 | forward_from | User | false | <em>Optional</em>. For forwarded messages, sender of the original message |
 | forward_from_chat | Chat | false | <em>Optional</em>. For messages forwarded from channels or from anonymous administrators, information about the original sender chat |
 | forward_from_message_id | Integer | false | <em>Optional</em>. For messages forwarded from channels, identifier of the original message in the channel |
-| forward_signature | String | false | <em>Optional</em>. For messages forwarded from channels, signature of the post author if present |
+| forward_signature | String | false | <em>Optional</em>. For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present |
 | forward_sender_name | String | false | <em>Optional</em>. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages |
 | forward_date | Integer | false | <em>Optional</em>. For forwarded messages, date the original message was sent in Unix time |
+| is_automatic_forward | Boolean | false | <em>Optional</em>. True, if the message is a channel post that was automatically forwarded to the connected discussion group |
 | reply_to_message | Message | false | <em>Optional</em>. For replies, the original message. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply. |
 | via_bot | User | false | <em>Optional</em>. Bot through which the message was sent |
 | edit_date | Integer | false | <em>Optional</em>. Date the message was last edited in Unix time |
+| has_protected_content | Boolean | false | <em>Optional</em>. True, if the message can't be forwarded |
 | media_group_id | String | false | <em>Optional</em>. The unique identifier of a media message group this message belongs to |
 | author_signature | String | false | <em>Optional</em>. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator |
 | text | String | false | <em>Optional</em>. For text messages, the actual UTF-8 text of the message, 0-4096 characters |
@@ -333,7 +351,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
 | name | type | required | description |
 |---|---|---|---|
-| type | String | true | Type of the entity. Can be “mention” (<code>@username</code>), “hashtag” (<code>#hashtag</code>), “cashtag” (<code>$USD</code>), “bot_command” (<code>/start@jobs_bot</code>), “url” (<code>https://telegram.org</code>), “email” (<code>do-not-reply@telegram.org</code>), “phone_number” (<code>+1-212-555-0123</code>), “bold” (<strong>bold text</strong>), “italic” (<em>italic text</em>), “underline” (underlined text), “strikethrough” (strikethrough text), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users <a href="https://telegram.org/blog/edit#new-mentions">without usernames</a>) |
+| type | String | true | Type of the entity. Currently, can be “mention” (<code>@username</code>), “hashtag” (<code>#hashtag</code>), “cashtag” (<code>$USD</code>), “bot_command” (<code>/start@jobs_bot</code>), “url” (<code>https://telegram.org</code>), “email” (<code>do-not-reply@telegram.org</code>), “phone_number” (<code>+1-212-555-0123</code>), “bold” (<strong>bold text</strong>), “italic” (<em>italic text</em>), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler” (spoiler message), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users <a href="https://telegram.org/blog/edit#new-mentions">without usernames</a>) |
 | offset | Integer | true | Offset in UTF-16 code units to the start of the entity |
 | length | Integer | true | Length of the entity in UTF-16 code units |
 | url | String | false | <em>Optional</em>. For “text_link” only, url that will be opened after user taps on the text |
@@ -352,7 +370,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
 | width | Integer | true | Photo width |
 | height | Integer | true | Photo height |
-| file_size | Integer | false | <em>Optional</em>. File size |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes |
 
 #### Animation
 
@@ -370,7 +388,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | thumb | PhotoSize | false | <em>Optional</em>. Animation thumbnail as defined by sender |
 | file_name | String | false | <em>Optional</em>. Original animation filename as defined by sender |
 | mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
-| file_size | Integer | false | <em>Optional</em>. File size |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes |
 
 #### Audio
 
@@ -387,7 +405,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | title | String | false | <em>Optional</em>. Title of the audio as defined by sender or by audio tags |
 | file_name | String | false | <em>Optional</em>. Original filename as defined by sender |
 | mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
-| file_size | Integer | false | <em>Optional</em>. File size |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes |
 | thumb | PhotoSize | false | <em>Optional</em>. Thumbnail of the album cover to which the music file belongs |
 
 #### Document
@@ -403,7 +421,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | thumb | PhotoSize | false | <em>Optional</em>. Document thumbnail as defined by sender |
 | file_name | String | false | <em>Optional</em>. Original filename as defined by sender |
 | mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
-| file_size | Integer | false | <em>Optional</em>. File size |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes |
 
 #### Video
 
@@ -421,7 +439,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | thumb | PhotoSize | false | <em>Optional</em>. Video thumbnail |
 | file_name | String | false | <em>Optional</em>. Original filename as defined by sender |
 | mime_type | String | false | <em>Optional</em>. Mime type of a file as defined by sender |
-| file_size | Integer | false | <em>Optional</em>. File size |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes |
 
 #### VideoNote
 
@@ -436,7 +454,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | length | Integer | true | Video width and height (diameter of the video message) as defined by sender |
 | duration | Integer | true | Duration of the video in seconds as defined by sender |
 | thumb | PhotoSize | false | <em>Optional</em>. Video thumbnail |
-| file_size | Integer | false | <em>Optional</em>. File size |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes |
 
 #### Voice
 
@@ -450,7 +468,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
 | duration | Integer | true | Duration of the audio in seconds as defined by sender |
 | mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
-| file_size | Integer | false | <em>Optional</em>. File size |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes |
 
 #### Contact
 
@@ -512,10 +530,10 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | question | String | true | Poll question, 1-300 characters |
 | options | List<PollOption> | true | List of poll options |
 | total_voter_count | Integer | true | Total number of users that voted in the poll |
-| is_closed | Boolean | true | True, if the poll is closed |
-| is_anonymous | Boolean | true | True, if the poll is anonymous |
+| is_closed | Boolean | true | <em>True</em>, if the poll is closed |
+| is_anonymous | Boolean | true | <em>True</em>, if the poll is anonymous |
 | type | String | true | Poll type, currently can be “regular” or “quiz” |
-| allows_multiple_answers | Boolean | true | True, if the poll allows multiple answers |
+| allows_multiple_answers | Boolean | true | <em>True</em>, if the poll allows multiple answers |
 | correct_option_id | Integer | false | <em>Optional</em>. 0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot. |
 | explanation | String | false | <em>Optional</em>. Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters |
 | explanation_entities | List<MessageEntity> | false | <em>Optional</em>. Special entities like usernames, URLs, bot commands, etc. that appear in the <em>explanation</em> |
@@ -533,7 +551,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | longitude | Float | true | Longitude as defined by sender |
 | latitude | Float | true | Latitude as defined by sender |
 | horizontal_accuracy | Float | false | <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500 |
-| live_period | Integer | false | <em>Optional</em>. Time relative to the message sending date, during which the location can be updated, in seconds. For active live locations only. |
+| live_period | Integer | false | <em>Optional</em>. Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only. |
 | heading | Integer | false | <em>Optional</em>. The direction in which user is moving, in degrees; 1-360. For active live locations only. |
 | proximity_alert_radius | Integer | false | <em>Optional</em>. Maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only. |
 
@@ -573,7 +591,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
 | name | type | required | description |
 |---|---|---|---|
-| message_auto_delete_time | Integer | true | New auto-delete time for messages in the chat |
+| message_auto_delete_time | Integer | true | New auto-delete time for messages in the chat; in seconds |
 
 #### VoiceChatScheduled
 
@@ -593,7 +611,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
 | name | type | required | description |
 |---|---|---|---|
-| duration | Integer | true | Voice chat duration; in seconds |
+| duration | Integer | true | Voice chat duration in seconds |
 
 #### VoiceChatParticipantsInvited
 
@@ -628,7 +646,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| file_size | Integer | false | <em>Optional</em>. File size, if known |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes, if known |
 | file_path | String | false | <em>Optional</em>. File path. Use <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code> to get the file. |
 
 #### ReplyKeyboardMarkup
@@ -698,13 +716,13 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | name | type | required | description |
 |---|---|---|---|
 | text | String | true | Label text on the button |
-| url | String | false | <em>Optional</em>. HTTP or tg:// url to be opened when button is pressed |
+| url | String | false | <em>Optional</em>. HTTP or tg:// url to be opened when the button is pressed. Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings. |
 | login_url | LoginUrl | false | <em>Optional</em>. An HTTP URL used to automatically authorize the user. Can be used as a replacement for the <a href="https://core.telegram.org/widgets/login">Telegram Login Widget</a>. |
 | callback_data | String | false | <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when button is pressed, 1-64 bytes |
 | switch_inline_query | String | false | <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. Can be empty, in which case just the bot's username will be inserted.<br><br><strong>Note:</strong> This offers an easy way for users to start using your bot in <a href="/bots/inline">inline mode</a> when they are currently in a private chat with it. Especially useful when combined with <a href="#answerinlinequery"><em>switch_pm…</em></a> actions – in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen. |
 | switch_inline_query_current_chat | String | false | <em>Optional</em>. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. Can be empty, in which case only the bot's username will be inserted.<br><br>This offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options. |
 | callback_game | CallbackGame | false | <em>Optional</em>. Description of the game that will be launched when the user presses the button.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row. |
-| pay | Boolean | false | <em>Optional</em>. Specify True, to send a <a href="#payments">Pay button</a>.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row. |
+| pay | Boolean | false | <em>Optional</em>. Specify <em>True</em>, to send a <a href="#payments">Pay button</a>.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row and can only be used in invoice messages. |
 
 #### LoginUrl
 
@@ -719,7 +737,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | url | String | true | An HTTP URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in <a href="https://core.telegram.org/widgets/login#receiving-authorization-data">Receiving authorization data</a>.<br><br><strong>NOTE:</strong> You <strong>must</strong> always check the hash of the received data to verify the authentication and the integrity of the data as described in <a href="https://core.telegram.org/widgets/login#checking-authorization">Checking authorization</a>. |
 | forward_text | String | false | <em>Optional</em>. New text of the button in forwarded messages. |
 | bot_username | String | false | <em>Optional</em>. Username of a bot, which will be used for user authorization. See <a href="https://core.telegram.org/widgets/login#setting-up-a-bot">Setting up a bot</a> for more details. If not specified, the current bot's username will be assumed. The <em>url</em>'s domain must be the same as the domain linked with the bot. See <a href="https://core.telegram.org/widgets/login#linking-your-domain-to-the-bot">Linking your domain to the bot</a> for more details. |
-| request_write_access | Boolean | false | <em>Optional</em>. Pass True to request the permission for your bot to send messages to the user. |
+| request_write_access | Boolean | false | <em>Optional</em>. Pass <em>True</em> to request the permission for your bot to send messages to the user. |
 
 #### CallbackQuery
 
@@ -773,7 +791,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
 #### ChatInviteLink
 
-    ChatInviteLink(invite_link: String, creator: User, is_primary: Boolean, is_revoked: Boolean, expire_date: Integer, member_limit: Integer)
+    ChatInviteLink(invite_link: String, creator: User, creates_join_request: Boolean, is_primary: Boolean, is_revoked: Boolean, name: String, expire_date: Integer, member_limit: Integer, pending_join_request_count: Integer)
 
 <p>Represents an invite link for a chat.</p>
 
@@ -781,10 +799,13 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 |---|---|---|---|
 | invite_link | String | true | The invite link. If the link was created by another chat administrator, then the second part of the link will be replaced with “…”. |
 | creator | User | true | Creator of the link |
-| is_primary | Boolean | true | True, if the link is primary |
-| is_revoked | Boolean | true | True, if the link is revoked |
+| creates_join_request | Boolean | true | <em>True</em>, if users joining the chat via the link need to be approved by chat administrators |
+| is_primary | Boolean | true | <em>True</em>, if the link is primary |
+| is_revoked | Boolean | true | <em>True</em>, if the link is revoked |
+| name | String | false | <em>Optional</em>. Invite link name |
 | expire_date | Integer | false | <em>Optional</em>. Point in time (Unix timestamp) when the link will expire or has been expired |
 | member_limit | Integer | false | <em>Optional</em>. Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999 |
+| pending_join_request_count | Integer | false | <em>Optional</em>. Number of pending join requests created using this link |
 
 #### ChatMemberOwner
 
@@ -796,7 +817,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 |---|---|---|---|
 | status | String | true | The member's status in the chat, always “creator” |
 | user | User | true | Information about the user |
-| is_anonymous | Boolean | true | True, if the user's presence in the chat is hidden |
+| is_anonymous | Boolean | true | <em>True</em>, if the user's presence in the chat is hidden |
 | custom_title | String | false | <em>Optional</em>. Custom title for this user |
 
 #### ChatMemberAdministrator
@@ -809,18 +830,18 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 |---|---|---|---|
 | status | String | true | The member's status in the chat, always “administrator” |
 | user | User | true | Information about the user |
-| can_be_edited | Boolean | true | True, if the bot is allowed to edit administrator privileges of that user |
-| is_anonymous | Boolean | true | True, if the user's presence in the chat is hidden |
-| can_manage_chat | Boolean | true | True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege |
-| can_delete_messages | Boolean | true | True, if the administrator can delete messages of other users |
-| can_manage_voice_chats | Boolean | true | True, if the administrator can manage voice chats |
-| can_restrict_members | Boolean | true | True, if the administrator can restrict, ban or unban chat members |
-| can_promote_members | Boolean | true | True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user) |
-| can_change_info | Boolean | true | True, if the user is allowed to change the chat title, photo and other settings |
-| can_invite_users | Boolean | true | True, if the user is allowed to invite new users to the chat |
-| can_post_messages | Boolean | false | <em>Optional</em>. True, if the administrator can post in the channel; channels only |
-| can_edit_messages | Boolean | false | <em>Optional</em>. True, if the administrator can edit messages of other users and can pin messages; channels only |
-| can_pin_messages | Boolean | false | <em>Optional</em>. True, if the user is allowed to pin messages; groups and supergroups only |
+| can_be_edited | Boolean | true | <em>True</em>, if the bot is allowed to edit administrator privileges of that user |
+| is_anonymous | Boolean | true | <em>True</em>, if the user's presence in the chat is hidden |
+| can_manage_chat | Boolean | true | <em>True</em>, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege |
+| can_delete_messages | Boolean | true | <em>True</em>, if the administrator can delete messages of other users |
+| can_manage_voice_chats | Boolean | true | <em>True</em>, if the administrator can manage voice chats |
+| can_restrict_members | Boolean | true | <em>True</em>, if the administrator can restrict, ban or unban chat members |
+| can_promote_members | Boolean | true | <em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user) |
+| can_change_info | Boolean | true | <em>True</em>, if the user is allowed to change the chat title, photo and other settings |
+| can_invite_users | Boolean | true | <em>True</em>, if the user is allowed to invite new users to the chat |
+| can_post_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the administrator can post in the channel; channels only |
+| can_edit_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; channels only |
+| can_pin_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; groups and supergroups only |
 | custom_title | String | false | <em>Optional</em>. Custom title for this user |
 
 #### ChatMemberMember
@@ -844,15 +865,15 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 |---|---|---|---|
 | status | String | true | The member's status in the chat, always “restricted” |
 | user | User | true | Information about the user |
-| is_member | Boolean | true | True, if the user is a member of the chat at the moment of the request |
-| can_change_info | Boolean | true | True, if the user is allowed to change the chat title, photo and other settings |
-| can_invite_users | Boolean | true | True, if the user is allowed to invite new users to the chat |
-| can_pin_messages | Boolean | true | True, if the user is allowed to pin messages |
-| can_send_messages | Boolean | true | True, if the user is allowed to send text messages, contacts, locations and venues |
-| can_send_media_messages | Boolean | true | True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes |
-| can_send_polls | Boolean | true | True, if the user is allowed to send polls |
-| can_send_other_messages | Boolean | true | True, if the user is allowed to send animations, games, stickers and use inline bots |
-| can_add_web_page_previews | Boolean | true | True, if the user is allowed to add web page previews to their messages |
+| is_member | Boolean | true | <em>True</em>, if the user is a member of the chat at the moment of the request |
+| can_change_info | Boolean | true | <em>True</em>, if the user is allowed to change the chat title, photo and other settings |
+| can_invite_users | Boolean | true | <em>True</em>, if the user is allowed to invite new users to the chat |
+| can_pin_messages | Boolean | true | <em>True</em>, if the user is allowed to pin messages |
+| can_send_messages | Boolean | true | <em>True</em>, if the user is allowed to send text messages, contacts, locations and venues |
+| can_send_media_messages | Boolean | true | <em>True</em>, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes |
+| can_send_polls | Boolean | true | <em>True</em>, if the user is allowed to send polls |
+| can_send_other_messages | Boolean | true | <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots |
+| can_add_web_page_previews | Boolean | true | <em>True</em>, if the user is allowed to add web page previews to their messages |
 | until_date | Integer | true | Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever |
 
 #### ChatMemberLeft
@@ -893,6 +914,20 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | new_chat_member | ChatMember | true | New information about the chat member |
 | invite_link | ChatInviteLink | false | <em>Optional</em>. Chat invite link, which was used by the user to join the chat; for joining by invite link events only. |
 
+#### ChatJoinRequest
+
+    ChatJoinRequest(chat: Chat, from: User, date: Integer, bio: String, invite_link: ChatInviteLink)
+
+<p>Represents a join request sent to a chat.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat | Chat | true | Chat to which the request was sent |
+| from | User | true | User that sent the join request |
+| date | Integer | true | Date the request was sent in Unix time |
+| bio | String | false | <em>Optional</em>. Bio of the user. |
+| invite_link | ChatInviteLink | false | <em>Optional</em>. Chat invite link that was used by the user to send the join request |
+
 #### ChatPermissions
 
     ChatPermissions(can_send_messages: Boolean, can_send_media_messages: Boolean, can_send_polls: Boolean, can_send_other_messages: Boolean, can_add_web_page_previews: Boolean, can_change_info: Boolean, can_invite_users: Boolean, can_pin_messages: Boolean)
@@ -901,14 +936,14 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
 | name | type | required | description |
 |---|---|---|---|
-| can_send_messages | Boolean | false | <em>Optional</em>. True, if the user is allowed to send text messages, contacts, locations and venues |
-| can_send_media_messages | Boolean | false | <em>Optional</em>. True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages |
-| can_send_polls | Boolean | false | <em>Optional</em>. True, if the user is allowed to send polls, implies can_send_messages |
-| can_send_other_messages | Boolean | false | <em>Optional</em>. True, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages |
-| can_add_web_page_previews | Boolean | false | <em>Optional</em>. True, if the user is allowed to add web page previews to their messages, implies can_send_media_messages |
-| can_change_info | Boolean | false | <em>Optional</em>. True, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups |
-| can_invite_users | Boolean | false | <em>Optional</em>. True, if the user is allowed to invite new users to the chat |
-| can_pin_messages | Boolean | false | <em>Optional</em>. True, if the user is allowed to pin messages. Ignored in public supergroups |
+| can_send_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to send text messages, contacts, locations and venues |
+| can_send_media_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages |
+| can_send_polls | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to send polls, implies can_send_messages |
+| can_send_other_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages |
+| can_add_web_page_previews | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to add web page previews to their messages, implies can_send_media_messages |
+| can_change_info | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups |
+| can_invite_users | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to invite new users to the chat |
+| can_pin_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to pin messages. Ignored in public supergroups |
 
 #### ChatLocation
 
@@ -929,8 +964,8 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
 | name | type | required | description |
 |---|---|---|---|
-| command | String | true | Text of the command, 1-32 characters. Can contain only lowercase English letters, digits and underscores. |
-| description | String | true | Description of the command, 3-256 characters. |
+| command | String | true | Text of the command; 1-32 characters. Can contain only lowercase English letters, digits and underscores. |
+| description | String | true | Description of the command; 1-256 characters. |
 
 #### BotCommandScopeDefault
 
@@ -1047,7 +1082,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | width | Integer | false | <em>Optional</em>. Video width |
 | height | Integer | false | <em>Optional</em>. Video height |
-| duration | Integer | false | <em>Optional</em>. Video duration |
+| duration | Integer | false | <em>Optional</em>. Video duration in seconds |
 | supports_streaming | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the uploaded video is suitable for streaming |
 
 #### InputMediaAnimation
@@ -1066,7 +1101,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | width | Integer | false | <em>Optional</em>. Animation width |
 | height | Integer | false | <em>Optional</em>. Animation height |
-| duration | Integer | false | <em>Optional</em>. Animation duration |
+| duration | Integer | false | <em>Optional</em>. Animation duration in seconds |
 
 #### InputMediaAudio
 
@@ -1100,7 +1135,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | caption | String | false | <em>Optional</em>. Caption of the document to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
-| disable_content_type_detection | Boolean | false | <em>Optional</em>. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always true, if the document is sent as part of an album. |
+| disable_content_type_detection | Boolean | false | <em>Optional</em>. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always <em>True</em>, if the document is sent as part of an album. |
 
 
 
@@ -1121,7 +1156,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
 #### sendMessage
 
-    sendMessage(chat_id: IntegerOrString, text: String, parse_mode: ParseMode, entities: List<MessageEntity>, disable_web_page_preview: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
+    sendMessage(chat_id: IntegerOrString, text: String, parse_mode: ParseMode, entities: List<MessageEntity>, disable_web_page_preview: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
 <p>Use this method to send text messages. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -1130,16 +1165,17 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | text | String | true | Text of the message to be sent, 1-4096 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details. |
-| entities | List<MessageEntity> | false | List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em> |
+| entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in message text, which can be specified instead of <em>parse_mode</em> |
 | disable_web_page_preview | Boolean | false | Disables link previews for links in this message |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
 
 #### forwardMessage
 
-    forwardMessage(chat_id: IntegerOrString, from_chat_id: IntegerOrString, disable_notification: Boolean, message_id: Integer)
+    forwardMessage(chat_id: IntegerOrString, from_chat_id: IntegerOrString, disable_notification: Boolean, protect_content: Boolean, message_id: Integer)
 
 <p>Use this method to forward messages of any kind. Service messages can't be forwarded. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -1148,11 +1184,12 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | from_chat_id | IntegerOrString | true | Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>) |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the forwarded message from forwarding and saving |
 | message_id | Integer | true | Message identifier in the chat specified in <em>from_chat_id</em> |
 
 #### copyMessage
 
-    copyMessage(chat_id: IntegerOrString, from_chat_id: IntegerOrString, message_id: Integer, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
+    copyMessage(chat_id: IntegerOrString, from_chat_id: IntegerOrString, message_id: Integer, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
 <p>Use this method to copy messages of any kind. Service messages and invoice messages can't be copied. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
 
@@ -1163,15 +1200,16 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | message_id | Integer | true | Message identifier in the chat specified in <em>from_chat_id</em> |
 | caption | String | false | New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept |
 | parse_mode | ParseMode | false | Mode for parsing entities in the new caption. See <a href="#formatting-options">formatting options</a> for more details. |
-| caption_entities | List<MessageEntity> | false | List of special entities that appear in the new caption, which can be specified instead of <em>parse_mode</em> |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of <em>parse_mode</em> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
 
 #### sendPhoto
 
-    sendPhoto(chat_id: IntegerOrString, photo: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
+    sendPhoto(chat_id: IntegerOrString, photo: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
 <p>Use this method to send photos. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -1181,15 +1219,16 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | photo | InputFileOrString | true | Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | Photo caption (may also be used when resending photos by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details. |
-| caption_entities | List<MessageEntity> | false | List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
 
 #### sendAudio
 
-    sendAudio(chat_id: IntegerOrString, audio: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, duration: Integer, performer: String, title: String, thumb: InputFileOrString, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
+    sendAudio(chat_id: IntegerOrString, audio: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, duration: Integer, performer: String, title: String, thumb: InputFileOrString, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
 <p>Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent <a href="#message">Message</a> is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.</p><p>For sending voice messages, use the <a href="#sendvoice">sendVoice</a> method instead.</p>
 
@@ -1199,19 +1238,20 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | audio | InputFileOrString | true | Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | Audio caption, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details. |
-| caption_entities | List<MessageEntity> | false | List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | duration | Integer | false | Duration of the audio in seconds |
 | performer | String | false | Performer |
 | title | String | false | Track name |
 | thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
 
 #### sendDocument
 
-    sendDocument(chat_id: IntegerOrString, document: InputFileOrString, thumb: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_content_type_detection: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
+    sendDocument(chat_id: IntegerOrString, document: InputFileOrString, thumb: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_content_type_detection: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
 <p>Use this method to send general files. On success, the sent <a href="#message">Message</a> is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.</p>
 
@@ -1222,16 +1262,17 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | Document caption (may also be used when resending documents by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details. |
-| caption_entities | List<MessageEntity> | false | List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | disable_content_type_detection | Boolean | false | Disables automatic server-side content type detection for files uploaded using multipart/form-data |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
 
 #### sendVideo
 
-    sendVideo(chat_id: IntegerOrString, video: InputFileOrString, duration: Integer, width: Integer, height: Integer, thumb: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, supports_streaming: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
+    sendVideo(chat_id: IntegerOrString, video: InputFileOrString, duration: Integer, width: Integer, height: Integer, thumb: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, supports_streaming: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
 <p>Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as <a href="#document">Document</a>). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.</p>
 
@@ -1245,16 +1286,17 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | Video caption (may also be used when resending videos by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details. |
-| caption_entities | List<MessageEntity> | false | List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | supports_streaming | Boolean | false | Pass <em>True</em>, if the uploaded video is suitable for streaming |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
 
 #### sendAnimation
 
-    sendAnimation(chat_id: IntegerOrString, animation: InputFileOrString, duration: Integer, width: Integer, height: Integer, thumb: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
+    sendAnimation(chat_id: IntegerOrString, animation: InputFileOrString, duration: Integer, width: Integer, height: Integer, thumb: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
 <p>Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.</p>
 
@@ -1268,15 +1310,16 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | Animation caption (may also be used when resending animation by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details. |
-| caption_entities | List<MessageEntity> | false | List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
 
 #### sendVoice
 
-    sendVoice(chat_id: IntegerOrString, voice: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, duration: Integer, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
+    sendVoice(chat_id: IntegerOrString, voice: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, duration: Integer, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
 <p>Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as <a href="#audio">Audio</a> or <a href="#document">Document</a>). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.</p>
 
@@ -1286,16 +1329,17 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | voice | InputFileOrString | true | Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
 | caption | String | false | Voice message caption, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the voice message caption. See <a href="#formatting-options">formatting options</a> for more details. |
-| caption_entities | List<MessageEntity> | false | List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | duration | Integer | false | Duration of the voice message in seconds |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
 
 #### sendVideoNote
 
-    sendVideoNote(chat_id: IntegerOrString, video_note: InputFileOrString, duration: Integer, length: Integer, thumb: InputFileOrString, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
+    sendVideoNote(chat_id: IntegerOrString, video_note: InputFileOrString, duration: Integer, length: Integer, thumb: InputFileOrString, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
 <p>As of <a href="https://telegram.org/blog/video-messages-and-telescope">v.4.0</a>, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -1307,13 +1351,14 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | length | Integer | false | Video width and height, i.e. diameter of the video message |
 | thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
 
 #### sendMediaGroup
 
-    sendMediaGroup(chat_id: IntegerOrString, media: List<InputMedia>, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean)
+    sendMediaGroup(chat_id: IntegerOrString, media: List<InputMedia>, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean)
 
 <p>Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of <a href="#message">Messages</a> that were sent is returned.</p>
 
@@ -1322,12 +1367,13 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | media | List<InputMedia> | true | A JSON-serialized array describing messages to be sent, must include 2-10 items |
 | disable_notification | Boolean | false | Sends messages <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent messages from forwarding and saving |
 | reply_to_message_id | Integer | false | If the messages are a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 
 #### sendLocation
 
-    sendLocation(chat_id: IntegerOrString, latitude: Float, longitude: Float, horizontal_accuracy: Float, live_period: Integer, heading: Integer, proximity_alert_radius: Integer, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
+    sendLocation(chat_id: IntegerOrString, latitude: Float, longitude: Float, horizontal_accuracy: Float, live_period: Integer, heading: Integer, proximity_alert_radius: Integer, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
 <p>Use this method to send point on the map. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -1341,6 +1387,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | heading | Integer | false | For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified. |
 | proximity_alert_radius | Integer | false | For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
@@ -1378,7 +1425,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
 #### sendVenue
 
-    sendVenue(chat_id: IntegerOrString, latitude: Float, longitude: Float, title: String, address: String, foursquare_id: String, foursquare_type: String, google_place_id: String, google_place_type: String, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
+    sendVenue(chat_id: IntegerOrString, latitude: Float, longitude: Float, title: String, address: String, foursquare_id: String, foursquare_type: String, google_place_id: String, google_place_type: String, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
 <p>Use this method to send information about a venue. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -1394,13 +1441,14 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | google_place_id | String | false | Google Places identifier of the venue |
 | google_place_type | String | false | Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.) |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
 
 #### sendContact
 
-    sendContact(chat_id: IntegerOrString, phone_number: String, first_name: String, last_name: String, vcard: String, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
+    sendContact(chat_id: IntegerOrString, phone_number: String, first_name: String, last_name: String, vcard: String, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
 <p>Use this method to send phone contacts. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -1412,13 +1460,14 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | last_name | String | false | Contact's last name |
 | vcard | String | false | Additional data about the contact in the form of a <a href="https://en.wikipedia.org/wiki/VCard">vCard</a>, 0-2048 bytes |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove keyboard or to force a reply from the user. |
 
 #### sendPoll
 
-    sendPoll(chat_id: IntegerOrString, question: String, options: List<String>, is_anonymous: Boolean, type: String, allows_multiple_answers: Boolean, correct_option_id: Integer, explanation: String, explanation_parse_mode: String, explanation_entities: List<MessageEntity>, open_period: Integer, close_date: Integer, is_closed: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
+    sendPoll(chat_id: IntegerOrString, question: String, options: List<String>, is_anonymous: Boolean, type: String, allows_multiple_answers: Boolean, correct_option_id: Integer, explanation: String, explanation_parse_mode: String, explanation_entities: List<MessageEntity>, open_period: Integer, close_date: Integer, is_closed: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
 <p>Use this method to send a native poll. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -1427,24 +1476,25 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | question | String | true | Poll question, 1-300 characters |
 | options | List<String> | true | A JSON-serialized list of answer options, 2-10 strings 1-100 characters each |
-| is_anonymous | Boolean | false | True, if the poll needs to be anonymous, defaults to <em>True</em> |
+| is_anonymous | Boolean | false | <em>True</em>, if the poll needs to be anonymous, defaults to <em>True</em> |
 | type | String | false | Poll type, “quiz” or “regular”, defaults to “regular” |
-| allows_multiple_answers | Boolean | false | True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to <em>False</em> |
+| allows_multiple_answers | Boolean | false | <em>True</em>, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to <em>False</em> |
 | correct_option_id | Integer | false | 0-based identifier of the correct answer option, required for polls in quiz mode |
 | explanation | String | false | Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing |
 | explanation_parse_mode | String | false | Mode for parsing entities in the explanation. See <a href="#formatting-options">formatting options</a> for more details. |
-| explanation_entities | List<MessageEntity> | false | List of special entities that appear in the poll explanation, which can be specified instead of <em>parse_mode</em> |
+| explanation_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of <em>parse_mode</em> |
 | open_period | Integer | false | Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with <em>close_date</em>. |
 | close_date | Integer | false | Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with <em>open_period</em>. |
 | is_closed | Boolean | false | Pass <em>True</em>, if the poll needs to be immediately closed. This can be useful for poll preview. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
 
 #### sendDice
 
-    sendDice(chat_id: IntegerOrString, emoji: String, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
+    sendDice(chat_id: IntegerOrString, emoji: String, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
 <p>Use this method to send an animated emoji that will display a random value. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -1453,6 +1503,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | emoji | String | false | Emoji on which the dice throw animation is based. Currently, must be one of “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”, “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, or “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Dice can have values 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, values 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” and “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, and values 1-64 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Defaults to “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
@@ -1468,7 +1519,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| action | String | true | Type of action to broadcast. Choose one, depending on what the user is about to receive: <em>typing</em> for <a href="#sendmessage">text messages</a>, <em>upload_photo</em> for <a href="#sendphoto">photos</a>, <em>record_video</em> or <em>upload_video</em> for <a href="#sendvideo">videos</a>, <em>record_voice</em> or <em>upload_voice</em> for <a href="#sendvoice">voice notes</a>, <em>upload_document</em> for <a href="#senddocument">general files</a>, <em>find_location</em> for <a href="#sendlocation">location data</a>, <em>record_video_note</em> or <em>upload_video_note</em> for <a href="#sendvideonote">video notes</a>. |
+| action | String | true | Type of action to broadcast. Choose one, depending on what the user is about to receive: <em>typing</em> for <a href="#sendmessage">text messages</a>, <em>upload_photo</em> for <a href="#sendphoto">photos</a>, <em>record_video</em> or <em>upload_video</em> for <a href="#sendvideo">videos</a>, <em>record_voice</em> or <em>upload_voice</em> for <a href="#sendvoice">voice notes</a>, <em>upload_document</em> for <a href="#senddocument">general files</a>, <em>choose_sticker</em> for <a href="#sendsticker">stickers</a>, <em>find_location</em> for <a href="#sendlocation">location data</a>, <em>record_video_note</em> or <em>upload_video_note</em> for <a href="#sendvideonote">video notes</a>. |
 
 #### getUserProfilePhotos
 
@@ -1496,7 +1547,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
     banChatMember(chat_id: IntegerOrString, user_id: Integer, until_date: Integer, revoke_messages: Boolean)
 
-<p>Use this method to ban a user in a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless <a href="#unbanchatmember">unbanned</a> first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+<p>Use this method to ban a user in a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless <a href="#unbanchatmember">unbanned</a> first. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1521,7 +1572,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
     restrictChatMember(chat_id: IntegerOrString, user_id: Integer, permissions: ChatPermissions, until_date: Integer)
 
-<p>Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights. Pass <em>True</em> for all permissions to lift restrictions from a user. Returns <em>True</em> on success.</p>
+<p>Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate administrator rights. Pass <em>True</em> for all permissions to lift restrictions from a user. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1534,23 +1585,23 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
     promoteChatMember(chat_id: IntegerOrString, user_id: Integer, is_anonymous: Boolean, can_manage_chat: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_delete_messages: Boolean, can_manage_voice_chats: Boolean, can_restrict_members: Boolean, can_promote_members: Boolean, can_change_info: Boolean, can_invite_users: Boolean, can_pin_messages: Boolean)
 
-<p>Use this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Pass <em>False</em> for all boolean parameters to demote a user. Returns <em>True</em> on success.</p>
+<p>Use this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Pass <em>False</em> for all boolean parameters to demote a user. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | user_id | Integer | true | Unique identifier of the target user |
 | is_anonymous | Boolean | false | Pass <em>True</em>, if the administrator's presence in the chat is hidden |
-| can_manage_chat | Boolean | false | Pass True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege |
-| can_post_messages | Boolean | false | Pass True, if the administrator can create channel posts, channels only |
-| can_edit_messages | Boolean | false | Pass True, if the administrator can edit messages of other users and can pin messages, channels only |
-| can_delete_messages | Boolean | false | Pass True, if the administrator can delete messages of other users |
-| can_manage_voice_chats | Boolean | false | Pass True, if the administrator can manage voice chats |
-| can_restrict_members | Boolean | false | Pass True, if the administrator can restrict, ban or unban chat members |
-| can_promote_members | Boolean | false | Pass True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him) |
-| can_change_info | Boolean | false | Pass True, if the administrator can change chat title, photo and other settings |
-| can_invite_users | Boolean | false | Pass True, if the administrator can invite new users to the chat |
-| can_pin_messages | Boolean | false | Pass True, if the administrator can pin messages, supergroups only |
+| can_manage_chat | Boolean | false | Pass <em>True</em>, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege |
+| can_post_messages | Boolean | false | Pass <em>True</em>, if the administrator can create channel posts, channels only |
+| can_edit_messages | Boolean | false | Pass <em>True</em>, if the administrator can edit messages of other users and can pin messages, channels only |
+| can_delete_messages | Boolean | false | Pass <em>True</em>, if the administrator can delete messages of other users |
+| can_manage_voice_chats | Boolean | false | Pass <em>True</em>, if the administrator can manage voice chats |
+| can_restrict_members | Boolean | false | Pass <em>True</em>, if the administrator can restrict, ban or unban chat members |
+| can_promote_members | Boolean | false | Pass <em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him) |
+| can_change_info | Boolean | false | Pass <em>True</em>, if the administrator can change chat title, photo and other settings |
+| can_invite_users | Boolean | false | Pass <em>True</em>, if the administrator can invite new users to the chat |
+| can_pin_messages | Boolean | false | Pass <em>True</em>, if the administrator can pin messages, supergroups only |
 
 #### setChatAdministratorCustomTitle
 
@@ -1564,22 +1615,44 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | user_id | Integer | true | Unique identifier of the target user |
 | custom_title | String | true | New custom title for the administrator; 0-16 characters, emoji are not allowed |
 
+#### banChatSenderChat
+
+    banChatSenderChat(chat_id: IntegerOrString, sender_chat_id: Integer)
+
+<p>Use this method to ban a channel chat in a supergroup or a channel. Until the chat is <a href="#unbanchatsenderchat">unbanned</a>, the owner of the banned chat won't be able to send messages on behalf of <strong>any of their channels</strong>. The bot must be an administrator in the supergroup or channel for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
+| sender_chat_id | Integer | true | Unique identifier of the target sender chat |
+
+#### unbanChatSenderChat
+
+    unbanChatSenderChat(chat_id: IntegerOrString, sender_chat_id: Integer)
+
+<p>Use this method to unban a previously banned channel chat in a supergroup or channel. The bot must be an administrator for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
+| sender_chat_id | Integer | true | Unique identifier of the target sender chat |
+
 #### setChatPermissions
 
     setChatPermissions(chat_id: IntegerOrString, permissions: ChatPermissions)
 
-<p>Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the <em>can_restrict_members</em> admin rights. Returns <em>True</em> on success.</p>
+<p>Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the <em>can_restrict_members</em> administrator rights. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>) |
-| permissions | ChatPermissions | true | New default chat permissions |
+| permissions | ChatPermissions | true | A JSON-serialized object for new default chat permissions |
 
 #### exportChatInviteLink
 
     exportChatInviteLink(chat_id: IntegerOrString)
 
-<p>Use this method to generate a new primary invite link for a chat; any previously generated primary link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as <em>String</em> on success.</p><blockquote> 
+<p>Use this method to generate a new primary invite link for a chat; any previously generated primary link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the new invite link as <em>String</em> on success.</p><blockquote> 
  <p>Note: Each administrator in a chat generates their own invite links. Bots can't use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using <a href="#exportchatinvitelink">exportChatInviteLink</a> or by calling the <a href="#getchat">getChat</a> method. If your bot needs to generate a new primary invite link replacing its previous one, use <a href="#exportchatinvitelink">exportChatInviteLink</a> again.</p> 
 </blockquote>
 
@@ -1589,45 +1662,71 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
 #### createChatInviteLink
 
-    createChatInviteLink(chat_id: IntegerOrString, expire_date: Integer, member_limit: Integer)
+    createChatInviteLink(chat_id: IntegerOrString, name: String, expire_date: Integer, member_limit: Integer, creates_join_request: Boolean)
 
-<p>Use this method to create an additional invite link for a chat. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. The link can be revoked using the method <a href="#revokechatinvitelink">revokeChatInviteLink</a>. Returns the new invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+<p>Use this method to create an additional invite link for a chat. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. The link can be revoked using the method <a href="#revokechatinvitelink">revokeChatInviteLink</a>. Returns the new invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
+| name | String | false | Invite link name; 0-32 characters |
 | expire_date | Integer | false | Point in time (Unix timestamp) when the link will expire |
 | member_limit | Integer | false | Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999 |
+| creates_join_request | Boolean | false | <em>True</em>, if users joining the chat via the link need to be approved by chat administrators. If <em>True</em>, <em>member_limit</em> can't be specified |
 
 #### editChatInviteLink
 
-    editChatInviteLink(chat_id: IntegerOrString, invite_link: String, expire_date: Integer, member_limit: Integer)
+    editChatInviteLink(chat_id: IntegerOrString, invite_link: String, name: String, expire_date: Integer, member_limit: Integer, creates_join_request: Boolean)
 
-<p>Use this method to edit a non-primary invite link created by the bot. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the edited invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+<p>Use this method to edit a non-primary invite link created by the bot. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the edited invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | invite_link | String | true | The invite link to edit |
+| name | String | false | Invite link name; 0-32 characters |
 | expire_date | Integer | false | Point in time (Unix timestamp) when the link will expire |
 | member_limit | Integer | false | Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999 |
+| creates_join_request | Boolean | false | <em>True</em>, if users joining the chat via the link need to be approved by chat administrators. If <em>True</em>, <em>member_limit</em> can't be specified |
 
 #### revokeChatInviteLink
 
     revokeChatInviteLink(chat_id: IntegerOrString, invite_link: String)
 
-<p>Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the revoked invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+<p>Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the revoked invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier of the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | invite_link | String | true | The invite link to revoke |
 
+#### approveChatJoinRequest
+
+    approveChatJoinRequest(chat_id: IntegerOrString, user_id: Integer)
+
+<p>Use this method to approve a chat join request. The bot must be an administrator in the chat for this to work and must have the <em>can_invite_users</em> administrator right. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
+| user_id | Integer | true | Unique identifier of the target user |
+
+#### declineChatJoinRequest
+
+    declineChatJoinRequest(chat_id: IntegerOrString, user_id: Integer)
+
+<p>Use this method to decline a chat join request. The bot must be an administrator in the chat for this to work and must have the <em>can_invite_users</em> administrator right. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
+| user_id | Integer | true | Unique identifier of the target user |
+
 #### setChatPhoto
 
     setChatPhoto(chat_id: IntegerOrString, photo: InputFile)
 
-<p>Use this method to set a new profile photo for the chat. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+<p>Use this method to set a new profile photo for the chat. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1638,7 +1737,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
     deleteChatPhoto(chat_id: IntegerOrString)
 
-<p>Use this method to delete a chat photo. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+<p>Use this method to delete a chat photo. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1648,7 +1747,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
     setChatTitle(chat_id: IntegerOrString, title: String)
 
-<p>Use this method to change the title of a chat. Titles can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+<p>Use this method to change the title of a chat. Titles can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1659,7 +1758,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
     setChatDescription(chat_id: IntegerOrString, description: String)
 
-<p>Use this method to change the description of a group, a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+<p>Use this method to change the description of a group, a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1670,7 +1769,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
     pinChatMessage(chat_id: IntegerOrString, message_id: Integer, disable_notification: Boolean)
 
-<p>Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in a supergroup or 'can_edit_messages' admin right in a channel. Returns <em>True</em> on success.</p>
+<p>Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1682,7 +1781,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
     unpinChatMessage(chat_id: IntegerOrString, message_id: Integer)
 
-<p>Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in a supergroup or 'can_edit_messages' admin right in a channel. Returns <em>True</em> on success.</p>
+<p>Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1693,7 +1792,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
     unpinAllChatMessages(chat_id: IntegerOrString)
 
-<p>Use this method to clear the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in a supergroup or 'can_edit_messages' admin right in a channel. Returns <em>True</em> on success.</p>
+<p>Use this method to clear the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1754,7 +1853,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
     setChatStickerSet(chat_id: IntegerOrString, sticker_set_name: String)
 
-<p>Use this method to set a new group sticker set for a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Use the field <em>can_set_sticker_set</em> optionally returned in <a href="#getchat">getChat</a> requests to check if the bot can use this method. Returns <em>True</em> on success.</p>
+<p>Use this method to set a new group sticker set for a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Use the field <em>can_set_sticker_set</em> optionally returned in <a href="#getchat">getChat</a> requests to check if the bot can use this method. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1765,7 +1864,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
     deleteChatStickerSet(chat_id: IntegerOrString)
 
-<p>Use this method to delete a group sticker set from a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Use the field <em>can_set_sticker_set</em> optionally returned in <a href="#getchat">getChat</a> requests to check if the bot can use this method. Returns <em>True</em> on success.</p>
+<p>Use this method to delete a group sticker set from a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Use the field <em>can_set_sticker_set</em> optionally returned in <a href="#getchat">getChat</a> requests to check if the bot can use this method. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1783,7 +1882,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 |---|---|---|---|
 | callback_query_id | String | true | Unique identifier for the query to be answered |
 | text | String | false | Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters |
-| show_alert | Boolean | false | If <em>true</em>, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to <em>false</em>. |
+| show_alert | Boolean | false | If <em>True</em>, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to <em>false</em>. |
 | url | String | false | URL that will be opened by the user's client. If you have created a <a href="#game">Game</a> and accepted the conditions via <a href="https://t.me/botfather">@Botfather</a>, specify the URL that opens your game — note that this will only work if the query comes from a <a href="#inlinekeyboardbutton"><em>callback_game</em></a> button.<br><br>Otherwise, you may use links like <code>t.me/your_bot?start=XXXX</code> that open your bot with a parameter. |
 | cache_time | Integer | false | The maximum amount of time in seconds that the result of the callback query may be cached client-side. Telegram apps will support caching starting in version 3.14. Defaults to 0. |
 
@@ -1839,7 +1938,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |
 | text | String | true | New text of the message, 1-4096 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details. |
-| entities | List<MessageEntity> | false | List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em> |
+| entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in message text, which can be specified instead of <em>parse_mode</em> |
 | disable_web_page_preview | Boolean | false | Disables link previews for links in this message |
 | reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. |
 
@@ -1856,7 +1955,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |
 | caption | String | false | New caption of the message, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the message caption. See <a href="#formatting-options">formatting options</a> for more details. |
-| caption_entities | List<MessageEntity> | false | List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. |
 
 #### editMessageMedia
@@ -1931,7 +2030,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | emoji | String | false | <em>Optional</em>. Emoji associated with the sticker |
 | set_name | String | false | <em>Optional</em>. Name of the sticker set to which the sticker belongs |
 | mask_position | MaskPosition | false | <em>Optional</em>. For mask stickers, the position where the mask should be placed |
-| file_size | Integer | false | <em>Optional</em>. File size |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes |
 
 #### StickerSet
 
@@ -1965,7 +2064,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 ### Methods
 #### sendSticker
 
-    sendSticker(chat_id: IntegerOrString, sticker: InputFileOrString, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
+    sendSticker(chat_id: IntegerOrString, sticker: InputFileOrString, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
 <p>Use this method to send static .WEBP or <a href="https://telegram.org/blog/animated-stickers">animated</a> .TGS stickers. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -1974,6 +2073,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | sticker | InputFileOrString | true | Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
@@ -2114,7 +2214,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>photo</em> |
 | id | String | true | Unique identifier for this result, 1-64 bytes |
-| photo_url | String | true | A valid URL of the photo. Photo must be in <strong>jpeg</strong> format. Photo size must not exceed 5MB |
+| photo_url | String | true | A valid URL of the photo. Photo must be in <strong>JPEG</strong> format. Photo size must not exceed 5MB |
 | thumb_url | String | true | URL of the thumbnail for the photo |
 | photo_width | Integer | false | <em>Optional</em>. Width of the photo |
 | photo_height | Integer | false | <em>Optional</em>. Height of the photo |
@@ -2139,7 +2239,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | gif_url | String | true | A valid URL for the GIF file. File size must not exceed 1MB |
 | gif_width | Integer | false | <em>Optional</em>. Width of the GIF |
 | gif_height | Integer | false | <em>Optional</em>. Height of the GIF |
-| gif_duration | Integer | false | <em>Optional</em>. Duration of the GIF |
+| gif_duration | Integer | false | <em>Optional</em>. Duration of the GIF in seconds |
 | thumb_url | String | true | URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result |
 | thumb_mime_type | String | false | <em>Optional</em>. MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or “video/mp4”. Defaults to “image/jpeg” |
 | title | String | false | <em>Optional</em>. Title for the result |
@@ -2162,7 +2262,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | mpeg4_url | String | true | A valid URL for the MP4 file. File size must not exceed 1MB |
 | mpeg4_width | Integer | false | <em>Optional</em>. Video width |
 | mpeg4_height | Integer | false | <em>Optional</em>. Video height |
-| mpeg4_duration | Integer | false | <em>Optional</em>. Video duration |
+| mpeg4_duration | Integer | false | <em>Optional</em>. Video duration in seconds |
 | thumb_url | String | true | URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result |
 | thumb_mime_type | String | false | <em>Optional</em>. MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or “video/mp4”. Defaults to “image/jpeg” |
 | title | String | false | <em>Optional</em>. Title for the result |
@@ -2186,7 +2286,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | id | String | true | Unique identifier for this result, 1-64 bytes |
 | video_url | String | true | A valid URL for the embedded video player or video file |
 | mime_type | String | true | Mime type of the content of video url, “text/html” or “video/mp4” |
-| thumb_url | String | true | URL of the thumbnail (jpeg only) for the video |
+| thumb_url | String | true | URL of the thumbnail (JPEG only) for the video |
 | title | String | true | Title for the result |
 | caption | String | false | <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details. |
@@ -2256,7 +2356,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | description | String | false | <em>Optional</em>. Short description of the result |
 | reply_markup | InlineKeyboardMarkup | false | <em>Optional</em>. Inline keyboard attached to the message |
 | input_message_content | InputMessageContent | false | <em>Optional</em>. Content of the message to be sent instead of the file |
-| thumb_url | String | false | <em>Optional</em>. URL of the thumbnail (jpeg only) for the file |
+| thumb_url | String | false | <em>Optional</em>. URL of the thumbnail (JPEG only) for the file |
 | thumb_width | Integer | false | <em>Optional</em>. Thumbnail width |
 | thumb_height | Integer | false | <em>Optional</em>. Thumbnail height |
 
@@ -2599,7 +2699,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | is_personal | Boolean | false | Pass <em>True</em>, if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query |
 | next_offset | String | false | Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes. |
 | switch_pm_text | String | false | If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter <em>switch_pm_parameter</em> |
-| switch_pm_parameter | String | false | <a href="/bots#deep-linking">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br><br><em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an oauth link. Once done, the bot can offer a <a href="#inlinekeyboardmarkup"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities. |
+| switch_pm_parameter | String | false | <a href="/bots#deep-linking">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br><br><em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a <a href="#inlinekeyboardmarkup"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities. |
 
 
 
@@ -2720,7 +2820,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 ### Methods
 #### sendInvoice
 
-    sendInvoice(chat_id: IntegerOrString, title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, start_parameter: String, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: InlineKeyboardMarkup)
+    sendInvoice(chat_id: IntegerOrString, title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, start_parameter: String, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to send invoices. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -2749,6 +2849,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | send_email_to_provider | Boolean | false | Pass <em>True</em>, if user's email address should be sent to provider |
 | is_flexible | Boolean | false | Pass <em>True</em>, if the final price depends on the shipping method |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If empty, one 'Pay <code>total price</code>' button will be shown. If not empty, the first button must be a Pay button. |
@@ -2757,20 +2858,20 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 
     answerShippingQuery(shipping_query_id: String, ok: Boolean, shipping_options: List<ShippingOption>, error_message: String)
 
-<p>If you sent an invoice requesting a shipping address and the parameter <em>is_flexible</em> was specified, the Bot API will send an <a href="#update">Update</a> with a <em>shipping_query</em> field to the bot. Use this method to reply to shipping queries. On success, True is returned.</p>
+<p>If you sent an invoice requesting a shipping address and the parameter <em>is_flexible</em> was specified, the Bot API will send an <a href="#update">Update</a> with a <em>shipping_query</em> field to the bot. Use this method to reply to shipping queries. On success, <em>True</em> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | shipping_query_id | String | true | Unique identifier for the query to be answered |
-| ok | Boolean | true | Specify True if delivery to the specified address is possible and False if there are any problems (for example, if delivery to the specified address is not possible) |
-| shipping_options | List<ShippingOption> | false | Required if <em>ok</em> is True. A JSON-serialized array of available shipping options. |
+| ok | Boolean | true | Specify <em>True</em> if delivery to the specified address is possible and False if there are any problems (for example, if delivery to the specified address is not possible) |
+| shipping_options | List<ShippingOption> | false | Required if <em>ok</em> is <em>True</em>. A JSON-serialized array of available shipping options. |
 | error_message | String | false | Required if <em>ok</em> is False. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user. |
 
 #### answerPreCheckoutQuery
 
     answerPreCheckoutQuery(pre_checkout_query_id: String, ok: Boolean, error_message: String)
 
-<p>Once the user has confirmed their payment and shipping details, the Bot API sends the final confirmation in the form of an <a href="#update">Update</a> with the field <em>pre_checkout_query</em>. Use this method to respond to such pre-checkout queries. On success, True is returned. <strong>Note:</strong> The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.</p>
+<p>Once the user has confirmed their payment and shipping details, the Bot API sends the final confirmation in the form of an <a href="#update">Update</a> with the field <em>pre_checkout_query</em>. Use this method to respond to such pre-checkout queries. On success, <em>True</em> is returned. <strong>Note:</strong> The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -2804,7 +2905,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| file_size | Integer | true | File size |
+| file_size | Integer | true | File size in bytes |
 | file_date | Integer | true | Unix time when the file was uploaded |
 
 #### EncryptedPassportElement
@@ -3005,7 +3106,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 ### Methods
 #### sendGame
 
-    sendGame(chat_id: Integer, game_short_name: String, disable_notification: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: InlineKeyboardMarkup)
+    sendGame(chat_id: Integer, game_short_name: String, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to send a game. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -3014,6 +3115,7 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 | chat_id | Integer | true | Unique identifier for the target chat |
 | game_short_name | String | true | Short name of the game, serves as the unique identifier for the game. Set up your games via <a href="https://t.me/botfather">Botfather</a>. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game. |
@@ -3028,8 +3130,8 @@ Below an example generated with [GeneratorReadmeExample.kt](src/main/kotlin/Gene
 |---|---|---|---|
 | user_id | Integer | true | User identifier |
 | score | Integer | true | New score, must be non-negative |
-| force | Boolean | false | Pass True, if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters |
-| disable_edit_message | Boolean | false | Pass True, if the game message should not be automatically edited to include the current scoreboard |
+| force | Boolean | false | Pass <em>True</em>, if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters |
+| disable_edit_message | Boolean | false | Pass <em>True</em>, if the game message should not be automatically edited to include the current scoreboard |
 | chat_id | Integer | false | Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat |
 | message_id | Integer | false | Required if <em>inline_message_id</em> is not specified. Identifier of the sent message |
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |

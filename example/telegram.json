@@ -495,6 +495,14 @@
             "required": false
           },
           {
+            "name": "has_private_forwards",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if privacy settings of the other party in the private chat allows to use \u003ccode\u003etg://user?id\u003d\u0026lt;user_id\u0026gt;\u003c/code\u003e links only in chats with the user. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
             "name": "description",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Description, for groups, supergroups and channel chats. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
@@ -539,6 +547,14 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "has_protected_content",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if messages from the chat can\u0027t be forwarded to other chats. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -590,7 +606,7 @@
           },
           {
             "name": "from",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Sender, empty for messages sent to channels",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.",
             "type": {
               "name": "User"
             },
@@ -598,7 +614,7 @@
           },
           {
             "name": "sender_chat",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Sender of the message, sent on behalf of a chat. The channel itself for channel messages. The supergroup itself for messages from anonymous group administrators. The linked channel for messages automatically forwarded to the discussion group",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field \u003cem\u003efrom\u003c/em\u003e contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.",
             "type": {
               "name": "Chat"
             },
@@ -646,7 +662,7 @@
           },
           {
             "name": "forward_signature",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. For messages forwarded from channels, signature of the post author if present",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present",
             "type": {
               "name": "String"
             },
@@ -665,6 +681,14 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. For forwarded messages, date the original message was sent in Unix time",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "is_automatic_forward",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the message is a channel post that was automatically forwarded to the connected discussion group",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -689,6 +713,14 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Date the message was last edited in Unix time",
             "type": {
               "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "has_protected_content",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the message can\u0027t be forwarded",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -1082,7 +1114,7 @@
         "docFields": [
           {
             "name": "type",
-            "description": "Type of the entity. Can be “mention” (\u003ccode\u003e@username\u003c/code\u003e), “hashtag” (\u003ccode\u003e#hashtag\u003c/code\u003e), “cashtag” (\u003ccode\u003e$USD\u003c/code\u003e), “bot_command” (\u003ccode\u003e/start@jobs_bot\u003c/code\u003e), “url” (\u003ccode\u003ehttps://telegram.org\u003c/code\u003e), “email” (\u003ccode\u003edo-not-reply@telegram.org\u003c/code\u003e), “phone_number” (\u003ccode\u003e+1-212-555-0123\u003c/code\u003e), “bold” (\u003cstrong\u003ebold text\u003c/strong\u003e), “italic” (\u003cem\u003eitalic text\u003c/em\u003e), “underline” (underlined text), “strikethrough” (strikethrough text), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users \u003ca href\u003d\"https://telegram.org/blog/edit#new-mentions\"\u003ewithout usernames\u003c/a\u003e)",
+            "description": "Type of the entity. Currently, can be “mention” (\u003ccode\u003e@username\u003c/code\u003e), “hashtag” (\u003ccode\u003e#hashtag\u003c/code\u003e), “cashtag” (\u003ccode\u003e$USD\u003c/code\u003e), “bot_command” (\u003ccode\u003e/start@jobs_bot\u003c/code\u003e), “url” (\u003ccode\u003ehttps://telegram.org\u003c/code\u003e), “email” (\u003ccode\u003edo-not-reply@telegram.org\u003c/code\u003e), “phone_number” (\u003ccode\u003e+1-212-555-0123\u003c/code\u003e), “bold” (\u003cstrong\u003ebold text\u003c/strong\u003e), “italic” (\u003cem\u003eitalic text\u003c/em\u003e), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler” (spoiler message), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users \u003ca href\u003d\"https://telegram.org/blog/edit#new-mentions\"\u003ewithout usernames\u003c/a\u003e)",
             "type": {
               "name": "String"
             },
@@ -2234,7 +2266,7 @@
           },
           {
             "name": "url",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. HTTP or tg:// url to be opened when button is pressed",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. HTTP or tg:// url to be opened when the button is pressed. Links \u003ccode\u003etg://user?id\u003d\u0026lt;user_id\u0026gt;\u003c/code\u003e can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings.",
             "type": {
               "name": "String"
             },
@@ -2282,7 +2314,7 @@
           },
           {
             "name": "pay",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Specify \u003cem\u003eTrue\u003c/em\u003e, to send a \u003ca href\u003d\"#payments\"\u003ePay button\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e\u003cstrong\u003eNOTE:\u003c/strong\u003e This type of button \u003cstrong\u003emust\u003c/strong\u003e always be the first button in the first row.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Specify \u003cem\u003eTrue\u003c/em\u003e, to send a \u003ca href\u003d\"#payments\"\u003ePay button\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e\u003cstrong\u003eNOTE:\u003c/strong\u003e This type of button \u003cstrong\u003emust\u003c/strong\u003e always be the first button in the first row and can only be used in invoice messages.",
             "type": {
               "name": "Boolean"
             },
@@ -3074,7 +3106,7 @@
         "docFields": [
           {
             "name": "command",
-            "description": "Text of the command, 1-32 characters. Can contain only lowercase English letters, digits and underscores.",
+            "description": "Text of the command; 1-32 characters. Can contain only lowercase English letters, digits and underscores.",
             "type": {
               "name": "String"
             },
@@ -3082,7 +3114,7 @@
           },
           {
             "name": "description",
-            "description": "Description of the command, 3-256 characters.",
+            "description": "Description of the command; 1-256 characters.",
             "type": {
               "name": "String"
             },
@@ -3751,6 +3783,14 @@
             "required": false
           },
           {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding and saving",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
             "name": "reply_to_message_id",
             "description": "If the message is a reply, ID of the original message",
             "type": {
@@ -3832,6 +3872,14 @@
           {
             "name": "disable_notification",
             "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "protect_content",
+            "description": "Protects the contents of the forwarded message from forwarding and saving",
             "type": {
               "name": "Boolean"
             },
@@ -3924,6 +3972,14 @@
           {
             "name": "disable_notification",
             "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding and saving",
             "type": {
               "name": "Boolean"
             },
@@ -4038,6 +4094,14 @@
           {
             "name": "disable_notification",
             "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding and saving",
             "type": {
               "name": "Boolean"
             },
@@ -4198,6 +4262,14 @@
             "required": false
           },
           {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding and saving",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
             "name": "reply_to_message_id",
             "description": "If the message is a reply, ID of the original message",
             "type": {
@@ -4330,6 +4402,14 @@
           {
             "name": "disable_notification",
             "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding and saving",
             "type": {
               "name": "Boolean"
             },
@@ -4498,6 +4578,14 @@
             "required": false
           },
           {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding and saving",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
             "name": "reply_to_message_id",
             "description": "If the message is a reply, ID of the original message",
             "type": {
@@ -4652,6 +4740,14 @@
             "required": false
           },
           {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding and saving",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
             "name": "reply_to_message_id",
             "description": "If the message is a reply, ID of the original message",
             "type": {
@@ -4768,6 +4864,14 @@
           {
             "name": "disable_notification",
             "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding and saving",
             "type": {
               "name": "Boolean"
             },
@@ -4893,6 +4997,14 @@
             "required": false
           },
           {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding and saving",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
             "name": "reply_to_message_id",
             "description": "If the message is a reply, ID of the original message",
             "type": {
@@ -4969,6 +5081,14 @@
           {
             "name": "disable_notification",
             "description": "Sends messages \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent messages from forwarding and saving",
             "type": {
               "name": "Boolean"
             },
@@ -5066,6 +5186,14 @@
           {
             "name": "disable_notification",
             "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding and saving",
             "type": {
               "name": "Boolean"
             },
@@ -5379,6 +5507,14 @@
             "required": false
           },
           {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding and saving",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
             "name": "reply_to_message_id",
             "description": "If the message is a reply, ID of the original message",
             "type": {
@@ -5476,6 +5612,14 @@
           {
             "name": "disable_notification",
             "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding and saving",
             "type": {
               "name": "Boolean"
             },
@@ -5655,6 +5799,14 @@
             "required": false
           },
           {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding and saving",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
             "name": "reply_to_message_id",
             "description": "If the message is a reply, ID of the original message",
             "type": {
@@ -5728,6 +5880,14 @@
           {
             "name": "disable_notification",
             "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding",
             "type": {
               "name": "Boolean"
             },
@@ -6152,6 +6312,72 @@
             "description": "New custom title for the administrator; 0-16 characters, emoji are not allowed",
             "type": {
               "name": "String"
+            },
+            "required": true
+          }
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
+      },
+      {
+        "name": "banChatSenderChat",
+        "description": "\u003cp\u003eUse this method to ban a channel chat in a supergroup or a channel. Until the chat is \u003ca href\u003d\"#unbanchatsenderchat\"\u003eunbanned\u003c/a\u003e, the owner of the banned chat won\u0027t be able to send messages on behalf of \u003cstrong\u003eany of their channels\u003c/strong\u003e. The bot must be an administrator in the supergroup or channel for this to work and must have the appropriate administrator rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          },
+          {
+            "name": "sender_chat_id",
+            "description": "Unique identifier of the target sender chat",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          }
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
+      },
+      {
+        "name": "unbanChatSenderChat",
+        "description": "\u003cp\u003eUse this method to unban a previously banned channel chat in a supergroup or channel. The bot must be an administrator for this to work and must have the appropriate administrator rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          },
+          {
+            "name": "sender_chat_id",
+            "description": "Unique identifier of the target sender chat",
+            "type": {
+              "name": "Integer"
             },
             "required": true
           }
@@ -7651,6 +7877,14 @@
           {
             "name": "disable_notification",
             "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding and saving",
             "type": {
               "name": "Boolean"
             },
@@ -11317,6 +11551,14 @@
             "required": false
           },
           {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding and saving",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
             "name": "reply_to_message_id",
             "description": "If the message is a reply, ID of the original message",
             "type": {
@@ -12137,6 +12379,14 @@
           {
             "name": "disable_notification",
             "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding and saving",
             "type": {
               "name": "Boolean"
             },
