@@ -12,9 +12,20 @@ fun main() = runBlocking {
         HttpClient(CIO).get<String>("https://core.telegram.org/bots/api")
             .also { File("data/telegramapi.html").writeText(it) }
     ).toSection()
+    val version = "Bot API ([\\d.]+)".toRegex().find(File("data/telegramapi.html").readText())?.value
 
-    println("👓 Parse completed")
+    println("👓 $version - Parse completed")
 
+    if (version != null) {
+        File("README.md").also { readme ->
+            readme.writeText(
+                readme.readText().replace(
+                    "Last update: Telegram Bot API \\S+".toRegex(),
+                    "Last update: Telegram $version"
+                )
+            )
+        }
+    }
     File("example/telegram.md").writeText(docs.toReadmeSmallExample())
     File("example/telegram_tiny.md").writeText(docs.toReadmeTinyExample())
     File("example/telegram_full.md").writeText(docs.toReadmeFullExample())
@@ -24,5 +35,5 @@ fun main() = runBlocking {
     File("example/TelegramClient.kt").writeText(docs.toKotlinMethods())
     File("example/TelegramModels.rs").writeText(docs.toRustModels())
 
-    println("🎉 Examples generated!")
+    println("🎉 $version - Examples generated!")
 }
