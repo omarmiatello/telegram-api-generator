@@ -6074,7 +6074,7 @@
         "docParameters": [
           {
             "name": "chat_id",
-            "description": "Unique identifier for the target group or username of the target supergroup or channel (in the format \u003ccode\u003e@username\u003c/code\u003e)",
+            "description": "Unique identifier for the target group or username of the target supergroup or channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
               "validTypes": [
                 {
@@ -7700,6 +7700,14 @@
             "required": true
           },
           {
+            "name": "is_video",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the sticker is a \u003ca href\u003d\"https://telegram.org/blog/video-stickers-better-reactions\"\u003evideo sticker\u003c/a\u003e",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
             "name": "thumb",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Sticker thumbnail in the .WEBP or .JPG format",
             "type": {
@@ -7770,6 +7778,14 @@
             "required": true
           },
           {
+            "name": "is_video",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the sticker set contains \u003ca href\u003d\"https://telegram.org/blog/video-stickers-better-reactions\"\u003evideo stickers\u003c/a\u003e",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
             "name": "contains_masks",
             "description": "\u003cem\u003eTrue\u003c/em\u003e, if the sticker set contains masks",
             "type": {
@@ -7790,7 +7806,7 @@
           },
           {
             "name": "thumb",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Sticker set thumbnail in the .WEBP or .TGS format",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format",
             "type": {
               "name": "PhotoSize"
             },
@@ -7840,7 +7856,7 @@
     "docMethods": [
       {
         "name": "sendSticker",
-        "description": "\u003cp\u003eUse this method to send static .WEBP or \u003ca href\u003d\"https://telegram.org/blog/animated-stickers\"\u003eanimated\u003c/a\u003e .TGS stickers. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to send static .WEBP, \u003ca href\u003d\"https://telegram.org/blog/animated-stickers\"\u003eanimated\u003c/a\u003e .TGS, or \u003ca href\u003d\"https://telegram.org/blog/video-stickers-better-reactions\"\u003evideo\u003c/a\u003e .WEBM stickers. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -7977,7 +7993,7 @@
       },
       {
         "name": "createNewStickerSet",
-        "description": "\u003cp\u003eUse this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You \u003cstrong\u003emust\u003c/strong\u003e use exactly one of the fields \u003cem\u003epng_sticker\u003c/em\u003e or \u003cem\u003etgs_sticker\u003c/em\u003e. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You \u003cstrong\u003emust\u003c/strong\u003e use exactly one of the fields \u003cem\u003epng_sticker\u003c/em\u003e, \u003cem\u003etgs_sticker\u003c/em\u003e, or \u003cem\u003ewebm_sticker\u003c/em\u003e. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "user_id",
@@ -8021,7 +8037,15 @@
           },
           {
             "name": "tgs_sticker",
-            "description": "\u003cstrong\u003eTGS\u003c/strong\u003e animation with the sticker, uploaded using multipart/form-data. See \u003ca href\u003d\"https://core.telegram.org/animated_stickers#technical-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/animated_stickers#technical-requirements\"\u003ehttps://core.telegram.org/animated_stickers#technical-requirements\u003c/a\u003e for technical requirements",
+            "description": "\u003cstrong\u003eTGS\u003c/strong\u003e animation with the sticker, uploaded using multipart/form-data. See \u003ca href\u003d\"https://core.telegram.org/stickers#animated-sticker-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/stickers#animated-sticker-requirements\"\u003ehttps://core.telegram.org/stickers#animated-sticker-requirements\u003c/a\u003e for technical requirements",
+            "type": {
+              "name": "InputFile"
+            },
+            "required": false
+          },
+          {
+            "name": "webm_sticker",
+            "description": "\u003cstrong\u003eWEBM\u003c/strong\u003e video with the sticker, uploaded using multipart/form-data. See \u003ca href\u003d\"https://core.telegram.org/stickers#video-sticker-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/stickers#video-sticker-requirements\"\u003ehttps://core.telegram.org/stickers#video-sticker-requirements\u003c/a\u003e for technical requirements",
             "type": {
               "name": "InputFile"
             },
@@ -8058,7 +8082,7 @@
       },
       {
         "name": "addStickerToSet",
-        "description": "\u003cp\u003eUse this method to add a new sticker to a set created by the bot. You \u003cstrong\u003emust\u003c/strong\u003e use exactly one of the fields \u003cem\u003epng_sticker\u003c/em\u003e or \u003cem\u003etgs_sticker\u003c/em\u003e. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to add a new sticker to a set created by the bot. You \u003cstrong\u003emust\u003c/strong\u003e use exactly one of the fields \u003cem\u003epng_sticker\u003c/em\u003e, \u003cem\u003etgs_sticker\u003c/em\u003e, or \u003cem\u003ewebm_sticker\u003c/em\u003e. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "user_id",
@@ -8094,7 +8118,15 @@
           },
           {
             "name": "tgs_sticker",
-            "description": "\u003cstrong\u003eTGS\u003c/strong\u003e animation with the sticker, uploaded using multipart/form-data. See \u003ca href\u003d\"https://core.telegram.org/animated_stickers#technical-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/animated_stickers#technical-requirements\"\u003ehttps://core.telegram.org/animated_stickers#technical-requirements\u003c/a\u003e for technical requirements",
+            "description": "\u003cstrong\u003eTGS\u003c/strong\u003e animation with the sticker, uploaded using multipart/form-data. See \u003ca href\u003d\"https://core.telegram.org/stickers#animated-sticker-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/stickers#animated-sticker-requirements\"\u003ehttps://core.telegram.org/stickers#animated-sticker-requirements\u003c/a\u003e for technical requirements",
+            "type": {
+              "name": "InputFile"
+            },
+            "required": false
+          },
+          {
+            "name": "webm_sticker",
+            "description": "\u003cstrong\u003eWEBM\u003c/strong\u003e video with the sticker, uploaded using multipart/form-data. See \u003ca href\u003d\"https://core.telegram.org/stickers#video-sticker-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/stickers#video-sticker-requirements\"\u003ehttps://core.telegram.org/stickers#video-sticker-requirements\u003c/a\u003e for technical requirements",
             "type": {
               "name": "InputFile"
             },
@@ -8165,7 +8197,7 @@
       },
       {
         "name": "setStickerSetThumb",
-        "description": "\u003cp\u003eUse this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Video thumbnails can be set only for video sticker sets only. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "name",
@@ -8185,7 +8217,7 @@
           },
           {
             "name": "thumb",
-            "description": "A \u003cstrong\u003ePNG\u003c/strong\u003e image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a \u003cstrong\u003eTGS\u003c/strong\u003e animation with the thumbnail up to 32 kilobytes in size; see \u003ca href\u003d\"https://core.telegram.org/animated_stickers#technical-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/animated_stickers#technical-requirements\"\u003ehttps://core.telegram.org/animated_stickers#technical-requirements\u003c/a\u003e for animated sticker technical requirements. Pass a \u003cem\u003efile_id\u003c/em\u003e as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e. Animated sticker set thumbnail can\u0027t be uploaded via HTTP URL.",
+            "description": "A \u003cstrong\u003ePNG\u003c/strong\u003e image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a \u003cstrong\u003eTGS\u003c/strong\u003e animation with the thumbnail up to 32 kilobytes in size; see \u003ca href\u003d\"https://core.telegram.org/stickers#animated-sticker-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/stickers#animated-sticker-requirements\"\u003ehttps://core.telegram.org/stickers#animated-sticker-requirements\u003c/a\u003e for animated sticker technical requirements, or a \u003cstrong\u003eWEBM\u003c/strong\u003e video with the thumbnail up to 32 kilobytes in size; see \u003ca href\u003d\"https://core.telegram.org/stickers#video-sticker-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/stickers#video-sticker-requirements\"\u003ehttps://core.telegram.org/stickers#video-sticker-requirements\u003c/a\u003e for video sticker technical requirements. Pass a \u003cem\u003efile_id\u003c/em\u003e as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e. Animated sticker set thumbnails can\u0027t be uploaded via HTTP URL.",
             "type": {
               "validTypes": [
                 {

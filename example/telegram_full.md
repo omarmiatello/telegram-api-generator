@@ -1445,7 +1445,7 @@
 
 | name | type | required | description |
 |---|---|---|---|
-| chat_id | IntegerOrString | true | Unique identifier for the target group or username of the target supergroup or channel (in the format <code>@username</code>) |
+| chat_id | IntegerOrString | true | Unique identifier for the target group or username of the target supergroup or channel (in the format <code>@channelusername</code>) |
 | user_id | Integer | true | Unique identifier of the target user |
 | only_if_banned | Boolean | false | Do nothing if the user is not banned |
 
@@ -1896,7 +1896,7 @@
 ### Data Types
 #### Sticker
 
-    Sticker(file_id: String, file_unique_id: String, width: Integer, height: Integer, is_animated: Boolean, thumb: PhotoSize, emoji: String, set_name: String, mask_position: MaskPosition, file_size: Integer)
+    Sticker(file_id: String, file_unique_id: String, width: Integer, height: Integer, is_animated: Boolean, is_video: Boolean, thumb: PhotoSize, emoji: String, set_name: String, mask_position: MaskPosition, file_size: Integer)
 
 <p>This object represents a sticker.</p>
 
@@ -1907,6 +1907,7 @@
 | width | Integer | true | Sticker width |
 | height | Integer | true | Sticker height |
 | is_animated | Boolean | true | <em>True</em>, if the sticker is <a href="https://telegram.org/blog/animated-stickers">animated</a> |
+| is_video | Boolean | true | <em>True</em>, if the sticker is a <a href="https://telegram.org/blog/video-stickers-better-reactions">video sticker</a> |
 | thumb | PhotoSize | false | <em>Optional</em>. Sticker thumbnail in the .WEBP or .JPG format |
 | emoji | String | false | <em>Optional</em>. Emoji associated with the sticker |
 | set_name | String | false | <em>Optional</em>. Name of the sticker set to which the sticker belongs |
@@ -1915,7 +1916,7 @@
 
 #### StickerSet
 
-    StickerSet(name: String, title: String, is_animated: Boolean, contains_masks: Boolean, stickers: List<Sticker>, thumb: PhotoSize)
+    StickerSet(name: String, title: String, is_animated: Boolean, is_video: Boolean, contains_masks: Boolean, stickers: List<Sticker>, thumb: PhotoSize)
 
 <p>This object represents a sticker set.</p>
 
@@ -1924,9 +1925,10 @@
 | name | String | true | Sticker set name |
 | title | String | true | Sticker set title |
 | is_animated | Boolean | true | <em>True</em>, if the sticker set contains <a href="https://telegram.org/blog/animated-stickers">animated stickers</a> |
+| is_video | Boolean | true | <em>True</em>, if the sticker set contains <a href="https://telegram.org/blog/video-stickers-better-reactions">video stickers</a> |
 | contains_masks | Boolean | true | <em>True</em>, if the sticker set contains masks |
 | stickers | List<Sticker> | true | List of all set stickers |
-| thumb | PhotoSize | false | <em>Optional</em>. Sticker set thumbnail in the .WEBP or .TGS format |
+| thumb | PhotoSize | false | <em>Optional</em>. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format |
 
 #### MaskPosition
 
@@ -1947,7 +1949,7 @@
 
     sendSticker(chat_id: IntegerOrString, sticker: InputFileOrString, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
-<p>Use this method to send static .WEBP or <a href="https://telegram.org/blog/animated-stickers">animated</a> .TGS stickers. On success, the sent <a href="#message">Message</a> is returned.</p>
+<p>Use this method to send static .WEBP, <a href="https://telegram.org/blog/animated-stickers">animated</a> .TGS, or <a href="https://telegram.org/blog/video-stickers-better-reactions">video</a> .WEBM stickers. On success, the sent <a href="#message">Message</a> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1982,9 +1984,9 @@
 
 #### createNewStickerSet
 
-    createNewStickerSet(user_id: Integer, name: String, title: String, png_sticker: InputFileOrString, tgs_sticker: InputFile, emojis: String, contains_masks: Boolean, mask_position: MaskPosition)
+    createNewStickerSet(user_id: Integer, name: String, title: String, png_sticker: InputFileOrString, tgs_sticker: InputFile, webm_sticker: InputFile, emojis: String, contains_masks: Boolean, mask_position: MaskPosition)
 
-<p>Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You <strong>must</strong> use exactly one of the fields <em>png_sticker</em> or <em>tgs_sticker</em>. Returns <em>True</em> on success.</p>
+<p>Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You <strong>must</strong> use exactly one of the fields <em>png_sticker</em>, <em>tgs_sticker</em>, or <em>webm_sticker</em>. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1992,23 +1994,25 @@
 | name | String | true | Short name of sticker set, to be used in <code>t.me/addstickers/</code> URLs (e.g., <em>animals</em>). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in <em>“_by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensitive. 1-64 characters. |
 | title | String | true | Sticker set title, 1-64 characters |
 | png_sticker | InputFileOrString | false | <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
-| tgs_sticker | InputFile | false | <strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/animated_stickers#technical-requirements"></a><a href="https://core.telegram.org/animated_stickers#technical-requirements">https://core.telegram.org/animated_stickers#technical-requirements</a> for technical requirements |
+| tgs_sticker | InputFile | false | <strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/stickers#animated-sticker-requirements"></a><a href="https://core.telegram.org/stickers#animated-sticker-requirements">https://core.telegram.org/stickers#animated-sticker-requirements</a> for technical requirements |
+| webm_sticker | InputFile | false | <strong>WEBM</strong> video with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/stickers#video-sticker-requirements"></a><a href="https://core.telegram.org/stickers#video-sticker-requirements">https://core.telegram.org/stickers#video-sticker-requirements</a> for technical requirements |
 | emojis | String | true | One or more emoji corresponding to the sticker |
 | contains_masks | Boolean | false | Pass <em>True</em>, if a set of mask stickers should be created |
 | mask_position | MaskPosition | false | A JSON-serialized object for position where the mask should be placed on faces |
 
 #### addStickerToSet
 
-    addStickerToSet(user_id: Integer, name: String, png_sticker: InputFileOrString, tgs_sticker: InputFile, emojis: String, mask_position: MaskPosition)
+    addStickerToSet(user_id: Integer, name: String, png_sticker: InputFileOrString, tgs_sticker: InputFile, webm_sticker: InputFile, emojis: String, mask_position: MaskPosition)
 
-<p>Use this method to add a new sticker to a set created by the bot. You <strong>must</strong> use exactly one of the fields <em>png_sticker</em> or <em>tgs_sticker</em>. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns <em>True</em> on success.</p>
+<p>Use this method to add a new sticker to a set created by the bot. You <strong>must</strong> use exactly one of the fields <em>png_sticker</em>, <em>tgs_sticker</em>, or <em>webm_sticker</em>. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | user_id | Integer | true | User identifier of sticker set owner |
 | name | String | true | Sticker set name |
 | png_sticker | InputFileOrString | false | <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
-| tgs_sticker | InputFile | false | <strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/animated_stickers#technical-requirements"></a><a href="https://core.telegram.org/animated_stickers#technical-requirements">https://core.telegram.org/animated_stickers#technical-requirements</a> for technical requirements |
+| tgs_sticker | InputFile | false | <strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/stickers#animated-sticker-requirements"></a><a href="https://core.telegram.org/stickers#animated-sticker-requirements">https://core.telegram.org/stickers#animated-sticker-requirements</a> for technical requirements |
+| webm_sticker | InputFile | false | <strong>WEBM</strong> video with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/stickers#video-sticker-requirements"></a><a href="https://core.telegram.org/stickers#video-sticker-requirements">https://core.telegram.org/stickers#video-sticker-requirements</a> for technical requirements |
 | emojis | String | true | One or more emoji corresponding to the sticker |
 | mask_position | MaskPosition | false | A JSON-serialized object for position where the mask should be placed on faces |
 
@@ -2037,13 +2041,13 @@
 
     setStickerSetThumb(name: String, user_id: Integer, thumb: InputFileOrString)
 
-<p>Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Returns <em>True</em> on success.</p>
+<p>Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Video thumbnails can be set only for video sticker sets only. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | name | String | true | Sticker set name |
 | user_id | Integer | true | User identifier of the sticker set owner |
-| thumb | InputFileOrString | false | A <strong>PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a <strong>TGS</strong> animation with the thumbnail up to 32 kilobytes in size; see <a href="https://core.telegram.org/animated_stickers#technical-requirements"></a><a href="https://core.telegram.org/animated_stickers#technical-requirements">https://core.telegram.org/animated_stickers#technical-requirements</a> for animated sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>. Animated sticker set thumbnail can't be uploaded via HTTP URL. |
+| thumb | InputFileOrString | false | A <strong>PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a <strong>TGS</strong> animation with the thumbnail up to 32 kilobytes in size; see <a href="https://core.telegram.org/stickers#animated-sticker-requirements"></a><a href="https://core.telegram.org/stickers#animated-sticker-requirements">https://core.telegram.org/stickers#animated-sticker-requirements</a> for animated sticker technical requirements, or a <strong>WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href="https://core.telegram.org/stickers#video-sticker-requirements"></a><a href="https://core.telegram.org/stickers#video-sticker-requirements">https://core.telegram.org/stickers#video-sticker-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>. Animated sticker set thumbnails can't be uploaded via HTTP URL. |
 
 
 
