@@ -237,7 +237,9 @@ private fun TelegramType.toKotlinType(prefixPolymorphic: String = ""): String = 
     TelegramType.CallbackGame,
     TelegramType.InputFile -> "${prefixPolymorphic}Any"
     TelegramType.ParseMode -> name
-    TelegramType.VoiceChatStarted -> "${prefixPolymorphic}$name"
+    TelegramType.VoiceChatStarted,
+    TelegramType.MenuButton,
+    TelegramType.VideoChatStarted -> "${prefixPolymorphic}$name"
     is TelegramType.Super -> {
         when (this) {
             TelegramType.Super.InputMedia,

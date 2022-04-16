@@ -1,6 +1,7 @@
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
 import org.jsoup.Jsoup
 import java.io.File
@@ -9,7 +10,7 @@ fun main() = runBlocking {
     println("🏁 Start")
 
     val docs = Jsoup.parse(
-        HttpClient(CIO).get<String>("https://core.telegram.org/bots/api")
+        HttpClient(CIO).get("https://core.telegram.org/bots/api").bodyAsText()
             .also { File("data/telegramapi.html").writeText(it) }
     ).toSection()
     val version = "Bot API ([\\d.]+)".toRegex().find(File("data/telegramapi.html").readText())?.value

@@ -40,16 +40,16 @@ fun Document.toSection(): List<DocSection> {
         "((?:Array of )?\\S+) (?:objects? )?is returned".toRegex(),
         "[Rr]eturns .*?((?:Array of )?[A-Z]\\w+)".toRegex()
     )
-    val content = select("#dev_page_content").first()
+    val content = select("#dev_page_content").first()!!
     var splitBy = ""
     return content.children()
         .groupBy {
             if (it.tag().name == "h3") splitBy = it.text()
             splitBy
         }
-        .mapValues<String, List<Element>, Map<String, List<Element>>> {
+        .mapValues<String, List<Element>, Map<String, List<Element>>> { (_, value) ->
             splitBy = ""
-            it.value.groupBy {
+            value.groupBy {
                 if (it.tag().name == "h4") splitBy = it.text()
                 splitBy
             }
@@ -66,8 +66,8 @@ fun Document.toSection(): List<DocSection> {
                             h4Desc += it.toString()
                             val text = it.text()
                             if ("Use this method" in text) docParameters = emptyList()
-                            returnsRegex.firstOrNull {
-                                val find = it.find(text)
+                            returnsRegex.firstOrNull { regex ->
+                                val find = regex.find(text)
                                 if (find != null) {
                                     docReturns = TelegramType.from(find.groups[1]!!.value.fixTypeString())
                                 }
@@ -80,11 +80,11 @@ fun Document.toSection(): List<DocSection> {
                             when {
                                 "Field" in tableHead -> {
                                     // Field Type Description
-                                    docFields = tableData.children().map {
-                                        it.getElementsByTag("td").let {
-                                            val fieldDesc = it[2].html()
-                                            val name = it[0].text()
-                                            var type = it[1].text().fixTypeString()
+                                    docFields = tableData.children().map { tableElement ->
+                                        tableElement.getElementsByTag("td").let { tdElements ->
+                                            val fieldDesc = tdElements[2].html()
+                                            val name = tdElements[0].text()
+                                            var type = tdElements[1].text().fixTypeString()
                                             if (name == "parse_mode" && type == "String") {
                                                 type = "ParseMode"
                                             }
@@ -99,11 +99,11 @@ fun Document.toSection(): List<DocSection> {
                                 }
                                 "Parameter" in tableHead -> {
                                     // Parameter Type Required Description
-                                    docParameters = tableData.children().map {
-                                        it.getElementsByTag("td").let {
-                                            val fieldDesc = it[3].html()
-                                            val name = it[0].text()
-                                            var type = it[1].text().fixTypeString()
+                                    docParameters = tableData.children().map { tableElement ->
+                                        tableElement.getElementsByTag("td").let { tdElement ->
+                                            val fieldDesc = tdElement[3].html()
+                                            val name = tdElement[0].text()
+                                            var type = tdElement[1].text().fixTypeString()
                                             if (name == "parse_mode" && type == "String") {
                                                 type = "ParseMode"
                                             }
@@ -111,7 +111,7 @@ fun Document.toSection(): List<DocSection> {
                                                 name = name,
                                                 description = fieldDesc.fixDescription(),
                                                 type = TelegramType.from(type),
-                                                required = "Yes" == it[2].text()
+                                                required = "Yes" == tdElement[2].text()
                                             )
                                         }
                                     }

@@ -188,6 +188,14 @@
             "required": false
           },
           {
+            "name": "last_synchronization_error_date",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Unix time of the most recent error that happened when trying to synchronize available updates with Telegram datacenters",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
             "name": "max_connections",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery",
             "type": {
@@ -1036,34 +1044,42 @@
             "required": false
           },
           {
-            "name": "voice_chat_scheduled",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: voice chat scheduled",
+            "name": "video_chat_scheduled",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: video chat scheduled",
             "type": {
-              "name": "VoiceChatScheduled"
+              "name": "VideoChatScheduled"
             },
             "required": false
           },
           {
-            "name": "voice_chat_started",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: voice chat started",
+            "name": "video_chat_started",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: video chat started",
             "type": {
-              "name": "VoiceChatStarted"
+              "name": "VideoChatStarted"
             },
             "required": false
           },
           {
-            "name": "voice_chat_ended",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: voice chat ended",
+            "name": "video_chat_ended",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: video chat ended",
             "type": {
-              "name": "VoiceChatEnded"
+              "name": "VideoChatEnded"
             },
             "required": false
           },
           {
-            "name": "voice_chat_participants_invited",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: new participants invited to a voice chat",
+            "name": "video_chat_participants_invited",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: new participants invited to a video chat",
             "type": {
-              "name": "VoiceChatParticipantsInvited"
+              "name": "VideoChatParticipantsInvited"
+            },
+            "required": false
+          },
+          {
+            "name": "web_app_data",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: data sent by a Web App",
+            "type": {
+              "name": "WebAppData"
             },
             "required": false
           },
@@ -1952,6 +1968,28 @@
         ]
       },
       {
+        "name": "WebAppData",
+        "description": "\u003cp\u003eContains data sent from a \u003ca href\u003d\"/bots/webapps\"\u003eWeb App\u003c/a\u003e to the bot.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "data",
+            "description": "The data. Be aware that a bad client can send arbitrary data in this field.",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "button_text",
+            "description": "Text of the \u003cem\u003eweb_app\u003c/em\u003e keyboard button, from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field.",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
         "name": "ProximityAlertTriggered",
         "description": "\u003cp\u003eThis object represents the content of a service message, sent whenever a user in the chat triggers a proximity alert set by another user.\u003c/p\u003e",
         "docFields": [
@@ -1996,12 +2034,12 @@
         ]
       },
       {
-        "name": "VoiceChatScheduled",
-        "description": "\u003cp\u003eThis object represents a service message about a voice chat scheduled in the chat.\u003c/p\u003e",
+        "name": "VideoChatScheduled",
+        "description": "\u003cp\u003eThis object represents a service message about a video chat scheduled in the chat.\u003c/p\u003e",
         "docFields": [
           {
             "name": "start_date",
-            "description": "Point in time (Unix timestamp) when the voice chat is supposed to be started by a chat administrator",
+            "description": "Point in time (Unix timestamp) when the video chat is supposed to be started by a chat administrator",
             "type": {
               "name": "Integer"
             },
@@ -2010,12 +2048,12 @@
         ]
       },
       {
-        "name": "VoiceChatEnded",
-        "description": "\u003cp\u003eThis object represents a service message about a voice chat ended in the chat.\u003c/p\u003e",
+        "name": "VideoChatEnded",
+        "description": "\u003cp\u003eThis object represents a service message about a video chat ended in the chat.\u003c/p\u003e",
         "docFields": [
           {
             "name": "duration",
-            "description": "Voice chat duration in seconds",
+            "description": "Video chat duration in seconds",
             "type": {
               "name": "Integer"
             },
@@ -2024,19 +2062,19 @@
         ]
       },
       {
-        "name": "VoiceChatParticipantsInvited",
-        "description": "\u003cp\u003eThis object represents a service message about new members invited to a voice chat.\u003c/p\u003e",
+        "name": "VideoChatParticipantsInvited",
+        "description": "\u003cp\u003eThis object represents a service message about new members invited to a video chat.\u003c/p\u003e",
         "docFields": [
           {
             "name": "users",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. New members that were invited to the voice chat",
+            "description": "New members that were invited to the video chat",
             "type": {
               "elementType": {
                 "name": "User"
               },
               "name": "List\u003cUser\u003e"
             },
-            "required": false
+            "required": true
           }
         ]
       },
@@ -2107,6 +2145,20 @@
         ]
       },
       {
+        "name": "WebAppInfo",
+        "description": "\u003cp\u003eContains information about a \u003ca href\u003d\"/bots/webapps\"\u003eWeb App\u003c/a\u003e.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "url",
+            "description": "An HTTPS URL of a Web App to be opened with additional data as specified in \u003ca href\u003d\"/bots/webapps#initializing-web-apps\"\u003eInitializing Web Apps\u003c/a\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
         "name": "ReplyKeyboardMarkup",
         "description": "\u003cp\u003eThis object represents a \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003ecustom keyboard\u003c/a\u003e with reply options (see \u003ca href\u003d\"https://core.telegram.org/bots#keyboards\"\u003eIntroduction to bots\u003c/a\u003e for details and examples).\u003c/p\u003e",
         "docFields": [
@@ -2160,7 +2212,7 @@
       },
       {
         "name": "KeyboardButton",
-        "description": "\u003cp\u003eThis object represents one button of the reply keyboard. For simple text buttons \u003cem\u003eString\u003c/em\u003e can be used instead of this object to specify text of the button. Optional fields \u003cem\u003erequest_contact\u003c/em\u003e, \u003cem\u003erequest_location\u003c/em\u003e, and \u003cem\u003erequest_poll\u003c/em\u003e are mutually exclusive.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e \u003cem\u003erequest_contact\u003c/em\u003e and \u003cem\u003erequest_location\u003c/em\u003e options will only work in Telegram versions released after 9 April, 2016. Older clients will display \u003cem\u003eunsupported message\u003c/em\u003e.\u003cbr\u003e\u003cstrong\u003eNote:\u003c/strong\u003e \u003cem\u003erequest_poll\u003c/em\u003e option will only work in Telegram versions released after 23 January, 2020. Older clients will display \u003cem\u003eunsupported message\u003c/em\u003e.\u003c/p\u003e",
+        "description": "\u003cp\u003eThis object represents one button of the reply keyboard. For simple text buttons \u003cem\u003eString\u003c/em\u003e can be used instead of this object to specify text of the button. Optional fields \u003cem\u003eweb_app\u003c/em\u003e, \u003cem\u003erequest_contact\u003c/em\u003e, \u003cem\u003erequest_location\u003c/em\u003e, and \u003cem\u003erequest_poll\u003c/em\u003e are mutually exclusive.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e \u003cem\u003erequest_contact\u003c/em\u003e and \u003cem\u003erequest_location\u003c/em\u003e options will only work in Telegram versions released after 9 April, 2016. Older clients will display \u003cem\u003eunsupported message\u003c/em\u003e.\u003cbr\u003e\u003cstrong\u003eNote:\u003c/strong\u003e \u003cem\u003erequest_poll\u003c/em\u003e option will only work in Telegram versions released after 23 January, 2020. Older clients will display \u003cem\u003eunsupported message\u003c/em\u003e.\u003cbr\u003e\u003cstrong\u003eNote:\u003c/strong\u003e \u003cem\u003eweb_app\u003c/em\u003e option will only work in Telegram versions released after 16 April, 2022. Older clients will display \u003cem\u003eunsupported message\u003c/em\u003e.\u003c/p\u003e",
         "docFields": [
           {
             "name": "text",
@@ -2172,7 +2224,7 @@
           },
           {
             "name": "request_contact",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. If \u003cem\u003eTrue\u003c/em\u003e, the user\u0027s phone number will be sent as a contact when the button is pressed. Available in private chats only",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. If \u003cem\u003eTrue\u003c/em\u003e, the user\u0027s phone number will be sent as a contact when the button is pressed. Available in private chats only.",
             "type": {
               "name": "Boolean"
             },
@@ -2180,7 +2232,7 @@
           },
           {
             "name": "request_location",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. If \u003cem\u003eTrue\u003c/em\u003e, the user\u0027s current location will be sent when the button is pressed. Available in private chats only",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. If \u003cem\u003eTrue\u003c/em\u003e, the user\u0027s current location will be sent when the button is pressed. Available in private chats only.",
             "type": {
               "name": "Boolean"
             },
@@ -2188,9 +2240,17 @@
           },
           {
             "name": "request_poll",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only.",
             "type": {
               "name": "KeyboardButtonPollType"
+            },
+            "required": false
+          },
+          {
+            "name": "web_app",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. If specified, the described \u003ca href\u003d\"/bots/webapps\"\u003eWeb App\u003c/a\u003e will be launched when the button is pressed. The Web App will be able to send a “web_app_data” service message. Available in private chats only.",
+            "type": {
+              "name": "WebAppInfo"
             },
             "required": false
           }
@@ -2273,18 +2333,26 @@
             "required": false
           },
           {
-            "name": "login_url",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. An HTTP URL used to automatically authorize the user. Can be used as a replacement for the \u003ca href\u003d\"https://core.telegram.org/widgets/login\"\u003eTelegram Login Widget\u003c/a\u003e.",
-            "type": {
-              "name": "LoginUrl"
-            },
-            "required": false
-          },
-          {
             "name": "callback_data",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Data to be sent in a \u003ca href\u003d\"#callbackquery\"\u003ecallback query\u003c/a\u003e to the bot when button is pressed, 1-64 bytes",
             "type": {
               "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "web_app",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Description of the \u003ca href\u003d\"/bots/webapps\"\u003eWeb App\u003c/a\u003e that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method \u003ca href\u003d\"#answerwebappquery\"\u003eanswerWebAppQuery\u003c/a\u003e. Available only in private chats between a user and the bot.",
+            "type": {
+              "name": "WebAppInfo"
+            },
+            "required": false
+          },
+          {
+            "name": "login_url",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. An HTTP URL used to automatically authorize the user. Can be used as a replacement for the \u003ca href\u003d\"https://core.telegram.org/widgets/login\"\u003eTelegram Login Widget\u003c/a\u003e.",
+            "type": {
+              "name": "LoginUrl"
             },
             "required": false
           },
@@ -2569,6 +2637,100 @@
         ]
       },
       {
+        "name": "ChatAdministratorRights",
+        "description": "\u003cp\u003eRepresents the rights of an administrator in a chat.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "is_anonymous",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the user\u0027s presence in the chat is hidden",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "can_manage_chat",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "can_delete_messages",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the administrator can delete messages of other users",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "can_manage_video_chats",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the administrator can manage video chats",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "can_restrict_members",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the administrator can restrict, ban or unban chat members",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "can_promote_members",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "can_change_info",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to change the chat title, photo and other settings",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "can_invite_users",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to invite new users to the chat",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": true
+          },
+          {
+            "name": "can_post_messages",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the administrator can post in the channel; channels only",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_edit_messages",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the administrator can edit messages of other users and can pin messages; channels only",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "can_pin_messages",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the user is allowed to pin messages; groups and supergroups only",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          }
+        ]
+      },
+      {
         "name": "ChatMemberOwner",
         "description": "\u003cp\u003eRepresents a \u003ca href\u003d\"#chatmember\"\u003echat member\u003c/a\u003e that owns the chat and has all administrator privileges.\u003c/p\u003e",
         "docFields": [
@@ -2659,8 +2821,8 @@
             "required": true
           },
           {
-            "name": "can_manage_voice_chats",
-            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the administrator can manage voice chats",
+            "name": "can_manage_video_chats",
+            "description": "\u003cem\u003eTrue\u003c/em\u003e, if the administrator can manage video chats",
             "type": {
               "name": "Boolean"
             },
@@ -3271,6 +3433,64 @@
             "description": "Unique identifier of the target user",
             "type": {
               "name": "Integer"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "MenuButtonCommands",
+        "description": "\u003cp\u003eRepresents a menu button, which opens the bot\u0027s list of commands.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "Type of the button, must be \u003cem\u003ecommands\u003c/em\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "MenuButtonWebApp",
+        "description": "\u003cp\u003eRepresents a menu button, which launches a \u003ca href\u003d\"/bots/webapps\"\u003eWeb App\u003c/a\u003e.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "Type of the button, must be \u003cem\u003eweb_app\u003c/em\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "text",
+            "description": "Text on the button",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "web_app",
+            "description": "Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method \u003ca href\u003d\"#answerwebappquery\"\u003eanswerWebAppQuery\u003c/a\u003e.",
+            "type": {
+              "name": "WebAppInfo"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "MenuButtonDefault",
+        "description": "\u003cp\u003eDescribes that no specific value for the menu button was set.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "Type of the button, must be \u003cem\u003edefault\u003c/em\u003e",
+            "type": {
+              "name": "String"
             },
             "required": true
           }
@@ -6227,8 +6447,8 @@
             "required": false
           },
           {
-            "name": "can_manage_voice_chats",
-            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the administrator can manage voice chats",
+            "name": "can_manage_video_chats",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the administrator can manage video chats",
             "type": {
               "name": "Boolean"
             },
@@ -7216,6 +7436,90 @@
         "returns": {
           "name": "list"
         }
+      },
+      {
+        "name": "setChatMenuButton",
+        "description": "\u003cp\u003eUse this method to change the bot\u0027s menu button in a private chat, or the default menu button. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target private chat. If not specified, default bot\u0027s menu button will be changed",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "menu_button",
+            "description": "A JSON-serialized object for the new bot\u0027s menu button. Defaults to \u003ca href\u003d\"#menubuttondefault\"\u003eMenuButtonDefault\u003c/a\u003e",
+            "type": {
+              "name": "MenuButton"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
+      },
+      {
+        "name": "getChatMenuButton",
+        "description": "\u003cp\u003eUse this method to get the current value of the bot\u0027s menu button in a private chat, or the default menu button. Returns \u003ca href\u003d\"#menubutton\"\u003eMenuButton\u003c/a\u003e on success.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target private chat. If not specified, default bot\u0027s menu button will be returned",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "name": "MenuButton"
+        }
+      },
+      {
+        "name": "setMyDefaultAdministratorRights",
+        "description": "\u003cp\u003eUse this method to change the default administrator rights requested by the bot when it\u0027s added as an administrator to groups or channels. These rights will be suggested to users, but they are are free to modify the list before adding the bot. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "rights",
+            "description": "A JSON-serialized object describing new default administrator rights. If not specified, the default administrator rights will be cleared.",
+            "type": {
+              "name": "ChatAdministratorRights"
+            },
+            "required": false
+          },
+          {
+            "name": "for_channels",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e to change the default administrator rights of the bot in channels. Otherwise, the default administrator rights of the bot for groups and supergroups will be changed.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "name": "Boolean"
+        }
+      },
+      {
+        "name": "getMyDefaultAdministratorRights",
+        "description": "\u003cp\u003eUse this method to get the current default administrator rights of the bot. Returns \u003ca href\u003d\"#chatadministratorrights\"\u003eChatAdministratorRights\u003c/a\u003e on success.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "for_channels",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e to get default administrator rights of the bot in channels. Otherwise, default administrator rights of the bot for groups and supergroups will be returned.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "name": "ChatAdministratorRights"
+        }
       }
     ]
   },
@@ -8005,7 +8309,7 @@
           },
           {
             "name": "name",
-            "description": "Short name of sticker set, to be used in \u003ccode\u003et.me/addstickers/\u003c/code\u003e URLs (e.g., \u003cem\u003eanimals\u003c/em\u003e). Can contain only english letters, digits and underscores. Must begin with a letter, can\u0027t contain consecutive underscores and must end in \u003cem\u003e“_by_\u0026lt;bot username\u0026gt;”\u003c/em\u003e. \u003cem\u003e\u0026lt;bot_username\u0026gt;\u003c/em\u003e is case insensitive. 1-64 characters.",
+            "description": "Short name of sticker set, to be used in \u003ccode\u003et.me/addstickers/\u003c/code\u003e URLs (e.g., \u003cem\u003eanimals\u003c/em\u003e). Can contain only english letters, digits and underscores. Must begin with a letter, can\u0027t contain consecutive underscores and must end in \u003ccode\u003e\"_by_\u0026lt;bot_username\u0026gt;\"\u003c/code\u003e. \u003ccode\u003e\u0026lt;bot_username\u0026gt;\u003c/code\u003e is case insensitive. 1-64 characters.",
             "type": {
               "name": "String"
             },
@@ -10946,6 +11250,20 @@
             "required": true
           }
         ]
+      },
+      {
+        "name": "SentWebAppMessage",
+        "description": "\u003cp\u003eContains information about an inline message sent by a \u003ca href\u003d\"/bots/webapps\"\u003eWeb App\u003c/a\u003e on behalf of a user.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "inline_message_id",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Identifier of the sent inline message. Available only if there is an \u003ca href\u003d\"#inlinekeyboardmarkup\"\u003einline keyboard\u003c/a\u003e attached to the message.",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          }
+        ]
       }
     ],
     "docMethods": [
@@ -11015,6 +11333,31 @@
         ],
         "returns": {
           "name": "Boolean"
+        }
+      },
+      {
+        "name": "answerWebAppQuery",
+        "description": "\u003cp\u003eUse this method to set the result of an interaction with a \u003ca href\u003d\"/bots/webapps\"\u003eWeb App\u003c/a\u003e and send a corresponding message on behalf of the user to the chat from which the query originated. On success, a \u003ca href\u003d\"#sentwebappmessage\"\u003eSentWebAppMessage\u003c/a\u003e object is returned.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "web_app_query_id",
+            "description": "Unique identifier for the query to be answered",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "result",
+            "description": "A JSON-serialized object describing the message to be sent",
+            "type": {
+              "name": "InlineQueryResult"
+            },
+            "required": true
+          }
+        ],
+        "returns": {
+          "name": "SentWebAppMessage"
         }
       }
     ]

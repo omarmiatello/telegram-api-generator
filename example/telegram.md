@@ -9,7 +9,7 @@
 
 <p>Contains information about the current status of a webhook.</p>
 
-    WebhookInfo(url: String, has_custom_certificate: Boolean, pending_update_count: Integer, ip_address: String, last_error_date: Integer, last_error_message: String, max_connections: Integer, allowed_updates: List<String>)
+    WebhookInfo(url: String, has_custom_certificate: Boolean, pending_update_count: Integer, ip_address: String, last_error_date: Integer, last_error_message: String, last_synchronization_error_date: Integer, max_connections: Integer, allowed_updates: List<String>)
 
 
 ### Methods
@@ -49,7 +49,7 @@
 
 <p>This object represents a message.</p>
 
-    Message(message_id: Integer, from: User, sender_chat: Chat, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_sender_name: String, forward_date: Integer, is_automatic_forward: Boolean, reply_to_message: Message, via_bot: User, edit_date: Integer, has_protected_content: Boolean, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, voice_chat_scheduled: VoiceChatScheduled, voice_chat_started: VoiceChatStarted, voice_chat_ended: VoiceChatEnded, voice_chat_participants_invited: VoiceChatParticipantsInvited, reply_markup: InlineKeyboardMarkup)
+    Message(message_id: Integer, from: User, sender_chat: Chat, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_sender_name: String, forward_date: Integer, is_automatic_forward: Boolean, reply_to_message: Message, via_bot: User, edit_date: Integer, has_protected_content: Boolean, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, video_chat_scheduled: VideoChatScheduled, video_chat_started: VideoChatStarted, video_chat_ended: VideoChatEnded, video_chat_participants_invited: VideoChatParticipantsInvited, web_app_data: WebAppData, reply_markup: InlineKeyboardMarkup)
 
 <p>This object represents a unique message identifier.</p>
 
@@ -115,6 +115,10 @@
 
     Venue(location: Location, title: String, address: String, foursquare_id: String, foursquare_type: String, google_place_id: String, google_place_type: String)
 
+<p>Contains data sent from a <a href="/bots/webapps">Web App</a> to the bot.</p>
+
+    WebAppData(data: String, button_text: String)
+
 <p>This object represents the content of a service message, sent whenever a user in the chat triggers a proximity alert set by another user.</p>
 
     ProximityAlertTriggered(traveler: User, watcher: User, distance: Integer)
@@ -123,17 +127,17 @@
 
     MessageAutoDeleteTimerChanged(message_auto_delete_time: Integer)
 
-<p>This object represents a service message about a voice chat scheduled in the chat.</p>
+<p>This object represents a service message about a video chat scheduled in the chat.</p>
 
-    VoiceChatScheduled(start_date: Integer)
+    VideoChatScheduled(start_date: Integer)
 
-<p>This object represents a service message about a voice chat ended in the chat.</p>
+<p>This object represents a service message about a video chat ended in the chat.</p>
 
-    VoiceChatEnded(duration: Integer)
+    VideoChatEnded(duration: Integer)
 
-<p>This object represents a service message about new members invited to a voice chat.</p>
+<p>This object represents a service message about new members invited to a video chat.</p>
 
-    VoiceChatParticipantsInvited(users: List<User>)
+    VideoChatParticipantsInvited(users: List<User>)
 
 <p>This object represent a user's profile pictures.</p>
 
@@ -145,13 +149,17 @@
 
     File(file_id: String, file_unique_id: String, file_size: Integer, file_path: String)
 
+<p>Contains information about a <a href="/bots/webapps">Web App</a>.</p>
+
+    WebAppInfo(url: String)
+
 <p>This object represents a <a href="https://core.telegram.org/bots#keyboards">custom keyboard</a> with reply options (see <a href="https://core.telegram.org/bots#keyboards">Introduction to bots</a> for details and examples).</p>
 
     ReplyKeyboardMarkup(keyboard: List<List<KeyboardButton>>, resize_keyboard: Boolean, one_time_keyboard: Boolean, input_field_placeholder: String, selective: Boolean)
 
-<p>This object represents one button of the reply keyboard. For simple text buttons <em>String</em> can be used instead of this object to specify text of the button. Optional fields <em>request_contact</em>, <em>request_location</em>, and <em>request_poll</em> are mutually exclusive.</p><p><strong>Note:</strong> <em>request_contact</em> and <em>request_location</em> options will only work in Telegram versions released after 9 April, 2016. Older clients will display <em>unsupported message</em>.<br><strong>Note:</strong> <em>request_poll</em> option will only work in Telegram versions released after 23 January, 2020. Older clients will display <em>unsupported message</em>.</p>
+<p>This object represents one button of the reply keyboard. For simple text buttons <em>String</em> can be used instead of this object to specify text of the button. Optional fields <em>web_app</em>, <em>request_contact</em>, <em>request_location</em>, and <em>request_poll</em> are mutually exclusive.</p><p><strong>Note:</strong> <em>request_contact</em> and <em>request_location</em> options will only work in Telegram versions released after 9 April, 2016. Older clients will display <em>unsupported message</em>.<br><strong>Note:</strong> <em>request_poll</em> option will only work in Telegram versions released after 23 January, 2020. Older clients will display <em>unsupported message</em>.<br><strong>Note:</strong> <em>web_app</em> option will only work in Telegram versions released after 16 April, 2022. Older clients will display <em>unsupported message</em>.</p>
 
-    KeyboardButton(text: String, request_contact: Boolean, request_location: Boolean, request_poll: KeyboardButtonPollType)
+    KeyboardButton(text: String, request_contact: Boolean, request_location: Boolean, request_poll: KeyboardButtonPollType, web_app: WebAppInfo)
 
 <p>This object represents type of a poll, which is allowed to be created and sent when the corresponding button is pressed.</p>
 
@@ -167,7 +175,7 @@
 
 <p>This object represents one button of an inline keyboard. You <strong>must</strong> use exactly one of the optional fields.</p>
 
-    InlineKeyboardButton(text: String, url: String, login_url: LoginUrl, callback_data: String, switch_inline_query: String, switch_inline_query_current_chat: String, callback_game: CallbackGame, pay: Boolean)
+    InlineKeyboardButton(text: String, url: String, callback_data: String, web_app: WebAppInfo, login_url: LoginUrl, switch_inline_query: String, switch_inline_query_current_chat: String, callback_game: CallbackGame, pay: Boolean)
 
 <p>This object represents a parameter of the inline keyboard button used to automatically authorize a user. Serves as a great replacement for the <a href="https://core.telegram.org/widgets/login">Telegram Login Widget</a> when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:</p><p>Telegram apps support these buttons as of <a href="https://telegram.org/blog/privacy-discussions-web-bots#meet-seamless-web-bots">version 5.7</a>.</p><blockquote> 
  <p>Sample bot: <a href="https://t.me/discussbot">@discussbot</a></p> 
@@ -200,13 +208,17 @@
 
     ChatInviteLink(invite_link: String, creator: User, creates_join_request: Boolean, is_primary: Boolean, is_revoked: Boolean, name: String, expire_date: Integer, member_limit: Integer, pending_join_request_count: Integer)
 
+<p>Represents the rights of an administrator in a chat.</p>
+
+    ChatAdministratorRights(is_anonymous: Boolean, can_manage_chat: Boolean, can_delete_messages: Boolean, can_manage_video_chats: Boolean, can_restrict_members: Boolean, can_promote_members: Boolean, can_change_info: Boolean, can_invite_users: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_pin_messages: Boolean)
+
 <p>Represents a <a href="#chatmember">chat member</a> that owns the chat and has all administrator privileges.</p>
 
     ChatMemberOwner(status: String, user: User, is_anonymous: Boolean, custom_title: String)
 
 <p>Represents a <a href="#chatmember">chat member</a> that has some additional privileges.</p>
 
-    ChatMemberAdministrator(status: String, user: User, can_be_edited: Boolean, is_anonymous: Boolean, can_manage_chat: Boolean, can_delete_messages: Boolean, can_manage_voice_chats: Boolean, can_restrict_members: Boolean, can_promote_members: Boolean, can_change_info: Boolean, can_invite_users: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_pin_messages: Boolean, custom_title: String)
+    ChatMemberAdministrator(status: String, user: User, can_be_edited: Boolean, is_anonymous: Boolean, can_manage_chat: Boolean, can_delete_messages: Boolean, can_manage_video_chats: Boolean, can_restrict_members: Boolean, can_promote_members: Boolean, can_change_info: Boolean, can_invite_users: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_pin_messages: Boolean, custom_title: String)
 
 <p>Represents a <a href="#chatmember">chat member</a> that has no additional privileges or restrictions.</p>
 
@@ -271,6 +283,18 @@
 <p>Represents the <a href="#botcommandscope">scope</a> of bot commands, covering a specific member of a group or supergroup chat.</p>
 
     BotCommandScopeChatMember(type: String, chat_id: IntegerOrString, user_id: Integer)
+
+<p>Represents a menu button, which opens the bot's list of commands.</p>
+
+    MenuButtonCommands(type: String)
+
+<p>Represents a menu button, which launches a <a href="/bots/webapps">Web App</a>.</p>
+
+    MenuButtonWebApp(type: String, text: String, web_app: WebAppInfo)
+
+<p>Describes that no specific value for the menu button was set.</p>
+
+    MenuButtonDefault(type: String)
 
 <p>Contains information about why a request was unsuccessful.</p>
 
@@ -409,7 +433,7 @@
 
 <p>Use this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Pass <em>False</em> for all boolean parameters to demote a user. Returns <em>True</em> on success.</p>
 
-    promoteChatMember(chat_id: IntegerOrString, user_id: Integer, is_anonymous: Boolean, can_manage_chat: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_delete_messages: Boolean, can_manage_voice_chats: Boolean, can_restrict_members: Boolean, can_promote_members: Boolean, can_change_info: Boolean, can_invite_users: Boolean, can_pin_messages: Boolean)
+    promoteChatMember(chat_id: IntegerOrString, user_id: Integer, is_anonymous: Boolean, can_manage_chat: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_delete_messages: Boolean, can_manage_video_chats: Boolean, can_restrict_members: Boolean, can_promote_members: Boolean, can_change_info: Boolean, can_invite_users: Boolean, can_pin_messages: Boolean)
 
 <p>Use this method to set a custom title for an administrator in a supergroup promoted by the bot. Returns <em>True</em> on success.</p>
 
@@ -526,6 +550,22 @@
 <p>Use this method to get the current list of the bot's commands for the given scope and user language. Returns Array of <a href="#botcommand">BotCommand</a> on success. If commands aren't set, an empty list is returned.</p>
 
     getMyCommands(scope: BotCommandScope, language_code: String)
+
+<p>Use this method to change the bot's menu button in a private chat, or the default menu button. Returns <em>True</em> on success.</p>
+
+    setChatMenuButton(chat_id: Integer, menu_button: MenuButton)
+
+<p>Use this method to get the current value of the bot's menu button in a private chat, or the default menu button. Returns <a href="#menubutton">MenuButton</a> on success.</p>
+
+    getChatMenuButton(chat_id: Integer)
+
+<p>Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are are free to modify the list before adding the bot. Returns <em>True</em> on success.</p>
+
+    setMyDefaultAdministratorRights(rights: ChatAdministratorRights, for_channels: Boolean)
+
+<p>Use this method to get the current default administrator rights of the bot. Returns <a href="#chatadministratorrights">ChatAdministratorRights</a> on success.</p>
+
+    getMyDefaultAdministratorRights(for_channels: Boolean)
 
 
 
@@ -722,11 +762,19 @@
 
     ChosenInlineResult(result_id: String, from: User, location: Location, inline_message_id: String, query: String)
 
+<p>Contains information about an inline message sent by a <a href="/bots/webapps">Web App</a> on behalf of a user.</p>
+
+    SentWebAppMessage(inline_message_id: String)
+
 
 ### Methods
 <p>Use this method to send answers to an inline query. On success, <em>True</em> is returned.<br>No more than <strong>50</strong> results per query are allowed.</p>
 
     answerInlineQuery(inline_query_id: String, results: List<InlineQueryResult>, cache_time: Integer, is_personal: Boolean, next_offset: String, switch_pm_text: String, switch_pm_parameter: String)
+
+<p>Use this method to set the result of an interaction with a <a href="/bots/webapps">Web App</a> and send a corresponding message on behalf of the user to the chat from which the query originated. On success, a <a href="#sentwebappmessage">SentWebAppMessage</a> object is returned.</p>
+
+    answerWebAppQuery(web_app_query_id: String, result: InlineQueryResult)
 
 
 

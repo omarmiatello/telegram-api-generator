@@ -29,7 +29,7 @@
 
 #### WebhookInfo
 
-    WebhookInfo(url: String, has_custom_certificate: Boolean, pending_update_count: Integer, ip_address: String, last_error_date: Integer, last_error_message: String, max_connections: Integer, allowed_updates: List<String>)
+    WebhookInfo(url: String, has_custom_certificate: Boolean, pending_update_count: Integer, ip_address: String, last_error_date: Integer, last_error_message: String, last_synchronization_error_date: Integer, max_connections: Integer, allowed_updates: List<String>)
 
 <p>Contains information about the current status of a webhook.</p>
 
@@ -41,6 +41,7 @@
 | ip_address | String | false | <em>Optional</em>. Currently used webhook IP address |
 | last_error_date | Integer | false | <em>Optional</em>. Unix time for the most recent error that happened when trying to deliver an update via webhook |
 | last_error_message | String | false | <em>Optional</em>. Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook |
+| last_synchronization_error_date | Integer | false | <em>Optional</em>. Unix time of the most recent error that happened when trying to synchronize available updates with Telegram datacenters |
 | max_connections | Integer | false | <em>Optional</em>. Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery |
 | allowed_updates | List<String> | false | <em>Optional</em>. A list of update types the bot is subscribed to. Defaults to all update types except <em>chat_member</em> |
 
@@ -149,7 +150,7 @@
 
 #### Message
 
-    Message(message_id: Integer, from: User, sender_chat: Chat, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_sender_name: String, forward_date: Integer, is_automatic_forward: Boolean, reply_to_message: Message, via_bot: User, edit_date: Integer, has_protected_content: Boolean, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, voice_chat_scheduled: VoiceChatScheduled, voice_chat_started: VoiceChatStarted, voice_chat_ended: VoiceChatEnded, voice_chat_participants_invited: VoiceChatParticipantsInvited, reply_markup: InlineKeyboardMarkup)
+    Message(message_id: Integer, from: User, sender_chat: Chat, date: Integer, chat: Chat, forward_from: User, forward_from_chat: Chat, forward_from_message_id: Integer, forward_signature: String, forward_sender_name: String, forward_date: Integer, is_automatic_forward: Boolean, reply_to_message: Message, via_bot: User, edit_date: Integer, has_protected_content: Boolean, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: Message, invoice: Invoice, successful_payment: SuccessfulPayment, connected_website: String, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, video_chat_scheduled: VideoChatScheduled, video_chat_started: VideoChatStarted, video_chat_ended: VideoChatEnded, video_chat_participants_invited: VideoChatParticipantsInvited, web_app_data: WebAppData, reply_markup: InlineKeyboardMarkup)
 
 <p>This object represents a message.</p>
 
@@ -208,10 +209,11 @@
 | connected_website | String | false | <em>Optional</em>. The domain name of the website on which the user has logged in. <a href="/widgets/login">More about Telegram Login »</a> |
 | passport_data | PassportData | false | <em>Optional</em>. Telegram Passport data |
 | proximity_alert_triggered | ProximityAlertTriggered | false | <em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location. |
-| voice_chat_scheduled | VoiceChatScheduled | false | <em>Optional</em>. Service message: voice chat scheduled |
-| voice_chat_started | VoiceChatStarted | false | <em>Optional</em>. Service message: voice chat started |
-| voice_chat_ended | VoiceChatEnded | false | <em>Optional</em>. Service message: voice chat ended |
-| voice_chat_participants_invited | VoiceChatParticipantsInvited | false | <em>Optional</em>. Service message: new participants invited to a voice chat |
+| video_chat_scheduled | VideoChatScheduled | false | <em>Optional</em>. Service message: video chat scheduled |
+| video_chat_started | VideoChatStarted | false | <em>Optional</em>. Service message: video chat started |
+| video_chat_ended | VideoChatEnded | false | <em>Optional</em>. Service message: video chat ended |
+| video_chat_participants_invited | VideoChatParticipantsInvited | false | <em>Optional</em>. Service message: new participants invited to a video chat |
+| web_app_data | WebAppData | false | <em>Optional</em>. Service message: data sent by a Web App |
 | reply_markup | InlineKeyboardMarkup | false | <em>Optional</em>. Inline keyboard attached to the message. <code>login_url</code> buttons are represented as ordinary <code>url</code> buttons. |
 
 #### MessageId
@@ -452,6 +454,17 @@
 | google_place_id | String | false | <em>Optional</em>. Google Places identifier of the venue |
 | google_place_type | String | false | <em>Optional</em>. Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.) |
 
+#### WebAppData
+
+    WebAppData(data: String, button_text: String)
+
+<p>Contains data sent from a <a href="/bots/webapps">Web App</a> to the bot.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| data | String | true | The data. Be aware that a bad client can send arbitrary data in this field. |
+| button_text | String | true | Text of the <em>web_app</em> keyboard button, from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field. |
+
 #### ProximityAlertTriggered
 
     ProximityAlertTriggered(traveler: User, watcher: User, distance: Integer)
@@ -474,35 +487,35 @@
 |---|---|---|---|
 | message_auto_delete_time | Integer | true | New auto-delete time for messages in the chat; in seconds |
 
-#### VoiceChatScheduled
+#### VideoChatScheduled
 
-    VoiceChatScheduled(start_date: Integer)
+    VideoChatScheduled(start_date: Integer)
 
-<p>This object represents a service message about a voice chat scheduled in the chat.</p>
-
-| name | type | required | description |
-|---|---|---|---|
-| start_date | Integer | true | Point in time (Unix timestamp) when the voice chat is supposed to be started by a chat administrator |
-
-#### VoiceChatEnded
-
-    VoiceChatEnded(duration: Integer)
-
-<p>This object represents a service message about a voice chat ended in the chat.</p>
+<p>This object represents a service message about a video chat scheduled in the chat.</p>
 
 | name | type | required | description |
 |---|---|---|---|
-| duration | Integer | true | Voice chat duration in seconds |
+| start_date | Integer | true | Point in time (Unix timestamp) when the video chat is supposed to be started by a chat administrator |
 
-#### VoiceChatParticipantsInvited
+#### VideoChatEnded
 
-    VoiceChatParticipantsInvited(users: List<User>)
+    VideoChatEnded(duration: Integer)
 
-<p>This object represents a service message about new members invited to a voice chat.</p>
+<p>This object represents a service message about a video chat ended in the chat.</p>
 
 | name | type | required | description |
 |---|---|---|---|
-| users | List<User> | false | <em>Optional</em>. New members that were invited to the voice chat |
+| duration | Integer | true | Video chat duration in seconds |
+
+#### VideoChatParticipantsInvited
+
+    VideoChatParticipantsInvited(users: List<User>)
+
+<p>This object represents a service message about new members invited to a video chat.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| users | List<User> | true | New members that were invited to the video chat |
 
 #### UserProfilePhotos
 
@@ -530,6 +543,16 @@
 | file_size | Integer | false | <em>Optional</em>. File size in bytes, if known |
 | file_path | String | false | <em>Optional</em>. File path. Use <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code> to get the file. |
 
+#### WebAppInfo
+
+    WebAppInfo(url: String)
+
+<p>Contains information about a <a href="/bots/webapps">Web App</a>.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| url | String | true | An HTTPS URL of a Web App to be opened with additional data as specified in <a href="/bots/webapps#initializing-web-apps">Initializing Web Apps</a> |
+
 #### ReplyKeyboardMarkup
 
     ReplyKeyboardMarkup(keyboard: List<List<KeyboardButton>>, resize_keyboard: Boolean, one_time_keyboard: Boolean, input_field_placeholder: String, selective: Boolean)
@@ -546,16 +569,17 @@
 
 #### KeyboardButton
 
-    KeyboardButton(text: String, request_contact: Boolean, request_location: Boolean, request_poll: KeyboardButtonPollType)
+    KeyboardButton(text: String, request_contact: Boolean, request_location: Boolean, request_poll: KeyboardButtonPollType, web_app: WebAppInfo)
 
-<p>This object represents one button of the reply keyboard. For simple text buttons <em>String</em> can be used instead of this object to specify text of the button. Optional fields <em>request_contact</em>, <em>request_location</em>, and <em>request_poll</em> are mutually exclusive.</p><p><strong>Note:</strong> <em>request_contact</em> and <em>request_location</em> options will only work in Telegram versions released after 9 April, 2016. Older clients will display <em>unsupported message</em>.<br><strong>Note:</strong> <em>request_poll</em> option will only work in Telegram versions released after 23 January, 2020. Older clients will display <em>unsupported message</em>.</p>
+<p>This object represents one button of the reply keyboard. For simple text buttons <em>String</em> can be used instead of this object to specify text of the button. Optional fields <em>web_app</em>, <em>request_contact</em>, <em>request_location</em>, and <em>request_poll</em> are mutually exclusive.</p><p><strong>Note:</strong> <em>request_contact</em> and <em>request_location</em> options will only work in Telegram versions released after 9 April, 2016. Older clients will display <em>unsupported message</em>.<br><strong>Note:</strong> <em>request_poll</em> option will only work in Telegram versions released after 23 January, 2020. Older clients will display <em>unsupported message</em>.<br><strong>Note:</strong> <em>web_app</em> option will only work in Telegram versions released after 16 April, 2022. Older clients will display <em>unsupported message</em>.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | text | String | true | Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed |
-| request_contact | Boolean | false | <em>Optional</em>. If <em>True</em>, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only |
-| request_location | Boolean | false | <em>Optional</em>. If <em>True</em>, the user's current location will be sent when the button is pressed. Available in private chats only |
-| request_poll | KeyboardButtonPollType | false | <em>Optional</em>. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only |
+| request_contact | Boolean | false | <em>Optional</em>. If <em>True</em>, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only. |
+| request_location | Boolean | false | <em>Optional</em>. If <em>True</em>, the user's current location will be sent when the button is pressed. Available in private chats only. |
+| request_poll | KeyboardButtonPollType | false | <em>Optional</em>. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only. |
+| web_app | WebAppInfo | false | <em>Optional</em>. If specified, the described <a href="/bots/webapps">Web App</a> will be launched when the button is pressed. The Web App will be able to send a “web_app_data” service message. Available in private chats only. |
 
 #### KeyboardButtonPollType
 
@@ -590,7 +614,7 @@
 
 #### InlineKeyboardButton
 
-    InlineKeyboardButton(text: String, url: String, login_url: LoginUrl, callback_data: String, switch_inline_query: String, switch_inline_query_current_chat: String, callback_game: CallbackGame, pay: Boolean)
+    InlineKeyboardButton(text: String, url: String, callback_data: String, web_app: WebAppInfo, login_url: LoginUrl, switch_inline_query: String, switch_inline_query_current_chat: String, callback_game: CallbackGame, pay: Boolean)
 
 <p>This object represents one button of an inline keyboard. You <strong>must</strong> use exactly one of the optional fields.</p>
 
@@ -598,8 +622,9 @@
 |---|---|---|---|
 | text | String | true | Label text on the button |
 | url | String | false | <em>Optional</em>. HTTP or tg:// url to be opened when the button is pressed. Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings. |
-| login_url | LoginUrl | false | <em>Optional</em>. An HTTP URL used to automatically authorize the user. Can be used as a replacement for the <a href="https://core.telegram.org/widgets/login">Telegram Login Widget</a>. |
 | callback_data | String | false | <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when button is pressed, 1-64 bytes |
+| web_app | WebAppInfo | false | <em>Optional</em>. Description of the <a href="/bots/webapps">Web App</a> that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Available only in private chats between a user and the bot. |
+| login_url | LoginUrl | false | <em>Optional</em>. An HTTP URL used to automatically authorize the user. Can be used as a replacement for the <a href="https://core.telegram.org/widgets/login">Telegram Login Widget</a>. |
 | switch_inline_query | String | false | <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. Can be empty, in which case just the bot's username will be inserted.<br><br><strong>Note:</strong> This offers an easy way for users to start using your bot in <a href="/bots/inline">inline mode</a> when they are currently in a private chat with it. Especially useful when combined with <a href="#answerinlinequery"><em>switch_pm…</em></a> actions – in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen. |
 | switch_inline_query_current_chat | String | false | <em>Optional</em>. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. Can be empty, in which case only the bot's username will be inserted.<br><br>This offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options. |
 | callback_game | CallbackGame | false | <em>Optional</em>. Description of the game that will be launched when the user presses the button.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row. |
@@ -688,6 +713,26 @@
 | member_limit | Integer | false | <em>Optional</em>. Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999 |
 | pending_join_request_count | Integer | false | <em>Optional</em>. Number of pending join requests created using this link |
 
+#### ChatAdministratorRights
+
+    ChatAdministratorRights(is_anonymous: Boolean, can_manage_chat: Boolean, can_delete_messages: Boolean, can_manage_video_chats: Boolean, can_restrict_members: Boolean, can_promote_members: Boolean, can_change_info: Boolean, can_invite_users: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_pin_messages: Boolean)
+
+<p>Represents the rights of an administrator in a chat.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| is_anonymous | Boolean | true | <em>True</em>, if the user's presence in the chat is hidden |
+| can_manage_chat | Boolean | true | <em>True</em>, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege |
+| can_delete_messages | Boolean | true | <em>True</em>, if the administrator can delete messages of other users |
+| can_manage_video_chats | Boolean | true | <em>True</em>, if the administrator can manage video chats |
+| can_restrict_members | Boolean | true | <em>True</em>, if the administrator can restrict, ban or unban chat members |
+| can_promote_members | Boolean | true | <em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user) |
+| can_change_info | Boolean | true | <em>True</em>, if the user is allowed to change the chat title, photo and other settings |
+| can_invite_users | Boolean | true | <em>True</em>, if the user is allowed to invite new users to the chat |
+| can_post_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the administrator can post in the channel; channels only |
+| can_edit_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; channels only |
+| can_pin_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; groups and supergroups only |
+
 #### ChatMemberOwner
 
     ChatMemberOwner(status: String, user: User, is_anonymous: Boolean, custom_title: String)
@@ -703,7 +748,7 @@
 
 #### ChatMemberAdministrator
 
-    ChatMemberAdministrator(status: String, user: User, can_be_edited: Boolean, is_anonymous: Boolean, can_manage_chat: Boolean, can_delete_messages: Boolean, can_manage_voice_chats: Boolean, can_restrict_members: Boolean, can_promote_members: Boolean, can_change_info: Boolean, can_invite_users: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_pin_messages: Boolean, custom_title: String)
+    ChatMemberAdministrator(status: String, user: User, can_be_edited: Boolean, is_anonymous: Boolean, can_manage_chat: Boolean, can_delete_messages: Boolean, can_manage_video_chats: Boolean, can_restrict_members: Boolean, can_promote_members: Boolean, can_change_info: Boolean, can_invite_users: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_pin_messages: Boolean, custom_title: String)
 
 <p>Represents a <a href="#chatmember">chat member</a> that has some additional privileges.</p>
 
@@ -715,7 +760,7 @@
 | is_anonymous | Boolean | true | <em>True</em>, if the user's presence in the chat is hidden |
 | can_manage_chat | Boolean | true | <em>True</em>, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege |
 | can_delete_messages | Boolean | true | <em>True</em>, if the administrator can delete messages of other users |
-| can_manage_voice_chats | Boolean | true | <em>True</em>, if the administrator can manage voice chats |
+| can_manage_video_chats | Boolean | true | <em>True</em>, if the administrator can manage video chats |
 | can_restrict_members | Boolean | true | <em>True</em>, if the administrator can restrict, ban or unban chat members |
 | can_promote_members | Boolean | true | <em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user) |
 | can_change_info | Boolean | true | <em>True</em>, if the user is allowed to change the chat title, photo and other settings |
@@ -921,6 +966,38 @@
 | type | String | true | Scope type, must be <em>chat_member</em> |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>) |
 | user_id | Integer | true | Unique identifier of the target user |
+
+#### MenuButtonCommands
+
+    MenuButtonCommands(type: String)
+
+<p>Represents a menu button, which opens the bot's list of commands.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the button, must be <em>commands</em> |
+
+#### MenuButtonWebApp
+
+    MenuButtonWebApp(type: String, text: String, web_app: WebAppInfo)
+
+<p>Represents a menu button, which launches a <a href="/bots/webapps">Web App</a>.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the button, must be <em>web_app</em> |
+| text | String | true | Text on the button |
+| web_app | WebAppInfo | true | Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. |
+
+#### MenuButtonDefault
+
+    MenuButtonDefault(type: String)
+
+<p>Describes that no specific value for the menu button was set.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the button, must be <em>default</em> |
 
 #### ResponseParameters
 
@@ -1464,7 +1541,7 @@
 
 #### promoteChatMember
 
-    promoteChatMember(chat_id: IntegerOrString, user_id: Integer, is_anonymous: Boolean, can_manage_chat: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_delete_messages: Boolean, can_manage_voice_chats: Boolean, can_restrict_members: Boolean, can_promote_members: Boolean, can_change_info: Boolean, can_invite_users: Boolean, can_pin_messages: Boolean)
+    promoteChatMember(chat_id: IntegerOrString, user_id: Integer, is_anonymous: Boolean, can_manage_chat: Boolean, can_post_messages: Boolean, can_edit_messages: Boolean, can_delete_messages: Boolean, can_manage_video_chats: Boolean, can_restrict_members: Boolean, can_promote_members: Boolean, can_change_info: Boolean, can_invite_users: Boolean, can_pin_messages: Boolean)
 
 <p>Use this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Pass <em>False</em> for all boolean parameters to demote a user. Returns <em>True</em> on success.</p>
 
@@ -1477,7 +1554,7 @@
 | can_post_messages | Boolean | false | Pass <em>True</em>, if the administrator can create channel posts, channels only |
 | can_edit_messages | Boolean | false | Pass <em>True</em>, if the administrator can edit messages of other users and can pin messages, channels only |
 | can_delete_messages | Boolean | false | Pass <em>True</em>, if the administrator can delete messages of other users |
-| can_manage_voice_chats | Boolean | false | Pass <em>True</em>, if the administrator can manage voice chats |
+| can_manage_video_chats | Boolean | false | Pass <em>True</em>, if the administrator can manage video chats |
 | can_restrict_members | Boolean | false | Pass <em>True</em>, if the administrator can restrict, ban or unban chat members |
 | can_promote_members | Boolean | false | Pass <em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him) |
 | can_change_info | Boolean | false | Pass <em>True</em>, if the administrator can change chat title, photo and other settings |
@@ -1801,6 +1878,48 @@
 | scope | BotCommandScope | false | A JSON-serialized object, describing scope of users. Defaults to <a href="#botcommandscopedefault">BotCommandScopeDefault</a>. |
 | language_code | String | false | A two-letter ISO 639-1 language code or an empty string |
 
+#### setChatMenuButton
+
+    setChatMenuButton(chat_id: Integer, menu_button: MenuButton)
+
+<p>Use this method to change the bot's menu button in a private chat, or the default menu button. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat_id | Integer | false | Unique identifier for the target private chat. If not specified, default bot's menu button will be changed |
+| menu_button | MenuButton | false | A JSON-serialized object for the new bot's menu button. Defaults to <a href="#menubuttondefault">MenuButtonDefault</a> |
+
+#### getChatMenuButton
+
+    getChatMenuButton(chat_id: Integer)
+
+<p>Use this method to get the current value of the bot's menu button in a private chat, or the default menu button. Returns <a href="#menubutton">MenuButton</a> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat_id | Integer | false | Unique identifier for the target private chat. If not specified, default bot's menu button will be returned |
+
+#### setMyDefaultAdministratorRights
+
+    setMyDefaultAdministratorRights(rights: ChatAdministratorRights, for_channels: Boolean)
+
+<p>Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are are free to modify the list before adding the bot. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| rights | ChatAdministratorRights | false | A JSON-serialized object describing new default administrator rights. If not specified, the default administrator rights will be cleared. |
+| for_channels | Boolean | false | Pass <em>True</em> to change the default administrator rights of the bot in channels. Otherwise, the default administrator rights of the bot for groups and supergroups will be changed. |
+
+#### getMyDefaultAdministratorRights
+
+    getMyDefaultAdministratorRights(for_channels: Boolean)
+
+<p>Use this method to get the current default administrator rights of the bot. Returns <a href="#chatadministratorrights">ChatAdministratorRights</a> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| for_channels | Boolean | false | Pass <em>True</em> to get default administrator rights of the bot in channels. Otherwise, default administrator rights of the bot for groups and supergroups will be returned. |
+
 
 
 ## Updating messages
@@ -1991,7 +2110,7 @@
 | name | type | required | description |
 |---|---|---|---|
 | user_id | Integer | true | User identifier of created sticker set owner |
-| name | String | true | Short name of sticker set, to be used in <code>t.me/addstickers/</code> URLs (e.g., <em>animals</em>). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in <em>“_by_&lt;bot username&gt;”</em>. <em>&lt;bot_username&gt;</em> is case insensitive. 1-64 characters. |
+| name | String | true | Short name of sticker set, to be used in <code>t.me/addstickers/</code> URLs (e.g., <em>animals</em>). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in <code>"_by_&lt;bot_username&gt;"</code>. <code>&lt;bot_username&gt;</code> is case insensitive. 1-64 characters. |
 | title | String | true | Sticker set title, 1-64 characters |
 | png_sticker | InputFileOrString | false | <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
 | tgs_sticker | InputFile | false | <strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/stickers#animated-sticker-requirements"></a><a href="https://core.telegram.org/stickers#animated-sticker-requirements">https://core.telegram.org/stickers#animated-sticker-requirements</a> for technical requirements |
@@ -2568,6 +2687,16 @@
 | inline_message_id | String | false | <em>Optional</em>. Identifier of the sent inline message. Available only if there is an <a href="#inlinekeyboardmarkup">inline keyboard</a> attached to the message. Will be also received in <a href="#callbackquery">callback queries</a> and can be used to <a href="#updating-messages">edit</a> the message. |
 | query | String | true | The query that was used to obtain the result |
 
+#### SentWebAppMessage
+
+    SentWebAppMessage(inline_message_id: String)
+
+<p>Contains information about an inline message sent by a <a href="/bots/webapps">Web App</a> on behalf of a user.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| inline_message_id | String | false | <em>Optional</em>. Identifier of the sent inline message. Available only if there is an <a href="#inlinekeyboardmarkup">inline keyboard</a> attached to the message. |
+
 
 ### Methods
 #### answerInlineQuery
@@ -2585,6 +2714,17 @@
 | next_offset | String | false | Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes. |
 | switch_pm_text | String | false | If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter <em>switch_pm_parameter</em> |
 | switch_pm_parameter | String | false | <a href="/bots#deep-linking">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br><br><em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a <a href="#inlinekeyboardmarkup"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities. |
+
+#### answerWebAppQuery
+
+    answerWebAppQuery(web_app_query_id: String, result: InlineQueryResult)
+
+<p>Use this method to set the result of an interaction with a <a href="/bots/webapps">Web App</a> and send a corresponding message on behalf of the user to the chat from which the query originated. On success, a <a href="#sentwebappmessage">SentWebAppMessage</a> object is returned.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| web_app_query_id | String | true | Unique identifier for the query to be answered |
+| result | InlineQueryResult | true | A JSON-serialized object describing the message to be sent |
 
 
 

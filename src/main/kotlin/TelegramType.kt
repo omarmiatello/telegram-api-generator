@@ -12,6 +12,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
     object InputFile : TelegramType("InputFile", superType = null)
     object ParseMode : TelegramType("ParseMode", superType = null)
     object VoiceChatStarted : TelegramType("VoiceChatStarted", superType = null)
+    object VideoChatStarted : TelegramType("VideoChatStarted", superType = null)
+    object MenuButton : TelegramType("MenuButton", superType = null)
 
     sealed class Super(name: String) : TelegramType(name, superType = null) {
         object InputMedia : Super("InputMedia")
@@ -22,7 +24,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
         object BotCommandScope : Super("BotCommandScope")
     }
 
-    sealed class WithAlternative(name: String, val validTypes: List<TelegramType>, superType: TelegramType?) : TelegramType(name, superType) {
+    sealed class WithAlternative(name: String, val validTypes: List<TelegramType>, superType: TelegramType?) :
+        TelegramType(name, superType) {
         object InputFileOrString : WithAlternative(
             name = "InputFileOrString",
             validTypes = listOf(
@@ -75,6 +78,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             WithAlternative.KeyboardOption,
             WithAlternative.InputMessageContent,
             VoiceChatStarted,
+            VideoChatStarted,
+            MenuButton,
         )
 
         private fun findSuper(docName: String) = allSuper.filterIsInstance(WithAlternative::class.java)
@@ -91,6 +96,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             "InputFile" -> InputFile
             "ParseMode" -> ParseMode
             "VoiceChatStarted" -> VoiceChatStarted
+            "VideoChatStarted" -> VideoChatStarted
+            "MenuButton" -> MenuButton
             "InputMessageContent" -> Super.InputMessageContent
             "InlineQueryResult" -> Super.InlineQueryResult
             "PassportElementError" -> Super.PassportElementError
