@@ -7,7 +7,7 @@
 
     Update(update_id: Integer, message: Message, edited_message: Message, channel_post: Message, edited_channel_post: Message, inline_query: InlineQuery, chosen_inline_result: ChosenInlineResult, callback_query: CallbackQuery, shipping_query: ShippingQuery, pre_checkout_query: PreCheckoutQuery, poll: Poll, poll_answer: PollAnswer, my_chat_member: ChatMemberUpdated, chat_member: ChatMemberUpdated, chat_join_request: ChatJoinRequest)
 
-<p>Contains information about the current status of a webhook.</p>
+<p>Describes the current status of a webhook.</p>
 
     WebhookInfo(url: String, has_custom_certificate: Boolean, pending_update_count: Integer, ip_address: String, last_error_date: Integer, last_error_message: String, last_synchronization_error_date: Integer, max_connections: Integer, allowed_updates: List<String>)
 
@@ -19,12 +19,12 @@
 
     getUpdates(offset: Integer, limit: Integer, timeout: Integer, allowed_updates: List<String>)
 
-<p>Use this method to specify a url and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the Webhook request comes from Telegram, we recommend using a secret path in the URL, e.g. <code>https://www.example.com/&lt;token&gt;</code>. Since nobody else knows your bot's token, you can be pretty sure it's us.</p><blockquote> 
- <p><strong>Notes</strong><br><strong>1.</strong> You will not be able to receive updates using <a href="#getupdates">getUpdates</a> for as long as an outgoing webhook is set up.<br><strong>2.</strong> To use a self-signed certificate, you need to upload your <a href="/bots/self-signed">public key certificate</a> using <em>certificate</em> parameter. Please upload as InputFile, sending a String will not work.<br><strong>3.</strong> Ports currently supported <em>for Webhooks</em>: <strong>443, 80, 88, 8443</strong>.</p> 
- <p><strong>NEW!</strong> If you're having any trouble setting up webhooks, please check out this <a href="/bots/webhooks">amazing guide to Webhooks</a>.</p> 
+<p>Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter <em>secret_token</em>. If specified, the request will contain a header “X-Telegram-Bot-Api-Secret-Token” with the secret token as content.</p><blockquote> 
+ <p><strong>Notes</strong><br><strong>1.</strong> You will not be able to receive updates using <a href="#getupdates">getUpdates</a> for as long as an outgoing webhook is set up.<br><strong>2.</strong> To use a self-signed certificate, you need to upload your <a href="/bots/self-signed">public key certificate</a> using <em>certificate</em> parameter. Please upload as InputFile, sending a String will not work.<br><strong>3.</strong> Ports currently supported <em>for webhooks</em>: <strong>443, 80, 88, 8443</strong>.</p> 
+ <p>If you're having any trouble setting up webhooks, please check out this <a href="/bots/webhooks">amazing guide to webhooks</a>.</p> 
 </blockquote>
 
-    setWebhook(url: String, certificate: InputFile, ip_address: String, max_connections: Integer, allowed_updates: List<String>, drop_pending_updates: Boolean)
+    setWebhook(url: String, certificate: InputFile, ip_address: String, max_connections: Integer, allowed_updates: List<String>, drop_pending_updates: Boolean, secret_token: String)
 
 <p>Use this method to remove webhook integration if you decide to switch back to <a href="#getupdates">getUpdates</a>. Returns <em>True</em> on success.</p>
 
@@ -41,11 +41,11 @@
 ### Data Types
 <p>This object represents a Telegram user or bot.</p>
 
-    User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String, can_join_groups: Boolean, can_read_all_group_messages: Boolean, supports_inline_queries: Boolean)
+    User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String, is_premium: Boolean, added_to_attachment_menu: Boolean, can_join_groups: Boolean, can_read_all_group_messages: Boolean, supports_inline_queries: Boolean)
 
 <p>This object represents a chat.</p>
 
-    Chat(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, photo: ChatPhoto, bio: String, has_private_forwards: Boolean, description: String, invite_link: String, pinned_message: Message, permissions: ChatPermissions, slow_mode_delay: Integer, message_auto_delete_time: Integer, has_protected_content: Boolean, sticker_set_name: String, can_set_sticker_set: Boolean, linked_chat_id: Integer, location: ChatLocation)
+    Chat(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, photo: ChatPhoto, bio: String, has_private_forwards: Boolean, join_to_send_messages: Boolean, join_by_request: Boolean, description: String, invite_link: String, pinned_message: Message, permissions: ChatPermissions, slow_mode_delay: Integer, message_auto_delete_time: Integer, has_protected_content: Boolean, sticker_set_name: String, can_set_sticker_set: Boolean, linked_chat_id: Integer, location: ChatLocation)
 
 <p>This object represents a message.</p>
 
@@ -115,7 +115,7 @@
 
     Venue(location: Location, title: String, address: String, foursquare_id: String, foursquare_type: String, google_place_id: String, google_place_type: String)
 
-<p>Contains data sent from a <a href="/bots/webapps">Web App</a> to the bot.</p>
+<p>Describes data sent from a <a href="/bots/webapps">Web App</a> to the bot.</p>
 
     WebAppData(data: String, button_text: String)
 
@@ -144,12 +144,12 @@
     UserProfilePhotos(total_count: Integer, photos: List<List<PhotoSize>>)
 
 <p>This object represents a file ready to be downloaded. The file can be downloaded via the link <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code>. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling <a href="#getfile">getFile</a>.</p><blockquote> 
- <p>Maximum file size to download is 20 MB</p> 
+ <p>The maximum file size to download is 20 MB</p> 
 </blockquote>
 
     File(file_id: String, file_unique_id: String, file_size: Integer, file_path: String)
 
-<p>Contains information about a <a href="/bots/webapps">Web App</a>.</p>
+<p>Describes a <a href="/bots/webapps">Web App</a>.</p>
 
     WebAppInfo(url: String)
 
@@ -195,7 +195,7 @@
   <li>Explain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.</li> 
   <li>Guide the user through a step-by-step process. 'Please send me your question', 'Cool, now let's add the first answer option', 'Great. Keep adding answer options, then send /done when you're ready'.</li> 
  </ul> 
- <p>The last option is definitely more attractive. And if you use <a href="#forcereply">ForceReply</a> in your bot's questions, it will receive the user's answers even if it only receives replies, commands and mentions — without any extra work for the user.</p> 
+ <p>The last option is definitely more attractive. And if you use <a href="#forcereply">ForceReply</a> in your bot's questions, it will receive the user's answers even if it only receives replies, commands and mentions - without any extra work for the user.</p> 
 </blockquote>
 
     ForceReply(force_reply: Boolean, input_field_placeholder: String, selective: Boolean)
@@ -296,7 +296,7 @@
 
     MenuButtonDefault(type: String)
 
-<p>Contains information about why a request was unsuccessful.</p>
+<p>Describes why a request was unsuccessful.</p>
 
     ResponseParameters(migrate_to_chat_id: Integer, retry_after: Integer)
 
@@ -357,7 +357,7 @@
 
     sendDocument(chat_id: IntegerOrString, document: InputFileOrString, thumb: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_content_type_detection: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
-<p>Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as <a href="#document">Document</a>). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.</p>
+<p>Use this method to send video files, Telegram clients support MPEG4 videos (other formats may be sent as <a href="#document">Document</a>). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.</p>
 
     sendVideo(chat_id: IntegerOrString, video: InputFileOrString, duration: Integer, width: Integer, height: Integer, thumb: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, supports_streaming: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
@@ -369,7 +369,7 @@
 
     sendVoice(chat_id: IntegerOrString, voice: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, duration: Integer, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
-<p>As of <a href="https://telegram.org/blog/video-messages-and-telescope">v.4.0</a>, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent <a href="#message">Message</a> is returned.</p>
+<p>As of <a href="https://telegram.org/blog/video-messages-and-telescope">v.4.0</a>, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent <a href="#message">Message</a> is returned.</p>
 
     sendVideoNote(chat_id: IntegerOrString, video_note: InputFileOrString, duration: Integer, length: Integer, thumb: InputFileOrString, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
@@ -415,7 +415,7 @@
 
     getUserProfilePhotos(user_id: Integer, offset: Integer, limit: Integer)
 
-<p>Use this method to get basic info about a file and prepare it for downloading. For the moment, bots can download files of up to 20MB in size. On success, a <a href="#file">File</a> object is returned. The file can then be downloaded via the link <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code>, where <code>&lt;file_path&gt;</code> is taken from the response. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling <a href="#getfile">getFile</a> again.</p><p><strong>Note:</strong> This function may not preserve the original file name and MIME type. You should save the file's MIME type and name (if available) when the File object is received.</p>
+<p>Use this method to get basic information about a file and prepare it for downloading. For the moment, bots can download files of up to 20MB in size. On success, a <a href="#file">File</a> object is returned. The file can then be downloaded via the link <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code>, where <code>&lt;file_path&gt;</code> is taken from the response. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling <a href="#getfile">getFile</a> again.</p><p><strong>Note:</strong> This function may not preserve the original file name and MIME type. You should save the file's MIME type and name (if available) when the File object is received.</p>
 
     getFile(file_id: String)
 
@@ -534,7 +534,7 @@
     deleteChatStickerSet(chat_id: IntegerOrString)
 
 <p>Use this method to send answers to callback queries sent from <a href="/bots#inline-keyboards-and-on-the-fly-updating">inline keyboards</a>. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, <em>True</em> is returned.</p><blockquote> 
- <p>Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via <a href="https://t.me/botfather">@Botfather</a> and accept the terms. Otherwise, you may use links like <code>t.me/your_bot?start=XXXX</code> that open your bot with a parameter.</p> 
+ <p>Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via <a href="https://t.me/botfather">@BotFather</a> and accept the terms. Otherwise, you may use links like <code>t.me/your_bot?start=XXXX</code> that open your bot with a parameter.</p> 
 </blockquote>
 
     answerCallbackQuery(callback_query_id: String, text: String, show_alert: Boolean, url: String, cache_time: Integer)
@@ -603,7 +603,7 @@
 ### Data Types
 <p>This object represents a sticker.</p>
 
-    Sticker(file_id: String, file_unique_id: String, width: Integer, height: Integer, is_animated: Boolean, is_video: Boolean, thumb: PhotoSize, emoji: String, set_name: String, mask_position: MaskPosition, file_size: Integer)
+    Sticker(file_id: String, file_unique_id: String, width: Integer, height: Integer, is_animated: Boolean, is_video: Boolean, thumb: PhotoSize, emoji: String, set_name: String, premium_animation: File, mask_position: MaskPosition, file_size: Integer)
 
 <p>This object represents a sticker set.</p>
 
@@ -758,11 +758,11 @@
 
     InputInvoiceMessageContent(title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean)
 
-<p>Represents a <a href="#inlinequeryresult">result</a> of an inline query that was chosen by the user and sent to their chat partner.</p><p><strong>Note:</strong> It is necessary to enable <a href="/bots/inline#collecting-feedback">inline feedback</a> via <a href="https://t.me/botfather">@Botfather</a> in order to receive these objects in updates.</p>
+<p>Represents a <a href="#inlinequeryresult">result</a> of an inline query that was chosen by the user and sent to their chat partner.</p><p><strong>Note:</strong> It is necessary to enable <a href="/bots/inline#collecting-feedback">inline feedback</a> via <a href="https://t.me/botfather">@BotFather</a> in order to receive these objects in updates.</p>
 
     ChosenInlineResult(result_id: String, from: User, location: Location, inline_message_id: String, query: String)
 
-<p>Contains information about an inline message sent by a <a href="/bots/webapps">Web App</a> on behalf of a user.</p>
+<p>Describes an inline message sent by a <a href="/bots/webapps">Web App</a> on behalf of a user.</p>
 
     SentWebAppMessage(inline_message_id: String)
 
@@ -819,6 +819,10 @@
 
     sendInvoice(chat_id: IntegerOrString, title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, start_parameter: String, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: InlineKeyboardMarkup)
 
+<p>Use this method to create a link for an invoice. Returns the created invoice link as <em>String</em> on success.</p>
+
+    createInvoiceLink(title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean)
+
 <p>If you sent an invoice requesting a shipping address and the parameter <em>is_flexible</em> was specified, the Bot API will send an <a href="#update">Update</a> with a <em>shipping_query</em> field to the bot. Use this method to reply to shipping queries. On success, <em>True</em> is returned.</p>
 
     answerShippingQuery(shipping_query_id: String, ok: Boolean, shipping_options: List<ShippingOption>, error_message: String)
@@ -832,7 +836,7 @@
 ## Telegram Passport
 
 ### Data Types
-<p>Contains information about Telegram Passport data shared with the bot by the user.</p>
+<p>Describes Telegram Passport data shared with the bot by the user.</p>
 
     PassportData(data: List<EncryptedPassportElement>, credentials: EncryptedCredentials)
 
@@ -840,11 +844,11 @@
 
     PassportFile(file_id: String, file_unique_id: String, file_size: Integer, file_date: Integer)
 
-<p>Contains information about documents or other Telegram Passport elements shared with the bot by the user.</p>
+<p>Describes documents or other Telegram Passport elements shared with the bot by the user.</p>
 
     EncryptedPassportElement(type: String, data: String, phone_number: String, email: String, files: List<PassportFile>, front_side: PassportFile, reverse_side: PassportFile, selfie: PassportFile, translation: List<PassportFile>, hash: String)
 
-<p>Contains data required for decrypting and authenticating <a href="#encryptedpassportelement">EncryptedPassportElement</a>. See the <a href="https://core.telegram.org/passport#receiving-information">Telegram Passport Documentation</a> for a complete description of the data decryption and authentication processes.</p>
+<p>Describes data required for decrypting and authenticating <a href="#encryptedpassportelement">EncryptedPassportElement</a>. See the <a href="https://core.telegram.org/passport#receiving-information">Telegram Passport Documentation</a> for a complete description of the data decryption and authentication processes.</p>
 
     EncryptedCredentials(data: String, hash: String, secret: String)
 
@@ -914,7 +918,7 @@
     setGameScore(user_id: Integer, score: Integer, force: Boolean, disable_edit_message: Boolean, chat_id: Integer, message_id: Integer, inline_message_id: String)
 
 <p>Use this method to get data for high score tables. Will return the score of the specified user and several of their neighbors in a game. On success, returns an <em>Array</em> of <a href="#gamehighscore">GameHighScore</a> objects.</p><blockquote> 
- <p>This method will currently return scores for the target user, plus two of their closest neighbors on each side. Will also return the top three users if the user and his neighbors are not among them. Please note that this behavior is subject to change.</p> 
+ <p>This method will currently return scores for the target user, plus two of their closest neighbors on each side. Will also return the top three users if the user and their neighbors are not among them. Please note that this behavior is subject to change.</p> 
 </blockquote>
 
     getGameHighScores(user_id: Integer, chat_id: Integer, message_id: Integer, inline_message_id: String)

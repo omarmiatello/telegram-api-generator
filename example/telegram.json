@@ -1,7 +1,7 @@
 [
   {
     "name": "Getting updates",
-    "description": "\u003cp\u003eThere are two mutually exclusive ways of receiving updates for your bot — the \u003ca href\u003d\"#getupdates\"\u003egetUpdates\u003c/a\u003e method on one hand and \u003ca href\u003d\"#setwebhook\"\u003eWebhooks\u003c/a\u003e on the other. Incoming updates are stored on the server until the bot receives them either way, but they will not be kept longer than 24 hours.\u003c/p\u003e\n\u003cp\u003eRegardless of which option you choose, you will receive JSON-serialized \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e objects as a result.\u003c/p\u003e",
+    "description": "\u003cp\u003eThere are two mutually exclusive ways of receiving updates for your bot - the \u003ca href\u003d\"#getupdates\"\u003egetUpdates\u003c/a\u003e method on one hand and \u003ca href\u003d\"#setwebhook\"\u003ewebhooks\u003c/a\u003e on the other. Incoming updates are stored on the server until the bot receives them either way, but they will not be kept longer than 24 hours.\u003c/p\u003e\n\u003cp\u003eRegardless of which option you choose, you will receive JSON-serialized \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e objects as a result.\u003c/p\u003e",
     "docTypes": [
       {
         "name": "Update",
@@ -9,7 +9,7 @@
         "docFields": [
           {
             "name": "update_id",
-            "description": "The update\u0027s unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you\u0027re using \u003ca href\u003d\"#setwebhook\"\u003eWebhooks\u003c/a\u003e, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.",
+            "description": "The update\u0027s unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you\u0027re using \u003ca href\u003d\"#setwebhook\"\u003ewebhooks\u003c/a\u003e, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.",
             "type": {
               "name": "Integer"
             },
@@ -17,7 +17,7 @@
           },
           {
             "name": "message",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. New incoming message of any kind — text, photo, sticker, etc.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. New incoming message of any kind - text, photo, sticker, etc.",
             "type": {
               "name": "Message"
             },
@@ -33,7 +33,7 @@
           },
           {
             "name": "channel_post",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. New incoming channel post of any kind — text, photo, sticker, etc.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. New incoming channel post of any kind - text, photo, sticker, etc.",
             "type": {
               "name": "Message"
             },
@@ -137,7 +137,7 @@
       },
       {
         "name": "WebhookInfo",
-        "description": "\u003cp\u003eContains information about the current status of a webhook.\u003c/p\u003e",
+        "description": "\u003cp\u003eDescribes the current status of a webhook.\u003c/p\u003e",
         "docFields": [
           {
             "name": "url",
@@ -197,7 +197,7 @@
           },
           {
             "name": "max_connections",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery",
             "type": {
               "name": "Integer"
             },
@@ -267,11 +267,11 @@
       },
       {
         "name": "setWebhook",
-        "description": "\u003cp\u003eUse this method to specify a url and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e\u003cp\u003eIf you\u0027d like to make sure that the Webhook request comes from Telegram, we recommend using a secret path in the URL, e.g. \u003ccode\u003ehttps://www.example.com/\u0026lt;token\u0026gt;\u003c/code\u003e. Since nobody else knows your bot\u0027s token, you can be pretty sure it\u0027s us.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003e\u003cstrong\u003eNotes\u003c/strong\u003e\u003cbr\u003e\u003cstrong\u003e1.\u003c/strong\u003e You will not be able to receive updates using \u003ca href\u003d\"#getupdates\"\u003egetUpdates\u003c/a\u003e for as long as an outgoing webhook is set up.\u003cbr\u003e\u003cstrong\u003e2.\u003c/strong\u003e To use a self-signed certificate, you need to upload your \u003ca href\u003d\"/bots/self-signed\"\u003epublic key certificate\u003c/a\u003e using \u003cem\u003ecertificate\u003c/em\u003e parameter. Please upload as InputFile, sending a String will not work.\u003cbr\u003e\u003cstrong\u003e3.\u003c/strong\u003e Ports currently supported \u003cem\u003efor Webhooks\u003c/em\u003e: \u003cstrong\u003e443, 80, 88, 8443\u003c/strong\u003e.\u003c/p\u003e \n \u003cp\u003e\u003cstrong\u003eNEW!\u003c/strong\u003e If you\u0027re having any trouble setting up webhooks, please check out this \u003ca href\u003d\"/bots/webhooks\"\u003eamazing guide to Webhooks\u003c/a\u003e.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUse this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized \u003ca href\u003d\"#update\"\u003eUpdate\u003c/a\u003e. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e\u003cp\u003eIf you\u0027d like to make sure that the webhook was set by you, you can specify secret data in the parameter \u003cem\u003esecret_token\u003c/em\u003e. If specified, the request will contain a header “X-Telegram-Bot-Api-Secret-Token” with the secret token as content.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003e\u003cstrong\u003eNotes\u003c/strong\u003e\u003cbr\u003e\u003cstrong\u003e1.\u003c/strong\u003e You will not be able to receive updates using \u003ca href\u003d\"#getupdates\"\u003egetUpdates\u003c/a\u003e for as long as an outgoing webhook is set up.\u003cbr\u003e\u003cstrong\u003e2.\u003c/strong\u003e To use a self-signed certificate, you need to upload your \u003ca href\u003d\"/bots/self-signed\"\u003epublic key certificate\u003c/a\u003e using \u003cem\u003ecertificate\u003c/em\u003e parameter. Please upload as InputFile, sending a String will not work.\u003cbr\u003e\u003cstrong\u003e3.\u003c/strong\u003e Ports currently supported \u003cem\u003efor webhooks\u003c/em\u003e: \u003cstrong\u003e443, 80, 88, 8443\u003c/strong\u003e.\u003c/p\u003e \n \u003cp\u003eIf you\u0027re having any trouble setting up webhooks, please check out this \u003ca href\u003d\"/bots/webhooks\"\u003eamazing guide to webhooks\u003c/a\u003e.\u003c/p\u003e \n\u003c/blockquote\u003e",
         "docParameters": [
           {
             "name": "url",
-            "description": "HTTPS url to send updates to. Use an empty string to remove webhook integration",
+            "description": "HTTPS URL to send updates to. Use an empty string to remove webhook integration",
             "type": {
               "name": "String"
             },
@@ -295,7 +295,7 @@
           },
           {
             "name": "max_connections",
-            "description": "Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to \u003cem\u003e40\u003c/em\u003e. Use lower values to limit the load on your bot\u0027s server, and higher values to increase your bot\u0027s throughput.",
+            "description": "The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to \u003cem\u003e40\u003c/em\u003e. Use lower values to limit the load on your bot\u0027s server, and higher values to increase your bot\u0027s throughput.",
             "type": {
               "name": "Integer"
             },
@@ -317,6 +317,14 @@
             "description": "Pass \u003cem\u003eTrue\u003c/em\u003e to drop all pending updates",
             "type": {
               "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "secret_token",
+            "description": "A secret token to be sent in a header “X-Telegram-Bot-Api-Secret-Token” in every webhook request, 1-256 characters. Only characters \u003ccode\u003eA-Z\u003c/code\u003e, \u003ccode\u003ea-z\u003c/code\u003e, \u003ccode\u003e0-9\u003c/code\u003e, \u003ccode\u003e_\u003c/code\u003e and \u003ccode\u003e-\u003c/code\u003e are allowed. The header is useful to ensure that the request comes from a webhook set by you.",
+            "type": {
+              "name": "String"
             },
             "required": false
           }
@@ -405,6 +413,22 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003ca href\u003d\"https://en.wikipedia.org/wiki/IETF_language_tag\"\u003eIETF language tag\u003c/a\u003e of the user\u0027s language",
             "type": {
               "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "is_premium",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if this user is a Telegram Premium user",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "added_to_attachment_menu",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if this user added the bot to the attachment menu",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -504,7 +528,23 @@
           },
           {
             "name": "has_private_forwards",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if privacy settings of the other party in the private chat allows to use \u003ccode\u003etg://user?id\u003d\u0026lt;user_id\u0026gt;\u003c/code\u003e links only in chats with the user. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if privacy settings of the other party in the private chat allows to use \u003ccode\u003etg://user?id\u003d\u0026lt;user_id\u0026gt;\u003c/code\u003e links only in chats with the user. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "join_to_send_messages",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if users need to join the supergroup before they can send messages. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "join_by_request",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if all users directly joining the supergroup need to be approved by supergroup administrators. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
               "name": "Boolean"
             },
@@ -560,7 +600,7 @@
           },
           {
             "name": "has_protected_content",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if messages from the chat can\u0027t be forwarded to other chats. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if messages from the chat can\u0027t be forwarded to other chats. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
               "name": "Boolean"
             },
@@ -694,7 +734,7 @@
           },
           {
             "name": "is_automatic_forward",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the message is a channel post that was automatically forwarded to the connected discussion group",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the message is a channel post that was automatically forwarded to the connected discussion group",
             "type": {
               "name": "Boolean"
             },
@@ -726,7 +766,7 @@
           },
           {
             "name": "has_protected_content",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. True, if the message can\u0027t be forwarded",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the message can\u0027t be forwarded",
             "type": {
               "name": "Boolean"
             },
@@ -750,7 +790,7 @@
           },
           {
             "name": "text",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. For text messages, the actual UTF-8 text of the message, 0-4096 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. For text messages, the actual UTF-8 text of the message",
             "type": {
               "name": "String"
             },
@@ -836,7 +876,7 @@
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption for the animation, audio, document, photo, video or voice, 0-1024 characters",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption for the animation, audio, document, photo, video or voice",
             "type": {
               "name": "String"
             },
@@ -1154,7 +1194,7 @@
           },
           {
             "name": "url",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. For “text_link” only, url that will be opened after user taps on the text",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. For “text_link” only, URL that will be opened after user taps on the text",
             "type": {
               "name": "String"
             },
@@ -1294,7 +1334,7 @@
           },
           {
             "name": "file_size",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.",
             "type": {
               "name": "Integer"
             },
@@ -1364,7 +1404,7 @@
           },
           {
             "name": "file_size",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.",
             "type": {
               "name": "Integer"
             },
@@ -1426,7 +1466,7 @@
           },
           {
             "name": "file_size",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.",
             "type": {
               "name": "Integer"
             },
@@ -1496,7 +1536,7 @@
           },
           {
             "name": "mime_type",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Mime type of a file as defined by sender",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. MIME type of the file as defined by sender",
             "type": {
               "name": "String"
             },
@@ -1504,7 +1544,7 @@
           },
           {
             "name": "file_size",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.",
             "type": {
               "name": "Integer"
             },
@@ -1604,7 +1644,7 @@
           },
           {
             "name": "file_size",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.",
             "type": {
               "name": "Integer"
             },
@@ -1897,7 +1937,7 @@
           },
           {
             "name": "proximity_alert_radius",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. The maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only.",
             "type": {
               "name": "Integer"
             },
@@ -1969,7 +2009,7 @@
       },
       {
         "name": "WebAppData",
-        "description": "\u003cp\u003eContains data sent from a \u003ca href\u003d\"/bots/webapps\"\u003eWeb App\u003c/a\u003e to the bot.\u003c/p\u003e",
+        "description": "\u003cp\u003eDescribes data sent from a \u003ca href\u003d\"/bots/webapps\"\u003eWeb App\u003c/a\u003e to the bot.\u003c/p\u003e",
         "docFields": [
           {
             "name": "data",
@@ -1981,7 +2021,7 @@
           },
           {
             "name": "button_text",
-            "description": "Text of the \u003cem\u003eweb_app\u003c/em\u003e keyboard button, from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field.",
+            "description": "Text of the \u003cem\u003eweb_app\u003c/em\u003e keyboard button from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field.",
             "type": {
               "name": "String"
             },
@@ -2108,7 +2148,7 @@
       },
       {
         "name": "File",
-        "description": "\u003cp\u003eThis object represents a file ready to be downloaded. The file can be downloaded via the link \u003ccode\u003ehttps://api.telegram.org/file/bot\u0026lt;token\u0026gt;/\u0026lt;file_path\u0026gt;\u003c/code\u003e. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling \u003ca href\u003d\"#getfile\"\u003egetFile\u003c/a\u003e.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eMaximum file size to download is 20 MB\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eThis object represents a file ready to be downloaded. The file can be downloaded via the link \u003ccode\u003ehttps://api.telegram.org/file/bot\u0026lt;token\u0026gt;/\u0026lt;file_path\u0026gt;\u003c/code\u003e. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling \u003ca href\u003d\"#getfile\"\u003egetFile\u003c/a\u003e.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eThe maximum file size to download is 20 MB\u003c/p\u003e \n\u003c/blockquote\u003e",
         "docFields": [
           {
             "name": "file_id",
@@ -2128,7 +2168,7 @@
           },
           {
             "name": "file_size",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes, if known",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.",
             "type": {
               "name": "Integer"
             },
@@ -2146,7 +2186,7 @@
       },
       {
         "name": "WebAppInfo",
-        "description": "\u003cp\u003eContains information about a \u003ca href\u003d\"/bots/webapps\"\u003eWeb App\u003c/a\u003e.\u003c/p\u003e",
+        "description": "\u003cp\u003eDescribes a \u003ca href\u003d\"/bots/webapps\"\u003eWeb App\u003c/a\u003e.\u003c/p\u003e",
         "docFields": [
           {
             "name": "url",
@@ -2186,7 +2226,7 @@
           },
           {
             "name": "one_time_keyboard",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Requests clients to hide the keyboard as soon as it\u0027s been used. The keyboard will still be available, but clients will automatically display the usual letter-keyboard in the chat – the user can press a special button in the input field to see the custom keyboard again. Defaults to \u003cem\u003efalse\u003c/em\u003e.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Requests clients to hide the keyboard as soon as it\u0027s been used. The keyboard will still be available, but clients will automatically display the usual letter-keyboard in the chat - the user can press a special button in the input field to see the custom keyboard again. Defaults to \u003cem\u003efalse\u003c/em\u003e.",
             "type": {
               "name": "Boolean"
             },
@@ -2326,7 +2366,7 @@
           },
           {
             "name": "url",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. HTTP or tg:// url to be opened when the button is pressed. Links \u003ccode\u003etg://user?id\u003d\u0026lt;user_id\u0026gt;\u003c/code\u003e can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. HTTP or tg:// URL to be opened when the button is pressed. Links \u003ccode\u003etg://user?id\u003d\u0026lt;user_id\u0026gt;\u003c/code\u003e can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings.",
             "type": {
               "name": "String"
             },
@@ -2350,7 +2390,7 @@
           },
           {
             "name": "login_url",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. An HTTP URL used to automatically authorize the user. Can be used as a replacement for the \u003ca href\u003d\"https://core.telegram.org/widgets/login\"\u003eTelegram Login Widget\u003c/a\u003e.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the \u003ca href\u003d\"https://core.telegram.org/widgets/login\"\u003eTelegram Login Widget\u003c/a\u003e.",
             "type": {
               "name": "LoginUrl"
             },
@@ -2358,7 +2398,7 @@
           },
           {
             "name": "switch_inline_query",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot\u0027s username and the specified inline query in the input field. Can be empty, in which case just the bot\u0027s username will be inserted.\u003cbr\u003e\u003cbr\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This offers an easy way for users to start using your bot in \u003ca href\u003d\"/bots/inline\"\u003einline mode\u003c/a\u003e when they are currently in a private chat with it. Especially useful when combined with \u003ca href\u003d\"#answerinlinequery\"\u003e\u003cem\u003eswitch_pm…\u003c/em\u003e\u003c/a\u003e actions – in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot\u0027s username and the specified inline query in the input field. May be empty, in which case just the bot\u0027s username will be inserted.\u003cbr\u003e\u003cbr\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This offers an easy way for users to start using your bot in \u003ca href\u003d\"/bots/inline\"\u003einline mode\u003c/a\u003e when they are currently in a private chat with it. Especially useful when combined with \u003ca href\u003d\"#answerinlinequery\"\u003e\u003cem\u003eswitch_pm…\u003c/em\u003e\u003c/a\u003e actions - in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen.",
             "type": {
               "name": "String"
             },
@@ -2366,7 +2406,7 @@
           },
           {
             "name": "switch_inline_query_current_chat",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. If set, pressing the button will insert the bot\u0027s username and the specified inline query in the current chat\u0027s input field. Can be empty, in which case only the bot\u0027s username will be inserted.\u003cbr\u003e\u003cbr\u003eThis offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. If set, pressing the button will insert the bot\u0027s username and the specified inline query in the current chat\u0027s input field. May be empty, in which case only the bot\u0027s username will be inserted.\u003cbr\u003e\u003cbr\u003eThis offers a quick way for the user to open your bot in inline mode in the same chat - good for selecting something from multiple options.",
             "type": {
               "name": "String"
             },
@@ -2474,7 +2514,7 @@
           },
           {
             "name": "data",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Data associated with the callback button. Be aware that a bad client can send arbitrary data in this field.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Data associated with the callback button. Be aware that the message originated the query can contain no callback buttons with this data.",
             "type": {
               "name": "String"
             },
@@ -2492,7 +2532,7 @@
       },
       {
         "name": "ForceReply",
-        "description": "\u003cp\u003eUpon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot\u0027s message and tapped \u0027Reply\u0027). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice \u003ca href\u003d\"/bots#privacy-mode\"\u003eprivacy mode\u003c/a\u003e.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003e\u003cstrong\u003eExample:\u003c/strong\u003e A \u003ca href\u003d\"https://t.me/PollBot\"\u003epoll bot\u003c/a\u003e for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:\u003c/p\u003e \n \u003cul\u003e \n  \u003cli\u003eExplain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.\u003c/li\u003e \n  \u003cli\u003eGuide the user through a step-by-step process. \u0027Please send me your question\u0027, \u0027Cool, now let\u0027s add the first answer option\u0027, \u0027Great. Keep adding answer options, then send /done when you\u0027re ready\u0027.\u003c/li\u003e \n \u003c/ul\u003e \n \u003cp\u003eThe last option is definitely more attractive. And if you use \u003ca href\u003d\"#forcereply\"\u003eForceReply\u003c/a\u003e in your bot\u0027s questions, it will receive the user\u0027s answers even if it only receives replies, commands and mentions — without any extra work for the user.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUpon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot\u0027s message and tapped \u0027Reply\u0027). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice \u003ca href\u003d\"/bots#privacy-mode\"\u003eprivacy mode\u003c/a\u003e.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003e\u003cstrong\u003eExample:\u003c/strong\u003e A \u003ca href\u003d\"https://t.me/PollBot\"\u003epoll bot\u003c/a\u003e for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:\u003c/p\u003e \n \u003cul\u003e \n  \u003cli\u003eExplain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.\u003c/li\u003e \n  \u003cli\u003eGuide the user through a step-by-step process. \u0027Please send me your question\u0027, \u0027Cool, now let\u0027s add the first answer option\u0027, \u0027Great. Keep adding answer options, then send /done when you\u0027re ready\u0027.\u003c/li\u003e \n \u003c/ul\u003e \n \u003cp\u003eThe last option is definitely more attractive. And if you use \u003ca href\u003d\"#forcereply\"\u003eForceReply\u003c/a\u003e in your bot\u0027s questions, it will receive the user\u0027s answers even if it only receives replies, commands and mentions - without any extra work for the user.\u003c/p\u003e \n\u003c/blockquote\u003e",
         "docFields": [
           {
             "name": "force_reply",
@@ -2620,7 +2660,7 @@
           },
           {
             "name": "member_limit",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999",
             "type": {
               "name": "Integer"
             },
@@ -3498,7 +3538,7 @@
       },
       {
         "name": "ResponseParameters",
-        "description": "\u003cp\u003eContains information about why a request was unsuccessful.\u003c/p\u003e",
+        "description": "\u003cp\u003eDescribes why a request was unsuccessful.\u003c/p\u003e",
         "docFields": [
           {
             "name": "migrate_to_chat_id",
@@ -3532,7 +3572,7 @@
           },
           {
             "name": "media",
-            "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://\u0026lt;file_attach_name\u0026gt;” to upload a new one using multipart/form-data under \u0026lt;file_attach_name\u0026gt; name. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://\u0026lt;file_attach_name\u0026gt;” to upload a new one using multipart/form-data under \u0026lt;file_attach_name\u0026gt; name. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "name": "String"
             },
@@ -3581,7 +3621,7 @@
           },
           {
             "name": "media",
-            "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://\u0026lt;file_attach_name\u0026gt;” to upload a new one using multipart/form-data under \u0026lt;file_attach_name\u0026gt; name. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://\u0026lt;file_attach_name\u0026gt;” to upload a new one using multipart/form-data under \u0026lt;file_attach_name\u0026gt; name. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "name": "String"
             },
@@ -3589,7 +3629,7 @@
           },
           {
             "name": "thumb",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -3678,7 +3718,7 @@
           },
           {
             "name": "media",
-            "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://\u0026lt;file_attach_name\u0026gt;” to upload a new one using multipart/form-data under \u0026lt;file_attach_name\u0026gt; name. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://\u0026lt;file_attach_name\u0026gt;” to upload a new one using multipart/form-data under \u0026lt;file_attach_name\u0026gt; name. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "name": "String"
             },
@@ -3686,7 +3726,7 @@
           },
           {
             "name": "thumb",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -3767,7 +3807,7 @@
           },
           {
             "name": "media",
-            "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://\u0026lt;file_attach_name\u0026gt;” to upload a new one using multipart/form-data under \u0026lt;file_attach_name\u0026gt; name. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://\u0026lt;file_attach_name\u0026gt;” to upload a new one using multipart/form-data under \u0026lt;file_attach_name\u0026gt; name. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "name": "String"
             },
@@ -3775,7 +3815,7 @@
           },
           {
             "name": "thumb",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -3856,7 +3896,7 @@
           },
           {
             "name": "media",
-            "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://\u0026lt;file_attach_name\u0026gt;” to upload a new one using multipart/form-data under \u0026lt;file_attach_name\u0026gt; name. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://\u0026lt;file_attach_name\u0026gt;” to upload a new one using multipart/form-data under \u0026lt;file_attach_name\u0026gt; name. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "name": "String"
             },
@@ -3864,7 +3904,7 @@
           },
           {
             "name": "thumb",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -4270,7 +4310,7 @@
           },
           {
             "name": "photo",
-            "description": "Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo\u0027s width and height must not exceed 10000 in total. Width and height ratio must be at most 20. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo\u0027s width and height must not exceed 10000 in total. Width and height ratio must be at most 20. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -4392,7 +4432,7 @@
           },
           {
             "name": "audio",
-            "description": "Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -4459,7 +4499,7 @@
           },
           {
             "name": "thumb",
-            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -4554,7 +4594,7 @@
           },
           {
             "name": "document",
-            "description": "File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -4570,7 +4610,7 @@
           },
           {
             "name": "thumb",
-            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -4680,7 +4720,7 @@
       },
       {
         "name": "sendVideo",
-        "description": "\u003cp\u003eUse this method to send video files, Telegram clients support mp4 videos (other formats may be sent as \u003ca href\u003d\"#document\"\u003eDocument\u003c/a\u003e). On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to send video files, Telegram clients support MPEG4 videos (other formats may be sent as \u003ca href\u003d\"#document\"\u003eDocument\u003c/a\u003e). On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -4700,7 +4740,7 @@
           },
           {
             "name": "video",
-            "description": "Video to send. Pass a file_id as String to send a video that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a video from the Internet, or upload a new video using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Video to send. Pass a file_id as String to send a video that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a video from the Internet, or upload a new video using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -4740,7 +4780,7 @@
           },
           {
             "name": "thumb",
-            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -4870,7 +4910,7 @@
           },
           {
             "name": "animation",
-            "description": "Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -4910,7 +4950,7 @@
           },
           {
             "name": "thumb",
-            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -5032,7 +5072,7 @@
           },
           {
             "name": "voice",
-            "description": "Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -5142,7 +5182,7 @@
       },
       {
         "name": "sendVideoNote",
-        "description": "\u003cp\u003eAs of \u003ca href\u003d\"https://telegram.org/blog/video-messages-and-telescope\"\u003ev.4.0\u003c/a\u003e, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eAs of \u003ca href\u003d\"https://telegram.org/blog/video-messages-and-telescope\"\u003ev.4.0\u003c/a\u003e, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -5162,7 +5202,7 @@
           },
           {
             "name": "video_note",
-            "description": "Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e. Sending video notes by a URL is currently unsupported",
+            "description": "Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e. Sending video notes by a URL is currently unsupported",
             "type": {
               "validTypes": [
                 {
@@ -5194,7 +5234,7 @@
           },
           {
             "name": "thumb",
-            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -5532,7 +5572,7 @@
           },
           {
             "name": "proximity_alert_radius",
-            "description": "Maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.",
+            "description": "The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.",
             "type": {
               "name": "Integer"
             },
@@ -6224,11 +6264,11 @@
       },
       {
         "name": "getFile",
-        "description": "\u003cp\u003eUse this method to get basic info about a file and prepare it for downloading. For the moment, bots can download files of up to 20MB in size. On success, a \u003ca href\u003d\"#file\"\u003eFile\u003c/a\u003e object is returned. The file can then be downloaded via the link \u003ccode\u003ehttps://api.telegram.org/file/bot\u0026lt;token\u0026gt;/\u0026lt;file_path\u0026gt;\u003c/code\u003e, where \u003ccode\u003e\u0026lt;file_path\u0026gt;\u003c/code\u003e is taken from the response. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling \u003ca href\u003d\"#getfile\"\u003egetFile\u003c/a\u003e again.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This function may not preserve the original file name and MIME type. You should save the file\u0027s MIME type and name (if available) when the File object is received.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to get basic information about a file and prepare it for downloading. For the moment, bots can download files of up to 20MB in size. On success, a \u003ca href\u003d\"#file\"\u003eFile\u003c/a\u003e object is returned. The file can then be downloaded via the link \u003ccode\u003ehttps://api.telegram.org/file/bot\u0026lt;token\u0026gt;/\u0026lt;file_path\u0026gt;\u003c/code\u003e, where \u003ccode\u003e\u0026lt;file_path\u0026gt;\u003c/code\u003e is taken from the response. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling \u003ca href\u003d\"#getfile\"\u003egetFile\u003c/a\u003e again.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e This function may not preserve the original file name and MIME type. You should save the file\u0027s MIME type and name (if available) when the File object is received.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "file_id",
-            "description": "File identifier to get info about",
+            "description": "File identifier to get information about",
             "type": {
               "name": "String"
             },
@@ -6702,7 +6742,7 @@
           },
           {
             "name": "member_limit",
-            "description": "Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999",
+            "description": "The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999",
             "type": {
               "name": "Integer"
             },
@@ -6767,7 +6807,7 @@
           },
           {
             "name": "member_limit",
-            "description": "Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999",
+            "description": "The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999",
             "type": {
               "name": "Integer"
             },
@@ -7304,7 +7344,7 @@
       },
       {
         "name": "answerCallbackQuery",
-        "description": "\u003cp\u003eUse this method to send answers to callback queries sent from \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboards\u003c/a\u003e. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eAlternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via \u003ca href\u003d\"https://t.me/botfather\"\u003e@Botfather\u003c/a\u003e and accept the terms. Otherwise, you may use links like \u003ccode\u003et.me/your_bot?start\u003dXXXX\u003c/code\u003e that open your bot with a parameter.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUse this method to send answers to callback queries sent from \u003ca href\u003d\"/bots#inline-keyboards-and-on-the-fly-updating\"\u003einline keyboards\u003c/a\u003e. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, \u003cem\u003eTrue\u003c/em\u003e is returned.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eAlternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via \u003ca href\u003d\"https://t.me/botfather\"\u003e@BotFather\u003c/a\u003e and accept the terms. Otherwise, you may use links like \u003ccode\u003et.me/your_bot?start\u003dXXXX\u003c/code\u003e that open your bot with a parameter.\u003c/p\u003e \n\u003c/blockquote\u003e",
         "docParameters": [
           {
             "name": "callback_query_id",
@@ -7332,7 +7372,7 @@
           },
           {
             "name": "url",
-            "description": "URL that will be opened by the user\u0027s client. If you have created a \u003ca href\u003d\"#game\"\u003eGame\u003c/a\u003e and accepted the conditions via \u003ca href\u003d\"https://t.me/botfather\"\u003e@Botfather\u003c/a\u003e, specify the URL that opens your game — note that this will only work if the query comes from a \u003ca href\u003d\"#inlinekeyboardbutton\"\u003e\u003cem\u003ecallback_game\u003c/em\u003e\u003c/a\u003e button.\u003cbr\u003e\u003cbr\u003eOtherwise, you may use links like \u003ccode\u003et.me/your_bot?start\u003dXXXX\u003c/code\u003e that open your bot with a parameter.",
+            "description": "URL that will be opened by the user\u0027s client. If you have created a \u003ca href\u003d\"#game\"\u003eGame\u003c/a\u003e and accepted the conditions via \u003ca href\u003d\"https://t.me/botfather\"\u003e@BotFather\u003c/a\u003e, specify the URL that opens your game - note that this will only work if the query comes from a \u003ca href\u003d\"#inlinekeyboardbutton\"\u003e\u003cem\u003ecallback_game\u003c/em\u003e\u003c/a\u003e button.\u003cbr\u003e\u003cbr\u003eOtherwise, you may use links like \u003ccode\u003et.me/your_bot?start\u003dXXXX\u003c/code\u003e that open your bot with a parameter.",
             "type": {
               "name": "String"
             },
@@ -7451,7 +7491,7 @@
           },
           {
             "name": "menu_button",
-            "description": "A JSON-serialized object for the new bot\u0027s menu button. Defaults to \u003ca href\u003d\"#menubuttondefault\"\u003eMenuButtonDefault\u003c/a\u003e",
+            "description": "A JSON-serialized object for the bot\u0027s new menu button. Defaults to \u003ca href\u003d\"#menubuttondefault\"\u003eMenuButtonDefault\u003c/a\u003e",
             "type": {
               "name": "MenuButton"
             },
@@ -8036,6 +8076,14 @@
             "required": false
           },
           {
+            "name": "premium_animation",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Premium animation for the sticker, if the sticker is premium",
+            "type": {
+              "name": "File"
+            },
+            "required": false
+          },
+          {
             "name": "mask_position",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. For mask stickers, the position where the mask should be placed",
             "type": {
@@ -8180,7 +8228,7 @@
           },
           {
             "name": "sticker",
-            "description": "Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -8284,7 +8332,7 @@
           },
           {
             "name": "png_sticker",
-            "description": "\u003cstrong\u003ePNG\u003c/strong\u003e image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cstrong\u003ePNG\u003c/strong\u003e image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "name": "InputFile"
             },
@@ -8309,7 +8357,7 @@
           },
           {
             "name": "name",
-            "description": "Short name of sticker set, to be used in \u003ccode\u003et.me/addstickers/\u003c/code\u003e URLs (e.g., \u003cem\u003eanimals\u003c/em\u003e). Can contain only english letters, digits and underscores. Must begin with a letter, can\u0027t contain consecutive underscores and must end in \u003ccode\u003e\"_by_\u0026lt;bot_username\u0026gt;\"\u003c/code\u003e. \u003ccode\u003e\u0026lt;bot_username\u0026gt;\u003c/code\u003e is case insensitive. 1-64 characters.",
+            "description": "Short name of sticker set, to be used in \u003ccode\u003et.me/addstickers/\u003c/code\u003e URLs (e.g., \u003cem\u003eanimals\u003c/em\u003e). Can contain only English letters, digits and underscores. Must begin with a letter, can\u0027t contain consecutive underscores and must end in \u003ccode\u003e\"_by_\u0026lt;bot_username\u0026gt;\"\u003c/code\u003e. \u003ccode\u003e\u0026lt;bot_username\u0026gt;\u003c/code\u003e is case insensitive. 1-64 characters.",
             "type": {
               "name": "String"
             },
@@ -8325,7 +8373,7 @@
           },
           {
             "name": "png_sticker",
-            "description": "\u003cstrong\u003ePNG\u003c/strong\u003e image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a \u003cem\u003efile_id\u003c/em\u003e as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cstrong\u003ePNG\u003c/strong\u003e image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a \u003cem\u003efile_id\u003c/em\u003e as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -8406,7 +8454,7 @@
           },
           {
             "name": "png_sticker",
-            "description": "\u003cstrong\u003ePNG\u003c/strong\u003e image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a \u003cem\u003efile_id\u003c/em\u003e as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e",
+            "description": "\u003cstrong\u003ePNG\u003c/strong\u003e image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a \u003cem\u003efile_id\u003c/em\u003e as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
             "type": {
               "validTypes": [
                 {
@@ -8521,7 +8569,7 @@
           },
           {
             "name": "thumb",
-            "description": "A \u003cstrong\u003ePNG\u003c/strong\u003e image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a \u003cstrong\u003eTGS\u003c/strong\u003e animation with the thumbnail up to 32 kilobytes in size; see \u003ca href\u003d\"https://core.telegram.org/stickers#animated-sticker-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/stickers#animated-sticker-requirements\"\u003ehttps://core.telegram.org/stickers#animated-sticker-requirements\u003c/a\u003e for animated sticker technical requirements, or a \u003cstrong\u003eWEBM\u003c/strong\u003e video with the thumbnail up to 32 kilobytes in size; see \u003ca href\u003d\"https://core.telegram.org/stickers#video-sticker-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/stickers#video-sticker-requirements\"\u003ehttps://core.telegram.org/stickers#video-sticker-requirements\u003c/a\u003e for video sticker technical requirements. Pass a \u003cem\u003efile_id\u003c/em\u003e as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore info on Sending Files »\u003c/a\u003e. Animated sticker set thumbnails can\u0027t be uploaded via HTTP URL.",
+            "description": "A \u003cstrong\u003ePNG\u003c/strong\u003e image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a \u003cstrong\u003eTGS\u003c/strong\u003e animation with the thumbnail up to 32 kilobytes in size; see \u003ca href\u003d\"https://core.telegram.org/stickers#animated-sticker-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/stickers#animated-sticker-requirements\"\u003ehttps://core.telegram.org/stickers#animated-sticker-requirements\u003c/a\u003e for animated sticker technical requirements, or a \u003cstrong\u003eWEBM\u003c/strong\u003e video with the thumbnail up to 32 kilobytes in size; see \u003ca href\u003d\"https://core.telegram.org/stickers#video-sticker-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/stickers#video-sticker-requirements\"\u003ehttps://core.telegram.org/stickers#video-sticker-requirements\u003c/a\u003e for video sticker technical requirements. Pass a \u003cem\u003efile_id\u003c/em\u003e as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e. Animated sticker set thumbnails can\u0027t be uploaded via HTTP URL.",
             "type": {
               "validTypes": [
                 {
@@ -8584,7 +8632,7 @@
           },
           {
             "name": "chat_type",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Type of the chat, from which the inline query was sent. Can be either “sender” for a private chat with the inline query sender, “private”, “group”, “supergroup”, or “channel”. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Type of the chat from which the inline query was sent. Can be either “sender” for a private chat with the inline query sender, “private”, “group”, “supergroup”, or “channel”. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat",
             "type": {
               "name": "String"
             },
@@ -9001,7 +9049,7 @@
           },
           {
             "name": "mpeg4_url",
-            "description": "A valid URL for the MP4 file. File size must not exceed 1MB",
+            "description": "A valid URL for the MPEG4 file. File size must not exceed 1MB",
             "type": {
               "name": "String"
             },
@@ -9147,7 +9195,7 @@
           },
           {
             "name": "mime_type",
-            "description": "Mime type of the content of video url, “text/html” or “video/mp4”",
+            "description": "MIME type of the content of the video URL, “text/html” or “video/mp4”",
             "type": {
               "name": "String"
             },
@@ -9548,7 +9596,7 @@
           },
           {
             "name": "mime_type",
-            "description": "Mime type of the content of the file, either “application/pdf” or “application/zip”",
+            "description": "MIME type of the content of the file, either “application/pdf” or “application/zip”",
             "type": {
               "name": "String"
             },
@@ -10291,7 +10339,7 @@
           },
           {
             "name": "mpeg4_file_id",
-            "description": "A valid file identifier for the MP4 file",
+            "description": "A valid file identifier for the MPEG4 file",
             "type": {
               "name": "String"
             },
@@ -11063,7 +11111,7 @@
           },
           {
             "name": "provider_token",
-            "description": "Payment provider token, obtained via \u003ca href\u003d\"https://t.me/botfather\"\u003eBotfather\u003c/a\u003e",
+            "description": "Payment provider token, obtained via \u003ca href\u003d\"https://t.me/botfather\"\u003e@BotFather\u003c/a\u003e",
             "type": {
               "name": "String"
             },
@@ -11117,7 +11165,7 @@
           },
           {
             "name": "photo_url",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service.",
             "type": {
               "name": "String"
             },
@@ -11125,7 +11173,7 @@
           },
           {
             "name": "photo_size",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Photo size",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Photo size in bytes",
             "type": {
               "name": "Integer"
             },
@@ -11181,7 +11229,7 @@
           },
           {
             "name": "send_phone_number_to_provider",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e, if user\u0027s phone number should be sent to provider",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e, if the user\u0027s phone number should be sent to provider",
             "type": {
               "name": "Boolean"
             },
@@ -11189,7 +11237,7 @@
           },
           {
             "name": "send_email_to_provider",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e, if user\u0027s email address should be sent to provider",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e, if the user\u0027s email address should be sent to provider",
             "type": {
               "name": "Boolean"
             },
@@ -11207,7 +11255,7 @@
       },
       {
         "name": "ChosenInlineResult",
-        "description": "\u003cp\u003eRepresents a \u003ca href\u003d\"#inlinequeryresult\"\u003eresult\u003c/a\u003e of an inline query that was chosen by the user and sent to their chat partner.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e It is necessary to enable \u003ca href\u003d\"/bots/inline#collecting-feedback\"\u003einline feedback\u003c/a\u003e via \u003ca href\u003d\"https://t.me/botfather\"\u003e@Botfather\u003c/a\u003e in order to receive these objects in updates.\u003c/p\u003e",
+        "description": "\u003cp\u003eRepresents a \u003ca href\u003d\"#inlinequeryresult\"\u003eresult\u003c/a\u003e of an inline query that was chosen by the user and sent to their chat partner.\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e It is necessary to enable \u003ca href\u003d\"/bots/inline#collecting-feedback\"\u003einline feedback\u003c/a\u003e via \u003ca href\u003d\"https://t.me/botfather\"\u003e@BotFather\u003c/a\u003e in order to receive these objects in updates.\u003c/p\u003e",
         "docFields": [
           {
             "name": "result_id",
@@ -11253,7 +11301,7 @@
       },
       {
         "name": "SentWebAppMessage",
-        "description": "\u003cp\u003eContains information about an inline message sent by a \u003ca href\u003d\"/bots/webapps\"\u003eWeb App\u003c/a\u003e on behalf of a user.\u003c/p\u003e",
+        "description": "\u003cp\u003eDescribes an inline message sent by a \u003ca href\u003d\"/bots/webapps\"\u003eWeb App\u003c/a\u003e on behalf of a user.\u003c/p\u003e",
         "docFields": [
           {
             "name": "inline_message_id",
@@ -11440,7 +11488,7 @@
         "docFields": [
           {
             "name": "country_code",
-            "description": "ISO 3166-1 alpha-2 country code",
+            "description": "Two-letter ISO 3166-1 alpha-2 country code",
             "type": {
               "name": "String"
             },
@@ -11597,7 +11645,7 @@
           },
           {
             "name": "order_info",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Order info provided by the user",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Order information provided by the user",
             "type": {
               "name": "OrderInfo"
             },
@@ -11713,7 +11761,7 @@
           },
           {
             "name": "order_info",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Order info provided by the user",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Order information provided by the user",
             "type": {
               "name": "OrderInfo"
             },
@@ -11769,7 +11817,7 @@
           },
           {
             "name": "provider_token",
-            "description": "Payments provider token, obtained via \u003ca href\u003d\"https://t.me/botfather\"\u003eBotfather\u003c/a\u003e",
+            "description": "Payment provider token, obtained via \u003ca href\u003d\"https://t.me/botfather\"\u003e@BotFather\u003c/a\u003e",
             "type": {
               "name": "String"
             },
@@ -11823,7 +11871,7 @@
           },
           {
             "name": "provider_data",
-            "description": "A JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.",
+            "description": "JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.",
             "type": {
               "name": "String"
             },
@@ -11839,7 +11887,7 @@
           },
           {
             "name": "photo_size",
-            "description": "Photo size",
+            "description": "Photo size in bytes",
             "type": {
               "name": "Integer"
             },
@@ -11895,7 +11943,7 @@
           },
           {
             "name": "send_phone_number_to_provider",
-            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if user\u0027s phone number should be sent to provider",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the user\u0027s phone number should be sent to provider",
             "type": {
               "name": "Boolean"
             },
@@ -11903,7 +11951,7 @@
           },
           {
             "name": "send_email_to_provider",
-            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if user\u0027s email address should be sent to provider",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the user\u0027s email address should be sent to provider",
             "type": {
               "name": "Boolean"
             },
@@ -11977,6 +12025,181 @@
         ],
         "returns": {
           "name": "Message"
+        }
+      },
+      {
+        "name": "createInvoiceLink",
+        "description": "\u003cp\u003eUse this method to create a link for an invoice. Returns the created invoice link as \u003cem\u003eString\u003c/em\u003e on success.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "title",
+            "description": "Product name, 1-32 characters",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "description",
+            "description": "Product description, 1-255 characters",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "payload",
+            "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "provider_token",
+            "description": "Payment provider token, obtained via \u003ca href\u003d\"https://t.me/botfather\"\u003eBotFather\u003c/a\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "currency",
+            "description": "Three-letter ISO 4217 currency code, see \u003ca href\u003d\"/bots/payments#supported-currencies\"\u003emore on currencies\u003c/a\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "prices",
+            "description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)",
+            "type": {
+              "elementType": {
+                "name": "LabeledPrice"
+              },
+              "name": "List\u003cLabeledPrice\u003e"
+            },
+            "required": true
+          },
+          {
+            "name": "max_tip_amount",
+            "description": "The maximum accepted amount for tips in the \u003cem\u003esmallest units\u003c/em\u003e of the currency (integer, \u003cstrong\u003enot\u003c/strong\u003e float/double). For example, for a maximum tip of \u003ccode\u003eUS$ 1.45\u003c/code\u003e pass \u003ccode\u003emax_tip_amount \u003d 145\u003c/code\u003e. See the \u003cem\u003eexp\u003c/em\u003e parameter in \u003ca href\u003d\"https://core.telegram.org/bots/payments/currencies.json\"\u003ecurrencies.json\u003c/a\u003e, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "suggested_tip_amounts",
+            "description": "A JSON-serialized array of suggested amounts of tips in the \u003cem\u003esmallest units\u003c/em\u003e of the currency (integer, \u003cstrong\u003enot\u003c/strong\u003e float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed \u003cem\u003emax_tip_amount\u003c/em\u003e.",
+            "type": {
+              "elementType": {
+                "name": "Integer"
+              },
+              "name": "List\u003cInteger\u003e"
+            },
+            "required": false
+          },
+          {
+            "name": "provider_data",
+            "description": "JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "photo_url",
+            "description": "URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service.",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "photo_size",
+            "description": "Photo size in bytes",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "photo_width",
+            "description": "Photo width",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "photo_height",
+            "description": "Photo height",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "need_name",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if you require the user\u0027s full name to complete the order",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "need_phone_number",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if you require the user\u0027s phone number to complete the order",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "need_email",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if you require the user\u0027s email address to complete the order",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "need_shipping_address",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if you require the user\u0027s shipping address to complete the order",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "send_phone_number_to_provider",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the user\u0027s phone number should be sent to the provider",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "send_email_to_provider",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the user\u0027s email address should be sent to the provider",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "is_flexible",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the final price depends on the shipping method",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "name": "String"
         }
       },
       {
@@ -12064,7 +12287,7 @@
     "docTypes": [
       {
         "name": "PassportData",
-        "description": "\u003cp\u003eContains information about Telegram Passport data shared with the bot by the user.\u003c/p\u003e",
+        "description": "\u003cp\u003eDescribes Telegram Passport data shared with the bot by the user.\u003c/p\u003e",
         "docFields": [
           {
             "name": "data",
@@ -12127,7 +12350,7 @@
       },
       {
         "name": "EncryptedPassportElement",
-        "description": "\u003cp\u003eContains information about documents or other Telegram Passport elements shared with the bot by the user.\u003c/p\u003e",
+        "description": "\u003cp\u003eDescribes documents or other Telegram Passport elements shared with the bot by the user.\u003c/p\u003e",
         "docFields": [
           {
             "name": "type",
@@ -12219,7 +12442,7 @@
       },
       {
         "name": "EncryptedCredentials",
-        "description": "\u003cp\u003eContains data required for decrypting and authenticating \u003ca href\u003d\"#encryptedpassportelement\"\u003eEncryptedPassportElement\u003c/a\u003e. See the \u003ca href\u003d\"https://core.telegram.org/passport#receiving-information\"\u003eTelegram Passport Documentation\u003c/a\u003e for a complete description of the data decryption and authentication processes.\u003c/p\u003e",
+        "description": "\u003cp\u003eDescribes data required for decrypting and authenticating \u003ca href\u003d\"#encryptedpassportelement\"\u003eEncryptedPassportElement\u003c/a\u003e. See the \u003ca href\u003d\"https://core.telegram.org/passport#receiving-information\"\u003eTelegram Passport Documentation\u003c/a\u003e for a complete description of the data decryption and authentication processes.\u003c/p\u003e",
         "docFields": [
           {
             "name": "data",
@@ -12745,7 +12968,7 @@
           },
           {
             "name": "game_short_name",
-            "description": "Short name of the game, serves as the unique identifier for the game. Set up your games via \u003ca href\u003d\"https://t.me/botfather\"\u003eBotfather\u003c/a\u003e.",
+            "description": "Short name of the game, serves as the unique identifier for the game. Set up your games via \u003ca href\u003d\"https://t.me/botfather\"\u003e@BotFather\u003c/a\u003e.",
             "type": {
               "name": "String"
             },
@@ -12880,7 +13103,7 @@
       },
       {
         "name": "getGameHighScores",
-        "description": "\u003cp\u003eUse this method to get data for high score tables. Will return the score of the specified user and several of their neighbors in a game. On success, returns an \u003cem\u003eArray\u003c/em\u003e of \u003ca href\u003d\"#gamehighscore\"\u003eGameHighScore\u003c/a\u003e objects.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eThis method will currently return scores for the target user, plus two of their closest neighbors on each side. Will also return the top three users if the user and his neighbors are not among them. Please note that this behavior is subject to change.\u003c/p\u003e \n\u003c/blockquote\u003e",
+        "description": "\u003cp\u003eUse this method to get data for high score tables. Will return the score of the specified user and several of their neighbors in a game. On success, returns an \u003cem\u003eArray\u003c/em\u003e of \u003ca href\u003d\"#gamehighscore\"\u003eGameHighScore\u003c/a\u003e objects.\u003c/p\u003e\u003cblockquote\u003e \n \u003cp\u003eThis method will currently return scores for the target user, plus two of their closest neighbors on each side. Will also return the top three users if the user and their neighbors are not among them. Please note that this behavior is subject to change.\u003c/p\u003e \n\u003c/blockquote\u003e",
         "docParameters": [
           {
             "name": "user_id",

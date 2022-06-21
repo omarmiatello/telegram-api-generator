@@ -11,10 +11,10 @@
 
 | name | type | required | description |
 |---|---|---|---|
-| update_id | Integer | true | The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you're using <a href="#setwebhook">Webhooks</a>, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially. |
-| message | Message | false | <em>Optional</em>. New incoming message of any kind — text, photo, sticker, etc. |
+| update_id | Integer | true | The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you're using <a href="#setwebhook">webhooks</a>, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially. |
+| message | Message | false | <em>Optional</em>. New incoming message of any kind - text, photo, sticker, etc. |
 | edited_message | Message | false | <em>Optional</em>. New version of a message that is known to the bot and was edited |
-| channel_post | Message | false | <em>Optional</em>. New incoming channel post of any kind — text, photo, sticker, etc. |
+| channel_post | Message | false | <em>Optional</em>. New incoming channel post of any kind - text, photo, sticker, etc. |
 | edited_channel_post | Message | false | <em>Optional</em>. New version of a channel post that is known to the bot and was edited |
 | inline_query | InlineQuery | false | <em>Optional</em>. New incoming <a href="#inline-mode">inline</a> query |
 | chosen_inline_result | ChosenInlineResult | false | <em>Optional</em>. The result of an <a href="#inline-mode">inline</a> query that was chosen by a user and sent to their chat partner. Please see our documentation on the <a href="/bots/inline#collecting-feedback">feedback collecting</a> for details on how to enable these updates for your bot. |
@@ -31,7 +31,7 @@
 
     WebhookInfo(url: String, has_custom_certificate: Boolean, pending_update_count: Integer, ip_address: String, last_error_date: Integer, last_error_message: String, last_synchronization_error_date: Integer, max_connections: Integer, allowed_updates: List<String>)
 
-<p>Contains information about the current status of a webhook.</p>
+<p>Describes the current status of a webhook.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -42,7 +42,7 @@
 | last_error_date | Integer | false | <em>Optional</em>. Unix time for the most recent error that happened when trying to deliver an update via webhook |
 | last_error_message | String | false | <em>Optional</em>. Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook |
 | last_synchronization_error_date | Integer | false | <em>Optional</em>. Unix time of the most recent error that happened when trying to synchronize available updates with Telegram datacenters |
-| max_connections | Integer | false | <em>Optional</em>. Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery |
+| max_connections | Integer | false | <em>Optional</em>. The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery |
 | allowed_updates | List<String> | false | <em>Optional</em>. A list of update types the bot is subscribed to. Defaults to all update types except <em>chat_member</em> |
 
 
@@ -64,21 +64,22 @@
 
 #### setWebhook
 
-    setWebhook(url: String, certificate: InputFile, ip_address: String, max_connections: Integer, allowed_updates: List<String>, drop_pending_updates: Boolean)
+    setWebhook(url: String, certificate: InputFile, ip_address: String, max_connections: Integer, allowed_updates: List<String>, drop_pending_updates: Boolean, secret_token: String)
 
-<p>Use this method to specify a url and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the Webhook request comes from Telegram, we recommend using a secret path in the URL, e.g. <code>https://www.example.com/&lt;token&gt;</code>. Since nobody else knows your bot's token, you can be pretty sure it's us.</p><blockquote> 
- <p><strong>Notes</strong><br><strong>1.</strong> You will not be able to receive updates using <a href="#getupdates">getUpdates</a> for as long as an outgoing webhook is set up.<br><strong>2.</strong> To use a self-signed certificate, you need to upload your <a href="/bots/self-signed">public key certificate</a> using <em>certificate</em> parameter. Please upload as InputFile, sending a String will not work.<br><strong>3.</strong> Ports currently supported <em>for Webhooks</em>: <strong>443, 80, 88, 8443</strong>.</p> 
- <p><strong>NEW!</strong> If you're having any trouble setting up webhooks, please check out this <a href="/bots/webhooks">amazing guide to Webhooks</a>.</p> 
+<p>Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter <em>secret_token</em>. If specified, the request will contain a header “X-Telegram-Bot-Api-Secret-Token” with the secret token as content.</p><blockquote> 
+ <p><strong>Notes</strong><br><strong>1.</strong> You will not be able to receive updates using <a href="#getupdates">getUpdates</a> for as long as an outgoing webhook is set up.<br><strong>2.</strong> To use a self-signed certificate, you need to upload your <a href="/bots/self-signed">public key certificate</a> using <em>certificate</em> parameter. Please upload as InputFile, sending a String will not work.<br><strong>3.</strong> Ports currently supported <em>for webhooks</em>: <strong>443, 80, 88, 8443</strong>.</p> 
+ <p>If you're having any trouble setting up webhooks, please check out this <a href="/bots/webhooks">amazing guide to webhooks</a>.</p> 
 </blockquote>
 
 | name | type | required | description |
 |---|---|---|---|
-| url | String | true | HTTPS url to send updates to. Use an empty string to remove webhook integration |
+| url | String | true | HTTPS URL to send updates to. Use an empty string to remove webhook integration |
 | certificate | InputFile | false | Upload your public key certificate so that the root certificate in use can be checked. See our <a href="/bots/self-signed">self-signed guide</a> for details. |
 | ip_address | String | false | The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS |
-| max_connections | Integer | false | Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to <em>40</em>. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput. |
+| max_connections | Integer | false | The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to <em>40</em>. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput. |
 | allowed_updates | List<String> | false | A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em> (default). If not specified, the previous setting will be used.<br>Please note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time. |
 | drop_pending_updates | Boolean | false | Pass <em>True</em> to drop all pending updates |
+| secret_token | String | false | A secret token to be sent in a header “X-Telegram-Bot-Api-Secret-Token” in every webhook request, 1-256 characters. Only characters <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed. The header is useful to ensure that the request comes from a webhook set by you. |
 
 #### deleteWebhook
 
@@ -103,7 +104,7 @@
 ### Data Types
 #### User
 
-    User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String, can_join_groups: Boolean, can_read_all_group_messages: Boolean, supports_inline_queries: Boolean)
+    User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String, is_premium: Boolean, added_to_attachment_menu: Boolean, can_join_groups: Boolean, can_read_all_group_messages: Boolean, supports_inline_queries: Boolean)
 
 <p>This object represents a Telegram user or bot.</p>
 
@@ -115,13 +116,15 @@
 | last_name | String | false | <em>Optional</em>. User's or bot's last name |
 | username | String | false | <em>Optional</em>. User's or bot's username |
 | language_code | String | false | <em>Optional</em>. <a href="https://en.wikipedia.org/wiki/IETF_language_tag">IETF language tag</a> of the user's language |
+| is_premium | Boolean | false | <em>Optional</em>. <em>True</em>, if this user is a Telegram Premium user |
+| added_to_attachment_menu | Boolean | false | <em>Optional</em>. <em>True</em>, if this user added the bot to the attachment menu |
 | can_join_groups | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can be invited to groups. Returned only in <a href="#getme">getMe</a>. |
 | can_read_all_group_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if <a href="https://core.telegram.org/bots#privacy-mode">privacy mode</a> is disabled for the bot. Returned only in <a href="#getme">getMe</a>. |
 | supports_inline_queries | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot supports inline queries. Returned only in <a href="#getme">getMe</a>. |
 
 #### Chat
 
-    Chat(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, photo: ChatPhoto, bio: String, has_private_forwards: Boolean, description: String, invite_link: String, pinned_message: Message, permissions: ChatPermissions, slow_mode_delay: Integer, message_auto_delete_time: Integer, has_protected_content: Boolean, sticker_set_name: String, can_set_sticker_set: Boolean, linked_chat_id: Integer, location: ChatLocation)
+    Chat(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, photo: ChatPhoto, bio: String, has_private_forwards: Boolean, join_to_send_messages: Boolean, join_by_request: Boolean, description: String, invite_link: String, pinned_message: Message, permissions: ChatPermissions, slow_mode_delay: Integer, message_auto_delete_time: Integer, has_protected_content: Boolean, sticker_set_name: String, can_set_sticker_set: Boolean, linked_chat_id: Integer, location: ChatLocation)
 
 <p>This object represents a chat.</p>
 
@@ -135,14 +138,16 @@
 | last_name | String | false | <em>Optional</em>. Last name of the other party in a private chat |
 | photo | ChatPhoto | false | <em>Optional</em>. Chat photo. Returned only in <a href="#getchat">getChat</a>. |
 | bio | String | false | <em>Optional</em>. Bio of the other party in a private chat. Returned only in <a href="#getchat">getChat</a>. |
-| has_private_forwards | Boolean | false | <em>Optional</em>. True, if privacy settings of the other party in the private chat allows to use <code>tg://user?id=&lt;user_id&gt;</code> links only in chats with the user. Returned only in <a href="#getchat">getChat</a>. |
+| has_private_forwards | Boolean | false | <em>Optional</em>. <em>True</em>, if privacy settings of the other party in the private chat allows to use <code>tg://user?id=&lt;user_id&gt;</code> links only in chats with the user. Returned only in <a href="#getchat">getChat</a>. |
+| join_to_send_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if users need to join the supergroup before they can send messages. Returned only in <a href="#getchat">getChat</a>. |
+| join_by_request | Boolean | false | <em>Optional</em>. <em>True</em>, if all users directly joining the supergroup need to be approved by supergroup administrators. Returned only in <a href="#getchat">getChat</a>. |
 | description | String | false | <em>Optional</em>. Description, for groups, supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>. |
 | invite_link | String | false | <em>Optional</em>. Primary invite link, for groups, supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>. |
 | pinned_message | Message | false | <em>Optional</em>. The most recent pinned message (by sending date). Returned only in <a href="#getchat">getChat</a>. |
 | permissions | ChatPermissions | false | <em>Optional</em>. Default chat member permissions, for groups and supergroups. Returned only in <a href="#getchat">getChat</a>. |
 | slow_mode_delay | Integer | false | <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user; in seconds. Returned only in <a href="#getchat">getChat</a>. |
 | message_auto_delete_time | Integer | false | <em>Optional</em>. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in <a href="#getchat">getChat</a>. |
-| has_protected_content | Boolean | false | <em>Optional</em>. True, if messages from the chat can't be forwarded to other chats. Returned only in <a href="#getchat">getChat</a>. |
+| has_protected_content | Boolean | false | <em>Optional</em>. <em>True</em>, if messages from the chat can't be forwarded to other chats. Returned only in <a href="#getchat">getChat</a>. |
 | sticker_set_name | String | false | <em>Optional</em>. For supergroups, name of group sticker set. Returned only in <a href="#getchat">getChat</a>. |
 | can_set_sticker_set | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can change the group sticker set. Returned only in <a href="#getchat">getChat</a>. |
 | linked_chat_id | Integer | false | <em>Optional</em>. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in <a href="#getchat">getChat</a>. |
@@ -167,14 +172,14 @@
 | forward_signature | String | false | <em>Optional</em>. For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present |
 | forward_sender_name | String | false | <em>Optional</em>. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages |
 | forward_date | Integer | false | <em>Optional</em>. For forwarded messages, date the original message was sent in Unix time |
-| is_automatic_forward | Boolean | false | <em>Optional</em>. True, if the message is a channel post that was automatically forwarded to the connected discussion group |
+| is_automatic_forward | Boolean | false | <em>Optional</em>. <em>True</em>, if the message is a channel post that was automatically forwarded to the connected discussion group |
 | reply_to_message | Message | false | <em>Optional</em>. For replies, the original message. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply. |
 | via_bot | User | false | <em>Optional</em>. Bot through which the message was sent |
 | edit_date | Integer | false | <em>Optional</em>. Date the message was last edited in Unix time |
-| has_protected_content | Boolean | false | <em>Optional</em>. True, if the message can't be forwarded |
+| has_protected_content | Boolean | false | <em>Optional</em>. <em>True</em>, if the message can't be forwarded |
 | media_group_id | String | false | <em>Optional</em>. The unique identifier of a media message group this message belongs to |
 | author_signature | String | false | <em>Optional</em>. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator |
-| text | String | false | <em>Optional</em>. For text messages, the actual UTF-8 text of the message, 0-4096 characters |
+| text | String | false | <em>Optional</em>. For text messages, the actual UTF-8 text of the message |
 | entities | List<MessageEntity> | false | <em>Optional</em>. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text |
 | animation | Animation | false | <em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set |
 | audio | Audio | false | <em>Optional</em>. Message is an audio file, information about the file |
@@ -184,7 +189,7 @@
 | video | Video | false | <em>Optional</em>. Message is a video, information about the video |
 | video_note | VideoNote | false | <em>Optional</em>. Message is a <a href="https://telegram.org/blog/video-messages-and-telescope">video note</a>, information about the video message |
 | voice | Voice | false | <em>Optional</em>. Message is a voice message, information about the file |
-| caption | String | false | <em>Optional</em>. Caption for the animation, audio, document, photo, video or voice, 0-1024 characters |
+| caption | String | false | <em>Optional</em>. Caption for the animation, audio, document, photo, video or voice |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption |
 | contact | Contact | false | <em>Optional</em>. Message is a shared contact, information about the contact |
 | dice | Dice | false | <em>Optional</em>. Message is a dice with random value |
@@ -237,7 +242,7 @@
 | type | String | true | Type of the entity. Currently, can be “mention” (<code>@username</code>), “hashtag” (<code>#hashtag</code>), “cashtag” (<code>$USD</code>), “bot_command” (<code>/start@jobs_bot</code>), “url” (<code>https://telegram.org</code>), “email” (<code>do-not-reply@telegram.org</code>), “phone_number” (<code>+1-212-555-0123</code>), “bold” (<strong>bold text</strong>), “italic” (<em>italic text</em>), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler” (spoiler message), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users <a href="https://telegram.org/blog/edit#new-mentions">without usernames</a>) |
 | offset | Integer | true | Offset in UTF-16 code units to the start of the entity |
 | length | Integer | true | Length of the entity in UTF-16 code units |
-| url | String | false | <em>Optional</em>. For “text_link” only, url that will be opened after user taps on the text |
+| url | String | false | <em>Optional</em>. For “text_link” only, URL that will be opened after user taps on the text |
 | user | User | false | <em>Optional</em>. For “text_mention” only, the mentioned user |
 | language | String | false | <em>Optional</em>. For “pre” only, the programming language of the entity text |
 
@@ -271,7 +276,7 @@
 | thumb | PhotoSize | false | <em>Optional</em>. Animation thumbnail as defined by sender |
 | file_name | String | false | <em>Optional</em>. Original animation filename as defined by sender |
 | mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
-| file_size | Integer | false | <em>Optional</em>. File size in bytes |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value. |
 
 #### Audio
 
@@ -288,7 +293,7 @@
 | title | String | false | <em>Optional</em>. Title of the audio as defined by sender or by audio tags |
 | file_name | String | false | <em>Optional</em>. Original filename as defined by sender |
 | mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
-| file_size | Integer | false | <em>Optional</em>. File size in bytes |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value. |
 | thumb | PhotoSize | false | <em>Optional</em>. Thumbnail of the album cover to which the music file belongs |
 
 #### Document
@@ -304,7 +309,7 @@
 | thumb | PhotoSize | false | <em>Optional</em>. Document thumbnail as defined by sender |
 | file_name | String | false | <em>Optional</em>. Original filename as defined by sender |
 | mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
-| file_size | Integer | false | <em>Optional</em>. File size in bytes |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value. |
 
 #### Video
 
@@ -321,8 +326,8 @@
 | duration | Integer | true | Duration of the video in seconds as defined by sender |
 | thumb | PhotoSize | false | <em>Optional</em>. Video thumbnail |
 | file_name | String | false | <em>Optional</em>. Original filename as defined by sender |
-| mime_type | String | false | <em>Optional</em>. Mime type of a file as defined by sender |
-| file_size | Integer | false | <em>Optional</em>. File size in bytes |
+| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value. |
 
 #### VideoNote
 
@@ -351,7 +356,7 @@
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
 | duration | Integer | true | Duration of the audio in seconds as defined by sender |
 | mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
-| file_size | Integer | false | <em>Optional</em>. File size in bytes |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value. |
 
 #### Contact
 
@@ -436,7 +441,7 @@
 | horizontal_accuracy | Float | false | <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500 |
 | live_period | Integer | false | <em>Optional</em>. Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only. |
 | heading | Integer | false | <em>Optional</em>. The direction in which user is moving, in degrees; 1-360. For active live locations only. |
-| proximity_alert_radius | Integer | false | <em>Optional</em>. Maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only. |
+| proximity_alert_radius | Integer | false | <em>Optional</em>. The maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only. |
 
 #### Venue
 
@@ -458,12 +463,12 @@
 
     WebAppData(data: String, button_text: String)
 
-<p>Contains data sent from a <a href="/bots/webapps">Web App</a> to the bot.</p>
+<p>Describes data sent from a <a href="/bots/webapps">Web App</a> to the bot.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | data | String | true | The data. Be aware that a bad client can send arbitrary data in this field. |
-| button_text | String | true | Text of the <em>web_app</em> keyboard button, from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field. |
+| button_text | String | true | Text of the <em>web_app</em> keyboard button from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field. |
 
 #### ProximityAlertTriggered
 
@@ -533,21 +538,21 @@
     File(file_id: String, file_unique_id: String, file_size: Integer, file_path: String)
 
 <p>This object represents a file ready to be downloaded. The file can be downloaded via the link <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code>. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling <a href="#getfile">getFile</a>.</p><blockquote> 
- <p>Maximum file size to download is 20 MB</p> 
+ <p>The maximum file size to download is 20 MB</p> 
 </blockquote>
 
 | name | type | required | description |
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| file_size | Integer | false | <em>Optional</em>. File size in bytes, if known |
+| file_size | Integer | false | <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value. |
 | file_path | String | false | <em>Optional</em>. File path. Use <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code> to get the file. |
 
 #### WebAppInfo
 
     WebAppInfo(url: String)
 
-<p>Contains information about a <a href="/bots/webapps">Web App</a>.</p>
+<p>Describes a <a href="/bots/webapps">Web App</a>.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -563,7 +568,7 @@
 |---|---|---|---|
 | keyboard | List<List<KeyboardButton>> | true | Array of button rows, each represented by an Array of <a href="#keyboardbutton">KeyboardButton</a> objects |
 | resize_keyboard | Boolean | false | <em>Optional</em>. Requests clients to resize the keyboard vertically for optimal fit (e.g., make the keyboard smaller if there are just two rows of buttons). Defaults to <em>false</em>, in which case the custom keyboard is always of the same height as the app's standard keyboard. |
-| one_time_keyboard | Boolean | false | <em>Optional</em>. Requests clients to hide the keyboard as soon as it's been used. The keyboard will still be available, but clients will automatically display the usual letter-keyboard in the chat – the user can press a special button in the input field to see the custom keyboard again. Defaults to <em>false</em>. |
+| one_time_keyboard | Boolean | false | <em>Optional</em>. Requests clients to hide the keyboard as soon as it's been used. The keyboard will still be available, but clients will automatically display the usual letter-keyboard in the chat - the user can press a special button in the input field to see the custom keyboard again. Defaults to <em>false</em>. |
 | input_field_placeholder | String | false | <em>Optional</em>. The placeholder to be shown in the input field when the keyboard is active; 1-64 characters |
 | selective | Boolean | false | <em>Optional</em>. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the <em>text</em> of the <a href="#message">Message</a> object; 2) if the bot's message is a reply (has <em>reply_to_message_id</em>), sender of the original message.<br><br><em>Example:</em> A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard. |
 
@@ -621,12 +626,12 @@
 | name | type | required | description |
 |---|---|---|---|
 | text | String | true | Label text on the button |
-| url | String | false | <em>Optional</em>. HTTP or tg:// url to be opened when the button is pressed. Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings. |
+| url | String | false | <em>Optional</em>. HTTP or tg:// URL to be opened when the button is pressed. Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings. |
 | callback_data | String | false | <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when button is pressed, 1-64 bytes |
 | web_app | WebAppInfo | false | <em>Optional</em>. Description of the <a href="/bots/webapps">Web App</a> that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Available only in private chats between a user and the bot. |
-| login_url | LoginUrl | false | <em>Optional</em>. An HTTP URL used to automatically authorize the user. Can be used as a replacement for the <a href="https://core.telegram.org/widgets/login">Telegram Login Widget</a>. |
-| switch_inline_query | String | false | <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. Can be empty, in which case just the bot's username will be inserted.<br><br><strong>Note:</strong> This offers an easy way for users to start using your bot in <a href="/bots/inline">inline mode</a> when they are currently in a private chat with it. Especially useful when combined with <a href="#answerinlinequery"><em>switch_pm…</em></a> actions – in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen. |
-| switch_inline_query_current_chat | String | false | <em>Optional</em>. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. Can be empty, in which case only the bot's username will be inserted.<br><br>This offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options. |
+| login_url | LoginUrl | false | <em>Optional</em>. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the <a href="https://core.telegram.org/widgets/login">Telegram Login Widget</a>. |
+| switch_inline_query | String | false | <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted.<br><br><strong>Note:</strong> This offers an easy way for users to start using your bot in <a href="/bots/inline">inline mode</a> when they are currently in a private chat with it. Especially useful when combined with <a href="#answerinlinequery"><em>switch_pm…</em></a> actions - in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen. |
+| switch_inline_query_current_chat | String | false | <em>Optional</em>. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted.<br><br>This offers a quick way for the user to open your bot in inline mode in the same chat - good for selecting something from multiple options. |
 | callback_game | CallbackGame | false | <em>Optional</em>. Description of the game that will be launched when the user presses the button.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row. |
 | pay | Boolean | false | <em>Optional</em>. Specify <em>True</em>, to send a <a href="#payments">Pay button</a>.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row and can only be used in invoice messages. |
 
@@ -660,7 +665,7 @@
 | message | Message | false | <em>Optional</em>. Message with the callback button that originated the query. Note that message content and message date will not be available if the message is too old |
 | inline_message_id | String | false | <em>Optional</em>. Identifier of the message sent via the bot in inline mode, that originated the query. |
 | chat_instance | String | true | Global identifier, uniquely corresponding to the chat to which the message with the callback button was sent. Useful for high scores in <a href="#games">games</a>. |
-| data | String | false | <em>Optional</em>. Data associated with the callback button. Be aware that a bad client can send arbitrary data in this field. |
+| data | String | false | <em>Optional</em>. Data associated with the callback button. Be aware that the message originated the query can contain no callback buttons with this data. |
 | game_short_name | String | false | <em>Optional</em>. Short name of a <a href="#games">Game</a> to be returned, serves as the unique identifier for the game |
 
 #### ForceReply
@@ -673,7 +678,7 @@
   <li>Explain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.</li> 
   <li>Guide the user through a step-by-step process. 'Please send me your question', 'Cool, now let's add the first answer option', 'Great. Keep adding answer options, then send /done when you're ready'.</li> 
  </ul> 
- <p>The last option is definitely more attractive. And if you use <a href="#forcereply">ForceReply</a> in your bot's questions, it will receive the user's answers even if it only receives replies, commands and mentions — without any extra work for the user.</p> 
+ <p>The last option is definitely more attractive. And if you use <a href="#forcereply">ForceReply</a> in your bot's questions, it will receive the user's answers even if it only receives replies, commands and mentions - without any extra work for the user.</p> 
 </blockquote>
 
 | name | type | required | description |
@@ -710,7 +715,7 @@
 | is_revoked | Boolean | true | <em>True</em>, if the link is revoked |
 | name | String | false | <em>Optional</em>. Invite link name |
 | expire_date | Integer | false | <em>Optional</em>. Point in time (Unix timestamp) when the link will expire or has been expired |
-| member_limit | Integer | false | <em>Optional</em>. Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999 |
+| member_limit | Integer | false | <em>Optional</em>. The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999 |
 | pending_join_request_count | Integer | false | <em>Optional</em>. Number of pending join requests created using this link |
 
 #### ChatAdministratorRights
@@ -1003,7 +1008,7 @@
 
     ResponseParameters(migrate_to_chat_id: Integer, retry_after: Integer)
 
-<p>Contains information about why a request was unsuccessful.</p>
+<p>Describes why a request was unsuccessful.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1019,7 +1024,7 @@
 | name | type | required | description |
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>photo</em> |
-| media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a> |
+| media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a> |
 | caption | String | false | <em>Optional</em>. Caption of the photo to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
@@ -1033,8 +1038,8 @@
 | name | type | required | description |
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>video</em> |
-| media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a> |
-| thumb | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a> |
+| thumb | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
 | caption | String | false | <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
@@ -1052,8 +1057,8 @@
 | name | type | required | description |
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>animation</em> |
-| media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a> |
-| thumb | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a> |
+| thumb | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
 | caption | String | false | <em>Optional</em>. Caption of the animation to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
@@ -1070,8 +1075,8 @@
 | name | type | required | description |
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>audio</em> |
-| media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a> |
-| thumb | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a> |
+| thumb | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
 | caption | String | false | <em>Optional</em>. Caption of the audio to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
@@ -1088,8 +1093,8 @@
 | name | type | required | description |
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>document</em> |
-| media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More info on Sending Files »</a> |
-| thumb | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a> |
+| thumb | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
 | caption | String | false | <em>Optional</em>. Caption of the document to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
@@ -1174,7 +1179,7 @@
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| photo | InputFileOrString | true | Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. <a href="#sending-files">More info on Sending Files »</a> |
+| photo | InputFileOrString | true | Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. <a href="#sending-files">More information on Sending Files »</a> |
 | caption | String | false | Photo caption (may also be used when resending photos by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
@@ -1193,14 +1198,14 @@
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| audio | InputFileOrString | true | Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
+| audio | InputFileOrString | true | Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a> |
 | caption | String | false | Audio caption, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | duration | Integer | false | Duration of the audio in seconds |
 | performer | String | false | Performer |
 | title | String | false | Track name |
-| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
@@ -1216,8 +1221,8 @@
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| document | InputFileOrString | true | File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
-| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| document | InputFileOrString | true | File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a> |
+| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
 | caption | String | false | Document caption (may also be used when resending documents by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
@@ -1232,16 +1237,16 @@
 
     sendVideo(chat_id: IntegerOrString, video: InputFileOrString, duration: Integer, width: Integer, height: Integer, thumb: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, supports_streaming: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
-<p>Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as <a href="#document">Document</a>). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.</p>
+<p>Use this method to send video files, Telegram clients support MPEG4 videos (other formats may be sent as <a href="#document">Document</a>). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| video | InputFileOrString | true | Video to send. Pass a file_id as String to send a video that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a video from the Internet, or upload a new video using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
+| video | InputFileOrString | true | Video to send. Pass a file_id as String to send a video that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a video from the Internet, or upload a new video using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a> |
 | duration | Integer | false | Duration of sent video in seconds |
 | width | Integer | false | Video width |
 | height | Integer | false | Video height |
-| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
 | caption | String | false | Video caption (may also be used when resending videos by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
@@ -1261,11 +1266,11 @@
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| animation | InputFileOrString | true | Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
+| animation | InputFileOrString | true | Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a> |
 | duration | Integer | false | Duration of sent animation in seconds |
 | width | Integer | false | Animation width |
 | height | Integer | false | Animation height |
-| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
 | caption | String | false | Animation caption (may also be used when resending animation by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
@@ -1284,7 +1289,7 @@
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| voice | InputFileOrString | true | Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
+| voice | InputFileOrString | true | Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a> |
 | caption | String | false | Voice message caption, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the voice message caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
@@ -1299,15 +1304,15 @@
 
     sendVideoNote(chat_id: IntegerOrString, video_note: InputFileOrString, duration: Integer, length: Integer, thumb: InputFileOrString, disable_notification: Boolean, protect_content: Boolean, reply_to_message_id: Integer, allow_sending_without_reply: Boolean, reply_markup: KeyboardOption)
 
-<p>As of <a href="https://telegram.org/blog/video-messages-and-telescope">v.4.0</a>, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent <a href="#message">Message</a> is returned.</p>
+<p>As of <a href="https://telegram.org/blog/video-messages-and-telescope">v.4.0</a>, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent <a href="#message">Message</a> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| video_note | InputFileOrString | true | Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>. Sending video notes by a URL is currently unsupported |
+| video_note | InputFileOrString | true | Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a>. Sending video notes by a URL is currently unsupported |
 | duration | Integer | false | Duration of sent video in seconds |
 | length | Integer | false | Video width and height, i.e. diameter of the video message |
-| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a> |
+| thumb | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
@@ -1365,7 +1370,7 @@
 | longitude | Float | true | Longitude of new location |
 | horizontal_accuracy | Float | false | The radius of uncertainty for the location, measured in meters; 0-1500 |
 | heading | Integer | false | Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified. |
-| proximity_alert_radius | Integer | false | Maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified. |
+| proximity_alert_radius | Integer | false | The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified. |
 | reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for a new <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. |
 
 #### stopMessageLiveLocation
@@ -1495,11 +1500,11 @@
 
     getFile(file_id: String)
 
-<p>Use this method to get basic info about a file and prepare it for downloading. For the moment, bots can download files of up to 20MB in size. On success, a <a href="#file">File</a> object is returned. The file can then be downloaded via the link <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code>, where <code>&lt;file_path&gt;</code> is taken from the response. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling <a href="#getfile">getFile</a> again.</p><p><strong>Note:</strong> This function may not preserve the original file name and MIME type. You should save the file's MIME type and name (if available) when the File object is received.</p>
+<p>Use this method to get basic information about a file and prepare it for downloading. For the moment, bots can download files of up to 20MB in size. On success, a <a href="#file">File</a> object is returned. The file can then be downloaded via the link <code>https://api.telegram.org/file/bot&lt;token&gt;/&lt;file_path&gt;</code>, where <code>&lt;file_path&gt;</code> is taken from the response. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling <a href="#getfile">getFile</a> again.</p><p><strong>Note:</strong> This function may not preserve the original file name and MIME type. You should save the file's MIME type and name (if available) when the File object is received.</p>
 
 | name | type | required | description |
 |---|---|---|---|
-| file_id | String | true | File identifier to get info about |
+| file_id | String | true | File identifier to get information about |
 
 #### banChatMember
 
@@ -1629,7 +1634,7 @@
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | name | String | false | Invite link name; 0-32 characters |
 | expire_date | Integer | false | Point in time (Unix timestamp) when the link will expire |
-| member_limit | Integer | false | Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999 |
+| member_limit | Integer | false | The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999 |
 | creates_join_request | Boolean | false | <em>True</em>, if users joining the chat via the link need to be approved by chat administrators. If <em>True</em>, <em>member_limit</em> can't be specified |
 
 #### editChatInviteLink
@@ -1644,7 +1649,7 @@
 | invite_link | String | true | The invite link to edit |
 | name | String | false | Invite link name; 0-32 characters |
 | expire_date | Integer | false | Point in time (Unix timestamp) when the link will expire |
-| member_limit | Integer | false | Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999 |
+| member_limit | Integer | false | The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999 |
 | creates_join_request | Boolean | false | <em>True</em>, if users joining the chat via the link need to be approved by chat administrators. If <em>True</em>, <em>member_limit</em> can't be specified |
 
 #### revokeChatInviteLink
@@ -1833,7 +1838,7 @@
     answerCallbackQuery(callback_query_id: String, text: String, show_alert: Boolean, url: String, cache_time: Integer)
 
 <p>Use this method to send answers to callback queries sent from <a href="/bots#inline-keyboards-and-on-the-fly-updating">inline keyboards</a>. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, <em>True</em> is returned.</p><blockquote> 
- <p>Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via <a href="https://t.me/botfather">@Botfather</a> and accept the terms. Otherwise, you may use links like <code>t.me/your_bot?start=XXXX</code> that open your bot with a parameter.</p> 
+ <p>Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via <a href="https://t.me/botfather">@BotFather</a> and accept the terms. Otherwise, you may use links like <code>t.me/your_bot?start=XXXX</code> that open your bot with a parameter.</p> 
 </blockquote>
 
 | name | type | required | description |
@@ -1841,7 +1846,7 @@
 | callback_query_id | String | true | Unique identifier for the query to be answered |
 | text | String | false | Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters |
 | show_alert | Boolean | false | If <em>True</em>, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to <em>false</em>. |
-| url | String | false | URL that will be opened by the user's client. If you have created a <a href="#game">Game</a> and accepted the conditions via <a href="https://t.me/botfather">@Botfather</a>, specify the URL that opens your game — note that this will only work if the query comes from a <a href="#inlinekeyboardbutton"><em>callback_game</em></a> button.<br><br>Otherwise, you may use links like <code>t.me/your_bot?start=XXXX</code> that open your bot with a parameter. |
+| url | String | false | URL that will be opened by the user's client. If you have created a <a href="#game">Game</a> and accepted the conditions via <a href="https://t.me/botfather">@BotFather</a>, specify the URL that opens your game - note that this will only work if the query comes from a <a href="#inlinekeyboardbutton"><em>callback_game</em></a> button.<br><br>Otherwise, you may use links like <code>t.me/your_bot?start=XXXX</code> that open your bot with a parameter. |
 | cache_time | Integer | false | The maximum amount of time in seconds that the result of the callback query may be cached client-side. Telegram apps will support caching starting in version 3.14. Defaults to 0. |
 
 #### setMyCommands
@@ -1887,7 +1892,7 @@
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | Integer | false | Unique identifier for the target private chat. If not specified, default bot's menu button will be changed |
-| menu_button | MenuButton | false | A JSON-serialized object for the new bot's menu button. Defaults to <a href="#menubuttondefault">MenuButtonDefault</a> |
+| menu_button | MenuButton | false | A JSON-serialized object for the bot's new menu button. Defaults to <a href="#menubuttondefault">MenuButtonDefault</a> |
 
 #### getChatMenuButton
 
@@ -2015,7 +2020,7 @@
 ### Data Types
 #### Sticker
 
-    Sticker(file_id: String, file_unique_id: String, width: Integer, height: Integer, is_animated: Boolean, is_video: Boolean, thumb: PhotoSize, emoji: String, set_name: String, mask_position: MaskPosition, file_size: Integer)
+    Sticker(file_id: String, file_unique_id: String, width: Integer, height: Integer, is_animated: Boolean, is_video: Boolean, thumb: PhotoSize, emoji: String, set_name: String, premium_animation: File, mask_position: MaskPosition, file_size: Integer)
 
 <p>This object represents a sticker.</p>
 
@@ -2030,6 +2035,7 @@
 | thumb | PhotoSize | false | <em>Optional</em>. Sticker thumbnail in the .WEBP or .JPG format |
 | emoji | String | false | <em>Optional</em>. Emoji associated with the sticker |
 | set_name | String | false | <em>Optional</em>. Name of the sticker set to which the sticker belongs |
+| premium_animation | File | false | <em>Optional</em>. Premium animation for the sticker, if the sticker is premium |
 | mask_position | MaskPosition | false | <em>Optional</em>. For mask stickers, the position where the mask should be placed |
 | file_size | Integer | false | <em>Optional</em>. File size in bytes |
 
@@ -2073,7 +2079,7 @@
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| sticker | InputFileOrString | true | Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
+| sticker | InputFileOrString | true | Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
@@ -2099,7 +2105,7 @@
 | name | type | required | description |
 |---|---|---|---|
 | user_id | Integer | true | User identifier of sticker file owner |
-| png_sticker | InputFile | true | <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. <a href="#sending-files">More info on Sending Files »</a> |
+| png_sticker | InputFile | true | <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. <a href="#sending-files">More information on Sending Files »</a> |
 
 #### createNewStickerSet
 
@@ -2110,9 +2116,9 @@
 | name | type | required | description |
 |---|---|---|---|
 | user_id | Integer | true | User identifier of created sticker set owner |
-| name | String | true | Short name of sticker set, to be used in <code>t.me/addstickers/</code> URLs (e.g., <em>animals</em>). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in <code>"_by_&lt;bot_username&gt;"</code>. <code>&lt;bot_username&gt;</code> is case insensitive. 1-64 characters. |
+| name | String | true | Short name of sticker set, to be used in <code>t.me/addstickers/</code> URLs (e.g., <em>animals</em>). Can contain only English letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in <code>"_by_&lt;bot_username&gt;"</code>. <code>&lt;bot_username&gt;</code> is case insensitive. 1-64 characters. |
 | title | String | true | Sticker set title, 1-64 characters |
-| png_sticker | InputFileOrString | false | <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
+| png_sticker | InputFileOrString | false | <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a> |
 | tgs_sticker | InputFile | false | <strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/stickers#animated-sticker-requirements"></a><a href="https://core.telegram.org/stickers#animated-sticker-requirements">https://core.telegram.org/stickers#animated-sticker-requirements</a> for technical requirements |
 | webm_sticker | InputFile | false | <strong>WEBM</strong> video with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/stickers#video-sticker-requirements"></a><a href="https://core.telegram.org/stickers#video-sticker-requirements">https://core.telegram.org/stickers#video-sticker-requirements</a> for technical requirements |
 | emojis | String | true | One or more emoji corresponding to the sticker |
@@ -2129,7 +2135,7 @@
 |---|---|---|---|
 | user_id | Integer | true | User identifier of sticker set owner |
 | name | String | true | Sticker set name |
-| png_sticker | InputFileOrString | false | <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a> |
+| png_sticker | InputFileOrString | false | <strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a> |
 | tgs_sticker | InputFile | false | <strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/stickers#animated-sticker-requirements"></a><a href="https://core.telegram.org/stickers#animated-sticker-requirements">https://core.telegram.org/stickers#animated-sticker-requirements</a> for technical requirements |
 | webm_sticker | InputFile | false | <strong>WEBM</strong> video with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/stickers#video-sticker-requirements"></a><a href="https://core.telegram.org/stickers#video-sticker-requirements">https://core.telegram.org/stickers#video-sticker-requirements</a> for technical requirements |
 | emojis | String | true | One or more emoji corresponding to the sticker |
@@ -2166,7 +2172,7 @@
 |---|---|---|---|
 | name | String | true | Sticker set name |
 | user_id | Integer | true | User identifier of the sticker set owner |
-| thumb | InputFileOrString | false | A <strong>PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a <strong>TGS</strong> animation with the thumbnail up to 32 kilobytes in size; see <a href="https://core.telegram.org/stickers#animated-sticker-requirements"></a><a href="https://core.telegram.org/stickers#animated-sticker-requirements">https://core.telegram.org/stickers#animated-sticker-requirements</a> for animated sticker technical requirements, or a <strong>WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href="https://core.telegram.org/stickers#video-sticker-requirements"></a><a href="https://core.telegram.org/stickers#video-sticker-requirements">https://core.telegram.org/stickers#video-sticker-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>. Animated sticker set thumbnails can't be uploaded via HTTP URL. |
+| thumb | InputFileOrString | false | A <strong>PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a <strong>TGS</strong> animation with the thumbnail up to 32 kilobytes in size; see <a href="https://core.telegram.org/stickers#animated-sticker-requirements"></a><a href="https://core.telegram.org/stickers#animated-sticker-requirements">https://core.telegram.org/stickers#animated-sticker-requirements</a> for animated sticker technical requirements, or a <strong>WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href="https://core.telegram.org/stickers#video-sticker-requirements"></a><a href="https://core.telegram.org/stickers#video-sticker-requirements">https://core.telegram.org/stickers#video-sticker-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a>. Animated sticker set thumbnails can't be uploaded via HTTP URL. |
 
 
 
@@ -2185,7 +2191,7 @@
 | from | User | true | Sender |
 | query | String | true | Text of the query (up to 256 characters) |
 | offset | String | true | Offset of the results to be returned, can be controlled by the bot |
-| chat_type | String | false | <em>Optional</em>. Type of the chat, from which the inline query was sent. Can be either “sender” for a private chat with the inline query sender, “private”, “group”, “supergroup”, or “channel”. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat |
+| chat_type | String | false | <em>Optional</em>. Type of the chat from which the inline query was sent. Can be either “sender” for a private chat with the inline query sender, “private”, “group”, “supergroup”, or “channel”. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat |
 | location | Location | false | <em>Optional</em>. Sender location, only for bots that request user location |
 
 #### InlineQueryResultArticle
@@ -2263,7 +2269,7 @@
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>mpeg4_gif</em> |
 | id | String | true | Unique identifier for this result, 1-64 bytes |
-| mpeg4_url | String | true | A valid URL for the MP4 file. File size must not exceed 1MB |
+| mpeg4_url | String | true | A valid URL for the MPEG4 file. File size must not exceed 1MB |
 | mpeg4_width | Integer | false | <em>Optional</em>. Video width |
 | mpeg4_height | Integer | false | <em>Optional</em>. Video height |
 | mpeg4_duration | Integer | false | <em>Optional</em>. Video duration in seconds |
@@ -2289,7 +2295,7 @@
 | type | String | true | Type of the result, must be <em>video</em> |
 | id | String | true | Unique identifier for this result, 1-64 bytes |
 | video_url | String | true | A valid URL for the embedded video player or video file |
-| mime_type | String | true | Mime type of the content of video url, “text/html” or “video/mp4” |
+| mime_type | String | true | MIME type of the content of the video URL, “text/html” or “video/mp4” |
 | thumb_url | String | true | URL of the thumbnail (JPEG only) for the video |
 | title | String | true | Title for the result |
 | caption | String | false | <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing |
@@ -2356,7 +2362,7 @@
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | document_url | String | true | A valid URL for the file |
-| mime_type | String | true | Mime type of the content of the file, either “application/pdf” or “application/zip” |
+| mime_type | String | true | MIME type of the content of the file, either “application/pdf” or “application/zip” |
 | description | String | false | <em>Optional</em>. Short description of the result |
 | reply_markup | InlineKeyboardMarkup | false | <em>Optional</em>. Inline keyboard attached to the message |
 | input_message_content | InputMessageContent | false | <em>Optional</em>. Content of the message to be sent instead of the file |
@@ -2491,7 +2497,7 @@
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>mpeg4_gif</em> |
 | id | String | true | Unique identifier for this result, 1-64 bytes |
-| mpeg4_file_id | String | true | A valid file identifier for the MP4 file |
+| mpeg4_file_id | String | true | A valid file identifier for the MPEG4 file |
 | title | String | false | <em>Optional</em>. Title for the result |
 | caption | String | false | <em>Optional</em>. Caption of the MPEG-4 file to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details. |
@@ -2655,29 +2661,29 @@
 | title | String | true | Product name, 1-32 characters |
 | description | String | true | Product description, 1-255 characters |
 | payload | String | true | Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes. |
-| provider_token | String | true | Payment provider token, obtained via <a href="https://t.me/botfather">Botfather</a> |
+| provider_token | String | true | Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a> |
 | currency | String | true | Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a> |
 | prices | List<LabeledPrice> | true | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.) |
 | max_tip_amount | Integer | false | <em>Optional</em>. The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="https://core.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0 |
 | suggested_tip_amounts | List<Integer> | false | <em>Optional</em>. A JSON-serialized array of suggested amounts of tip in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>. |
 | provider_data | String | false | <em>Optional</em>. A JSON-serialized object for data about the invoice, which will be shared with the payment provider. A detailed description of the required fields should be provided by the payment provider. |
-| photo_url | String | false | <em>Optional</em>. URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for. |
-| photo_size | Integer | false | <em>Optional</em>. Photo size |
+| photo_url | String | false | <em>Optional</em>. URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. |
+| photo_size | Integer | false | <em>Optional</em>. Photo size in bytes |
 | photo_width | Integer | false | <em>Optional</em>. Photo width |
 | photo_height | Integer | false | <em>Optional</em>. Photo height |
 | need_name | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if you require the user's full name to complete the order |
 | need_phone_number | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if you require the user's phone number to complete the order |
 | need_email | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if you require the user's email address to complete the order |
 | need_shipping_address | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if you require the user's shipping address to complete the order |
-| send_phone_number_to_provider | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if user's phone number should be sent to provider |
-| send_email_to_provider | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if user's email address should be sent to provider |
+| send_phone_number_to_provider | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the user's phone number should be sent to provider |
+| send_email_to_provider | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the user's email address should be sent to provider |
 | is_flexible | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the final price depends on the shipping method |
 
 #### ChosenInlineResult
 
     ChosenInlineResult(result_id: String, from: User, location: Location, inline_message_id: String, query: String)
 
-<p>Represents a <a href="#inlinequeryresult">result</a> of an inline query that was chosen by the user and sent to their chat partner.</p><p><strong>Note:</strong> It is necessary to enable <a href="/bots/inline#collecting-feedback">inline feedback</a> via <a href="https://t.me/botfather">@Botfather</a> in order to receive these objects in updates.</p>
+<p>Represents a <a href="#inlinequeryresult">result</a> of an inline query that was chosen by the user and sent to their chat partner.</p><p><strong>Note:</strong> It is necessary to enable <a href="/bots/inline#collecting-feedback">inline feedback</a> via <a href="https://t.me/botfather">@BotFather</a> in order to receive these objects in updates.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -2691,7 +2697,7 @@
 
     SentWebAppMessage(inline_message_id: String)
 
-<p>Contains information about an inline message sent by a <a href="/bots/webapps">Web App</a> on behalf of a user.</p>
+<p>Describes an inline message sent by a <a href="/bots/webapps">Web App</a> on behalf of a user.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -2764,7 +2770,7 @@
 
 | name | type | required | description |
 |---|---|---|---|
-| country_code | String | true | ISO 3166-1 alpha-2 country code |
+| country_code | String | true | Two-letter ISO 3166-1 alpha-2 country code |
 | state | String | true | State, if applicable |
 | city | String | true | City |
 | street_line1 | String | true | First line for the address |
@@ -2808,7 +2814,7 @@
 | total_amount | Integer | true | Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="https://core.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). |
 | invoice_payload | String | true | Bot specified invoice payload |
 | shipping_option_id | String | false | <em>Optional</em>. Identifier of the shipping option chosen by the user |
-| order_info | OrderInfo | false | <em>Optional</em>. Order info provided by the user |
+| order_info | OrderInfo | false | <em>Optional</em>. Order information provided by the user |
 | telegram_payment_charge_id | String | true | Telegram payment identifier |
 | provider_payment_charge_id | String | true | Provider payment identifier |
 
@@ -2839,7 +2845,7 @@
 | total_amount | Integer | true | Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="https://core.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). |
 | invoice_payload | String | true | Bot specified invoice payload |
 | shipping_option_id | String | false | <em>Optional</em>. Identifier of the shipping option chosen by the user |
-| order_info | OrderInfo | false | <em>Optional</em>. Order info provided by the user |
+| order_info | OrderInfo | false | <em>Optional</em>. Order information provided by the user |
 
 
 ### Methods
@@ -2855,29 +2861,58 @@
 | title | String | true | Product name, 1-32 characters |
 | description | String | true | Product description, 1-255 characters |
 | payload | String | true | Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes. |
-| provider_token | String | true | Payments provider token, obtained via <a href="https://t.me/botfather">Botfather</a> |
+| provider_token | String | true | Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a> |
 | currency | String | true | Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a> |
 | prices | List<LabeledPrice> | true | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.) |
 | max_tip_amount | Integer | false | The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="https://core.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0 |
 | suggested_tip_amounts | List<Integer> | false | A JSON-serialized array of suggested amounts of tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>. |
 | start_parameter | String | false | Unique deep-linking parameter. If left empty, <strong>forwarded copies</strong> of the sent message will have a <em>Pay</em> button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a <em>URL</em> button with a deep link to the bot (instead of a <em>Pay</em> button), with the value used as the start parameter |
-| provider_data | String | false | A JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider. |
+| provider_data | String | false | JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider. |
 | photo_url | String | false | URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for. |
-| photo_size | Integer | false | Photo size |
+| photo_size | Integer | false | Photo size in bytes |
 | photo_width | Integer | false | Photo width |
 | photo_height | Integer | false | Photo height |
 | need_name | Boolean | false | Pass <em>True</em>, if you require the user's full name to complete the order |
 | need_phone_number | Boolean | false | Pass <em>True</em>, if you require the user's phone number to complete the order |
 | need_email | Boolean | false | Pass <em>True</em>, if you require the user's email address to complete the order |
 | need_shipping_address | Boolean | false | Pass <em>True</em>, if you require the user's shipping address to complete the order |
-| send_phone_number_to_provider | Boolean | false | Pass <em>True</em>, if user's phone number should be sent to provider |
-| send_email_to_provider | Boolean | false | Pass <em>True</em>, if user's email address should be sent to provider |
+| send_phone_number_to_provider | Boolean | false | Pass <em>True</em>, if the user's phone number should be sent to provider |
+| send_email_to_provider | Boolean | false | Pass <em>True</em>, if the user's email address should be sent to provider |
 | is_flexible | Boolean | false | Pass <em>True</em>, if the final price depends on the shipping method |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
 | allow_sending_without_reply | Boolean | false | Pass <em>True</em>, if the message should be sent even if the specified replied-to message is not found |
 | reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>. If empty, one 'Pay <code>total price</code>' button will be shown. If not empty, the first button must be a Pay button. |
+
+#### createInvoiceLink
+
+    createInvoiceLink(title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean)
+
+<p>Use this method to create a link for an invoice. Returns the created invoice link as <em>String</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| title | String | true | Product name, 1-32 characters |
+| description | String | true | Product description, 1-255 characters |
+| payload | String | true | Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes. |
+| provider_token | String | true | Payment provider token, obtained via <a href="https://t.me/botfather">BotFather</a> |
+| currency | String | true | Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a> |
+| prices | List<LabeledPrice> | true | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.) |
+| max_tip_amount | Integer | false | The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="https://core.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0 |
+| suggested_tip_amounts | List<Integer> | false | A JSON-serialized array of suggested amounts of tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>. |
+| provider_data | String | false | JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider. |
+| photo_url | String | false | URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. |
+| photo_size | Integer | false | Photo size in bytes |
+| photo_width | Integer | false | Photo width |
+| photo_height | Integer | false | Photo height |
+| need_name | Boolean | false | Pass <em>True</em>, if you require the user's full name to complete the order |
+| need_phone_number | Boolean | false | Pass <em>True</em>, if you require the user's phone number to complete the order |
+| need_email | Boolean | false | Pass <em>True</em>, if you require the user's email address to complete the order |
+| need_shipping_address | Boolean | false | Pass <em>True</em>, if you require the user's shipping address to complete the order |
+| send_phone_number_to_provider | Boolean | false | Pass <em>True</em>, if the user's phone number should be sent to the provider |
+| send_email_to_provider | Boolean | false | Pass <em>True</em>, if the user's email address should be sent to the provider |
+| is_flexible | Boolean | false | Pass <em>True</em>, if the final price depends on the shipping method |
 
 #### answerShippingQuery
 
@@ -2913,7 +2948,7 @@
 
     PassportData(data: List<EncryptedPassportElement>, credentials: EncryptedCredentials)
 
-<p>Contains information about Telegram Passport data shared with the bot by the user.</p>
+<p>Describes Telegram Passport data shared with the bot by the user.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -2937,7 +2972,7 @@
 
     EncryptedPassportElement(type: String, data: String, phone_number: String, email: String, files: List<PassportFile>, front_side: PassportFile, reverse_side: PassportFile, selfie: PassportFile, translation: List<PassportFile>, hash: String)
 
-<p>Contains information about documents or other Telegram Passport elements shared with the bot by the user.</p>
+<p>Describes documents or other Telegram Passport elements shared with the bot by the user.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -2956,7 +2991,7 @@
 
     EncryptedCredentials(data: String, hash: String, secret: String)
 
-<p>Contains data required for decrypting and authenticating <a href="#encryptedpassportelement">EncryptedPassportElement</a>. See the <a href="https://core.telegram.org/passport#receiving-information">Telegram Passport Documentation</a> for a complete description of the data decryption and authentication processes.</p>
+<p>Describes data required for decrypting and authenticating <a href="#encryptedpassportelement">EncryptedPassportElement</a>. See the <a href="https://core.telegram.org/passport#receiving-information">Telegram Passport Documentation</a> for a complete description of the data decryption and authentication processes.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -3138,7 +3173,7 @@
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | Integer | true | Unique identifier for the target chat |
-| game_short_name | String | true | Short name of the game, serves as the unique identifier for the game. Set up your games via <a href="https://t.me/botfather">Botfather</a>. |
+| game_short_name | String | true | Short name of the game, serves as the unique identifier for the game. Set up your games via <a href="https://t.me/botfather">@BotFather</a>. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_to_message_id | Integer | false | If the message is a reply, ID of the original message |
@@ -3166,7 +3201,7 @@
     getGameHighScores(user_id: Integer, chat_id: Integer, message_id: Integer, inline_message_id: String)
 
 <p>Use this method to get data for high score tables. Will return the score of the specified user and several of their neighbors in a game. On success, returns an <em>Array</em> of <a href="#gamehighscore">GameHighScore</a> objects.</p><blockquote> 
- <p>This method will currently return scores for the target user, plus two of their closest neighbors on each side. Will also return the top three users if the user and his neighbors are not among them. Please note that this behavior is subject to change.</p> 
+ <p>This method will currently return scores for the target user, plus two of their closest neighbors on each side. Will also return the top three users if the user and their neighbors are not among them. Please note that this behavior is subject to change.</p> 
 </blockquote>
 
 | name | type | required | description |
