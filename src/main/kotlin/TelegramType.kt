@@ -14,6 +14,11 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
     object VoiceChatStarted : TelegramType("VoiceChatStarted", superType = null)
     object VideoChatStarted : TelegramType("VideoChatStarted", superType = null)
     object MenuButton : TelegramType("MenuButton", superType = null)
+    object ForumTopicClosed : TelegramType("ForumTopicClosed", superType = null)
+    object ForumTopicReopened : TelegramType("ForumTopicReopened", superType = null)
+    object GeneralForumTopicHidden : TelegramType("GeneralForumTopicHidden", superType = null)
+    object GeneralForumTopicUnhidden : TelegramType("GeneralForumTopicUnhidden", superType = null)
+    object GiveawayCreated : TelegramType("GiveawayCreated", superType = null)
 
     sealed class Super(name: String) : TelegramType(name, superType = null) {
         object InputMedia : Super("InputMedia")
@@ -22,6 +27,9 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
         object PassportElementError : Super("PassportElementError")
         object ChatMember : Super("ChatMember")
         object BotCommandScope : Super("BotCommandScope")
+        object ReactionType : Super("ReactionType")
+        object MessageOrigin : Super("MessageOrigin")
+        object ChatBoostSource : Super("ChatBoostSource")
     }
 
     sealed class WithAlternative(name: String, val validTypes: List<TelegramType>, superType: TelegramType?) :
@@ -55,10 +63,13 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             superType = null
         )
 
-        object InputMessageContent : WithAlternative(
-            name = "InputMessageContent",
+
+
+        object MaybeInaccessibleMessage : WithAlternative(
+            name = "MaybeInaccessibleMessage",
             validTypes = listOf(
-                Declared("InputTextMessageContent", InputMessageContent),
+                Declared("Message", MaybeInaccessibleMessage),
+                Declared("InaccessibleMessage", MaybeInaccessibleMessage),
             ),
             superType = null
         )
@@ -71,12 +82,18 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
     companion object {
         val allSuper = listOf(
             Super.InputMedia,
+            Super.InputMessageContent,
             Super.InlineQueryResult,
             Super.PassportElementError,
             Super.ChatMember,
             Super.BotCommandScope,
+            Super.ReactionType,
+            Super.MessageOrigin,
+            Super.ChatBoostSource,
+            WithAlternative.InputFileOrString,
+            WithAlternative.IntegerOrString,
             WithAlternative.KeyboardOption,
-            WithAlternative.InputMessageContent,
+            WithAlternative.MaybeInaccessibleMessage,
             VoiceChatStarted,
             VideoChatStarted,
             MenuButton,
@@ -98,14 +115,23 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             "VoiceChatStarted" -> VoiceChatStarted
             "VideoChatStarted" -> VideoChatStarted
             "MenuButton" -> MenuButton
+            "ForumTopicClosed" -> ForumTopicClosed
+            "ForumTopicReopened" -> ForumTopicReopened
+            "GeneralForumTopicHidden" -> GeneralForumTopicHidden
+            "GeneralForumTopicUnhidden" -> GeneralForumTopicUnhidden
+            "GiveawayCreated" -> GiveawayCreated
             "InputMessageContent" -> Super.InputMessageContent
             "InlineQueryResult" -> Super.InlineQueryResult
+            "ReactionType" -> Super.ReactionType
+            "MessageOrigin" -> Super.MessageOrigin
+            "ChatBoostSource" -> Super.ChatBoostSource
             "PassportElementError" -> Super.PassportElementError
             "ChatMember" -> Super.ChatMember
             "BotCommandScope" -> Super.BotCommandScope
             "InputFileOrString" -> WithAlternative.InputFileOrString
             "IntegerOrString" -> WithAlternative.IntegerOrString
             "KeyboardOption" -> WithAlternative.KeyboardOption
+            "MaybeInaccessibleMessage" -> WithAlternative.MaybeInaccessibleMessage
             else -> {
                 if (type.startsWith("Array of ")) {
                     ListType(from(type.removePrefix("Array of ")))

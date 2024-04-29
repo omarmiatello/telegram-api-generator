@@ -54,7 +54,7 @@ fun List<DocSection>.toKotlinModels(useKotlinXSerialization: Boolean) = buildStr
         }
     }
     if (useKotlinXSerialization) appendLine("@Serializable")
-    appendLine("data class TelegramResponse<T>(val ok: Boolean, val result: T)")
+    appendLine("data class TelegramResponse<T>(val ok: Boolean, val result: T? = null)")
     appendLine(comment("--- Utility ---"))
     appendLine("enum class ParseMode { MarkdownV2, Markdown, HTML }")
     if (useKotlinXSerialization) appendLine("fun String.parseTelegramRequest() = Update.fromJson(this)")
@@ -93,11 +93,11 @@ fun List<DocSection>.toKotlinModels(useKotlinXSerialization: Boolean) = buildStr
 fun List<DocSection>.toKotlinMethods() = buildString {
     appendLine("package com.github.omarmiatello.telegram\n")
     appendLine("import com.github.omarmiatello.telegram.TelegramRequest.*")
-    appendLine("import io.ktor.client.HttpClient")
-    appendLine("import io.ktor.client.request.get")
-    appendLine("import io.ktor.client.request.post")
-    appendLine("import io.ktor.http.ContentType")
-    appendLine("import io.ktor.http.content.TextContent")
+    appendLine("import io.ktor.client.*")
+    appendLine("import io.ktor.client.call.*")
+    appendLine("import io.ktor.client.request.*")
+    appendLine("import io.ktor.http.*")
+    appendLine("import io.ktor.http.content.*")
     appendLine("import kotlinx.serialization.KSerializer")
     appendLine("import kotlinx.serialization.builtins.ListSerializer")
     appendLine("import kotlinx.serialization.builtins.serializer")
@@ -235,11 +235,18 @@ private fun TelegramType.toKotlinType(prefixPolymorphic: String = ""): String = 
     TelegramType.Boolean -> name
     TelegramType.Float -> name
     TelegramType.CallbackGame,
-    TelegramType.InputFile -> "${prefixPolymorphic}Any"
+    TelegramType.InputFile,
+    TelegramType.ForumTopicClosed,
+    TelegramType.ForumTopicReopened,
+    TelegramType.GeneralForumTopicHidden,
+    TelegramType.GeneralForumTopicUnhidden,
+    TelegramType.GiveawayCreated -> "${prefixPolymorphic}Any"
+
     TelegramType.ParseMode -> name
     TelegramType.VoiceChatStarted,
     TelegramType.MenuButton,
     TelegramType.VideoChatStarted -> "${prefixPolymorphic}$name"
+
     is TelegramType.Super -> {
         when (this) {
             TelegramType.Super.InputMedia,
@@ -247,9 +254,13 @@ private fun TelegramType.toKotlinType(prefixPolymorphic: String = ""): String = 
             TelegramType.Super.InlineQueryResult,
             TelegramType.Super.PassportElementError,
             TelegramType.Super.BotCommandScope,
-            TelegramType.Super.ChatMember -> "${prefixPolymorphic}$name"
+            TelegramType.Super.ChatMember,
+            TelegramType.Super.ReactionType,
+            TelegramType.Super.MessageOrigin,
+            TelegramType.Super.ChatBoostSource -> "${prefixPolymorphic}$name"
         }
     }
+
     is TelegramType.WithAlternative -> {
         when (this) {
             // Example: TelegramType.WithAlternative.InputFileOrString -> if (validTypes.isEmpty()) "v1" else "v2"
@@ -257,7 +268,7 @@ private fun TelegramType.toKotlinType(prefixPolymorphic: String = ""): String = 
             TelegramType.WithAlternative.InputFileOrString -> "String"
             TelegramType.WithAlternative.IntegerOrString -> "String"
             TelegramType.WithAlternative.KeyboardOption,
-            TelegramType.WithAlternative.InputMessageContent -> "${prefixPolymorphic}$name"
+            TelegramType.WithAlternative.MaybeInaccessibleMessage -> "${prefixPolymorphic}$name"
         }
     }
 }

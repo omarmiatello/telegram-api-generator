@@ -103,11 +103,18 @@ private fun TelegramType.toRustType(): String = when (this) {
     TelegramType.Boolean -> "bool"
     TelegramType.Float -> name
     TelegramType.CallbackGame,
-    TelegramType.InputFile -> name
+    TelegramType.InputFile,
+    TelegramType.ForumTopicClosed,
+    TelegramType.ForumTopicReopened,
+    TelegramType.GeneralForumTopicHidden,
+    TelegramType.GeneralForumTopicUnhidden,
+    TelegramType.GiveawayCreated -> name
+
     TelegramType.ParseMode -> name
     TelegramType.VoiceChatStarted,
     TelegramType.MenuButton,
-    TelegramType.VideoChatStarted  -> name
+    TelegramType.VideoChatStarted -> name
+
     is TelegramType.Super -> {
         when (this) {
             TelegramType.Super.InputMedia,
@@ -115,9 +122,13 @@ private fun TelegramType.toRustType(): String = when (this) {
             TelegramType.Super.InlineQueryResult,
             TelegramType.Super.PassportElementError,
             TelegramType.Super.ChatMember,
-            TelegramType.Super.BotCommandScope -> name
+            TelegramType.Super.BotCommandScope,
+            TelegramType.Super.ReactionType,
+            TelegramType.Super.MessageOrigin,
+            TelegramType.Super.ChatBoostSource -> name
         }
     }
+
     is TelegramType.WithAlternative -> {
         when (this) {
             // Example: TelegramType.WithAlternative.InputFileOrString -> if (validTypes.isEmpty()) "v1" else "v2"
@@ -125,7 +136,7 @@ private fun TelegramType.toRustType(): String = when (this) {
             TelegramType.WithAlternative.InputFileOrString -> "String"
             TelegramType.WithAlternative.IntegerOrString -> "String"
             TelegramType.WithAlternative.KeyboardOption,
-            TelegramType.WithAlternative.InputMessageContent -> name
+            TelegramType.WithAlternative.MaybeInaccessibleMessage -> name
         }
     }
 }
