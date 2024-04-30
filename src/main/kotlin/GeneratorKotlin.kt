@@ -244,7 +244,6 @@ private fun TelegramType.toKotlinType(prefixPolymorphic: String = ""): String = 
 
     TelegramType.ParseMode -> name
     TelegramType.VoiceChatStarted,
-    TelegramType.MenuButton,
     TelegramType.VideoChatStarted -> "${prefixPolymorphic}$name"
 
     is TelegramType.Super -> {
@@ -257,6 +256,7 @@ private fun TelegramType.toKotlinType(prefixPolymorphic: String = ""): String = 
             TelegramType.Super.ChatMember,
             TelegramType.Super.ReactionType,
             TelegramType.Super.MessageOrigin,
+            TelegramType.Super.MenuButton,
             TelegramType.Super.ChatBoostSource -> "${prefixPolymorphic}$name"
         }
     }

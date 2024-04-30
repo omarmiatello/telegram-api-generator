@@ -13,23 +13,30 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
     object ParseMode : TelegramType("ParseMode", superType = null)
     object VoiceChatStarted : TelegramType("VoiceChatStarted", superType = null)
     object VideoChatStarted : TelegramType("VideoChatStarted", superType = null)
-    object MenuButton : TelegramType("MenuButton", superType = null)
     object ForumTopicClosed : TelegramType("ForumTopicClosed", superType = null)
     object ForumTopicReopened : TelegramType("ForumTopicReopened", superType = null)
     object GeneralForumTopicHidden : TelegramType("GeneralForumTopicHidden", superType = null)
     object GeneralForumTopicUnhidden : TelegramType("GeneralForumTopicUnhidden", superType = null)
     object GiveawayCreated : TelegramType("GiveawayCreated", superType = null)
 
-    sealed class Super(name: String) : TelegramType(name, superType = null) {
-        object InputMedia : Super("InputMedia")
-        object InputMessageContent : Super("InputMessageContent")
-        object InlineQueryResult : Super("InlineQueryResult")
-        object PassportElementError : Super("PassportElementError")
-        object ChatMember : Super("ChatMember")
-        object BotCommandScope : Super("BotCommandScope")
-        object ReactionType : Super("ReactionType")
-        object MessageOrigin : Super("MessageOrigin")
-        object ChatBoostSource : Super("ChatBoostSource")
+    sealed class Super(name: String, val subclasses: (String) -> kotlin.Boolean) :
+        TelegramType(name, superType = null) {
+        object InputMessageContent :
+            Super("InputMessageContent", subclasses = { it.startsWith("Input") && it.endsWith("MessageContent") })
+
+        object InlineQueryResult :
+            Super("InlineQueryResult", subclasses = { it.startsWith("InlineQueryResult") && "Results" !in it })
+
+        object PassportElementError :
+            Super("PassportElementError", subclasses = { it.startsWith("PassportElementError") })
+
+        object InputMedia : Super("InputMedia", subclasses = { it.startsWith("InputMedia") })
+        object ChatMember : Super("ChatMember", subclasses = { it.startsWith("ChatMember") })
+        object BotCommandScope : Super("BotCommandScope", subclasses = { it.startsWith("BotCommandScope") })
+        object ReactionType : Super("ReactionType", subclasses = { it.startsWith("ReactionType") })
+        object MessageOrigin : Super("MessageOrigin", subclasses = { it.startsWith("MessageOrigin") })
+        object ChatBoostSource : Super("ChatBoostSource", subclasses = { it.startsWith("ChatBoostSource") })
+        object MenuButton : Super("MenuButton", subclasses = { it.startsWith("MenuButton") })
     }
 
     sealed class WithAlternative(name: String, val validTypes: List<TelegramType>, superType: TelegramType?) :
@@ -63,8 +70,6 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             superType = null
         )
 
-
-
         object MaybeInaccessibleMessage : WithAlternative(
             name = "MaybeInaccessibleMessage",
             validTypes = listOf(
@@ -90,18 +95,19 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             Super.ReactionType,
             Super.MessageOrigin,
             Super.ChatBoostSource,
+            Super.MenuButton,
             WithAlternative.InputFileOrString,
             WithAlternative.IntegerOrString,
             WithAlternative.KeyboardOption,
             WithAlternative.MaybeInaccessibleMessage,
             VoiceChatStarted,
             VideoChatStarted,
-            MenuButton,
         )
 
         private fun findSuper(docName: String) = allSuper.filterIsInstance(WithAlternative::class.java)
             .firstOrNull { docName in it.validTypes.map { it.name } }
-            ?: allSuper.firstOrNull { docName.startsWith(it.name) }
+            ?: allSuper.filterIsInstance(Super::class.java)
+                .firstOrNull { it.subclasses(docName) }
 
         fun from(type: String): TelegramType = when (type) {
             "Integer" -> Integer
@@ -114,7 +120,6 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             "ParseMode" -> ParseMode
             "VoiceChatStarted" -> VoiceChatStarted
             "VideoChatStarted" -> VideoChatStarted
-            "MenuButton" -> MenuButton
             "ForumTopicClosed" -> ForumTopicClosed
             "ForumTopicReopened" -> ForumTopicReopened
             "GeneralForumTopicHidden" -> GeneralForumTopicHidden
@@ -127,6 +132,7 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             "ChatBoostSource" -> Super.ChatBoostSource
             "PassportElementError" -> Super.PassportElementError
             "ChatMember" -> Super.ChatMember
+            "MenuButton" -> Super.MenuButton
             "BotCommandScope" -> Super.BotCommandScope
             "InputFileOrString" -> WithAlternative.InputFileOrString
             "IntegerOrString" -> WithAlternative.IntegerOrString

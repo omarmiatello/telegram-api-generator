@@ -223,6 +223,7 @@
             "type": {
               "name": "ChatMemberUpdated",
               "superType": {
+                "subclasses": {},
                 "name": "ChatMember"
               }
             },
@@ -234,6 +235,7 @@
             "type": {
               "name": "ChatMemberUpdated",
               "superType": {
+                "subclasses": {},
                 "name": "ChatMember"
               }
             },
@@ -720,6 +722,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. List of available reactions allowed in the chat. If omitted, then all \u003ca href\u003d\"#reactiontypeemoji\"\u003eemoji reactions\u003c/a\u003e are allowed. Returned only in \u003ca href\u003d\"#getchat\"\u003egetChat\u003c/a\u003e.",
             "type": {
               "elementType": {
+                "subclasses": {},
                 "name": "ReactionType"
               },
               "name": "List\u003cReactionType\u003e"
@@ -1035,6 +1038,7 @@
             "name": "forward_origin",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Information about the original message for forwarded messages",
             "type": {
+              "subclasses": {},
               "name": "MessageOrigin"
             },
             "required": false
@@ -1807,6 +1811,7 @@
             "name": "origin",
             "description": "Origin of the message replied to by the given message",
             "type": {
+              "subclasses": {},
               "name": "MessageOrigin"
             },
             "required": true
@@ -4576,6 +4581,7 @@
             "name": "old_chat_member",
             "description": "Previous information about the chat member",
             "type": {
+              "subclasses": {},
               "name": "ChatMember"
             },
             "required": true
@@ -4584,6 +4590,7 @@
             "name": "new_chat_member",
             "description": "New information about the chat member",
             "type": {
+              "subclasses": {},
               "name": "ChatMember"
             },
             "required": true
@@ -5401,6 +5408,7 @@
             "name": "type",
             "description": "Type of the reaction",
             "type": {
+              "subclasses": {},
               "name": "ReactionType"
             },
             "required": true
@@ -5464,6 +5472,7 @@
             "description": "Previous list of reaction types that were set by the user",
             "type": {
               "elementType": {
+                "subclasses": {},
                 "name": "ReactionType"
               },
               "name": "List\u003cReactionType\u003e"
@@ -5475,6 +5484,7 @@
             "description": "New list of reaction types that have been set by the user",
             "type": {
               "elementType": {
+                "subclasses": {},
                 "name": "ReactionType"
               },
               "name": "List\u003cReactionType\u003e"
@@ -5952,6 +5962,7 @@
             "name": "source",
             "description": "Source of the added boost",
             "type": {
+              "subclasses": {},
               "name": "ChatBoostSource"
             },
             "required": true
@@ -6012,6 +6023,7 @@
             "name": "source",
             "description": "Source of the removed boost",
             "type": {
+              "subclasses": {},
               "name": "ChatBoostSource"
             },
             "required": true
@@ -8319,6 +8331,7 @@
             "description": "A JSON-serialized array describing messages to be sent, must include 2-10 items",
             "type": {
               "elementType": {
+                "subclasses": {},
                 "name": "InputMedia"
               },
               "name": "List\u003cInputMedia\u003e"
@@ -9194,6 +9207,7 @@
             "description": "A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators.",
             "type": {
               "elementType": {
+                "subclasses": {},
                 "name": "ReactionType"
               },
               "name": "List\u003cReactionType\u003e"
@@ -10253,6 +10267,7 @@
         ],
         "returns": {
           "elementType": {
+            "subclasses": {},
             "name": "ChatMember"
           },
           "name": "List\u003cChatMember\u003e"
@@ -10313,6 +10328,7 @@
           }
         ],
         "returns": {
+          "subclasses": {},
           "name": "ChatMember"
         }
       },
@@ -10891,6 +10907,7 @@
             "name": "scope",
             "description": "A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to \u003ca href\u003d\"#botcommandscopedefault\"\u003eBotCommandScopeDefault\u003c/a\u003e.",
             "type": {
+              "subclasses": {},
               "name": "BotCommandScope"
             },
             "required": false
@@ -10916,6 +10933,7 @@
             "name": "scope",
             "description": "A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to \u003ca href\u003d\"#botcommandscopedefault\"\u003eBotCommandScopeDefault\u003c/a\u003e.",
             "type": {
+              "subclasses": {},
               "name": "BotCommandScope"
             },
             "required": false
@@ -10941,6 +10959,7 @@
             "name": "scope",
             "description": "A JSON-serialized object, describing scope of users. Defaults to \u003ca href\u003d\"#botcommandscopedefault\"\u003eBotCommandScopeDefault\u003c/a\u003e.",
             "type": {
+              "subclasses": {},
               "name": "BotCommandScope"
             },
             "required": false
@@ -11103,6 +11122,7 @@
             "name": "menu_button",
             "description": "A JSON-serialized object for the bot\u0027s new menu button. Defaults to \u003ca href\u003d\"#menubuttondefault\"\u003eMenuButtonDefault\u003c/a\u003e",
             "type": {
+              "subclasses": {},
               "name": "MenuButton"
             },
             "required": false
@@ -11126,6 +11146,7 @@
           }
         ],
         "returns": {
+          "subclasses": {},
           "name": "MenuButton"
         }
       },
@@ -11434,6 +11455,7 @@
             "name": "media",
             "description": "A JSON-serialized object for a new media content of the message",
             "type": {
+              "subclasses": {},
               "name": "InputMedia"
             },
             "required": true
@@ -12848,6 +12870,7 @@
             "name": "input_message_content",
             "description": "Content of the message to be sent",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": true
@@ -13051,6 +13074,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the photo",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -13189,6 +13213,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the GIF animation",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -13327,6 +13352,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the video animation",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -13473,6 +13499,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the video. This field is \u003cstrong\u003erequired\u003c/strong\u003e if InlineQueryResultVideo is used to send an HTML-page as a result (e.g., a YouTube video).",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -13587,6 +13614,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the audio",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -13693,6 +13721,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the voice recording",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -13807,6 +13836,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the file",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -13942,6 +13972,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the location",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -14085,6 +14116,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the venue",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -14196,6 +14228,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the contact",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -14381,6 +14414,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the photo",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -14479,6 +14513,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the GIF animation",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -14577,6 +14612,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the video animation",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -14640,6 +14676,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the sticker",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -14746,6 +14783,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the file",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -14852,6 +14890,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the video",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -14950,6 +14989,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the voice message",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -15040,6 +15080,7 @@
             "name": "input_message_content",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the audio",
             "type": {
+              "subclasses": {},
               "name": "InputMessageContent"
             },
             "required": false
@@ -15500,6 +15541,7 @@
             "description": "A JSON-serialized array of results for the inline query",
             "type": {
               "elementType": {
+                "subclasses": {},
                 "name": "InlineQueryResult"
               },
               "name": "List\u003cInlineQueryResult\u003e"
@@ -15534,10 +15576,7 @@
             "name": "button",
             "description": "A JSON-serialized object describing a button to be shown above inline query results",
             "type": {
-              "name": "InlineQueryResultsButton",
-              "superType": {
-                "name": "InlineQueryResult"
-              }
+              "name": "InlineQueryResultsButton"
             },
             "required": false
           }
@@ -15562,6 +15601,7 @@
             "name": "result",
             "description": "A JSON-serialized object describing the message to be sent",
             "type": {
+              "subclasses": {},
               "name": "InlineQueryResult"
             },
             "required": true
@@ -17019,6 +17059,7 @@
             "description": "A JSON-serialized array describing the errors",
             "type": {
               "elementType": {
+                "subclasses": {},
                 "name": "PassportElementError"
               },
               "name": "List\u003cPassportElementError\u003e"

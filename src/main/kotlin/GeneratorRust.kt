@@ -112,7 +112,6 @@ private fun TelegramType.toRustType(): String = when (this) {
 
     TelegramType.ParseMode -> name
     TelegramType.VoiceChatStarted,
-    TelegramType.MenuButton,
     TelegramType.VideoChatStarted -> name
 
     is TelegramType.Super -> {
@@ -125,6 +124,7 @@ private fun TelegramType.toRustType(): String = when (this) {
             TelegramType.Super.BotCommandScope,
             TelegramType.Super.ReactionType,
             TelegramType.Super.MessageOrigin,
+            TelegramType.Super.MenuButton,
             TelegramType.Super.ChatBoostSource -> name
         }
     }
