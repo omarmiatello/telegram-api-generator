@@ -114,20 +114,7 @@ private fun TelegramType.toRustType(): String = when (this) {
     TelegramType.VoiceChatStarted,
     TelegramType.VideoChatStarted -> name
 
-    is TelegramType.Super -> {
-        when (this) {
-            TelegramType.Super.InputMedia,
-            TelegramType.Super.InputMessageContent,
-            TelegramType.Super.InlineQueryResult,
-            TelegramType.Super.PassportElementError,
-            TelegramType.Super.ChatMember,
-            TelegramType.Super.BotCommandScope,
-            TelegramType.Super.ReactionType,
-            TelegramType.Super.MessageOrigin,
-            TelegramType.Super.MenuButton,
-            TelegramType.Super.ChatBoostSource -> name
-        }
-    }
+    is TelegramType.Super -> name
 
     is TelegramType.WithAlternative -> {
         when (this) {
@@ -135,8 +122,6 @@ private fun TelegramType.toRustType(): String = when (this) {
             // Example 2: TelegramType.WithAlternative.InputFileOrString -> "${prefixPolymorphic}Any"
             TelegramType.WithAlternative.InputFileOrString -> "String"
             TelegramType.WithAlternative.IntegerOrString -> "String"
-            TelegramType.WithAlternative.KeyboardOption,
-            TelegramType.WithAlternative.MaybeInaccessibleMessage -> name
         }
     }
 }

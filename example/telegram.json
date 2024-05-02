@@ -21,14 +21,8 @@
             "type": {
               "name": "Message",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "Message"
-                  },
-                  {
-                    "name": "InaccessibleMessage"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -40,14 +34,8 @@
             "type": {
               "name": "Message",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "Message"
-                  },
-                  {
-                    "name": "InaccessibleMessage"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -59,14 +47,8 @@
             "type": {
               "name": "Message",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "Message"
-                  },
-                  {
-                    "name": "InaccessibleMessage"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -78,14 +60,8 @@
             "type": {
               "name": "Message",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "Message"
-                  },
-                  {
-                    "name": "InaccessibleMessage"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -105,14 +81,8 @@
             "type": {
               "name": "Message",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "Message"
-                  },
-                  {
-                    "name": "InaccessibleMessage"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -124,14 +94,8 @@
             "type": {
               "name": "Message",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "Message"
-                  },
-                  {
-                    "name": "InaccessibleMessage"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -224,6 +188,7 @@
               "name": "ChatMemberUpdated",
               "superType": {
                 "subclasses": {},
+                "deserializer": "",
                 "name": "ChatMember"
               }
             },
@@ -236,6 +201,7 @@
               "name": "ChatMemberUpdated",
               "superType": {
                 "subclasses": {},
+                "deserializer": "",
                 "name": "ChatMember"
               }
             },
@@ -723,6 +689,7 @@
             "type": {
               "elementType": {
                 "subclasses": {},
+                "deserializer": "",
                 "name": "ReactionType"
               },
               "name": "List\u003cReactionType\u003e"
@@ -839,14 +806,8 @@
             "type": {
               "name": "Message",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "Message"
-                  },
-                  {
-                    "name": "InaccessibleMessage"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -1039,6 +1000,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Information about the original message for forwarded messages",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "MessageOrigin"
             },
             "required": false
@@ -1065,14 +1027,8 @@
             "type": {
               "name": "Message",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "Message"
-                  },
-                  {
-                    "name": "InaccessibleMessage"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -1425,14 +1381,8 @@
             "name": "pinned_message",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Specified message was pinned. Note that the Message object in this field will not contain further \u003cem\u003ereply_to_message\u003c/em\u003e fields even if it itself is a reply.",
             "type": {
-              "validTypes": [
-                {
-                  "name": "Message"
-                },
-                {
-                  "name": "InaccessibleMessage"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
               "name": "MaybeInaccessibleMessage"
             },
             "required": false
@@ -1635,20 +1585,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -1812,6 +1750,7 @@
             "description": "Origin of the message replied to by the given message",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "MessageOrigin"
             },
             "required": true
@@ -3167,7 +3106,7 @@
       },
       {
         "name": "SharedUser",
-        "description": "\u003cp\u003eThis object contains information about a user that was shared with the bot using a \u003ca href\u003d\"#keyboardbuttonrequestuser\"\u003eKeyboardButtonRequestUser\u003c/a\u003e button.\u003c/p\u003e",
+        "description": "\u003cp\u003eThis object contains information about a user that was shared with the bot using a \u003ca href\u003d\"#keyboardbuttonrequestusers\"\u003eKeyboardButtonRequestUsers\u003c/a\u003e button.\u003c/p\u003e",
         "docFields": [
           {
             "name": "user_id",
@@ -3562,14 +3501,8 @@
             "type": {
               "name": "Message",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "Message"
-                  },
-                  {
-                    "name": "InaccessibleMessage"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -3863,7 +3796,7 @@
           },
           {
             "name": "request_name",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e to request the users\u0027 first and last name",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e to request the users\u0027 first and last names",
             "type": {
               "name": "Boolean"
             },
@@ -3871,7 +3804,7 @@
           },
           {
             "name": "request_username",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e to request the users\u0027 username",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e to request the users\u0027 usernames",
             "type": {
               "name": "Boolean"
             },
@@ -3879,7 +3812,7 @@
           },
           {
             "name": "request_photo",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e to request the users\u0027 photo",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e to request the users\u0027 photos",
             "type": {
               "name": "Boolean"
             },
@@ -3889,7 +3822,7 @@
       },
       {
         "name": "KeyboardButtonRequestChat",
-        "description": "\u003cp\u003eThis object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the сhat if appropriate \u003ca href\u003d\"/bots/features#chat-and-user-selection\"\u003eMore about requesting chats »\u003c/a\u003e\u003c/p\u003e",
+        "description": "\u003cp\u003eThis object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the chat if appropriate. \u003ca href\u003d\"/bots/features#chat-and-user-selection\"\u003eMore about requesting chats »\u003c/a\u003e.\u003c/p\u003e",
         "docFields": [
           {
             "name": "request_id",
@@ -4231,14 +4164,8 @@
             "name": "message",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message sent by the bot with the callback button that originated the query",
             "type": {
-              "validTypes": [
-                {
-                  "name": "Message"
-                },
-                {
-                  "name": "InaccessibleMessage"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
               "name": "MaybeInaccessibleMessage"
             },
             "required": false
@@ -4582,6 +4509,7 @@
             "description": "Previous information about the chat member",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "ChatMember"
             },
             "required": true
@@ -4591,6 +4519,7 @@
             "description": "New information about the chat member",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "ChatMember"
             },
             "required": true
@@ -5409,6 +5338,7 @@
             "description": "Type of the reaction",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "ReactionType"
             },
             "required": true
@@ -5473,6 +5403,7 @@
             "type": {
               "elementType": {
                 "subclasses": {},
+                "deserializer": "",
                 "name": "ReactionType"
               },
               "name": "List\u003cReactionType\u003e"
@@ -5485,6 +5416,7 @@
             "type": {
               "elementType": {
                 "subclasses": {},
+                "deserializer": "",
                 "name": "ReactionType"
               },
               "name": "List\u003cReactionType\u003e"
@@ -5963,6 +5895,7 @@
             "description": "Source of the added boost",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "ChatBoostSource"
             },
             "required": true
@@ -6024,6 +5957,7 @@
             "description": "Source of the removed boost",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "ChatBoostSource"
             },
             "required": true
@@ -6123,7 +6057,7 @@
           },
           {
             "name": "message_ids",
-            "description": "A JSON-serialized list of identifiers of deleted messages in the chat of the business account",
+            "description": "The list of identifiers of deleted messages in the chat of the business account",
             "type": {
               "elementType": {
                 "name": "Integer"
@@ -6698,22 +6632,10 @@
           },
           {
             "name": "reply_markup",
-            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account",
+            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.",
             "type": {
-              "validTypes": [
-                {
-                  "name": "InlineKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardRemove"
-                },
-                {
-                  "name": "ForceReply"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -6722,14 +6644,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -6806,14 +6722,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -7004,20 +6914,8 @@
             "name": "reply_markup",
             "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove reply keyboard or to force a reply from the user.",
             "type": {
-              "validTypes": [
-                {
-                  "name": "InlineKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardRemove"
-                },
-                {
-                  "name": "ForceReply"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -7227,22 +7125,10 @@
           },
           {
             "name": "reply_markup",
-            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account",
+            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.",
             "type": {
-              "validTypes": [
-                {
-                  "name": "InlineKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardRemove"
-                },
-                {
-                  "name": "ForceReply"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -7251,14 +7137,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -7408,22 +7288,10 @@
           },
           {
             "name": "reply_markup",
-            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account",
+            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.",
             "type": {
-              "validTypes": [
-                {
-                  "name": "InlineKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardRemove"
-                },
-                {
-                  "name": "ForceReply"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -7432,14 +7300,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -7573,22 +7435,10 @@
           },
           {
             "name": "reply_markup",
-            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account",
+            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.",
             "type": {
-              "validTypes": [
-                {
-                  "name": "InlineKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardRemove"
-                },
-                {
-                  "name": "ForceReply"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -7597,14 +7447,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -7770,22 +7614,10 @@
           },
           {
             "name": "reply_markup",
-            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account",
+            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.",
             "type": {
-              "validTypes": [
-                {
-                  "name": "InlineKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardRemove"
-                },
-                {
-                  "name": "ForceReply"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -7794,14 +7626,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -7959,22 +7785,10 @@
           },
           {
             "name": "reply_markup",
-            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account",
+            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.",
             "type": {
-              "validTypes": [
-                {
-                  "name": "InlineKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardRemove"
-                },
-                {
-                  "name": "ForceReply"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -7983,14 +7797,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -8108,22 +7916,10 @@
           },
           {
             "name": "reply_markup",
-            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account",
+            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.",
             "type": {
-              "validTypes": [
-                {
-                  "name": "InlineKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardRemove"
-                },
-                {
-                  "name": "ForceReply"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -8132,14 +7928,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -8254,22 +8044,10 @@
           },
           {
             "name": "reply_markup",
-            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account",
+            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.",
             "type": {
-              "validTypes": [
-                {
-                  "name": "InlineKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardRemove"
-                },
-                {
-                  "name": "ForceReply"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -8278,14 +8056,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -8332,6 +8104,7 @@
             "type": {
               "elementType": {
                 "subclasses": {},
+                "deserializer": "\n            when (val type \u003d jsonElement.jsonObject.getValue(\"type\").jsonPrimitive.content) {\n                \"photo\" -\u003e InputMediaPhoto.serializer()\n                \"video\" -\u003e InputMediaVideo.serializer()\n                \"animation\" -\u003e InputMediaAnimation.serializer()\n                \"audio\" -\u003e InputMediaAudio.serializer()\n                \"document\" -\u003e InputMediaDocument.serializer()\n               else -\u003e error(\"unknown type: \" + type)\n            }\n            ",
                 "name": "InputMedia"
               },
               "name": "List\u003cInputMedia\u003e"
@@ -8367,14 +8140,8 @@
           "elementType": {
             "name": "Message",
             "superType": {
-              "validTypes": [
-                {
-                  "name": "Message"
-                },
-                {
-                  "name": "InaccessibleMessage"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
               "name": "MaybeInaccessibleMessage"
             }
           },
@@ -8491,22 +8258,10 @@
           },
           {
             "name": "reply_markup",
-            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account",
+            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.",
             "type": {
-              "validTypes": [
-                {
-                  "name": "InlineKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardRemove"
-                },
-                {
-                  "name": "ForceReply"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -8515,14 +8270,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -8653,22 +8402,10 @@
           },
           {
             "name": "reply_markup",
-            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account",
+            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.",
             "type": {
-              "validTypes": [
-                {
-                  "name": "InlineKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardRemove"
-                },
-                {
-                  "name": "ForceReply"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -8677,14 +8414,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -8783,22 +8514,10 @@
           },
           {
             "name": "reply_markup",
-            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account",
+            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.",
             "type": {
-              "validTypes": [
-                {
-                  "name": "InlineKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardRemove"
-                },
-                {
-                  "name": "ForceReply"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -8807,14 +8526,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -8983,22 +8696,10 @@
           },
           {
             "name": "reply_markup",
-            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account",
+            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.",
             "type": {
-              "validTypes": [
-                {
-                  "name": "InlineKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardRemove"
-                },
-                {
-                  "name": "ForceReply"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -9007,14 +8708,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -9089,22 +8784,10 @@
           },
           {
             "name": "reply_markup",
-            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account",
+            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.",
             "type": {
-              "validTypes": [
-                {
-                  "name": "InlineKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardRemove"
-                },
-                {
-                  "name": "ForceReply"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -9113,14 +8796,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -9208,6 +8885,7 @@
             "type": {
               "elementType": {
                 "subclasses": {},
+                "deserializer": "",
                 "name": "ReactionType"
               },
               "name": "List\u003cReactionType\u003e"
@@ -10268,6 +9946,7 @@
         "returns": {
           "elementType": {
             "subclasses": {},
+            "deserializer": "",
             "name": "ChatMember"
           },
           "name": "List\u003cChatMember\u003e"
@@ -10329,6 +10008,7 @@
         ],
         "returns": {
           "subclasses": {},
+          "deserializer": "",
           "name": "ChatMember"
         }
       },
@@ -10908,6 +10588,7 @@
             "description": "A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to \u003ca href\u003d\"#botcommandscopedefault\"\u003eBotCommandScopeDefault\u003c/a\u003e.",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "BotCommandScope"
             },
             "required": false
@@ -10934,6 +10615,7 @@
             "description": "A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to \u003ca href\u003d\"#botcommandscopedefault\"\u003eBotCommandScopeDefault\u003c/a\u003e.",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "BotCommandScope"
             },
             "required": false
@@ -10960,6 +10642,7 @@
             "description": "A JSON-serialized object, describing scope of users. Defaults to \u003ca href\u003d\"#botcommandscopedefault\"\u003eBotCommandScopeDefault\u003c/a\u003e.",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "BotCommandScope"
             },
             "required": false
@@ -11123,6 +10806,7 @@
             "description": "A JSON-serialized object for the bot\u0027s new menu button. Defaults to \u003ca href\u003d\"#menubuttondefault\"\u003eMenuButtonDefault\u003c/a\u003e",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "MenuButton"
             },
             "required": false
@@ -11147,6 +10831,7 @@
         ],
         "returns": {
           "subclasses": {},
+          "deserializer": "",
           "name": "MenuButton"
         }
       },
@@ -11276,20 +10961,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -11299,14 +10972,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11380,20 +11047,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -11403,14 +11058,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11456,6 +11105,7 @@
             "description": "A JSON-serialized object for a new media content of the message",
             "type": {
               "subclasses": {},
+              "deserializer": "\n            when (val type \u003d jsonElement.jsonObject.getValue(\"type\").jsonPrimitive.content) {\n                \"photo\" -\u003e InputMediaPhoto.serializer()\n                \"video\" -\u003e InputMediaVideo.serializer()\n                \"animation\" -\u003e InputMediaAnimation.serializer()\n                \"audio\" -\u003e InputMediaAudio.serializer()\n                \"document\" -\u003e InputMediaDocument.serializer()\n               else -\u003e error(\"unknown type: \" + type)\n            }\n            ",
               "name": "InputMedia"
             },
             "required": true
@@ -11466,20 +11116,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -11489,14 +11127,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11583,20 +11215,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -11606,14 +11226,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11660,20 +11274,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -11683,14 +11285,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11737,20 +11333,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -11760,14 +11344,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11806,20 +11384,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -12268,20 +11834,8 @@
             "name": "reply_markup",
             "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.",
             "type": {
-              "validTypes": [
-                {
-                  "name": "InlineKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardMarkup"
-                },
-                {
-                  "name": "ReplyKeyboardRemove"
-                },
-                {
-                  "name": "ForceReply"
-                }
-              ],
+              "subclasses": {},
+              "deserializer": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -12290,14 +11844,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -12871,6 +12419,7 @@
             "description": "Content of the message to be sent",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": true
@@ -12881,20 +12430,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -13051,20 +12588,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -13075,6 +12600,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the photo",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -13190,20 +12716,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -13214,6 +12728,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the GIF animation",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -13329,20 +12844,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -13353,6 +12856,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the video animation",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -13476,20 +12980,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -13500,6 +12992,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the video. This field is \u003cstrong\u003erequired\u003c/strong\u003e if InlineQueryResultVideo is used to send an HTML-page as a result (e.g., a YouTube video).",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -13591,20 +13084,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -13615,6 +13096,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the audio",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -13698,20 +13180,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -13722,6 +13192,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the voice recording",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -13813,20 +13284,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -13837,6 +13296,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the file",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -13949,20 +13409,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -13973,6 +13421,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the location",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -14093,20 +13542,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -14117,6 +13554,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the venue",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -14205,20 +13643,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -14229,6 +13655,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the contact",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -14293,20 +13720,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -14391,20 +13806,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -14415,6 +13818,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the photo",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -14490,20 +13894,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -14514,6 +13906,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the GIF animation",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -14589,20 +13982,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -14613,6 +13994,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the video animation",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -14653,20 +14035,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -14677,6 +14047,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the sticker",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -14760,20 +14131,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -14784,6 +14143,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the file",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -14867,20 +14227,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -14891,6 +14239,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the video",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -14966,20 +14315,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -14990,6 +14327,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the voice message",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -15057,20 +14395,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -15081,6 +14407,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Content of the message to be sent instead of the audio",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -15542,6 +14869,7 @@
             "type": {
               "elementType": {
                 "subclasses": {},
+                "deserializer": "",
                 "name": "InlineQueryResult"
               },
               "name": "List\u003cInlineQueryResult\u003e"
@@ -15602,6 +14930,7 @@
             "description": "A JSON-serialized object describing the message to be sent",
             "type": {
               "subclasses": {},
+              "deserializer": "",
               "name": "InlineQueryResult"
             },
             "required": true
@@ -16206,20 +15535,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -16229,14 +15546,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -17060,6 +16371,7 @@
             "type": {
               "elementType": {
                 "subclasses": {},
+                "deserializer": "",
                 "name": "PassportElementError"
               },
               "name": "List\u003cPassportElementError\u003e"
@@ -17235,20 +16547,8 @@
             "type": {
               "name": "InlineKeyboardMarkup",
               "superType": {
-                "validTypes": [
-                  {
-                    "name": "InlineKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardMarkup"
-                  },
-                  {
-                    "name": "ReplyKeyboardRemove"
-                  },
-                  {
-                    "name": "ForceReply"
-                  }
-                ],
+                "subclasses": {},
+                "deserializer": "",
                 "name": "KeyboardOption"
               }
             },
@@ -17258,14 +16558,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -17334,14 +16628,8 @@
         "returns": {
           "name": "Message",
           "superType": {
-            "validTypes": [
-              {
-                "name": "Message"
-              },
-              {
-                "name": "InaccessibleMessage"
-              }
-            ],
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
             "name": "MaybeInaccessibleMessage"
           }
         }

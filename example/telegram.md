@@ -175,7 +175,7 @@
 
     ForumTopicEdited(name: String, icon_custom_emoji_id: String)
 
-<p>This object contains information about a user that was shared with the bot using a <a href="#keyboardbuttonrequestuser">KeyboardButtonRequestUser</a> button.</p>
+<p>This object contains information about a user that was shared with the bot using a <a href="#keyboardbuttonrequestusers">KeyboardButtonRequestUsers</a> button.</p>
 
     SharedUser(user_id: Integer, first_name: String, last_name: String, username: String, photo: List<PhotoSize>)
 
@@ -245,7 +245,7 @@
 
     KeyboardButtonRequestUsers(request_id: Integer, user_is_bot: Boolean, user_is_premium: Boolean, max_quantity: Integer, request_name: Boolean, request_username: Boolean, request_photo: Boolean)
 
-<p>This object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the сhat if appropriate <a href="/bots/features#chat-and-user-selection">More about requesting chats »</a></p>
+<p>This object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the chat if appropriate. <a href="/bots/features#chat-and-user-selection">More about requesting chats »</a>.</p>
 
     KeyboardButtonRequestChat(request_id: Integer, chat_is_channel: Boolean, chat_is_forum: Boolean, chat_has_username: Boolean, chat_is_created: Boolean, user_administrator_rights: ChatAdministratorRights, bot_administrator_rights: ChatAdministratorRights, bot_is_member: Boolean, request_title: Boolean, request_username: Boolean, request_photo: Boolean)
 

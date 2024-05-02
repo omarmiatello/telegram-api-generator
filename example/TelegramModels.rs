@@ -1593,7 +1593,7 @@ pub struct ForumTopicEdited {
 }
 
 /**
- * <p>This object contains information about a user that was shared with the bot using a <a href="#keyboardbuttonrequestuser">KeyboardButtonRequestUser</a> button.</p>
+ * <p>This object contains information about a user that was shared with the bot using a <a href="#keyboardbuttonrequestusers">KeyboardButtonRequestUsers</a> button.</p>
  *
  * @property user_id Identifier of the shared user. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so 64-bit integers or double-precision float types are safe for storing these identifiers. The bot may not have access to the user and could be unable to use this identifier, unless the user is already known to the bot by some other means.
  * @property first_name <em>Optional</em>. First name of the user, if the name was requested by the bot
@@ -1997,9 +1997,9 @@ pub struct KeyboardButton {
  * @property user_is_bot <em>Optional</em>. Pass <em>True</em> to request bots, pass <em>False</em> to request regular users. If not specified, no additional restrictions are applied.
  * @property user_is_premium <em>Optional</em>. Pass <em>True</em> to request premium users, pass <em>False</em> to request non-premium users. If not specified, no additional restrictions are applied.
  * @property max_quantity <em>Optional</em>. The maximum number of users to be selected; 1-10. Defaults to 1.
- * @property request_name <em>Optional</em>. Pass <em>True</em> to request the users' first and last name
- * @property request_username <em>Optional</em>. Pass <em>True</em> to request the users' username
- * @property request_photo <em>Optional</em>. Pass <em>True</em> to request the users' photo
+ * @property request_name <em>Optional</em>. Pass <em>True</em> to request the users' first and last names
+ * @property request_username <em>Optional</em>. Pass <em>True</em> to request the users' usernames
+ * @property request_photo <em>Optional</em>. Pass <em>True</em> to request the users' photos
  *
  * @constructor Creates a [KeyboardButtonRequestUsers].
  * */
@@ -2016,19 +2016,19 @@ pub struct KeyboardButtonRequestUsers {
     /// <em>Optional</em>. The maximum number of users to be selected; 1-10. Defaults to 1.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_quantity: Option<Integer>,
-    /// <em>Optional</em>. Pass <em>True</em> to request the users' first and last name
+    /// <em>Optional</em>. Pass <em>True</em> to request the users' first and last names
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_name: Option<bool>,
-    /// <em>Optional</em>. Pass <em>True</em> to request the users' username
+    /// <em>Optional</em>. Pass <em>True</em> to request the users' usernames
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_username: Option<bool>,
-    /// <em>Optional</em>. Pass <em>True</em> to request the users' photo
+    /// <em>Optional</em>. Pass <em>True</em> to request the users' photos
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_photo: Option<bool>
 }
 
 /**
- * <p>This object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the сhat if appropriate <a href="/bots/features#chat-and-user-selection">More about requesting chats »</a></p>
+ * <p>This object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the chat if appropriate. <a href="/bots/features#chat-and-user-selection">More about requesting chats »</a>.</p>
  *
  * @property request_id Signed 32-bit identifier of the request, which will be received back in the <a href="#chatshared">ChatShared</a> object. Must be unique within the message
  * @property chat_is_channel Pass <em>True</em> to request a channel chat, pass <em>False</em> to request a group or a supergroup chat.
@@ -3367,7 +3367,7 @@ pub struct BusinessConnection {
  *
  * @property business_connection_id Unique identifier of the business connection
  * @property chat Information about a chat in the business account. The bot may not have access to the chat or the corresponding user.
- * @property message_ids A JSON-serialized list of identifiers of deleted messages in the chat of the business account
+ * @property message_ids The list of identifiers of deleted messages in the chat of the business account
  *
  * @constructor Creates a [BusinessMessagesDeleted].
  * */
@@ -3377,7 +3377,7 @@ pub struct BusinessMessagesDeleted {
     pub business_connection_id: String,
     /// Information about a chat in the business account. The bot may not have access to the chat or the corresponding user.
     pub chat: Chat,
-    /// A JSON-serialized list of identifiers of deleted messages in the chat of the business account
+    /// The list of identifiers of deleted messages in the chat of the business account
     pub message_ids: Vec<Integer>
 }
 
@@ -5726,7 +5726,7 @@ pub struct DeleteWebhookRequest {
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_parameters Description of the message to reply to
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+ * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendMessageRequest {
@@ -5750,7 +5750,7 @@ pub struct SendMessageRequest {
     pub protect_content: Option<bool>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
-    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
     pub reply_markup: Option<KeyboardOption>
 }
 
@@ -5890,7 +5890,7 @@ pub struct CopyMessagesRequest {
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_parameters Description of the message to reply to
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+ * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendPhotoRequest {
@@ -5916,7 +5916,7 @@ pub struct SendPhotoRequest {
     pub protect_content: Option<bool>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
-    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
     pub reply_markup: Option<KeyboardOption>
 }
 
@@ -5937,7 +5937,7 @@ pub struct SendPhotoRequest {
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_parameters Description of the message to reply to
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+ * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendAudioRequest {
@@ -5969,7 +5969,7 @@ pub struct SendAudioRequest {
     pub protect_content: Option<bool>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
-    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
     pub reply_markup: Option<KeyboardOption>
 }
 
@@ -5988,7 +5988,7 @@ pub struct SendAudioRequest {
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_parameters Description of the message to reply to
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+ * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendDocumentRequest {
@@ -6016,7 +6016,7 @@ pub struct SendDocumentRequest {
     pub protect_content: Option<bool>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
-    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
     pub reply_markup: Option<KeyboardOption>
 }
 
@@ -6039,7 +6039,7 @@ pub struct SendDocumentRequest {
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_parameters Description of the message to reply to
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+ * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendVideoRequest {
@@ -6075,7 +6075,7 @@ pub struct SendVideoRequest {
     pub protect_content: Option<bool>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
-    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
     pub reply_markup: Option<KeyboardOption>
 }
 
@@ -6097,7 +6097,7 @@ pub struct SendVideoRequest {
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_parameters Description of the message to reply to
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+ * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendAnimationRequest {
@@ -6131,7 +6131,7 @@ pub struct SendAnimationRequest {
     pub protect_content: Option<bool>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
-    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
     pub reply_markup: Option<KeyboardOption>
 }
 
@@ -6149,7 +6149,7 @@ pub struct SendAnimationRequest {
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_parameters Description of the message to reply to
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+ * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendVoiceRequest {
@@ -6175,7 +6175,7 @@ pub struct SendVoiceRequest {
     pub protect_content: Option<bool>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
-    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
     pub reply_markup: Option<KeyboardOption>
 }
 
@@ -6192,7 +6192,7 @@ pub struct SendVoiceRequest {
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_parameters Description of the message to reply to
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+ * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendVideoNoteRequest {
@@ -6216,7 +6216,7 @@ pub struct SendVideoNoteRequest {
     pub protect_content: Option<bool>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
-    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
     pub reply_markup: Option<KeyboardOption>
 }
 
@@ -6264,7 +6264,7 @@ pub struct SendMediaGroupRequest {
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_parameters Description of the message to reply to
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+ * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendLocationRequest {
@@ -6292,7 +6292,7 @@ pub struct SendLocationRequest {
     pub protect_content: Option<bool>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
-    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
     pub reply_markup: Option<KeyboardOption>
 }
 
@@ -6313,7 +6313,7 @@ pub struct SendLocationRequest {
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_parameters Description of the message to reply to
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+ * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendVenueRequest {
@@ -6345,7 +6345,7 @@ pub struct SendVenueRequest {
     pub protect_content: Option<bool>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
-    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
     pub reply_markup: Option<KeyboardOption>
 }
 
@@ -6362,7 +6362,7 @@ pub struct SendVenueRequest {
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_parameters Description of the message to reply to
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+ * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendContactRequest {
@@ -6386,7 +6386,7 @@ pub struct SendContactRequest {
     pub protect_content: Option<bool>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
-    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
     pub reply_markup: Option<KeyboardOption>
 }
 
@@ -6411,7 +6411,7 @@ pub struct SendContactRequest {
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
  * @property reply_parameters Description of the message to reply to
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+ * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendPollRequest {
@@ -6452,7 +6452,7 @@ pub struct SendPollRequest {
     pub protect_content: Option<bool>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
-    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
     pub reply_markup: Option<KeyboardOption>
 }
 
@@ -6466,7 +6466,7 @@ pub struct SendPollRequest {
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding
  * @property reply_parameters Description of the message to reply to
- * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+ * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendDiceRequest {
@@ -6484,7 +6484,7 @@ pub struct SendDiceRequest {
     pub protect_content: Option<bool>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
-    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account
+    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.
     pub reply_markup: Option<KeyboardOption>
 }
 

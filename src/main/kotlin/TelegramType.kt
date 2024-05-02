@@ -19,24 +19,97 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
     object GeneralForumTopicUnhidden : TelegramType("GeneralForumTopicUnhidden", superType = null)
     object GiveawayCreated : TelegramType("GiveawayCreated", superType = null)
 
-    sealed class Super(name: String, val subclasses: (String) -> kotlin.Boolean) :
-        TelegramType(name, superType = null) {
-        object InputMessageContent :
-            Super("InputMessageContent", subclasses = { it.startsWith("Input") && it.endsWith("MessageContent") })
+    sealed class Super(
+        name: String,
+        val subclasses: (String) -> kotlin.Boolean,
+        val deserializer: String,
+    ) : TelegramType(name, superType = null) {
 
-        object InlineQueryResult :
-            Super("InlineQueryResult", subclasses = { it.startsWith("InlineQueryResult") && "Results" !in it })
+        object InputMessageContent : Super(
+            name = "InputMessageContent",
+            subclasses = { it.startsWith("Input") && it.endsWith("MessageContent") },
+            deserializer = ""
 
-        object PassportElementError :
-            Super("PassportElementError", subclasses = { it.startsWith("PassportElementError") })
+        )
 
-        object InputMedia : Super("InputMedia", subclasses = { it.startsWith("InputMedia") })
-        object ChatMember : Super("ChatMember", subclasses = { it.startsWith("ChatMember") })
-        object BotCommandScope : Super("BotCommandScope", subclasses = { it.startsWith("BotCommandScope") })
-        object ReactionType : Super("ReactionType", subclasses = { it.startsWith("ReactionType") })
-        object MessageOrigin : Super("MessageOrigin", subclasses = { it.startsWith("MessageOrigin") })
-        object ChatBoostSource : Super("ChatBoostSource", subclasses = { it.startsWith("ChatBoostSource") })
-        object MenuButton : Super("MenuButton", subclasses = { it.startsWith("MenuButton") })
+        object InlineQueryResult : Super(
+            name = "InlineQueryResult",
+            subclasses = { it.startsWith("InlineQueryResult") && "Results" !in it },
+            deserializer = ""
+        )
+
+        object PassportElementError : Super(
+            name = "PassportElementError",
+            subclasses = { it.startsWith("PassportElementError") },
+            deserializer = ""
+        )
+
+        object InputMedia : Super(
+            name = "InputMedia",
+            subclasses = { it.startsWith("InputMedia") },
+            deserializer = """
+            when (val type = jsonElement.jsonObject.getValue("type").jsonPrimitive.content) {
+                "photo" -> InputMediaPhoto.serializer()
+                "video" -> InputMediaVideo.serializer()
+                "animation" -> InputMediaAnimation.serializer()
+                "audio" -> InputMediaAudio.serializer()
+                "document" -> InputMediaDocument.serializer()
+               else -> error("unknown type: " + type)
+            }
+            """
+        )
+
+        object ChatMember : Super(
+            name = "ChatMember",
+            subclasses = { it.startsWith("ChatMember") },
+            deserializer = ""
+        )
+
+        object BotCommandScope : Super(
+            name = "BotCommandScope",
+            subclasses = { it.startsWith("BotCommandScope") },
+            deserializer = ""
+        )
+
+        object ReactionType : Super(
+            name = "ReactionType",
+            subclasses = { it.startsWith("ReactionType") },
+            deserializer = ""
+        )
+
+        object MessageOrigin : Super(
+            name = "MessageOrigin",
+            subclasses = { it.startsWith("MessageOrigin") },
+            deserializer = ""
+        )
+
+        object ChatBoostSource : Super(
+            name = "ChatBoostSource",
+            subclasses = { it.startsWith("ChatBoostSource") },
+            deserializer = ""
+        )
+
+        object MenuButton : Super(
+            name = "MenuButton",
+            subclasses = { it.startsWith("MenuButton") },
+            deserializer = ""
+        )
+
+        object KeyboardOption : Super(
+            name = "KeyboardOption",
+            subclasses = { it in listOf("InlineKeyboardMarkup", "ReplyKeyboardMarkup", "ReplyKeyboardRemove", "ForceReply") },
+            deserializer = ""
+        )
+
+        object MaybeInaccessibleMessage : Super(
+            name = "MaybeInaccessibleMessage",
+            subclasses = { it in listOf("Message", "InaccessibleMessage") },
+            deserializer = """if (jsonElement.jsonObject.getValue("date").jsonPrimitive.long == 0L) {
+                                    InaccessibleMessage.serializer()
+                                } else {
+                                    Message.serializer()
+                                }"""
+        )
     }
 
     sealed class WithAlternative(name: String, val validTypes: List<TelegramType>, superType: TelegramType?) :
@@ -58,26 +131,6 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             ),
             superType = null
         )
-
-        object KeyboardOption : WithAlternative(
-            name = "KeyboardOption",
-            validTypes = listOf(
-                Declared("InlineKeyboardMarkup", KeyboardOption),
-                Declared("ReplyKeyboardMarkup", KeyboardOption),
-                Declared("ReplyKeyboardRemove", KeyboardOption),
-                Declared("ForceReply", KeyboardOption),
-            ),
-            superType = null
-        )
-
-        object MaybeInaccessibleMessage : WithAlternative(
-            name = "MaybeInaccessibleMessage",
-            validTypes = listOf(
-                Declared("Message", MaybeInaccessibleMessage),
-                Declared("InaccessibleMessage", MaybeInaccessibleMessage),
-            ),
-            superType = null
-        )
     }
 
     override fun toString() = name
@@ -96,12 +149,10 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             Super.MessageOrigin,
             Super.ChatBoostSource,
             Super.MenuButton,
+            Super.KeyboardOption,
+            Super.MaybeInaccessibleMessage,
             WithAlternative.InputFileOrString,
             WithAlternative.IntegerOrString,
-            WithAlternative.KeyboardOption,
-            WithAlternative.MaybeInaccessibleMessage,
-            VoiceChatStarted,
-            VideoChatStarted,
         )
 
         private fun findSuper(docName: String) = allSuper.filterIsInstance(WithAlternative::class.java)
@@ -134,10 +185,10 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             "ChatMember" -> Super.ChatMember
             "MenuButton" -> Super.MenuButton
             "BotCommandScope" -> Super.BotCommandScope
+            "KeyboardOption" -> Super.KeyboardOption
+            "MaybeInaccessibleMessage" -> Super.MaybeInaccessibleMessage
             "InputFileOrString" -> WithAlternative.InputFileOrString
             "IntegerOrString" -> WithAlternative.IntegerOrString
-            "KeyboardOption" -> WithAlternative.KeyboardOption
-            "MaybeInaccessibleMessage" -> WithAlternative.MaybeInaccessibleMessage
             else -> {
                 if (type.startsWith("Array of ")) {
                     ListType(from(type.removePrefix("Array of ")))

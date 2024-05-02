@@ -18,10 +18,7 @@ fun List<DocSection>.toKotlinModels(useKotlinXSerialization: Boolean) = buildStr
         appendLine("import kotlinx.serialization.descriptors.SerialDescriptor")
         appendLine("import kotlinx.serialization.encoding.Decoder")
         appendLine("import kotlinx.serialization.encoding.Encoder")
-        appendLine("import kotlinx.serialization.json.Json")
-        appendLine("import kotlinx.serialization.json.JsonObject")
-        appendLine("import kotlinx.serialization.json.JsonPrimitive")
-        appendLine("import kotlinx.serialization.json.jsonObject")
+        appendLine("import kotlinx.serialization.json.*")
         appendLine("import kotlinx.serialization.serializer\n")
         appendLine("private val json = Json {")
         appendLine("    ignoreUnknownKeys = true")
@@ -29,6 +26,15 @@ fun List<DocSection>.toKotlinModels(useKotlinXSerialization: Boolean) = buildStr
         appendLine("    encodeDefaults = false")
         appendLine("}\n")
         appendLine("sealed class TelegramModel { abstract fun toJson(): String }")
+        appendLine("private fun <T> Decoder.tryDeserializers(vararg serializers: KSerializer<out T>): T {")
+        appendLine("    return serializers.firstNotNullOf {")
+        appendLine("        try {")
+        appendLine("            decodeSerializableValue(it)")
+        appendLine("        } catch (e: Exception) {")
+        appendLine("            null")
+        appendLine("        }")
+        appendLine("    }")
+        appendLine("}")
     } else {
         appendLine("sealed class TelegramModel")
     }
@@ -49,7 +55,25 @@ fun List<DocSection>.toKotlinModels(useKotlinXSerialization: Boolean) = buildStr
                 }
                 appendLine("    }\n")
             }
-            appendLine("    override fun deserialize(decoder: Decoder): ${type.name} = TODO()")
+            when (type) {
+                is TelegramType.Super -> {
+                    appendLine("    override fun deserialize(decoder: Decoder): ${type.name} = ")
+                    if (type.deserializer.isEmpty()) {
+                        appendLine("        decoder.tryDeserializers(${allSubtype.joinToString { it.name + ".serializer()" }})")
+                    } else {
+                        appendLine("        decoder.decodeSerializableValue(JsonElement.serializer()).let { jsonElement ->")
+                        appendLine("json.decodeFromJsonElement(")
+                        appendLine("    deserializer = ${type.deserializer},")
+                        appendLine("    element = jsonElement,")
+                        appendLine(")")
+                        appendLine("        }")
+                    }
+                }
+
+                else -> {
+                    appendLine("    override fun deserialize(decoder: Decoder): ${type.name} = TODO()")
+                }
+            }
             appendLine("}")
         }
     }
@@ -240,26 +264,13 @@ private fun TelegramType.toKotlinType(prefixPolymorphic: String = ""): String = 
     TelegramType.ForumTopicReopened,
     TelegramType.GeneralForumTopicHidden,
     TelegramType.GeneralForumTopicUnhidden,
+    TelegramType.VoiceChatStarted,
+    TelegramType.VideoChatStarted,
     TelegramType.GiveawayCreated -> "${prefixPolymorphic}Any"
 
     TelegramType.ParseMode -> name
-    TelegramType.VoiceChatStarted,
-    TelegramType.VideoChatStarted -> "${prefixPolymorphic}$name"
 
-    is TelegramType.Super -> {
-        when (this) {
-            TelegramType.Super.InputMedia,
-            TelegramType.Super.InputMessageContent,
-            TelegramType.Super.InlineQueryResult,
-            TelegramType.Super.PassportElementError,
-            TelegramType.Super.BotCommandScope,
-            TelegramType.Super.ChatMember,
-            TelegramType.Super.ReactionType,
-            TelegramType.Super.MessageOrigin,
-            TelegramType.Super.MenuButton,
-            TelegramType.Super.ChatBoostSource -> "${prefixPolymorphic}$name"
-        }
-    }
+    is TelegramType.Super -> "${prefixPolymorphic}$name"
 
     is TelegramType.WithAlternative -> {
         when (this) {
@@ -267,8 +278,6 @@ private fun TelegramType.toKotlinType(prefixPolymorphic: String = ""): String = 
             // Example 2: TelegramType.WithAlternative.InputFileOrString -> "${prefixPolymorphic}Any"
             TelegramType.WithAlternative.InputFileOrString -> "String"
             TelegramType.WithAlternative.IntegerOrString -> "String"
-            TelegramType.WithAlternative.KeyboardOption,
-            TelegramType.WithAlternative.MaybeInaccessibleMessage -> "${prefixPolymorphic}$name"
         }
     }
 }
