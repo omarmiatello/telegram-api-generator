@@ -1,3 +1,5 @@
+import java.util.*
+
 fun List<DocSection>.toKotlinModels(useKotlinXSerialization: Boolean) = buildString {
     val allType = this@toKotlinModels.flatMap { section ->
         section.docTypes.map { TelegramType.from(it.name) }
@@ -126,8 +128,12 @@ fun List<DocSection>.toKotlinMethods() = buildString {
     appendLine("import kotlinx.serialization.builtins.ListSerializer")
     appendLine("import kotlinx.serialization.builtins.serializer")
     appendLine("import kotlinx.serialization.json.Json")
-    appendLine("class TelegramClient(apiKey: String, private val httpClient: HttpClient = HttpClient()) {")
-    appendLine("""    private val basePath = "https://api.telegram.org/bot${"$"}apiKey"""")
+    appendLine("class TelegramClient(")
+    appendLine("    apiKey: String,")
+    appendLine("    private val httpClient: HttpClient = HttpClient(),")
+    appendLine("    private val apiUrl: String = \"https://api.telegram.org\",")
+    appendLine(") {")
+    appendLine("""    private val basePath = "${"$"}apiUrl/bot${"$"}apiKey"""")
     appendLine("    private val json = Json { ignoreUnknownKeys = true; prettyPrint = true; encodeDefaults = false }")
     appendLine()
     appendLine("    private suspend fun <T> telegramGet(path: String, response: KSerializer<T>): TelegramResponse<T> {")
@@ -176,7 +182,7 @@ private fun DocMethod.toKotlinDoc(showReturn: Boolean = true) = buildString {
     appendLine(" * ${description.replace("\n", "\n * ")}")
     appendLine(" *")
     docParameters.forEach {
-        appendLine(" * @property ${it.name} ${it.description}")
+        appendLine(" * @property ${it.name.snakeToCamelCase()} ${it.description}")
     }
     if (showReturn) {
         appendLine(" *")
@@ -188,7 +194,8 @@ private fun DocMethod.toKotlinDoc(showReturn: Boolean = true) = buildString {
 private fun DocType.toKotlinDataClass(useKotlinXSerialization: Boolean) = buildString {
     appendLine("data class $name(")
     docFields.forEachIndexed { index, field ->
-        appendLine("    val ${field.name}: ${field.toKotlinType(useKotlinXSerialization)},")
+        appendLine("    @SerialName(\"${field.name}\")")
+        appendLine("    val ${field.name.snakeToCamelCase()}: ${field.toKotlinType(useKotlinXSerialization)},")
     }
     val superType = TelegramType.from(name).superType ?: "TelegramModel"
     if (useKotlinXSerialization) {
@@ -204,9 +211,9 @@ private fun DocType.toKotlinDataClass(useKotlinXSerialization: Boolean) = buildS
 }
 
 private fun DocMethod.toKotlinDataClass(useKotlinXSerialization: Boolean) = buildString {
-    appendLine("data class ${name.capitalize()}Request(")
+    appendLine("data class ${name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}Request(")
     docParameters.forEachIndexed { index, field ->
-        appendLine("    val ${field.name}: ${field.toKotlinType(useKotlinXSerialization)},")
+        appendLine("    val ${field.name.snakeToCamelCase()}: ${field.toKotlinType(useKotlinXSerialization)},")
     }
     if (useKotlinXSerialization) {
         appendLine(") : TelegramRequest() {")
@@ -225,19 +232,19 @@ private fun DocMethod.toKotlinDataClass(useKotlinXSerialization: Boolean) = buil
 
 private fun DocMethod.toKotlinRequestMethod() = buildString {
     val path = """"${"$"}basePath/$name""""
-    val parameters = docParameters.map { f -> f.name }.joinToString(",\n")
+    val parameters = docParameters.map { f -> f.name.snakeToCamelCase() }.joinToString(",\n")
     if (docParameters.isEmpty()) {
         append("suspend fun $name() = telegramGet($path, ${returns.toKotlinSerializerType()})")
     } else {
         appendLine("suspend fun $name(")
         docParameters.forEachIndexed { index, parameter ->
-            appendLine("${parameter.name}: ${parameter.toKotlinType(useContextualSerialization = false)},")
+            appendLine("${parameter.name.snakeToCamelCase()}: ${parameter.toKotlinType(useContextualSerialization = false)},")
         }
         appendLine(") = telegramPost(")
         appendLine("    $path,")
-        appendLine("    ${name.capitalize()}Request(")
+        appendLine("    ${name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}Request(")
         docParameters.forEachIndexed { index, parameter ->
-            appendLine("        ${parameter.name},")
+            appendLine("        ${parameter.name.snakeToCamelCase()},")
         }
         appendLine("    ).toJsonForRequest(),")
         appendLine("    ${returns.toKotlinSerializerType()}")
@@ -285,4 +292,9 @@ private fun TelegramType.toKotlinType(prefixPolymorphic: String = ""): String = 
 private fun TelegramType.toKotlinSerializerType(): String = when (this) {
     is TelegramType.ListType<*> -> "ListSerializer(${elementType.toKotlinSerializerType()})"
     else -> "${toKotlinType()}.serializer()"
+}
+
+private fun String.snakeToCamelCase(): String {
+    val pattern = "_[a-z]".toRegex()
+    return replace(pattern) { it.value.last().uppercase() }
 }

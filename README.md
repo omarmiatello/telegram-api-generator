@@ -1,14 +1,14 @@
 # telegram-api-generator
 Parse https://core.telegram.org/bots/api page and generate a Kotlin class "DocSection" with "DocType" and "DocMethod"
 
-Last update: Telegram Bot API 7.2
+Last update: Telegram Bot API 7.4
 
 Example in:
 
 | Format | Generator | Output |
 | --- | --- | --- |
 | Kotlin (data class only) | [GeneratorKotlin.kt](src/main/kotlin/GeneratorKotlin.kt) | [TelegramModelsOnly.kt](example/TelegramModelsOnly.kt) | 
-| Kotlin (Kotlin/Serialization + Ktor client) | [GeneratorKotlin.kt](src/main/kotlin/GeneratorKotlin.kt) | [TelegramModels.kt](example/TelegramModels.kt) + [TelegramClient.kt](example/TelegramClient.kt) | 
+| Kotlin (Kotlin/Serialization + Ktor client) | [GeneratorKotlin.kt](src/main/kotlin/GeneratorKotlin.kt) | [TelegramModels.kt](src/main/kotlin/TelegramModels.kt) + [TelegramClient.kt](example/TelegramClient.kt) | 
 | Rust (data class only) | [GeneratorRust.kt](src/main/kotlin/GeneratorRust.kt) | [TelegramModels.rs](example/TelegramModels.rs) | 
 | Json | [GeneratorJson.kt](src/main/kotlin/GeneratorJson.kt) | [telegram.json](example/telegram.json) |
 | Markdown | [GeneratorReadmeExample.kt](src/main/kotlin/GeneratorReadmeExample.kt) | [telegram.md](example/telegram.md) or [telegram_full.md](example/telegram_full.md) or [telegram_tiny.md](example/telegram_tiny.md) |
@@ -60,7 +60,7 @@ class TelegramClient(apiKey: String, httpClient: HttpClient) {
 }
 ```
 
-[TelegramModels.kt](example/TelegramModels.kt)
+[TelegramModels.kt](src/main/kotlin/TelegramModels.kt)
 ```kotlin
 // Getting updates
 /**
