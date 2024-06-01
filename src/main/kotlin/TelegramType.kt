@@ -110,6 +110,18 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
                                     Message.serializer()
                                 }"""
         )
+
+        object BackgroundType : Super(
+            name = "BackgroundType",
+            subclasses = { it.startsWith("BackgroundType") },
+            deserializer = ""
+        )
+
+        object BackgroundFill : Super(
+            name = "BackgroundFill",
+            subclasses = { it.startsWith("BackgroundFill") },
+            deserializer = ""
+        )
     }
 
     sealed class WithAlternative(name: String, val validTypes: List<TelegramType>, superType: TelegramType?) :
@@ -151,6 +163,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             Super.MenuButton,
             Super.KeyboardOption,
             Super.MaybeInaccessibleMessage,
+            Super.BackgroundType,
+            Super.BackgroundFill,
             WithAlternative.InputFileOrString,
             WithAlternative.IntegerOrString,
         )
@@ -187,6 +201,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             "BotCommandScope" -> Super.BotCommandScope
             "KeyboardOption" -> Super.KeyboardOption
             "MaybeInaccessibleMessage" -> Super.MaybeInaccessibleMessage
+            "BackgroundType" -> Super.BackgroundType
+            "BackgroundFill" -> Super.BackgroundFill
             "InputFileOrString" -> WithAlternative.InputFileOrString
             "IntegerOrString" -> WithAlternative.IntegerOrString
             else -> {
