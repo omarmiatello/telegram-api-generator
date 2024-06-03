@@ -60,7 +60,15 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
         object ChatMember : Super(
             name = "ChatMember",
             subclasses = { it.startsWith("ChatMember") },
-            deserializer = ""
+            deserializer = """when (val type = jsonElement.jsonObject.getValue("status").jsonPrimitive.content) {
+                    "creator" -> ChatMemberOwner.serializer()
+                    "administrator" -> ChatMemberAdministrator.serializer()
+                    "member" -> ChatMemberMember.serializer()
+                    "restricted" -> ChatMemberRestricted.serializer()
+                    "left" -> ChatMemberLeft.serializer()
+                    "kicked" -> ChatMemberBanned.serializer()
+                    else -> error("unknown type: " + type)
+                }"""
         )
 
         object BotCommandScope : Super(

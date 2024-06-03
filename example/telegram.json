@@ -188,7 +188,7 @@
               "name": "ChatMemberUpdated",
               "superType": {
                 "subclasses": {},
-                "deserializer": "",
+                "deserializer": "when (val type \u003d jsonElement.jsonObject.getValue(\"status\").jsonPrimitive.content) {\n                    \"creator\" -\u003e ChatMemberOwner.serializer()\n                    \"administrator\" -\u003e ChatMemberAdministrator.serializer()\n                    \"member\" -\u003e ChatMemberMember.serializer()\n                    \"restricted\" -\u003e ChatMemberRestricted.serializer()\n                    \"left\" -\u003e ChatMemberLeft.serializer()\n                    \"kicked\" -\u003e ChatMemberBanned.serializer()\n                    else -\u003e error(\"unknown type: \" + type)\n                }",
                 "name": "ChatMember"
               }
             },
@@ -201,7 +201,7 @@
               "name": "ChatMemberUpdated",
               "superType": {
                 "subclasses": {},
-                "deserializer": "",
+                "deserializer": "when (val type \u003d jsonElement.jsonObject.getValue(\"status\").jsonPrimitive.content) {\n                    \"creator\" -\u003e ChatMemberOwner.serializer()\n                    \"administrator\" -\u003e ChatMemberAdministrator.serializer()\n                    \"member\" -\u003e ChatMemberMember.serializer()\n                    \"restricted\" -\u003e ChatMemberRestricted.serializer()\n                    \"left\" -\u003e ChatMemberLeft.serializer()\n                    \"kicked\" -\u003e ChatMemberBanned.serializer()\n                    else -\u003e error(\"unknown type: \" + type)\n                }",
                 "name": "ChatMember"
               }
             },
@@ -4915,7 +4915,7 @@
             "description": "Previous information about the chat member",
             "type": {
               "subclasses": {},
-              "deserializer": "",
+              "deserializer": "when (val type \u003d jsonElement.jsonObject.getValue(\"status\").jsonPrimitive.content) {\n                    \"creator\" -\u003e ChatMemberOwner.serializer()\n                    \"administrator\" -\u003e ChatMemberAdministrator.serializer()\n                    \"member\" -\u003e ChatMemberMember.serializer()\n                    \"restricted\" -\u003e ChatMemberRestricted.serializer()\n                    \"left\" -\u003e ChatMemberLeft.serializer()\n                    \"kicked\" -\u003e ChatMemberBanned.serializer()\n                    else -\u003e error(\"unknown type: \" + type)\n                }",
               "name": "ChatMember"
             },
             "required": true
@@ -4925,7 +4925,7 @@
             "description": "New information about the chat member",
             "type": {
               "subclasses": {},
-              "deserializer": "",
+              "deserializer": "when (val type \u003d jsonElement.jsonObject.getValue(\"status\").jsonPrimitive.content) {\n                    \"creator\" -\u003e ChatMemberOwner.serializer()\n                    \"administrator\" -\u003e ChatMemberAdministrator.serializer()\n                    \"member\" -\u003e ChatMemberMember.serializer()\n                    \"restricted\" -\u003e ChatMemberRestricted.serializer()\n                    \"left\" -\u003e ChatMemberLeft.serializer()\n                    \"kicked\" -\u003e ChatMemberBanned.serializer()\n                    else -\u003e error(\"unknown type: \" + type)\n                }",
               "name": "ChatMember"
             },
             "required": true
@@ -10547,7 +10547,7 @@
         "returns": {
           "elementType": {
             "subclasses": {},
-            "deserializer": "",
+            "deserializer": "when (val type \u003d jsonElement.jsonObject.getValue(\"status\").jsonPrimitive.content) {\n                    \"creator\" -\u003e ChatMemberOwner.serializer()\n                    \"administrator\" -\u003e ChatMemberAdministrator.serializer()\n                    \"member\" -\u003e ChatMemberMember.serializer()\n                    \"restricted\" -\u003e ChatMemberRestricted.serializer()\n                    \"left\" -\u003e ChatMemberLeft.serializer()\n                    \"kicked\" -\u003e ChatMemberBanned.serializer()\n                    else -\u003e error(\"unknown type: \" + type)\n                }",
             "name": "ChatMember"
           },
           "name": "List\u003cChatMember\u003e"
@@ -10609,7 +10609,7 @@
         ],
         "returns": {
           "subclasses": {},
-          "deserializer": "",
+          "deserializer": "when (val type \u003d jsonElement.jsonObject.getValue(\"status\").jsonPrimitive.content) {\n                    \"creator\" -\u003e ChatMemberOwner.serializer()\n                    \"administrator\" -\u003e ChatMemberAdministrator.serializer()\n                    \"member\" -\u003e ChatMemberMember.serializer()\n                    \"restricted\" -\u003e ChatMemberRestricted.serializer()\n                    \"left\" -\u003e ChatMemberLeft.serializer()\n                    \"kicked\" -\u003e ChatMemberBanned.serializer()\n                    else -\u003e error(\"unknown type: \" + type)\n                }",
           "name": "ChatMember"
         }
       },

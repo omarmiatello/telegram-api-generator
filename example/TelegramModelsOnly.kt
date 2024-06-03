@@ -2837,918 +2837,1483 @@ data class GameHighScore(
 sealed class TelegramRequest {
 
     data class GetUpdatesRequest(
+        @SerialName("offset")
         val offset: Long? = null,
+        @SerialName("limit")
         val limit: Long? = null,
+        @SerialName("timeout")
         val timeout: Long? = null,
+        @SerialName("allowed_updates")
         val allowedUpdates: List<String>? = null,
     ) : TelegramRequest()
 
     data class SetWebhookRequest(
+        @SerialName("url")
         val url: String,
+        @SerialName("certificate")
         val certificate: Any? = null,
+        @SerialName("ip_address")
         val ipAddress: String? = null,
+        @SerialName("max_connections")
         val maxConnections: Long? = null,
+        @SerialName("allowed_updates")
         val allowedUpdates: List<String>? = null,
+        @SerialName("drop_pending_updates")
         val dropPendingUpdates: Boolean? = null,
+        @SerialName("secret_token")
         val secretToken: String? = null,
     ) : TelegramRequest()
 
     data class DeleteWebhookRequest(
+        @SerialName("drop_pending_updates")
         val dropPendingUpdates: Boolean? = null,
     ) : TelegramRequest()
 
     data class SendMessageRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String? = null,
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("text")
         val text: String,
+        @SerialName("parse_mode")
         val parseMode: ParseMode? = null,
+        @SerialName("entities")
         val entities: List<MessageEntity>? = null,
+        @SerialName("link_preview_options")
         val linkPreviewOptions: LinkPreviewOptions? = null,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_effect_id")
         val messageEffectId: String? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
+        @SerialName("reply_markup")
         val replyMarkup: KeyboardOption? = null,
     ) : TelegramRequest()
 
     data class ForwardMessageRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("from_chat_id")
         val fromChatId: String,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_id")
         val messageId: Long,
     ) : TelegramRequest()
 
     data class ForwardMessagesRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("from_chat_id")
         val fromChatId: String,
+        @SerialName("message_ids")
         val messageIds: List<Long>,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
     ) : TelegramRequest()
 
     data class CopyMessageRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("from_chat_id")
         val fromChatId: String,
+        @SerialName("message_id")
         val messageId: Long,
+        @SerialName("caption")
         val caption: String? = null,
+        @SerialName("parse_mode")
         val parseMode: ParseMode? = null,
+        @SerialName("caption_entities")
         val captionEntities: List<MessageEntity>? = null,
+        @SerialName("show_caption_above_media")
         val showCaptionAboveMedia: Boolean? = null,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
+        @SerialName("reply_markup")
         val replyMarkup: KeyboardOption? = null,
     ) : TelegramRequest()
 
     data class CopyMessagesRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("from_chat_id")
         val fromChatId: String,
+        @SerialName("message_ids")
         val messageIds: List<Long>,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("remove_caption")
         val removeCaption: Boolean? = null,
     ) : TelegramRequest()
 
     data class SendPhotoRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String? = null,
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("photo")
         val photo: String,
+        @SerialName("caption")
         val caption: String? = null,
+        @SerialName("parse_mode")
         val parseMode: ParseMode? = null,
+        @SerialName("caption_entities")
         val captionEntities: List<MessageEntity>? = null,
+        @SerialName("show_caption_above_media")
         val showCaptionAboveMedia: Boolean? = null,
+        @SerialName("has_spoiler")
         val hasSpoiler: Boolean? = null,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_effect_id")
         val messageEffectId: String? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
+        @SerialName("reply_markup")
         val replyMarkup: KeyboardOption? = null,
     ) : TelegramRequest()
 
     data class SendAudioRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String? = null,
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("audio")
         val audio: String,
+        @SerialName("caption")
         val caption: String? = null,
+        @SerialName("parse_mode")
         val parseMode: ParseMode? = null,
+        @SerialName("caption_entities")
         val captionEntities: List<MessageEntity>? = null,
+        @SerialName("duration")
         val duration: Long? = null,
+        @SerialName("performer")
         val performer: String? = null,
+        @SerialName("title")
         val title: String? = null,
+        @SerialName("thumbnail")
         val thumbnail: String? = null,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_effect_id")
         val messageEffectId: String? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
+        @SerialName("reply_markup")
         val replyMarkup: KeyboardOption? = null,
     ) : TelegramRequest()
 
     data class SendDocumentRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String? = null,
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("document")
         val document: String,
+        @SerialName("thumbnail")
         val thumbnail: String? = null,
+        @SerialName("caption")
         val caption: String? = null,
+        @SerialName("parse_mode")
         val parseMode: ParseMode? = null,
+        @SerialName("caption_entities")
         val captionEntities: List<MessageEntity>? = null,
+        @SerialName("disable_content_type_detection")
         val disableContentTypeDetection: Boolean? = null,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_effect_id")
         val messageEffectId: String? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
+        @SerialName("reply_markup")
         val replyMarkup: KeyboardOption? = null,
     ) : TelegramRequest()
 
     data class SendVideoRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String? = null,
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("video")
         val video: String,
+        @SerialName("duration")
         val duration: Long? = null,
+        @SerialName("width")
         val width: Long? = null,
+        @SerialName("height")
         val height: Long? = null,
+        @SerialName("thumbnail")
         val thumbnail: String? = null,
+        @SerialName("caption")
         val caption: String? = null,
+        @SerialName("parse_mode")
         val parseMode: ParseMode? = null,
+        @SerialName("caption_entities")
         val captionEntities: List<MessageEntity>? = null,
+        @SerialName("show_caption_above_media")
         val showCaptionAboveMedia: Boolean? = null,
+        @SerialName("has_spoiler")
         val hasSpoiler: Boolean? = null,
+        @SerialName("supports_streaming")
         val supportsStreaming: Boolean? = null,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_effect_id")
         val messageEffectId: String? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
+        @SerialName("reply_markup")
         val replyMarkup: KeyboardOption? = null,
     ) : TelegramRequest()
 
     data class SendAnimationRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String? = null,
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("animation")
         val animation: String,
+        @SerialName("duration")
         val duration: Long? = null,
+        @SerialName("width")
         val width: Long? = null,
+        @SerialName("height")
         val height: Long? = null,
+        @SerialName("thumbnail")
         val thumbnail: String? = null,
+        @SerialName("caption")
         val caption: String? = null,
+        @SerialName("parse_mode")
         val parseMode: ParseMode? = null,
+        @SerialName("caption_entities")
         val captionEntities: List<MessageEntity>? = null,
+        @SerialName("show_caption_above_media")
         val showCaptionAboveMedia: Boolean? = null,
+        @SerialName("has_spoiler")
         val hasSpoiler: Boolean? = null,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_effect_id")
         val messageEffectId: String? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
+        @SerialName("reply_markup")
         val replyMarkup: KeyboardOption? = null,
     ) : TelegramRequest()
 
     data class SendVoiceRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String? = null,
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("voice")
         val voice: String,
+        @SerialName("caption")
         val caption: String? = null,
+        @SerialName("parse_mode")
         val parseMode: ParseMode? = null,
+        @SerialName("caption_entities")
         val captionEntities: List<MessageEntity>? = null,
+        @SerialName("duration")
         val duration: Long? = null,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_effect_id")
         val messageEffectId: String? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
+        @SerialName("reply_markup")
         val replyMarkup: KeyboardOption? = null,
     ) : TelegramRequest()
 
     data class SendVideoNoteRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String? = null,
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("video_note")
         val videoNote: String,
+        @SerialName("duration")
         val duration: Long? = null,
+        @SerialName("length")
         val length: Long? = null,
+        @SerialName("thumbnail")
         val thumbnail: String? = null,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_effect_id")
         val messageEffectId: String? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
+        @SerialName("reply_markup")
         val replyMarkup: KeyboardOption? = null,
     ) : TelegramRequest()
 
     data class SendMediaGroupRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String? = null,
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("media")
         val media: List<InputMedia>,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_effect_id")
         val messageEffectId: String? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
     ) : TelegramRequest()
 
     data class SendLocationRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String? = null,
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("latitude")
         val latitude: Float,
+        @SerialName("longitude")
         val longitude: Float,
+        @SerialName("horizontal_accuracy")
         val horizontalAccuracy: Float? = null,
+        @SerialName("live_period")
         val livePeriod: Long? = null,
+        @SerialName("heading")
         val heading: Long? = null,
+        @SerialName("proximity_alert_radius")
         val proximityAlertRadius: Long? = null,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_effect_id")
         val messageEffectId: String? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
+        @SerialName("reply_markup")
         val replyMarkup: KeyboardOption? = null,
     ) : TelegramRequest()
 
     data class SendVenueRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String? = null,
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("latitude")
         val latitude: Float,
+        @SerialName("longitude")
         val longitude: Float,
+        @SerialName("title")
         val title: String,
+        @SerialName("address")
         val address: String,
+        @SerialName("foursquare_id")
         val foursquareId: String? = null,
+        @SerialName("foursquare_type")
         val foursquareType: String? = null,
+        @SerialName("google_place_id")
         val googlePlaceId: String? = null,
+        @SerialName("google_place_type")
         val googlePlaceType: String? = null,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_effect_id")
         val messageEffectId: String? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
+        @SerialName("reply_markup")
         val replyMarkup: KeyboardOption? = null,
     ) : TelegramRequest()
 
     data class SendContactRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String? = null,
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("phone_number")
         val phoneNumber: String,
+        @SerialName("first_name")
         val firstName: String,
+        @SerialName("last_name")
         val lastName: String? = null,
+        @SerialName("vcard")
         val vcard: String? = null,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_effect_id")
         val messageEffectId: String? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
+        @SerialName("reply_markup")
         val replyMarkup: KeyboardOption? = null,
     ) : TelegramRequest()
 
     data class SendPollRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String? = null,
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("question")
         val question: String,
+        @SerialName("question_parse_mode")
         val questionParseMode: String? = null,
+        @SerialName("question_entities")
         val questionEntities: List<MessageEntity>? = null,
+        @SerialName("options")
         val options: List<InputPollOption>,
+        @SerialName("is_anonymous")
         val isAnonymous: Boolean? = null,
+        @SerialName("type")
         val type: String? = null,
+        @SerialName("allows_multiple_answers")
         val allowsMultipleAnswers: Boolean? = null,
+        @SerialName("correct_option_id")
         val correctOptionId: Long? = null,
+        @SerialName("explanation")
         val explanation: String? = null,
+        @SerialName("explanation_parse_mode")
         val explanationParseMode: String? = null,
+        @SerialName("explanation_entities")
         val explanationEntities: List<MessageEntity>? = null,
+        @SerialName("open_period")
         val openPeriod: Long? = null,
+        @SerialName("close_date")
         val closeDate: Long? = null,
+        @SerialName("is_closed")
         val isClosed: Boolean? = null,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_effect_id")
         val messageEffectId: String? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
+        @SerialName("reply_markup")
         val replyMarkup: KeyboardOption? = null,
     ) : TelegramRequest()
 
     data class SendDiceRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String? = null,
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("emoji")
         val emoji: String? = null,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_effect_id")
         val messageEffectId: String? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
+        @SerialName("reply_markup")
         val replyMarkup: KeyboardOption? = null,
     ) : TelegramRequest()
 
     data class SendChatActionRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String? = null,
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("action")
         val action: String,
     ) : TelegramRequest()
 
     data class SetMessageReactionRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_id")
         val messageId: Long,
+        @SerialName("reaction")
         val reaction: List<ReactionType>? = null,
+        @SerialName("is_big")
         val isBig: Boolean? = null,
     ) : TelegramRequest()
 
     data class GetUserProfilePhotosRequest(
+        @SerialName("user_id")
         val userId: Long,
+        @SerialName("offset")
         val offset: Long? = null,
+        @SerialName("limit")
         val limit: Long? = null,
     ) : TelegramRequest()
 
     data class GetFileRequest(
+        @SerialName("file_id")
         val fileId: String,
     ) : TelegramRequest()
 
     data class BanChatMemberRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("user_id")
         val userId: Long,
+        @SerialName("until_date")
         val untilDate: Long? = null,
+        @SerialName("revoke_messages")
         val revokeMessages: Boolean? = null,
     ) : TelegramRequest()
 
     data class UnbanChatMemberRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("user_id")
         val userId: Long,
+        @SerialName("only_if_banned")
         val onlyIfBanned: Boolean? = null,
     ) : TelegramRequest()
 
     data class RestrictChatMemberRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("user_id")
         val userId: Long,
+        @SerialName("permissions")
         val permissions: ChatPermissions,
+        @SerialName("use_independent_chat_permissions")
         val useIndependentChatPermissions: Boolean? = null,
+        @SerialName("until_date")
         val untilDate: Long? = null,
     ) : TelegramRequest()
 
     data class PromoteChatMemberRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("user_id")
         val userId: Long,
+        @SerialName("is_anonymous")
         val isAnonymous: Boolean? = null,
+        @SerialName("can_manage_chat")
         val canManageChat: Boolean? = null,
+        @SerialName("can_delete_messages")
         val canDeleteMessages: Boolean? = null,
+        @SerialName("can_manage_video_chats")
         val canManageVideoChats: Boolean? = null,
+        @SerialName("can_restrict_members")
         val canRestrictMembers: Boolean? = null,
+        @SerialName("can_promote_members")
         val canPromoteMembers: Boolean? = null,
+        @SerialName("can_change_info")
         val canChangeInfo: Boolean? = null,
+        @SerialName("can_invite_users")
         val canInviteUsers: Boolean? = null,
+        @SerialName("can_post_stories")
         val canPostStories: Boolean? = null,
+        @SerialName("can_edit_stories")
         val canEditStories: Boolean? = null,
+        @SerialName("can_delete_stories")
         val canDeleteStories: Boolean? = null,
+        @SerialName("can_post_messages")
         val canPostMessages: Boolean? = null,
+        @SerialName("can_edit_messages")
         val canEditMessages: Boolean? = null,
+        @SerialName("can_pin_messages")
         val canPinMessages: Boolean? = null,
+        @SerialName("can_manage_topics")
         val canManageTopics: Boolean? = null,
     ) : TelegramRequest()
 
     data class SetChatAdministratorCustomTitleRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("user_id")
         val userId: Long,
+        @SerialName("custom_title")
         val customTitle: String,
     ) : TelegramRequest()
 
     data class BanChatSenderChatRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("sender_chat_id")
         val senderChatId: Long,
     ) : TelegramRequest()
 
     data class UnbanChatSenderChatRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("sender_chat_id")
         val senderChatId: Long,
     ) : TelegramRequest()
 
     data class SetChatPermissionsRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("permissions")
         val permissions: ChatPermissions,
+        @SerialName("use_independent_chat_permissions")
         val useIndependentChatPermissions: Boolean? = null,
     ) : TelegramRequest()
 
     data class ExportChatInviteLinkRequest(
+        @SerialName("chat_id")
         val chatId: String,
     ) : TelegramRequest()
 
     data class CreateChatInviteLinkRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("name")
         val name: String? = null,
+        @SerialName("expire_date")
         val expireDate: Long? = null,
+        @SerialName("member_limit")
         val memberLimit: Long? = null,
+        @SerialName("creates_join_request")
         val createsJoinRequest: Boolean? = null,
     ) : TelegramRequest()
 
     data class EditChatInviteLinkRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("invite_link")
         val inviteLink: String,
+        @SerialName("name")
         val name: String? = null,
+        @SerialName("expire_date")
         val expireDate: Long? = null,
+        @SerialName("member_limit")
         val memberLimit: Long? = null,
+        @SerialName("creates_join_request")
         val createsJoinRequest: Boolean? = null,
     ) : TelegramRequest()
 
     data class RevokeChatInviteLinkRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("invite_link")
         val inviteLink: String,
     ) : TelegramRequest()
 
     data class ApproveChatJoinRequestRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("user_id")
         val userId: Long,
     ) : TelegramRequest()
 
     data class DeclineChatJoinRequestRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("user_id")
         val userId: Long,
     ) : TelegramRequest()
 
     data class SetChatPhotoRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("photo")
         val photo: Any,
     ) : TelegramRequest()
 
     data class DeleteChatPhotoRequest(
+        @SerialName("chat_id")
         val chatId: String,
     ) : TelegramRequest()
 
     data class SetChatTitleRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("title")
         val title: String,
     ) : TelegramRequest()
 
     data class SetChatDescriptionRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("description")
         val description: String? = null,
     ) : TelegramRequest()
 
     data class PinChatMessageRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_id")
         val messageId: Long,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
     ) : TelegramRequest()
 
     data class UnpinChatMessageRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_id")
         val messageId: Long? = null,
     ) : TelegramRequest()
 
     data class UnpinAllChatMessagesRequest(
+        @SerialName("chat_id")
         val chatId: String,
     ) : TelegramRequest()
 
     data class LeaveChatRequest(
+        @SerialName("chat_id")
         val chatId: String,
     ) : TelegramRequest()
 
     data class GetChatRequest(
+        @SerialName("chat_id")
         val chatId: String,
     ) : TelegramRequest()
 
     data class GetChatAdministratorsRequest(
+        @SerialName("chat_id")
         val chatId: String,
     ) : TelegramRequest()
 
     data class GetChatMemberCountRequest(
+        @SerialName("chat_id")
         val chatId: String,
     ) : TelegramRequest()
 
     data class GetChatMemberRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("user_id")
         val userId: Long,
     ) : TelegramRequest()
 
     data class SetChatStickerSetRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("sticker_set_name")
         val stickerSetName: String,
     ) : TelegramRequest()
 
     data class DeleteChatStickerSetRequest(
+        @SerialName("chat_id")
         val chatId: String,
     ) : TelegramRequest()
 
     data class CreateForumTopicRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("name")
         val name: String,
+        @SerialName("icon_color")
         val iconColor: Long? = null,
+        @SerialName("icon_custom_emoji_id")
         val iconCustomEmojiId: String? = null,
     ) : TelegramRequest()
 
     data class EditForumTopicRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long,
+        @SerialName("name")
         val name: String? = null,
+        @SerialName("icon_custom_emoji_id")
         val iconCustomEmojiId: String? = null,
     ) : TelegramRequest()
 
     data class CloseForumTopicRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long,
     ) : TelegramRequest()
 
     data class ReopenForumTopicRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long,
     ) : TelegramRequest()
 
     data class DeleteForumTopicRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long,
     ) : TelegramRequest()
 
     data class UnpinAllForumTopicMessagesRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long,
     ) : TelegramRequest()
 
     data class EditGeneralForumTopicRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("name")
         val name: String,
     ) : TelegramRequest()
 
     data class CloseGeneralForumTopicRequest(
+        @SerialName("chat_id")
         val chatId: String,
     ) : TelegramRequest()
 
     data class ReopenGeneralForumTopicRequest(
+        @SerialName("chat_id")
         val chatId: String,
     ) : TelegramRequest()
 
     data class HideGeneralForumTopicRequest(
+        @SerialName("chat_id")
         val chatId: String,
     ) : TelegramRequest()
 
     data class UnhideGeneralForumTopicRequest(
+        @SerialName("chat_id")
         val chatId: String,
     ) : TelegramRequest()
 
     data class UnpinAllGeneralForumTopicMessagesRequest(
+        @SerialName("chat_id")
         val chatId: String,
     ) : TelegramRequest()
 
     data class AnswerCallbackQueryRequest(
+        @SerialName("callback_query_id")
         val callbackQueryId: String,
+        @SerialName("text")
         val text: String? = null,
+        @SerialName("show_alert")
         val showAlert: Boolean? = null,
+        @SerialName("url")
         val url: String? = null,
+        @SerialName("cache_time")
         val cacheTime: Long? = null,
     ) : TelegramRequest()
 
     data class GetUserChatBoostsRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("user_id")
         val userId: Long,
     ) : TelegramRequest()
 
     data class GetBusinessConnectionRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String,
     ) : TelegramRequest()
 
     data class SetMyCommandsRequest(
+        @SerialName("commands")
         val commands: List<BotCommand>,
+        @SerialName("scope")
         val scope: BotCommandScope? = null,
+        @SerialName("language_code")
         val languageCode: String? = null,
     ) : TelegramRequest()
 
     data class DeleteMyCommandsRequest(
+        @SerialName("scope")
         val scope: BotCommandScope? = null,
+        @SerialName("language_code")
         val languageCode: String? = null,
     ) : TelegramRequest()
 
     data class GetMyCommandsRequest(
+        @SerialName("scope")
         val scope: BotCommandScope? = null,
+        @SerialName("language_code")
         val languageCode: String? = null,
     ) : TelegramRequest()
 
     data class SetMyNameRequest(
+        @SerialName("name")
         val name: String? = null,
+        @SerialName("language_code")
         val languageCode: String? = null,
     ) : TelegramRequest()
 
     data class GetMyNameRequest(
+        @SerialName("language_code")
         val languageCode: String? = null,
     ) : TelegramRequest()
 
     data class SetMyDescriptionRequest(
+        @SerialName("description")
         val description: String? = null,
+        @SerialName("language_code")
         val languageCode: String? = null,
     ) : TelegramRequest()
 
     data class GetMyDescriptionRequest(
+        @SerialName("language_code")
         val languageCode: String? = null,
     ) : TelegramRequest()
 
     data class SetMyShortDescriptionRequest(
+        @SerialName("short_description")
         val shortDescription: String? = null,
+        @SerialName("language_code")
         val languageCode: String? = null,
     ) : TelegramRequest()
 
     data class GetMyShortDescriptionRequest(
+        @SerialName("language_code")
         val languageCode: String? = null,
     ) : TelegramRequest()
 
     data class SetChatMenuButtonRequest(
+        @SerialName("chat_id")
         val chatId: Long? = null,
+        @SerialName("menu_button")
         val menuButton: MenuButton? = null,
     ) : TelegramRequest()
 
     data class GetChatMenuButtonRequest(
+        @SerialName("chat_id")
         val chatId: Long? = null,
     ) : TelegramRequest()
 
     data class SetMyDefaultAdministratorRightsRequest(
+        @SerialName("rights")
         val rights: ChatAdministratorRights? = null,
+        @SerialName("for_channels")
         val forChannels: Boolean? = null,
     ) : TelegramRequest()
 
     data class GetMyDefaultAdministratorRightsRequest(
+        @SerialName("for_channels")
         val forChannels: Boolean? = null,
     ) : TelegramRequest()
 
     data class EditMessageTextRequest(
+        @SerialName("chat_id")
         val chatId: String? = null,
+        @SerialName("message_id")
         val messageId: Long? = null,
+        @SerialName("inline_message_id")
         val inlineMessageId: String? = null,
+        @SerialName("text")
         val text: String,
+        @SerialName("parse_mode")
         val parseMode: ParseMode? = null,
+        @SerialName("entities")
         val entities: List<MessageEntity>? = null,
+        @SerialName("link_preview_options")
         val linkPreviewOptions: LinkPreviewOptions? = null,
+        @SerialName("reply_markup")
         val replyMarkup: InlineKeyboardMarkup? = null,
     ) : TelegramRequest()
 
     data class EditMessageCaptionRequest(
+        @SerialName("chat_id")
         val chatId: String? = null,
+        @SerialName("message_id")
         val messageId: Long? = null,
+        @SerialName("inline_message_id")
         val inlineMessageId: String? = null,
+        @SerialName("caption")
         val caption: String? = null,
+        @SerialName("parse_mode")
         val parseMode: ParseMode? = null,
+        @SerialName("caption_entities")
         val captionEntities: List<MessageEntity>? = null,
+        @SerialName("show_caption_above_media")
         val showCaptionAboveMedia: Boolean? = null,
+        @SerialName("reply_markup")
         val replyMarkup: InlineKeyboardMarkup? = null,
     ) : TelegramRequest()
 
     data class EditMessageMediaRequest(
+        @SerialName("chat_id")
         val chatId: String? = null,
+        @SerialName("message_id")
         val messageId: Long? = null,
+        @SerialName("inline_message_id")
         val inlineMessageId: String? = null,
+        @SerialName("media")
         val media: InputMedia,
+        @SerialName("reply_markup")
         val replyMarkup: InlineKeyboardMarkup? = null,
     ) : TelegramRequest()
 
     data class EditMessageLiveLocationRequest(
+        @SerialName("chat_id")
         val chatId: String? = null,
+        @SerialName("message_id")
         val messageId: Long? = null,
+        @SerialName("inline_message_id")
         val inlineMessageId: String? = null,
+        @SerialName("latitude")
         val latitude: Float,
+        @SerialName("longitude")
         val longitude: Float,
+        @SerialName("live_period")
         val livePeriod: Long? = null,
+        @SerialName("horizontal_accuracy")
         val horizontalAccuracy: Float? = null,
+        @SerialName("heading")
         val heading: Long? = null,
+        @SerialName("proximity_alert_radius")
         val proximityAlertRadius: Long? = null,
+        @SerialName("reply_markup")
         val replyMarkup: InlineKeyboardMarkup? = null,
     ) : TelegramRequest()
 
     data class StopMessageLiveLocationRequest(
+        @SerialName("chat_id")
         val chatId: String? = null,
+        @SerialName("message_id")
         val messageId: Long? = null,
+        @SerialName("inline_message_id")
         val inlineMessageId: String? = null,
+        @SerialName("reply_markup")
         val replyMarkup: InlineKeyboardMarkup? = null,
     ) : TelegramRequest()
 
     data class EditMessageReplyMarkupRequest(
+        @SerialName("chat_id")
         val chatId: String? = null,
+        @SerialName("message_id")
         val messageId: Long? = null,
+        @SerialName("inline_message_id")
         val inlineMessageId: String? = null,
+        @SerialName("reply_markup")
         val replyMarkup: InlineKeyboardMarkup? = null,
     ) : TelegramRequest()
 
     data class StopPollRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_id")
         val messageId: Long,
+        @SerialName("reply_markup")
         val replyMarkup: InlineKeyboardMarkup? = null,
     ) : TelegramRequest()
 
     data class DeleteMessageRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_id")
         val messageId: Long,
     ) : TelegramRequest()
 
     data class DeleteMessagesRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_ids")
         val messageIds: List<Long>,
     ) : TelegramRequest()
 
     data class SendStickerRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String? = null,
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("sticker")
         val sticker: String,
+        @SerialName("emoji")
         val emoji: String? = null,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_effect_id")
         val messageEffectId: String? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
+        @SerialName("reply_markup")
         val replyMarkup: KeyboardOption? = null,
     ) : TelegramRequest()
 
     data class GetStickerSetRequest(
+        @SerialName("name")
         val name: String,
     ) : TelegramRequest()
 
     data class GetCustomEmojiStickersRequest(
+        @SerialName("custom_emoji_ids")
         val customEmojiIds: List<String>,
     ) : TelegramRequest()
 
     data class UploadStickerFileRequest(
+        @SerialName("user_id")
         val userId: Long,
+        @SerialName("sticker")
         val sticker: Any,
+        @SerialName("sticker_format")
         val stickerFormat: String,
     ) : TelegramRequest()
 
     data class CreateNewStickerSetRequest(
+        @SerialName("user_id")
         val userId: Long,
+        @SerialName("name")
         val name: String,
+        @SerialName("title")
         val title: String,
+        @SerialName("stickers")
         val stickers: List<InputSticker>,
+        @SerialName("sticker_type")
         val stickerType: String? = null,
+        @SerialName("needs_repainting")
         val needsRepainting: Boolean? = null,
     ) : TelegramRequest()
 
     data class AddStickerToSetRequest(
+        @SerialName("user_id")
         val userId: Long,
+        @SerialName("name")
         val name: String,
+        @SerialName("sticker")
         val sticker: InputSticker,
     ) : TelegramRequest()
 
     data class SetStickerPositionInSetRequest(
+        @SerialName("sticker")
         val sticker: String,
+        @SerialName("position")
         val position: Long,
     ) : TelegramRequest()
 
     data class DeleteStickerFromSetRequest(
+        @SerialName("sticker")
         val sticker: String,
     ) : TelegramRequest()
 
     data class ReplaceStickerInSetRequest(
+        @SerialName("user_id")
         val userId: Long,
+        @SerialName("name")
         val name: String,
+        @SerialName("old_sticker")
         val oldSticker: String,
+        @SerialName("sticker")
         val sticker: InputSticker,
     ) : TelegramRequest()
 
     data class SetStickerEmojiListRequest(
+        @SerialName("sticker")
         val sticker: String,
+        @SerialName("emoji_list")
         val emojiList: List<String>,
     ) : TelegramRequest()
 
     data class SetStickerKeywordsRequest(
+        @SerialName("sticker")
         val sticker: String,
+        @SerialName("keywords")
         val keywords: List<String>? = null,
     ) : TelegramRequest()
 
     data class SetStickerMaskPositionRequest(
+        @SerialName("sticker")
         val sticker: String,
+        @SerialName("mask_position")
         val maskPosition: MaskPosition? = null,
     ) : TelegramRequest()
 
     data class SetStickerSetTitleRequest(
+        @SerialName("name")
         val name: String,
+        @SerialName("title")
         val title: String,
     ) : TelegramRequest()
 
     data class SetStickerSetThumbnailRequest(
+        @SerialName("name")
         val name: String,
+        @SerialName("user_id")
         val userId: Long,
+        @SerialName("thumbnail")
         val thumbnail: String? = null,
+        @SerialName("format")
         val format: String,
     ) : TelegramRequest()
 
     data class SetCustomEmojiStickerSetThumbnailRequest(
+        @SerialName("name")
         val name: String,
+        @SerialName("custom_emoji_id")
         val customEmojiId: String? = null,
     ) : TelegramRequest()
 
     data class DeleteStickerSetRequest(
+        @SerialName("name")
         val name: String,
     ) : TelegramRequest()
 
     data class AnswerInlineQueryRequest(
+        @SerialName("inline_query_id")
         val inlineQueryId: String,
+        @SerialName("results")
         val results: List<InlineQueryResult>,
+        @SerialName("cache_time")
         val cacheTime: Long? = null,
+        @SerialName("is_personal")
         val isPersonal: Boolean? = null,
+        @SerialName("next_offset")
         val nextOffset: String? = null,
+        @SerialName("button")
         val button: InlineQueryResultsButton? = null,
     ) : TelegramRequest()
 
     data class AnswerWebAppQueryRequest(
+        @SerialName("web_app_query_id")
         val webAppQueryId: String,
+        @SerialName("result")
         val result: InlineQueryResult,
     ) : TelegramRequest()
 
     data class SendInvoiceRequest(
+        @SerialName("chat_id")
         val chatId: String,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("title")
         val title: String,
+        @SerialName("description")
         val description: String,
+        @SerialName("payload")
         val payload: String,
+        @SerialName("provider_token")
         val providerToken: String? = null,
+        @SerialName("currency")
         val currency: String,
+        @SerialName("prices")
         val prices: List<LabeledPrice>,
+        @SerialName("max_tip_amount")
         val maxTipAmount: Long? = null,
+        @SerialName("suggested_tip_amounts")
         val suggestedTipAmounts: List<Long>? = null,
+        @SerialName("start_parameter")
         val startParameter: String? = null,
+        @SerialName("provider_data")
         val providerData: String? = null,
+        @SerialName("photo_url")
         val photoUrl: String? = null,
+        @SerialName("photo_size")
         val photoSize: Long? = null,
+        @SerialName("photo_width")
         val photoWidth: Long? = null,
+        @SerialName("photo_height")
         val photoHeight: Long? = null,
+        @SerialName("need_name")
         val needName: Boolean? = null,
+        @SerialName("need_phone_number")
         val needPhoneNumber: Boolean? = null,
+        @SerialName("need_email")
         val needEmail: Boolean? = null,
+        @SerialName("need_shipping_address")
         val needShippingAddress: Boolean? = null,
+        @SerialName("send_phone_number_to_provider")
         val sendPhoneNumberToProvider: Boolean? = null,
+        @SerialName("send_email_to_provider")
         val sendEmailToProvider: Boolean? = null,
+        @SerialName("is_flexible")
         val isFlexible: Boolean? = null,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_effect_id")
         val messageEffectId: String? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
+        @SerialName("reply_markup")
         val replyMarkup: InlineKeyboardMarkup? = null,
     ) : TelegramRequest()
 
     data class CreateInvoiceLinkRequest(
+        @SerialName("title")
         val title: String,
+        @SerialName("description")
         val description: String,
+        @SerialName("payload")
         val payload: String,
+        @SerialName("provider_token")
         val providerToken: String? = null,
+        @SerialName("currency")
         val currency: String,
+        @SerialName("prices")
         val prices: List<LabeledPrice>,
+        @SerialName("max_tip_amount")
         val maxTipAmount: Long? = null,
+        @SerialName("suggested_tip_amounts")
         val suggestedTipAmounts: List<Long>? = null,
+        @SerialName("provider_data")
         val providerData: String? = null,
+        @SerialName("photo_url")
         val photoUrl: String? = null,
+        @SerialName("photo_size")
         val photoSize: Long? = null,
+        @SerialName("photo_width")
         val photoWidth: Long? = null,
+        @SerialName("photo_height")
         val photoHeight: Long? = null,
+        @SerialName("need_name")
         val needName: Boolean? = null,
+        @SerialName("need_phone_number")
         val needPhoneNumber: Boolean? = null,
+        @SerialName("need_email")
         val needEmail: Boolean? = null,
+        @SerialName("need_shipping_address")
         val needShippingAddress: Boolean? = null,
+        @SerialName("send_phone_number_to_provider")
         val sendPhoneNumberToProvider: Boolean? = null,
+        @SerialName("send_email_to_provider")
         val sendEmailToProvider: Boolean? = null,
+        @SerialName("is_flexible")
         val isFlexible: Boolean? = null,
     ) : TelegramRequest()
 
     data class AnswerShippingQueryRequest(
+        @SerialName("shipping_query_id")
         val shippingQueryId: String,
+        @SerialName("ok")
         val ok: Boolean,
+        @SerialName("shipping_options")
         val shippingOptions: List<ShippingOption>? = null,
+        @SerialName("error_message")
         val errorMessage: String? = null,
     ) : TelegramRequest()
 
     data class AnswerPreCheckoutQueryRequest(
+        @SerialName("pre_checkout_query_id")
         val preCheckoutQueryId: String,
+        @SerialName("ok")
         val ok: Boolean,
+        @SerialName("error_message")
         val errorMessage: String? = null,
     ) : TelegramRequest()
 
     data class RefundStarPaymentRequest(
+        @SerialName("user_id")
         val userId: Long,
+        @SerialName("telegram_payment_charge_id")
         val telegramPaymentChargeId: String,
     ) : TelegramRequest()
 
     data class SetPassportDataErrorsRequest(
+        @SerialName("user_id")
         val userId: Long,
+        @SerialName("errors")
         val errors: List<PassportElementError>,
     ) : TelegramRequest()
 
     data class SendGameRequest(
+        @SerialName("business_connection_id")
         val businessConnectionId: String? = null,
+        @SerialName("chat_id")
         val chatId: Long,
+        @SerialName("message_thread_id")
         val messageThreadId: Long? = null,
+        @SerialName("game_short_name")
         val gameShortName: String,
+        @SerialName("disable_notification")
         val disableNotification: Boolean? = null,
+        @SerialName("protect_content")
         val protectContent: Boolean? = null,
+        @SerialName("message_effect_id")
         val messageEffectId: String? = null,
+        @SerialName("reply_parameters")
         val replyParameters: ReplyParameters? = null,
+        @SerialName("reply_markup")
         val replyMarkup: InlineKeyboardMarkup? = null,
     ) : TelegramRequest()
 
     data class SetGameScoreRequest(
+        @SerialName("user_id")
         val userId: Long,
+        @SerialName("score")
         val score: Long,
+        @SerialName("force")
         val force: Boolean? = null,
+        @SerialName("disable_edit_message")
         val disableEditMessage: Boolean? = null,
+        @SerialName("chat_id")
         val chatId: Long? = null,
+        @SerialName("message_id")
         val messageId: Long? = null,
+        @SerialName("inline_message_id")
         val inlineMessageId: String? = null,
     ) : TelegramRequest()
 
     data class GetGameHighScoresRequest(
+        @SerialName("user_id")
         val userId: Long,
+        @SerialName("chat_id")
         val chatId: Long? = null,
+        @SerialName("message_id")
         val messageId: Long? = null,
+        @SerialName("inline_message_id")
         val inlineMessageId: String? = null,
     ) : TelegramRequest()
 }

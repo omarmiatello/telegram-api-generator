@@ -1,3 +1,6 @@
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.json.JsonElement
 import java.util.*
 
 fun List<DocSection>.toKotlinModels(useKotlinXSerialization: Boolean) = buildString {
@@ -9,16 +12,20 @@ fun List<DocSection>.toKotlinModels(useKotlinXSerialization: Boolean) = buildStr
         TelegramType.allSuper.forEach { type ->
             appendLine("    ${type.name}Serializer::class,")
         }
-        appendLine(")\n")
+        appendLine(")")
+        appendLine("@file:OptIn(InternalSerializationApi::class)\n")
     }
     appendLine("package com.github.omarmiatello.telegram\n")
     if (useKotlinXSerialization) {
         appendLine("import kotlinx.serialization.Contextual")
+        appendLine("import kotlinx.serialization.InternalSerializationApi")
         appendLine("import kotlinx.serialization.KSerializer")
         appendLine("import kotlinx.serialization.SerialName")
         appendLine("import kotlinx.serialization.Serializable")
         appendLine("import kotlinx.serialization.UseSerializers")
+        appendLine("import kotlinx.serialization.descriptors.PolymorphicKind")
         appendLine("import kotlinx.serialization.descriptors.SerialDescriptor")
+        appendLine("import kotlinx.serialization.descriptors.buildSerialDescriptor")
         appendLine("import kotlinx.serialization.encoding.Decoder")
         appendLine("import kotlinx.serialization.encoding.Encoder")
         appendLine("import kotlinx.serialization.json.Json")
@@ -38,10 +45,12 @@ fun List<DocSection>.toKotlinModels(useKotlinXSerialization: Boolean) = buildStr
         appendLine("    abstract fun toJson(): String")
         appendLine("}")
         appendLine()
+
         appendLine("private fun <T> Decoder.tryDeserializers(vararg serializers: KSerializer<out T>): T {")
-        appendLine("    return serializers.firstNotNullOf {")
+        appendLine("    val jsonElement = decodeSerializableValue(JsonElement.serializer())")
+        appendLine("    return serializers.firstNotNullOf { serializer ->")
         appendLine("        try {")
-        appendLine("            decodeSerializableValue(it)")
+        appendLine("            json.decodeFromJsonElement(serializer, jsonElement)")
         appendLine("        } catch (e: Exception) {")
         appendLine("            null")
         appendLine("        }")
@@ -53,11 +62,14 @@ fun List<DocSection>.toKotlinModels(useKotlinXSerialization: Boolean) = buildStr
     appendLine()
     TelegramType.allSuper.forEach { type ->
         val superType = TelegramType.from(type.name).superType ?: "TelegramModel"
-        if (useKotlinXSerialization) appendLine("@Serializable")
+        if (useKotlinXSerialization) appendLine("@Serializable(with = ${type.name}Serializer::class)")
         appendLine("sealed class ${type.name} : $superType()")
         if (useKotlinXSerialization) {
             appendLine("object ${type.name}Serializer : KSerializer<${type.name}> {")
-            appendLine("    override val descriptor: SerialDescriptor = ${type.name}.serializer().descriptor")
+            appendLine("    override val descriptor: SerialDescriptor = buildSerialDescriptor(")
+            appendLine("        \"JsonContentPolymorphicSerializer<${type.name}>\",")
+            appendLine("        PolymorphicKind.SEALED,")
+            appendLine("    )")
             val allSubtype = allType.filter { it.superType?.name == type.name }
             if (allSubtype.isEmpty()) {
                 appendLine("    override fun serialize(encoder: Encoder, value: ${type.name}) = TODO()")
@@ -199,6 +211,7 @@ private fun DocMethod.toKotlinDataClass(useKotlinXSerialization: Boolean) = buil
         name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
     appendLine("    data class ${nameWithReplacedFirstChar}Request(")
     docParameters.forEachIndexed { index, field ->
+        appendLine("        @SerialName(\"${field.name}\")")
         appendLine("        val ${field.name.snakeToCamelCase()}: ${field.toKotlinType(useKotlinXSerialization)},")
     }
     if (useKotlinXSerialization) {
