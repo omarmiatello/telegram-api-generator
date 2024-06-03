@@ -13,7 +13,7 @@ fun List<DocSection>.toKotlinModels(useKotlinXSerialization: Boolean) = buildStr
             appendLine("    ${type.name}Serializer::class,")
         }
         appendLine(")")
-        appendLine("@file:OptIn(InternalSerializationApi::class)\n")
+        appendLine("@file:OptIn(InternalSerializationApi::class, ExperimentalSerializationApi::class)\n")
     }
     appendLine("package com.github.omarmiatello.telegram\n")
     if (useKotlinXSerialization) {
