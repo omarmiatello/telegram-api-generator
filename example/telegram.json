@@ -22,7 +22,7 @@
               "name": "Message",
               "superType": {
                 "subclasses": {},
-                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -35,7 +35,7 @@
               "name": "Message",
               "superType": {
                 "subclasses": {},
-                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -48,7 +48,7 @@
               "name": "Message",
               "superType": {
                 "subclasses": {},
-                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -61,7 +61,7 @@
               "name": "Message",
               "superType": {
                 "subclasses": {},
-                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -82,7 +82,7 @@
               "name": "Message",
               "superType": {
                 "subclasses": {},
-                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -95,7 +95,7 @@
               "name": "Message",
               "superType": {
                 "subclasses": {},
-                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -877,7 +877,7 @@
               "name": "Message",
               "superType": {
                 "subclasses": {},
-                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -1098,7 +1098,7 @@
               "name": "Message",
               "superType": {
                 "subclasses": {},
-                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -1468,7 +1468,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Specified message was pinned. Note that the Message object in this field will not contain further \u003cem\u003ereply_to_message\u003c/em\u003e fields even if it itself is a reply.",
             "type": {
               "subclasses": {},
-              "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+              "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
               "name": "MaybeInaccessibleMessage"
             },
             "required": false
@@ -3908,7 +3908,7 @@
               "name": "Message",
               "superType": {
                 "subclasses": {},
-                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -4571,7 +4571,7 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message sent by the bot with the callback button that originated the query",
             "type": {
               "subclasses": {},
-              "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+              "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
               "name": "MaybeInaccessibleMessage"
             },
             "required": false
@@ -7091,7 +7091,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -7169,7 +7169,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -7608,7 +7608,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -7779,7 +7779,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -7934,7 +7934,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -8129,7 +8129,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -8316,7 +8316,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -8455,7 +8455,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -8591,7 +8591,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -8638,7 +8638,7 @@
             "type": {
               "elementType": {
                 "subclasses": {},
-                "deserializer": "\n            when (val type \u003d jsonElement.jsonObject.getValue(\"type\").jsonPrimitive.content) {\n                \"photo\" -\u003e InputMediaPhoto.serializer()\n                \"video\" -\u003e InputMediaVideo.serializer()\n                \"animation\" -\u003e InputMediaAnimation.serializer()\n                \"audio\" -\u003e InputMediaAudio.serializer()\n                \"document\" -\u003e InputMediaDocument.serializer()\n               else -\u003e error(\"unknown type: \" + type)\n            }\n            ",
+                "deserializer": "when (val type \u003d jsonElement.jsonObject.getValue(\"type\").jsonPrimitive.content) {\n                    \"photo\" -\u003e InputMediaPhoto.serializer()\n                    \"video\" -\u003e InputMediaVideo.serializer()\n                    \"animation\" -\u003e InputMediaAnimation.serializer()\n                    \"audio\" -\u003e InputMediaAudio.serializer()\n                    \"document\" -\u003e InputMediaDocument.serializer()\n                    else -\u003e error(\"unknown type: \" + type)\n                }",
                 "name": "InputMedia"
               },
               "name": "List\u003cInputMedia\u003e"
@@ -8683,7 +8683,7 @@
             "name": "Message",
             "superType": {
               "subclasses": {},
-              "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+              "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
               "name": "MaybeInaccessibleMessage"
             }
           },
@@ -8821,7 +8821,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -8973,7 +8973,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -9093,7 +9093,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -9302,7 +9302,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -9398,7 +9398,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11574,7 +11574,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11668,7 +11668,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11714,7 +11714,7 @@
             "description": "A JSON-serialized object for a new media content of the message",
             "type": {
               "subclasses": {},
-              "deserializer": "\n            when (val type \u003d jsonElement.jsonObject.getValue(\"type\").jsonPrimitive.content) {\n                \"photo\" -\u003e InputMediaPhoto.serializer()\n                \"video\" -\u003e InputMediaVideo.serializer()\n                \"animation\" -\u003e InputMediaAnimation.serializer()\n                \"audio\" -\u003e InputMediaAudio.serializer()\n                \"document\" -\u003e InputMediaDocument.serializer()\n               else -\u003e error(\"unknown type: \" + type)\n            }\n            ",
+              "deserializer": "when (val type \u003d jsonElement.jsonObject.getValue(\"type\").jsonPrimitive.content) {\n                    \"photo\" -\u003e InputMediaPhoto.serializer()\n                    \"video\" -\u003e InputMediaVideo.serializer()\n                    \"animation\" -\u003e InputMediaAnimation.serializer()\n                    \"audio\" -\u003e InputMediaAudio.serializer()\n                    \"document\" -\u003e InputMediaDocument.serializer()\n                    else -\u003e error(\"unknown type: \" + type)\n                }",
               "name": "InputMedia"
             },
             "required": true
@@ -11737,7 +11737,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11844,7 +11844,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11903,7 +11903,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11962,7 +11962,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -12470,7 +12470,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -16244,7 +16244,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -17289,7 +17289,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -17359,7 +17359,7 @@
           "name": "Message",
           "superType": {
             "subclasses": {},
-            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                    InaccessibleMessage.serializer()\n                } else {\n                    Message.serializer()\n                }",
             "name": "MaybeInaccessibleMessage"
           }
         }

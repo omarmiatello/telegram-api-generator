@@ -47,16 +47,14 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
         object InputMedia : Super(
             name = "InputMedia",
             subclasses = { it.startsWith("InputMedia") },
-            deserializer = """
-            when (val type = jsonElement.jsonObject.getValue("type").jsonPrimitive.content) {
-                "photo" -> InputMediaPhoto.serializer()
-                "video" -> InputMediaVideo.serializer()
-                "animation" -> InputMediaAnimation.serializer()
-                "audio" -> InputMediaAudio.serializer()
-                "document" -> InputMediaDocument.serializer()
-               else -> error("unknown type: " + type)
-            }
-            """
+            deserializer = """when (val type = jsonElement.jsonObject.getValue("type").jsonPrimitive.content) {
+                    "photo" -> InputMediaPhoto.serializer()
+                    "video" -> InputMediaVideo.serializer()
+                    "animation" -> InputMediaAnimation.serializer()
+                    "audio" -> InputMediaAudio.serializer()
+                    "document" -> InputMediaDocument.serializer()
+                    else -> error("unknown type: " + type)
+                }"""
         )
 
         object ChatMember : Super(
@@ -105,10 +103,10 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             name = "MaybeInaccessibleMessage",
             subclasses = { it in listOf("Message", "InaccessibleMessage") },
             deserializer = """if (jsonElement.jsonObject.getValue("date").jsonPrimitive.long == 0L) {
-                                    InaccessibleMessage.serializer()
-                                } else {
-                                    Message.serializer()
-                                }"""
+                    InaccessibleMessage.serializer()
+                } else {
+                    Message.serializer()
+                }"""
         )
 
         object BackgroundType : Super(
