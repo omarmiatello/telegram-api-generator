@@ -59,7 +59,7 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
 
         object ChatMember : Super(
             name = "ChatMember",
-            subclasses = { it.startsWith("ChatMember") },
+            subclasses = { it.startsWith("ChatMember") && it != "ChatMemberUpdated" },
             deserializer = """when (val type = jsonElement.jsonObject.getValue("status").jsonPrimitive.content) {
                     "creator" -> ChatMemberOwner.serializer()
                     "administrator" -> ChatMemberAdministrator.serializer()

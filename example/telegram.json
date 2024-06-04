@@ -185,12 +185,7 @@
             "name": "my_chat_member",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. The bot\u0027s chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user.",
             "type": {
-              "name": "ChatMemberUpdated",
-              "superType": {
-                "subclasses": {},
-                "deserializer": "when (val type \u003d jsonElement.jsonObject.getValue(\"status\").jsonPrimitive.content) {\n                    \"creator\" -\u003e ChatMemberOwner.serializer()\n                    \"administrator\" -\u003e ChatMemberAdministrator.serializer()\n                    \"member\" -\u003e ChatMemberMember.serializer()\n                    \"restricted\" -\u003e ChatMemberRestricted.serializer()\n                    \"left\" -\u003e ChatMemberLeft.serializer()\n                    \"kicked\" -\u003e ChatMemberBanned.serializer()\n                    else -\u003e error(\"unknown type: \" + type)\n                }",
-                "name": "ChatMember"
-              }
+              "name": "ChatMemberUpdated"
             },
             "required": false
           },
@@ -198,12 +193,7 @@
             "name": "chat_member",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. A chat member\u0027s status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify \u003ccode\u003e\"chat_member\"\u003c/code\u003e in the list of \u003cem\u003eallowed_updates\u003c/em\u003e to receive these updates.",
             "type": {
-              "name": "ChatMemberUpdated",
-              "superType": {
-                "subclasses": {},
-                "deserializer": "when (val type \u003d jsonElement.jsonObject.getValue(\"status\").jsonPrimitive.content) {\n                    \"creator\" -\u003e ChatMemberOwner.serializer()\n                    \"administrator\" -\u003e ChatMemberAdministrator.serializer()\n                    \"member\" -\u003e ChatMemberMember.serializer()\n                    \"restricted\" -\u003e ChatMemberRestricted.serializer()\n                    \"left\" -\u003e ChatMemberLeft.serializer()\n                    \"kicked\" -\u003e ChatMemberBanned.serializer()\n                    else -\u003e error(\"unknown type: \" + type)\n                }",
-                "name": "ChatMember"
-              }
+              "name": "ChatMemberUpdated"
             },
             "required": false
           },

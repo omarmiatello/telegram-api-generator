@@ -1291,7 +1291,7 @@ data class ChatMemberUpdated(
     val viaJoinRequest: Boolean? = null,
     @SerialName("via_chat_folder_invite_link")
     val viaChatFolderInviteLink: Boolean? = null,
-) : ChatMember()
+) : TelegramModel()
 
 data class ChatMemberOwner(
     @SerialName("status")

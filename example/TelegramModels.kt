@@ -176,7 +176,6 @@ object ChatMemberSerializer : KSerializer<ChatMember> {
         PolymorphicKind.SEALED,
     )
     override fun serialize(encoder: Encoder, value: ChatMember) = when (value) {
-        is ChatMemberUpdated -> encoder.encodeSerializableValue(serializer(), value)
         is ChatMemberOwner -> encoder.encodeSerializableValue(serializer(), value)
         is ChatMemberAdministrator -> encoder.encodeSerializableValue(serializer(), value)
         is ChatMemberMember -> encoder.encodeSerializableValue(serializer(), value)
@@ -2117,7 +2116,7 @@ data class ChatMemberUpdated(
     val viaJoinRequest: Boolean? = null,
     @SerialName("via_chat_folder_invite_link")
     val viaChatFolderInviteLink: Boolean? = null,
-) : ChatMember() {
+) : TelegramModel() {
     override fun toJson() = json.encodeToString(serializer(), this)
     companion object {
         fun fromJson(string: String): ChatMemberUpdated = json.decodeFromString(serializer(), string)
