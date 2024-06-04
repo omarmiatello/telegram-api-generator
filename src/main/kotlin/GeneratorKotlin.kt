@@ -165,16 +165,16 @@ fun List<DocSection>.toKotlinMethods() = buildString {
     appendLine("        encodeDefaults = false")
     appendLine("    }")
     appendLine()
-    appendLine("    private suspend fun <T> telegramGet(path: String, response: KSerializer<T>): TelegramResponse<T> {")
+    appendLine("    private suspend fun <T> telegramGet(path: String, serializer: KSerializer<T>): TelegramResponse<T> {")
     appendLine("        val responseString: String = httpClient.get(path).body()")
-    appendLine("        return json.decodeFromString(TelegramResponse.serializer(response), responseString)")
+    appendLine("        return json.decodeFromString(TelegramResponse.serializer(serializer), responseString)")
     appendLine("    }")
     appendLine()
-    appendLine("    private suspend fun <T> telegramPost(path: String, body: String, response: KSerializer<T>): TelegramResponse<T> {")
+    appendLine("    private suspend fun <T> telegramPost(path: String, body: String, serializer: KSerializer<T>): TelegramResponse<T> {")
     appendLine("        val responseString: String = httpClient")
     appendLine("            .post(path) { setBody(TextContent(body, ContentType.Application.Json)) }")
     appendLine("            .body()")
-    appendLine("        return json.decodeFromString(TelegramResponse.serializer(response), responseString)")
+    appendLine("        return json.decodeFromString(TelegramResponse.serializer(serializer), responseString)")
     appendLine("    }")
 
     this@toKotlinMethods.forEach { section ->
@@ -240,7 +240,7 @@ private fun DocMethod.toKotlinRequestMethod() = buildString {
         append("    )")
     } else {
         appendLine("    suspend fun $name(")
-        docParameters.forEachIndexed { index, parameter ->
+        docParameters.sortedBy { !it.required }.forEachIndexed { index, parameter ->
             appendLine("        ${parameter.name.snakeToCamelCase()}: ${parameter.toKotlinType(useContextualSerialization = false)},")
         }
         appendLine("    ) = telegramPost(")

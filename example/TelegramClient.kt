@@ -27,16 +27,16 @@ class TelegramClient(
         encodeDefaults = false
     }
 
-    private suspend fun <T> telegramGet(path: String, response: KSerializer<T>): TelegramResponse<T> {
+    private suspend fun <T> telegramGet(path: String, serializer: KSerializer<T>): TelegramResponse<T> {
         val responseString: String = httpClient.get(path).body()
-        return json.decodeFromString(TelegramResponse.serializer(response), responseString)
+        return json.decodeFromString(TelegramResponse.serializer(serializer), responseString)
     }
 
-    private suspend fun <T> telegramPost(path: String, body: String, response: KSerializer<T>): TelegramResponse<T> {
+    private suspend fun <T> telegramPost(path: String, body: String, serializer: KSerializer<T>): TelegramResponse<T> {
         val responseString: String = httpClient
             .post(path) { setBody(TextContent(body, ContentType.Application.Json)) }
             .body()
-        return json.decodeFromString(TelegramResponse.serializer(response), responseString)
+        return json.decodeFromString(TelegramResponse.serializer(serializer), responseString)
     }
 
     suspend fun getUpdates(
@@ -103,10 +103,10 @@ class TelegramClient(
     )
 
     suspend fun sendMessage(
-        businessConnectionId: String? = null,
         chatId: String,
-        messageThreadId: Long? = null,
         text: String,
+        businessConnectionId: String? = null,
+        messageThreadId: Long? = null,
         parseMode: ParseMode? = null,
         entities: List<MessageEntity>? = null,
         linkPreviewOptions: LinkPreviewOptions? = null,
@@ -136,11 +136,11 @@ class TelegramClient(
 
     suspend fun forwardMessage(
         chatId: String,
-        messageThreadId: Long? = null,
         fromChatId: String,
+        messageId: Long,
+        messageThreadId: Long? = null,
         disableNotification: Boolean? = null,
         protectContent: Boolean? = null,
-        messageId: Long,
     ) = telegramPost(
         "$basePath/forwardMessage",
         ForwardMessageRequest(
@@ -156,9 +156,9 @@ class TelegramClient(
 
     suspend fun forwardMessages(
         chatId: String,
-        messageThreadId: Long? = null,
         fromChatId: String,
         messageIds: List<Long>,
+        messageThreadId: Long? = null,
         disableNotification: Boolean? = null,
         protectContent: Boolean? = null,
     ) = telegramPost(
@@ -176,9 +176,9 @@ class TelegramClient(
 
     suspend fun copyMessage(
         chatId: String,
-        messageThreadId: Long? = null,
         fromChatId: String,
         messageId: Long,
+        messageThreadId: Long? = null,
         caption: String? = null,
         parseMode: ParseMode? = null,
         captionEntities: List<MessageEntity>? = null,
@@ -208,9 +208,9 @@ class TelegramClient(
 
     suspend fun copyMessages(
         chatId: String,
-        messageThreadId: Long? = null,
         fromChatId: String,
         messageIds: List<Long>,
+        messageThreadId: Long? = null,
         disableNotification: Boolean? = null,
         protectContent: Boolean? = null,
         removeCaption: Boolean? = null,
@@ -229,10 +229,10 @@ class TelegramClient(
     )
 
     suspend fun sendPhoto(
-        businessConnectionId: String? = null,
         chatId: String,
-        messageThreadId: Long? = null,
         photo: String,
+        businessConnectionId: String? = null,
+        messageThreadId: Long? = null,
         caption: String? = null,
         parseMode: ParseMode? = null,
         captionEntities: List<MessageEntity>? = null,
@@ -265,10 +265,10 @@ class TelegramClient(
     )
 
     suspend fun sendAudio(
-        businessConnectionId: String? = null,
         chatId: String,
-        messageThreadId: Long? = null,
         audio: String,
+        businessConnectionId: String? = null,
+        messageThreadId: Long? = null,
         caption: String? = null,
         parseMode: ParseMode? = null,
         captionEntities: List<MessageEntity>? = null,
@@ -305,10 +305,10 @@ class TelegramClient(
     )
 
     suspend fun sendDocument(
-        businessConnectionId: String? = null,
         chatId: String,
-        messageThreadId: Long? = null,
         document: String,
+        businessConnectionId: String? = null,
+        messageThreadId: Long? = null,
         thumbnail: String? = null,
         caption: String? = null,
         parseMode: ParseMode? = null,
@@ -341,10 +341,10 @@ class TelegramClient(
     )
 
     suspend fun sendVideo(
-        businessConnectionId: String? = null,
         chatId: String,
-        messageThreadId: Long? = null,
         video: String,
+        businessConnectionId: String? = null,
+        messageThreadId: Long? = null,
         duration: Long? = null,
         width: Long? = null,
         height: Long? = null,
@@ -387,10 +387,10 @@ class TelegramClient(
     )
 
     suspend fun sendAnimation(
-        businessConnectionId: String? = null,
         chatId: String,
-        messageThreadId: Long? = null,
         animation: String,
+        businessConnectionId: String? = null,
+        messageThreadId: Long? = null,
         duration: Long? = null,
         width: Long? = null,
         height: Long? = null,
@@ -431,10 +431,10 @@ class TelegramClient(
     )
 
     suspend fun sendVoice(
-        businessConnectionId: String? = null,
         chatId: String,
-        messageThreadId: Long? = null,
         voice: String,
+        businessConnectionId: String? = null,
+        messageThreadId: Long? = null,
         caption: String? = null,
         parseMode: ParseMode? = null,
         captionEntities: List<MessageEntity>? = null,
@@ -465,10 +465,10 @@ class TelegramClient(
     )
 
     suspend fun sendVideoNote(
-        businessConnectionId: String? = null,
         chatId: String,
-        messageThreadId: Long? = null,
         videoNote: String,
+        businessConnectionId: String? = null,
+        messageThreadId: Long? = null,
         duration: Long? = null,
         length: Long? = null,
         thumbnail: String? = null,
@@ -497,10 +497,10 @@ class TelegramClient(
     )
 
     suspend fun sendMediaGroup(
-        businessConnectionId: String? = null,
         chatId: String,
-        messageThreadId: Long? = null,
         media: List<InputMedia>,
+        businessConnectionId: String? = null,
+        messageThreadId: Long? = null,
         disableNotification: Boolean? = null,
         protectContent: Boolean? = null,
         messageEffectId: String? = null,
@@ -521,11 +521,11 @@ class TelegramClient(
     )
 
     suspend fun sendLocation(
-        businessConnectionId: String? = null,
         chatId: String,
-        messageThreadId: Long? = null,
         latitude: Float,
         longitude: Float,
+        businessConnectionId: String? = null,
+        messageThreadId: Long? = null,
         horizontalAccuracy: Float? = null,
         livePeriod: Long? = null,
         heading: Long? = null,
@@ -557,13 +557,13 @@ class TelegramClient(
     )
 
     suspend fun sendVenue(
-        businessConnectionId: String? = null,
         chatId: String,
-        messageThreadId: Long? = null,
         latitude: Float,
         longitude: Float,
         title: String,
         address: String,
+        businessConnectionId: String? = null,
+        messageThreadId: Long? = null,
         foursquareId: String? = null,
         foursquareType: String? = null,
         googlePlaceId: String? = null,
@@ -597,11 +597,11 @@ class TelegramClient(
     )
 
     suspend fun sendContact(
-        businessConnectionId: String? = null,
         chatId: String,
-        messageThreadId: Long? = null,
         phoneNumber: String,
         firstName: String,
+        businessConnectionId: String? = null,
+        messageThreadId: Long? = null,
         lastName: String? = null,
         vcard: String? = null,
         disableNotification: Boolean? = null,
@@ -629,13 +629,13 @@ class TelegramClient(
     )
 
     suspend fun sendPoll(
-        businessConnectionId: String? = null,
         chatId: String,
-        messageThreadId: Long? = null,
         question: String,
+        options: List<InputPollOption>,
+        businessConnectionId: String? = null,
+        messageThreadId: Long? = null,
         questionParseMode: String? = null,
         questionEntities: List<MessageEntity>? = null,
-        options: List<InputPollOption>,
         isAnonymous: Boolean? = null,
         type: String? = null,
         allowsMultipleAnswers: Boolean? = null,
@@ -681,8 +681,8 @@ class TelegramClient(
     )
 
     suspend fun sendDice(
-        businessConnectionId: String? = null,
         chatId: String,
+        businessConnectionId: String? = null,
         messageThreadId: Long? = null,
         emoji: String? = null,
         disableNotification: Boolean? = null,
@@ -707,10 +707,10 @@ class TelegramClient(
     )
 
     suspend fun sendChatAction(
-        businessConnectionId: String? = null,
         chatId: String,
-        messageThreadId: Long? = null,
         action: String,
+        businessConnectionId: String? = null,
+        messageThreadId: Long? = null,
     ) = telegramPost(
         "$basePath/sendChatAction",
         SendChatActionRequest(
@@ -1480,10 +1480,10 @@ class TelegramClient(
     )
 
     suspend fun editMessageText(
+        text: String,
         chatId: String? = null,
         messageId: Long? = null,
         inlineMessageId: String? = null,
-        text: String,
         parseMode: ParseMode? = null,
         entities: List<MessageEntity>? = null,
         linkPreviewOptions: LinkPreviewOptions? = null,
@@ -1528,10 +1528,10 @@ class TelegramClient(
     )
 
     suspend fun editMessageMedia(
+        media: InputMedia,
         chatId: String? = null,
         messageId: Long? = null,
         inlineMessageId: String? = null,
-        media: InputMedia,
         replyMarkup: InlineKeyboardMarkup? = null,
     ) = telegramPost(
         "$basePath/editMessageMedia",
@@ -1546,11 +1546,11 @@ class TelegramClient(
     )
 
     suspend fun editMessageLiveLocation(
+        latitude: Float,
+        longitude: Float,
         chatId: String? = null,
         messageId: Long? = null,
         inlineMessageId: String? = null,
-        latitude: Float,
-        longitude: Float,
         livePeriod: Long? = null,
         horizontalAccuracy: Float? = null,
         heading: Long? = null,
@@ -1644,10 +1644,10 @@ class TelegramClient(
     )
 
     suspend fun sendSticker(
-        businessConnectionId: String? = null,
         chatId: String,
-        messageThreadId: Long? = null,
         sticker: String,
+        businessConnectionId: String? = null,
+        messageThreadId: Long? = null,
         emoji: String? = null,
         disableNotification: Boolean? = null,
         protectContent: Boolean? = null,
@@ -1828,8 +1828,8 @@ class TelegramClient(
     suspend fun setStickerSetThumbnail(
         name: String,
         userId: Long,
-        thumbnail: String? = null,
         format: String,
+        thumbnail: String? = null,
     ) = telegramPost(
         "$basePath/setStickerSetThumbnail",
         SetStickerSetThumbnailRequest(
@@ -1897,13 +1897,13 @@ class TelegramClient(
 
     suspend fun sendInvoice(
         chatId: String,
-        messageThreadId: Long? = null,
         title: String,
         description: String,
         payload: String,
-        providerToken: String? = null,
         currency: String,
         prices: List<LabeledPrice>,
+        messageThreadId: Long? = null,
+        providerToken: String? = null,
         maxTipAmount: Long? = null,
         suggestedTipAmounts: List<Long>? = null,
         startParameter: String? = null,
@@ -1963,9 +1963,9 @@ class TelegramClient(
         title: String,
         description: String,
         payload: String,
-        providerToken: String? = null,
         currency: String,
         prices: List<LabeledPrice>,
+        providerToken: String? = null,
         maxTipAmount: Long? = null,
         suggestedTipAmounts: List<Long>? = null,
         providerData: String? = null,
@@ -2062,10 +2062,10 @@ class TelegramClient(
     )
 
     suspend fun sendGame(
-        businessConnectionId: String? = null,
         chatId: Long,
-        messageThreadId: Long? = null,
         gameShortName: String,
+        businessConnectionId: String? = null,
+        messageThreadId: Long? = null,
         disableNotification: Boolean? = null,
         protectContent: Boolean? = null,
         messageEffectId: String? = null,

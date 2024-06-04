@@ -16,7 +16,7 @@
     InputFileOrStringSerializer::class,
     IntegerOrStringSerializer::class,
 )
-@file:OptIn(InternalSerializationApi::class)
+@file:OptIn(InternalSerializationApi::class, ExperimentalSerializationApi::class)
 
 package com.github.omarmiatello.telegram
 
