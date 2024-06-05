@@ -19,6 +19,7 @@ class TelegramClient(
     apiKey: String,
     private val httpClient: HttpClient = HttpClient(),
     private val apiUrl: String = "https://api.telegram.org",
+    private val requestConfigurer: HttpRequestBuilder.() -> Unit = {},
 ) {
     private val basePath = "$apiUrl/bot$apiKey"
     private val json = Json {
@@ -28,13 +29,18 @@ class TelegramClient(
     }
 
     private suspend fun <T> telegramGet(path: String, serializer: KSerializer<T>): TelegramResponse<T> {
-        val responseString: String = httpClient.get(path).body()
+        val responseString: String = httpClient.get(path) {
+            this.requestConfigurer()
+        }.body()
         return json.decodeFromString(TelegramResponse.serializer(serializer), responseString)
     }
 
     private suspend fun <T> telegramPost(path: String, body: String, serializer: KSerializer<T>): TelegramResponse<T> {
         val responseString: String = httpClient
-            .post(path) { setBody(TextContent(body, ContentType.Application.Json)) }
+            .post(path) {
+                setBody(TextContent(body, ContentType.Application.Json))
+                this.requestConfigurer()
+            }
             .body()
         return json.decodeFromString(TelegramResponse.serializer(serializer), responseString)
     }
