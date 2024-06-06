@@ -5976,6 +5976,7 @@ pub struct GetUpdatesRequest {
  * @property allowed_updates A JSON-serialized list of the update types you want your bot to receive. For example, specify <code>["message", "edited_channel_post", "callback_query"]</code> to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em>, <em>message_reaction</em>, and <em>message_reaction_count</em> (default). If not specified, the previous setting will be used.<br>Please note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.
  * @property drop_pending_updates Pass <em>True</em> to drop all pending updates
  * @property secret_token A secret token to be sent in a header “X-Telegram-Bot-Api-Secret-Token” in every webhook request, 1-256 characters. Only characters <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed. The header is useful to ensure that the request comes from a webhook set by you.
+ * @property invalid_user_url HTTPS URL to send updates to. Use an empty string to remove webhook integration
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SetWebhookRequest {
@@ -5992,7 +5993,9 @@ pub struct SetWebhookRequest {
     /// Pass <em>True</em> to drop all pending updates
     pub drop_pending_updates: Option<bool>,
     /// A secret token to be sent in a header “X-Telegram-Bot-Api-Secret-Token” in every webhook request, 1-256 characters. Only characters <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed. The header is useful to ensure that the request comes from a webhook set by you.
-    pub secret_token: Option<String>
+    pub secret_token: Option<String>,
+    /// HTTPS URL to send updates to. Use an empty string to remove webhook integration
+    pub invalid_user_url: Option<String>
 }
 
 /**

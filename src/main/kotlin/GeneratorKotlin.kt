@@ -284,6 +284,8 @@ private fun DocMethod.toKotlinDataClass(useKotlinXSerialization: Boolean) = buil
 
 private fun DocMethod.toKotlinRequestMethod() = buildString {
     val path = """"${"$"}basePath/$name""""
+    val nameWithReplacedFirstChar =
+        name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
     appendLine()
     appendLine(toKotlinDoc())
     if (docParametersSorded.isEmpty()) {
@@ -298,7 +300,7 @@ private fun DocMethod.toKotlinRequestMethod() = buildString {
         }
         appendLine("    ) = telegramPost(")
         appendLine("        $path,")
-        appendLine("        ${name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}Request(")
+        appendLine("        ${nameWithReplacedFirstChar}Request(")
         docParametersSorded.forEachIndexed { index, parameter ->
             appendLine("            ${parameter.name.snakeToCamelCase()},")
         }

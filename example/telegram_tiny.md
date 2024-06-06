@@ -183,7 +183,7 @@
 
 ### Methods
     getUpdates(offset: Integer, limit: Integer, timeout: Integer, allowed_updates: List<String>)
-    setWebhook(url: String, certificate: InputFile, ip_address: String, max_connections: Integer, allowed_updates: List<String>, drop_pending_updates: Boolean, secret_token: String)
+    setWebhook(url: String, certificate: InputFile, ip_address: String, max_connections: Integer, allowed_updates: List<String>, drop_pending_updates: Boolean, secret_token: String, invalid_user_url: String)
     deleteWebhook(drop_pending_updates: Boolean)
     getWebhookInfo()
     logOut()

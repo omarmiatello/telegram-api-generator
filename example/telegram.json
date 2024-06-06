@@ -452,6 +452,14 @@
               "name": "String"
             },
             "required": false
+          },
+          {
+            "name": "invalid_user_url",
+            "description": "HTTPS URL to send updates to. Use an empty string to remove webhook integration",
+            "type": {
+              "name": "String"
+            },
+            "required": false
           }
         ],
         "returns": {
@@ -512,6 +520,14 @@
           {
             "name": "secret_token",
             "description": "A secret token to be sent in a header “X-Telegram-Bot-Api-Secret-Token” in every webhook request, 1-256 characters. Only characters \u003ccode\u003eA-Z\u003c/code\u003e, \u003ccode\u003ea-z\u003c/code\u003e, \u003ccode\u003e0-9\u003c/code\u003e, \u003ccode\u003e_\u003c/code\u003e and \u003ccode\u003e-\u003c/code\u003e are allowed. The header is useful to ensure that the request comes from a webhook set by you.",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "invalid_user_url",
+            "description": "HTTPS URL to send updates to. Use an empty string to remove webhook integration",
             "type": {
               "name": "String"
             },

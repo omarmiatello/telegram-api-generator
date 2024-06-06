@@ -3987,6 +3987,7 @@ sealed class TelegramRequest {
      * @property allowedUpdates A JSON-serialized list of the update types you want your bot to receive. For example, specify <code>["message", "edited_channel_post", "callback_query"]</code> to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em>, <em>message_reaction</em>, and <em>message_reaction_count</em> (default). If not specified, the previous setting will be used.<br>Please note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.
      * @property dropPendingUpdates Pass <em>True</em> to drop all pending updates
      * @property secretToken A secret token to be sent in a header “X-Telegram-Bot-Api-Secret-Token” in every webhook request, 1-256 characters. Only characters <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed. The header is useful to ensure that the request comes from a webhook set by you.
+     * @property invalidUserUrl HTTPS URL to send updates to. Use an empty string to remove webhook integration
      * */
     data class SetWebhookRequest(
         val url: String,
@@ -3996,6 +3997,7 @@ sealed class TelegramRequest {
         val allowedUpdates: List<String>? = null,
         val dropPendingUpdates: Boolean? = null,
         val secretToken: String? = null,
+        val invalidUserUrl: String? = null,
     ) : TelegramRequest()
 
     /**

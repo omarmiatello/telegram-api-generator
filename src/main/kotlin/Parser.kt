@@ -30,6 +30,19 @@ data class DocMethod(
     val docParametersSorded: List<DocParameter> = docParameters.sortedBy { !it.required }
 }
 
+fun DocMethod.appendCustomParameters(): DocMethod {
+    if (name == "setWebhook") {
+        val newUrlParam = docParameters
+            .firstOrNull { it.name == "url" }
+            ?.copy(name = "invalid_user_url", required = false)
+            ?: throw IllegalStateException("no url param in setWebhook method")
+        return this.copy(
+            docParameters = docParameters + newUrlParam
+        )
+    }
+    return this
+}
+
 data class DocParameter(
     val name: String,
     val description: String,
@@ -44,7 +57,7 @@ fun Document.toSection(): List<DocSection> {
     )
     val content = select("#dev_page_content").first()!!
     var splitBy = ""
-    return content.children()
+    val result = content.children()
         .groupBy {
             if (it.tag().name == "h3") splitBy = it.text()
             splitBy
@@ -127,7 +140,9 @@ fun Document.toSection(): List<DocSection> {
 
                 val docType = docFields?.let { DocType(h4, h4Desc, it) }
                 val docMethod =
-                    docParameters?.let { DocMethod(h4, h4Desc, it, docReturns ?: error("Missing returns for $h4")) }
+                    docParameters
+                        ?.let { DocMethod(h4, h4Desc, it, docReturns ?: error("Missing returns for $h4")) }
+                        ?.appendCustomParameters()
                 if (docType != null && docMethod != null) error("hasTypes and hasMethods: $h4")
                 docType ?: docMethod
             }
@@ -148,6 +163,7 @@ fun Document.toSection(): List<DocSection> {
             val unknownTypes = sections.findUnknownTypes()
             if (unknownTypes.isNotEmpty()) error("found unknownTypes: $unknownTypes")
         }
+    return result
 }
 
 private fun String.fixTypeString() = when (this) {
