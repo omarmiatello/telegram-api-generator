@@ -47,22 +47,28 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
         object InputMedia : Super(
             name = "InputMedia",
             subclasses = { it.startsWith("InputMedia") },
-            deserializer = """
-            when (val type = jsonElement.jsonObject.getValue("type").jsonPrimitive.content) {
-                "photo" -> InputMediaPhoto.serializer()
-                "video" -> InputMediaVideo.serializer()
-                "animation" -> InputMediaAnimation.serializer()
-                "audio" -> InputMediaAudio.serializer()
-                "document" -> InputMediaDocument.serializer()
-               else -> error("unknown type: " + type)
-            }
-            """
+            deserializer = """when (val type = jsonElement.jsonObject.getValue("type").jsonPrimitive.content) {
+                    "photo" -> InputMediaPhoto.serializer()
+                    "video" -> InputMediaVideo.serializer()
+                    "animation" -> InputMediaAnimation.serializer()
+                    "audio" -> InputMediaAudio.serializer()
+                    "document" -> InputMediaDocument.serializer()
+                    else -> error("unknown type: " + type)
+                }"""
         )
 
         object ChatMember : Super(
             name = "ChatMember",
-            subclasses = { it.startsWith("ChatMember") },
-            deserializer = ""
+            subclasses = { it.startsWith("ChatMember") && it != "ChatMemberUpdated" },
+            deserializer = """when (val type = jsonElement.jsonObject.getValue("status").jsonPrimitive.content) {
+                    "creator" -> ChatMemberOwner.serializer()
+                    "administrator" -> ChatMemberAdministrator.serializer()
+                    "member" -> ChatMemberMember.serializer()
+                    "restricted" -> ChatMemberRestricted.serializer()
+                    "left" -> ChatMemberLeft.serializer()
+                    "kicked" -> ChatMemberBanned.serializer()
+                    else -> error("unknown type: " + type)
+                }"""
         )
 
         object BotCommandScope : Super(
@@ -105,10 +111,22 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             name = "MaybeInaccessibleMessage",
             subclasses = { it in listOf("Message", "InaccessibleMessage") },
             deserializer = """if (jsonElement.jsonObject.getValue("date").jsonPrimitive.long == 0L) {
-                                    InaccessibleMessage.serializer()
-                                } else {
-                                    Message.serializer()
-                                }"""
+                    InaccessibleMessage.serializer()
+                } else {
+                    Message.serializer()
+                }"""
+        )
+
+        object BackgroundType : Super(
+            name = "BackgroundType",
+            subclasses = { it.startsWith("BackgroundType") },
+            deserializer = ""
+        )
+
+        object BackgroundFill : Super(
+            name = "BackgroundFill",
+            subclasses = { it.startsWith("BackgroundFill") },
+            deserializer = ""
         )
     }
 
@@ -151,6 +169,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             Super.MenuButton,
             Super.KeyboardOption,
             Super.MaybeInaccessibleMessage,
+            Super.BackgroundType,
+            Super.BackgroundFill,
             WithAlternative.InputFileOrString,
             WithAlternative.IntegerOrString,
         )
@@ -187,6 +207,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             "BotCommandScope" -> Super.BotCommandScope
             "KeyboardOption" -> Super.KeyboardOption
             "MaybeInaccessibleMessage" -> Super.MaybeInaccessibleMessage
+            "BackgroundType" -> Super.BackgroundType
+            "BackgroundFill" -> Super.BackgroundFill
             "InputFileOrString" -> WithAlternative.InputFileOrString
             "IntegerOrString" -> WithAlternative.IntegerOrString
             else -> {

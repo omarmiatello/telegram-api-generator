@@ -17,7 +17,7 @@
 | channel_post | Message | false | <em>Optional</em>. New incoming channel post of any kind - text, photo, sticker, etc. |
 | edited_channel_post | Message | false | <em>Optional</em>. New version of a channel post that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot. |
 | business_connection | BusinessConnection | false | <em>Optional</em>. The bot was connected to or disconnected from a business account, or a user edited an existing connection with the bot |
-| business_message | Message | false | <em>Optional</em>. New non-service message from a connected business account |
+| business_message | Message | false | <em>Optional</em>. New message from a connected business account |
 | edited_business_message | Message | false | <em>Optional</em>. New version of a message from a connected business account |
 | deleted_business_messages | BusinessMessagesDeleted | false | <em>Optional</em>. Messages were deleted from a connected business account |
 | message_reaction | MessageReactionUpdated | false | <em>Optional</em>. A reaction to a message was changed by a user. The bot must be an administrator in the chat and must explicitly specify <code>"message_reaction"</code> in the list of <em>allowed_updates</em> to receive these updates. The update isn't received for reactions set by bots. |
@@ -72,7 +72,7 @@
 
 #### setWebhook
 
-    setWebhook(url: String, certificate: InputFile, ip_address: String, max_connections: Integer, allowed_updates: List<String>, drop_pending_updates: Boolean, secret_token: String)
+    setWebhook(url: String, certificate: InputFile, ip_address: String, max_connections: Integer, allowed_updates: List<String>, drop_pending_updates: Boolean, secret_token: String, invalid_user_url: String)
 
 <p>Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter <em>secret_token</em>. If specified, the request will contain a header “X-Telegram-Bot-Api-Secret-Token” with the secret token as content.</p><blockquote>
  <p><strong>Notes</strong><br><strong>1.</strong> You will not be able to receive updates using <a href="#getupdates">getUpdates</a> for as long as an outgoing webhook is set up.<br><strong>2.</strong> To use a self-signed certificate, you need to upload your <a href="/bots/self-signed">public key certificate</a> using <em>certificate</em> parameter. Please upload as InputFile, sending a String will not work.<br><strong>3.</strong> Ports currently supported <em>for webhooks</em>: <strong>443, 80, 88, 8443</strong>.</p>
@@ -88,6 +88,7 @@
 | allowed_updates | List<String> | false | A JSON-serialized list of the update types you want your bot to receive. For example, specify <code>["message", "edited_channel_post", "callback_query"]</code> to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em>, <em>message_reaction</em>, and <em>message_reaction_count</em> (default). If not specified, the previous setting will be used.<br>Please note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time. |
 | drop_pending_updates | Boolean | false | Pass <em>True</em> to drop all pending updates |
 | secret_token | String | false | A secret token to be sent in a header “X-Telegram-Bot-Api-Secret-Token” in every webhook request, 1-256 characters. Only characters <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed. The header is useful to ensure that the request comes from a webhook set by you. |
+| invalid_user_url | String | false | HTTPS URL to send updates to. Use an empty string to remove webhook integration |
 
 #### deleteWebhook
 
@@ -133,58 +134,75 @@
 
 #### Chat
 
-    Chat(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, is_forum: Boolean, photo: ChatPhoto, active_usernames: List<String>, birthdate: Birthdate, business_intro: BusinessIntro, business_location: BusinessLocation, business_opening_hours: BusinessOpeningHours, personal_chat: Chat, available_reactions: List<ReactionType>, accent_color_id: Integer, background_custom_emoji_id: String, profile_accent_color_id: Integer, profile_background_custom_emoji_id: String, emoji_status_custom_emoji_id: String, emoji_status_expiration_date: Integer, bio: String, has_private_forwards: Boolean, has_restricted_voice_and_video_messages: Boolean, join_to_send_messages: Boolean, join_by_request: Boolean, description: String, invite_link: String, pinned_message: Message, permissions: ChatPermissions, slow_mode_delay: Integer, unrestrict_boost_count: Integer, message_auto_delete_time: Integer, has_aggressive_anti_spam_enabled: Boolean, has_hidden_members: Boolean, has_protected_content: Boolean, has_visible_history: Boolean, sticker_set_name: String, can_set_sticker_set: Boolean, custom_emoji_sticker_set_name: String, linked_chat_id: Integer, location: ChatLocation)
+    Chat(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, is_forum: Boolean)
 
 <p>This object represents a chat.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | id | Integer | true | Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier. |
-| type | String | true | Type of chat, can be either “private”, “group”, “supergroup” or “channel” |
+| type | String | true | Type of the chat, can be either “private”, “group”, “supergroup” or “channel” |
 | title | String | false | <em>Optional</em>. Title, for supergroups, channels and group chats |
 | username | String | false | <em>Optional</em>. Username, for private chats, supergroups and channels if available |
 | first_name | String | false | <em>Optional</em>. First name of the other party in a private chat |
 | last_name | String | false | <em>Optional</em>. Last name of the other party in a private chat |
 | is_forum | Boolean | false | <em>Optional</em>. <em>True</em>, if the supergroup chat is a forum (has <a href="https://telegram.org/blog/topics-in-groups-collectible-usernames#topics-in-groups">topics</a> enabled) |
-| photo | ChatPhoto | false | <em>Optional</em>. Chat photo. Returned only in <a href="#getchat">getChat</a>. |
-| active_usernames | List<String> | false | <em>Optional</em>. If non-empty, the list of all <a href="https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames">active chat usernames</a>; for private chats, supergroups and channels. Returned only in <a href="#getchat">getChat</a>. |
-| birthdate | Birthdate | false | <em>Optional</em>. For private chats, the date of birth of the user. Returned only in <a href="#getchat">getChat</a>. |
-| business_intro | BusinessIntro | false | <em>Optional</em>. For private chats with business accounts, the intro of the business. Returned only in <a href="#getchat">getChat</a>. |
-| business_location | BusinessLocation | false | <em>Optional</em>. For private chats with business accounts, the location of the business. Returned only in <a href="#getchat">getChat</a>. |
-| business_opening_hours | BusinessOpeningHours | false | <em>Optional</em>. For private chats with business accounts, the opening hours of the business. Returned only in <a href="#getchat">getChat</a>. |
-| personal_chat | Chat | false | <em>Optional</em>. For private chats, the personal channel of the user. Returned only in <a href="#getchat">getChat</a>. |
-| available_reactions | List<ReactionType> | false | <em>Optional</em>. List of available reactions allowed in the chat. If omitted, then all <a href="#reactiontypeemoji">emoji reactions</a> are allowed. Returned only in <a href="#getchat">getChat</a>. |
-| accent_color_id | Integer | false | <em>Optional</em>. Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See <a href="#accent-colors">accent colors</a> for more details. Returned only in <a href="#getchat">getChat</a>. Always returned in <a href="#getchat">getChat</a>. |
-| background_custom_emoji_id | String | false | <em>Optional</em>. Custom emoji identifier of emoji chosen by the chat for the reply header and link preview background. Returned only in <a href="#getchat">getChat</a>. |
-| profile_accent_color_id | Integer | false | <em>Optional</em>. Identifier of the accent color for the chat's profile background. See <a href="#profile-accent-colors">profile accent colors</a> for more details. Returned only in <a href="#getchat">getChat</a>. |
-| profile_background_custom_emoji_id | String | false | <em>Optional</em>. Custom emoji identifier of the emoji chosen by the chat for its profile background. Returned only in <a href="#getchat">getChat</a>. |
-| emoji_status_custom_emoji_id | String | false | <em>Optional</em>. Custom emoji identifier of the emoji status of the chat or the other party in a private chat. Returned only in <a href="#getchat">getChat</a>. |
-| emoji_status_expiration_date | Integer | false | <em>Optional</em>. Expiration date of the emoji status of the chat or the other party in a private chat, in Unix time, if any. Returned only in <a href="#getchat">getChat</a>. |
-| bio | String | false | <em>Optional</em>. Bio of the other party in a private chat. Returned only in <a href="#getchat">getChat</a>. |
-| has_private_forwards | Boolean | false | <em>Optional</em>. <em>True</em>, if privacy settings of the other party in the private chat allows to use <code>tg://user?id=&lt;user_id&gt;</code> links only in chats with the user. Returned only in <a href="#getchat">getChat</a>. |
-| has_restricted_voice_and_video_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the privacy settings of the other party restrict sending voice and video note messages in the private chat. Returned only in <a href="#getchat">getChat</a>. |
-| join_to_send_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if users need to join the supergroup before they can send messages. Returned only in <a href="#getchat">getChat</a>. |
-| join_by_request | Boolean | false | <em>Optional</em>. <em>True</em>, if all users directly joining the supergroup need to be approved by supergroup administrators. Returned only in <a href="#getchat">getChat</a>. |
-| description | String | false | <em>Optional</em>. Description, for groups, supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>. |
-| invite_link | String | false | <em>Optional</em>. Primary invite link, for groups, supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>. |
-| pinned_message | Message | false | <em>Optional</em>. The most recent pinned message (by sending date). Returned only in <a href="#getchat">getChat</a>. |
-| permissions | ChatPermissions | false | <em>Optional</em>. Default chat member permissions, for groups and supergroups. Returned only in <a href="#getchat">getChat</a>. |
-| slow_mode_delay | Integer | false | <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds. Returned only in <a href="#getchat">getChat</a>. |
-| unrestrict_boost_count | Integer | false | <em>Optional</em>. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions. Returned only in <a href="#getchat">getChat</a>. |
-| message_auto_delete_time | Integer | false | <em>Optional</em>. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in <a href="#getchat">getChat</a>. |
-| has_aggressive_anti_spam_enabled | Boolean | false | <em>Optional</em>. <em>True</em>, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators. Returned only in <a href="#getchat">getChat</a>. |
-| has_hidden_members | Boolean | false | <em>Optional</em>. <em>True</em>, if non-administrators can only get the list of bots and administrators in the chat. Returned only in <a href="#getchat">getChat</a>. |
-| has_protected_content | Boolean | false | <em>Optional</em>. <em>True</em>, if messages from the chat can't be forwarded to other chats. Returned only in <a href="#getchat">getChat</a>. |
-| has_visible_history | Boolean | false | <em>Optional</em>. <em>True</em>, if new chat members will have access to old messages; available only to chat administrators. Returned only in <a href="#getchat">getChat</a>. |
-| sticker_set_name | String | false | <em>Optional</em>. For supergroups, name of group sticker set. Returned only in <a href="#getchat">getChat</a>. |
-| can_set_sticker_set | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can change the group sticker set. Returned only in <a href="#getchat">getChat</a>. |
-| custom_emoji_sticker_set_name | String | false | <em>Optional</em>. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group. Returned only in <a href="#getchat">getChat</a>. |
-| linked_chat_id | Integer | false | <em>Optional</em>. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in <a href="#getchat">getChat</a>. |
-| location | ChatLocation | false | <em>Optional</em>. For supergroups, the location to which the supergroup is connected. Returned only in <a href="#getchat">getChat</a>. |
+
+#### ChatFullInfo
+
+    ChatFullInfo(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, is_forum: Boolean, accent_color_id: Integer, max_reaction_count: Integer, photo: ChatPhoto, active_usernames: List<String>, birthdate: Birthdate, business_intro: BusinessIntro, business_location: BusinessLocation, business_opening_hours: BusinessOpeningHours, personal_chat: Chat, available_reactions: List<ReactionType>, background_custom_emoji_id: String, profile_accent_color_id: Integer, profile_background_custom_emoji_id: String, emoji_status_custom_emoji_id: String, emoji_status_expiration_date: Integer, bio: String, has_private_forwards: Boolean, has_restricted_voice_and_video_messages: Boolean, join_to_send_messages: Boolean, join_by_request: Boolean, description: String, invite_link: String, pinned_message: Message, permissions: ChatPermissions, slow_mode_delay: Integer, unrestrict_boost_count: Integer, message_auto_delete_time: Integer, has_aggressive_anti_spam_enabled: Boolean, has_hidden_members: Boolean, has_protected_content: Boolean, has_visible_history: Boolean, sticker_set_name: String, can_set_sticker_set: Boolean, custom_emoji_sticker_set_name: String, linked_chat_id: Integer, location: ChatLocation)
+
+<p>This object contains full information about a chat.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| id | Integer | true | Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier. |
+| type | String | true | Type of the chat, can be either “private”, “group”, “supergroup” or “channel” |
+| title | String | false | <em>Optional</em>. Title, for supergroups, channels and group chats |
+| username | String | false | <em>Optional</em>. Username, for private chats, supergroups and channels if available |
+| first_name | String | false | <em>Optional</em>. First name of the other party in a private chat |
+| last_name | String | false | <em>Optional</em>. Last name of the other party in a private chat |
+| is_forum | Boolean | false | <em>Optional</em>. <em>True</em>, if the supergroup chat is a forum (has <a href="https://telegram.org/blog/topics-in-groups-collectible-usernames#topics-in-groups">topics</a> enabled) |
+| accent_color_id | Integer | true | Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See <a href="#accent-colors">accent colors</a> for more details. |
+| max_reaction_count | Integer | true | The maximum number of reactions that can be set on a message in the chat |
+| photo | ChatPhoto | false | <em>Optional</em>. Chat photo |
+| active_usernames | List<String> | false | <em>Optional</em>. If non-empty, the list of all <a href="https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames">active chat usernames</a>; for private chats, supergroups and channels |
+| birthdate | Birthdate | false | <em>Optional</em>. For private chats, the date of birth of the user |
+| business_intro | BusinessIntro | false | <em>Optional</em>. For private chats with business accounts, the intro of the business |
+| business_location | BusinessLocation | false | <em>Optional</em>. For private chats with business accounts, the location of the business |
+| business_opening_hours | BusinessOpeningHours | false | <em>Optional</em>. For private chats with business accounts, the opening hours of the business |
+| personal_chat | Chat | false | <em>Optional</em>. For private chats, the personal channel of the user |
+| available_reactions | List<ReactionType> | false | <em>Optional</em>. List of available reactions allowed in the chat. If omitted, then all <a href="#reactiontypeemoji">emoji reactions</a> are allowed. |
+| background_custom_emoji_id | String | false | <em>Optional</em>. Custom emoji identifier of the emoji chosen by the chat for the reply header and link preview background |
+| profile_accent_color_id | Integer | false | <em>Optional</em>. Identifier of the accent color for the chat's profile background. See <a href="#profile-accent-colors">profile accent colors</a> for more details. |
+| profile_background_custom_emoji_id | String | false | <em>Optional</em>. Custom emoji identifier of the emoji chosen by the chat for its profile background |
+| emoji_status_custom_emoji_id | String | false | <em>Optional</em>. Custom emoji identifier of the emoji status of the chat or the other party in a private chat |
+| emoji_status_expiration_date | Integer | false | <em>Optional</em>. Expiration date of the emoji status of the chat or the other party in a private chat, in Unix time, if any |
+| bio | String | false | <em>Optional</em>. Bio of the other party in a private chat |
+| has_private_forwards | Boolean | false | <em>Optional</em>. <em>True</em>, if privacy settings of the other party in the private chat allows to use <code>tg://user?id=&lt;user_id&gt;</code> links only in chats with the user |
+| has_restricted_voice_and_video_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the privacy settings of the other party restrict sending voice and video note messages in the private chat |
+| join_to_send_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if users need to join the supergroup before they can send messages |
+| join_by_request | Boolean | false | <em>Optional</em>. <em>True</em>, if all users directly joining the supergroup without using an invite link need to be approved by supergroup administrators |
+| description | String | false | <em>Optional</em>. Description, for groups, supergroups and channel chats |
+| invite_link | String | false | <em>Optional</em>. Primary invite link, for groups, supergroups and channel chats |
+| pinned_message | Message | false | <em>Optional</em>. The most recent pinned message (by sending date) |
+| permissions | ChatPermissions | false | <em>Optional</em>. Default chat member permissions, for groups and supergroups |
+| slow_mode_delay | Integer | false | <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds |
+| unrestrict_boost_count | Integer | false | <em>Optional</em>. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions |
+| message_auto_delete_time | Integer | false | <em>Optional</em>. The time after which all messages sent to the chat will be automatically deleted; in seconds |
+| has_aggressive_anti_spam_enabled | Boolean | false | <em>Optional</em>. <em>True</em>, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators. |
+| has_hidden_members | Boolean | false | <em>Optional</em>. <em>True</em>, if non-administrators can only get the list of bots and administrators in the chat |
+| has_protected_content | Boolean | false | <em>Optional</em>. <em>True</em>, if messages from the chat can't be forwarded to other chats |
+| has_visible_history | Boolean | false | <em>Optional</em>. <em>True</em>, if new chat members will have access to old messages; available only to chat administrators |
+| sticker_set_name | String | false | <em>Optional</em>. For supergroups, name of the group sticker set |
+| can_set_sticker_set | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can change the group sticker set |
+| custom_emoji_sticker_set_name | String | false | <em>Optional</em>. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group. |
+| linked_chat_id | Integer | false | <em>Optional</em>. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. |
+| location | ChatLocation | false | <em>Optional</em>. For supergroups, the location to which the supergroup is connected |
 
 #### Message
 
-    Message(message_id: Integer, message_thread_id: Integer, from: User, sender_chat: Chat, sender_boost_count: Integer, sender_business_bot: User, date: Integer, business_connection_id: String, chat: Chat, forward_origin: MessageOrigin, is_topic_message: Boolean, is_automatic_forward: Boolean, reply_to_message: Message, external_reply: ExternalReplyInfo, quote: TextQuote, reply_to_story: Story, via_bot: User, edit_date: Integer, has_protected_content: Boolean, is_from_offline: Boolean, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, story: Story, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, has_media_spoiler: Boolean, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: MaybeInaccessibleMessage, invoice: Invoice, successful_payment: SuccessfulPayment, users_shared: UsersShared, chat_shared: ChatShared, connected_website: String, write_access_allowed: WriteAccessAllowed, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, boost_added: ChatBoostAdded, forum_topic_created: ForumTopicCreated, forum_topic_edited: ForumTopicEdited, forum_topic_closed: ForumTopicClosed, forum_topic_reopened: ForumTopicReopened, general_forum_topic_hidden: GeneralForumTopicHidden, general_forum_topic_unhidden: GeneralForumTopicUnhidden, giveaway_created: GiveawayCreated, giveaway: Giveaway, giveaway_winners: GiveawayWinners, giveaway_completed: GiveawayCompleted, video_chat_scheduled: VideoChatScheduled, video_chat_started: VideoChatStarted, video_chat_ended: VideoChatEnded, video_chat_participants_invited: VideoChatParticipantsInvited, web_app_data: WebAppData, reply_markup: InlineKeyboardMarkup)
+    Message(message_id: Integer, message_thread_id: Integer, from: User, sender_chat: Chat, sender_boost_count: Integer, sender_business_bot: User, date: Integer, business_connection_id: String, chat: Chat, forward_origin: MessageOrigin, is_topic_message: Boolean, is_automatic_forward: Boolean, reply_to_message: Message, external_reply: ExternalReplyInfo, quote: TextQuote, reply_to_story: Story, via_bot: User, edit_date: Integer, has_protected_content: Boolean, is_from_offline: Boolean, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, effect_id: String, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, story: Story, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_media_spoiler: Boolean, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: MaybeInaccessibleMessage, invoice: Invoice, successful_payment: SuccessfulPayment, users_shared: UsersShared, chat_shared: ChatShared, connected_website: String, write_access_allowed: WriteAccessAllowed, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, boost_added: ChatBoostAdded, chat_background_set: ChatBackground, forum_topic_created: ForumTopicCreated, forum_topic_edited: ForumTopicEdited, forum_topic_closed: ForumTopicClosed, forum_topic_reopened: ForumTopicReopened, general_forum_topic_hidden: GeneralForumTopicHidden, general_forum_topic_unhidden: GeneralForumTopicUnhidden, giveaway_created: GiveawayCreated, giveaway: Giveaway, giveaway_winners: GiveawayWinners, giveaway_completed: GiveawayCompleted, video_chat_scheduled: VideoChatScheduled, video_chat_started: VideoChatStarted, video_chat_ended: VideoChatEnded, video_chat_participants_invited: VideoChatParticipantsInvited, web_app_data: WebAppData, reply_markup: InlineKeyboardMarkup)
 
 <p>This object represents a message.</p>
 
@@ -215,6 +233,7 @@
 | text | String | false | <em>Optional</em>. For text messages, the actual UTF-8 text of the message |
 | entities | List<MessageEntity> | false | <em>Optional</em>. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text |
 | link_preview_options | LinkPreviewOptions | false | <em>Optional</em>. Options used for link preview generation for the message, if it is a text message and link preview options were changed |
+| effect_id | String | false | <em>Optional</em>. Unique identifier of the message effect added to the message |
 | animation | Animation | false | <em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set |
 | audio | Audio | false | <em>Optional</em>. Message is an audio file, information about the file |
 | document | Document | false | <em>Optional</em>. Message is a general file, information about the file |
@@ -226,6 +245,7 @@
 | voice | Voice | false | <em>Optional</em>. Message is a voice message, information about the file |
 | caption | String | false | <em>Optional</em>. Caption for the animation, audio, document, photo, video or voice |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption |
+| show_caption_above_media | Boolean | false | <em>Optional</em>. True, if the caption must be shown above the message media |
 | has_media_spoiler | Boolean | false | <em>Optional</em>. <em>True</em>, if the message media is covered by a spoiler animation |
 | contact | Contact | false | <em>Optional</em>. Message is a shared contact, information about the contact |
 | dice | Dice | false | <em>Optional</em>. Message is a dice with random value |
@@ -254,6 +274,7 @@
 | passport_data | PassportData | false | <em>Optional</em>. Telegram Passport data |
 | proximity_alert_triggered | ProximityAlertTriggered | false | <em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location. |
 | boost_added | ChatBoostAdded | false | <em>Optional</em>. Service message: user boosted the chat |
+| chat_background_set | ChatBackground | false | <em>Optional</em>. Service message: chat background set |
 | forum_topic_created | ForumTopicCreated | false | <em>Optional</em>. Service message: forum topic created |
 | forum_topic_edited | ForumTopicEdited | false | <em>Optional</em>. Service message: forum topic edited |
 | forum_topic_closed | ForumTopicClosed | false | <em>Optional</em>. Service message: forum topic closed |
@@ -301,7 +322,7 @@
 
 | name | type | required | description |
 |---|---|---|---|
-| type | String | true | Type of the entity. Currently, can be “mention” (<code>@username</code>), “hashtag” (<code>#hashtag</code>), “cashtag” (<code>$USD</code>), “bot_command” (<code>/start@jobs_bot</code>), “url” (<code>https://telegram.org</code>), “email” (<code>do-not-reply@telegram.org</code>), “phone_number” (<code>+1-212-555-0123</code>), “bold” (<strong>bold text</strong>), “italic” (<em>italic text</em>), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler” (spoiler message), “blockquote” (block quotation), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users <a href="https://telegram.org/blog/edit#new-mentions">without usernames</a>), “custom_emoji” (for inline custom emoji stickers) |
+| type | String | true | Type of the entity. Currently, can be “mention” (<code>@username</code>), “hashtag” (<code>#hashtag</code>), “cashtag” (<code>$USD</code>), “bot_command” (<code>/start@jobs_bot</code>), “url” (<code>https://telegram.org</code>), “email” (<code>do-not-reply@telegram.org</code>), “phone_number” (<code>+1-212-555-0123</code>), “bold” (<strong>bold text</strong>), “italic” (<em>italic text</em>), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler” (spoiler message), “blockquote” (block quotation), “expandable_blockquote” (collapsed-by-default block quotation), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users <a href="https://telegram.org/blog/edit#new-mentions">without usernames</a>), “custom_emoji” (for inline custom emoji stickers) |
 | offset | Integer | true | Offset in <a href="/api/entities#entity-length">UTF-16 code units</a> to the start of the entity |
 | length | Integer | true | Length of the entity in <a href="/api/entities#entity-length">UTF-16 code units</a> |
 | url | String | false | <em>Optional</em>. For “text_link” only, URL that will be opened after user taps on the text |
@@ -571,14 +592,27 @@
 
 #### PollOption
 
-    PollOption(text: String, voter_count: Integer)
+    PollOption(text: String, text_entities: List<MessageEntity>, voter_count: Integer)
 
 <p>This object contains information about one answer option in a poll.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | text | String | true | Option text, 1-100 characters |
+| text_entities | List<MessageEntity> | false | <em>Optional</em>. Special entities that appear in the option <em>text</em>. Currently, only custom emoji entities are allowed in poll option texts |
 | voter_count | Integer | true | Number of users that voted for this option |
+
+#### InputPollOption
+
+    InputPollOption(text: String, text_parse_mode: String, text_entities: List<MessageEntity>)
+
+<p>This object contains information about one answer option in a poll to send.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| text | String | true | Option text, 1-100 characters |
+| text_parse_mode | String | false | <em>Optional</em>. Mode for parsing entities in the text. See <a href="#formatting-options">formatting options</a> for more details. Currently, only custom emoji entities are allowed |
+| text_entities | List<MessageEntity> | false | <em>Optional</em>. A JSON-serialized list of special entities that appear in the poll option text. It can be specified instead of <em>text_parse_mode</em> |
 
 #### PollAnswer
 
@@ -595,7 +629,7 @@
 
 #### Poll
 
-    Poll(id: String, question: String, options: List<PollOption>, total_voter_count: Integer, is_closed: Boolean, is_anonymous: Boolean, type: String, allows_multiple_answers: Boolean, correct_option_id: Integer, explanation: String, explanation_entities: List<MessageEntity>, open_period: Integer, close_date: Integer)
+    Poll(id: String, question: String, question_entities: List<MessageEntity>, options: List<PollOption>, total_voter_count: Integer, is_closed: Boolean, is_anonymous: Boolean, type: String, allows_multiple_answers: Boolean, correct_option_id: Integer, explanation: String, explanation_entities: List<MessageEntity>, open_period: Integer, close_date: Integer)
 
 <p>This object contains information about a poll.</p>
 
@@ -603,6 +637,7 @@
 |---|---|---|---|
 | id | String | true | Unique poll identifier |
 | question | String | true | Poll question, 1-300 characters |
+| question_entities | List<MessageEntity> | false | <em>Optional</em>. Special entities that appear in the <em>question</em>. Currently, only custom emoji entities are allowed in poll questions |
 | options | List<PollOption> | true | List of poll options |
 | total_voter_count | Integer | true | Total number of users that voted in the poll |
 | is_closed | Boolean | true | <em>True</em>, if the poll is closed |
@@ -688,6 +723,103 @@
 | name | type | required | description |
 |---|---|---|---|
 | boost_count | Integer | true | Number of boosts added by the user |
+
+#### BackgroundFillSolid
+
+    BackgroundFillSolid(type: String, color: Integer)
+
+<p>The background is filled using the selected color.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the background fill, always “solid” |
+| color | Integer | true | The color of the background fill in the RGB24 format |
+
+#### BackgroundFillGradient
+
+    BackgroundFillGradient(type: String, top_color: Integer, bottom_color: Integer, rotation_angle: Integer)
+
+<p>The background is a gradient fill.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the background fill, always “gradient” |
+| top_color | Integer | true | Top color of the gradient in the RGB24 format |
+| bottom_color | Integer | true | Bottom color of the gradient in the RGB24 format |
+| rotation_angle | Integer | true | Clockwise rotation angle of the background fill in degrees; 0-359 |
+
+#### BackgroundFillFreeformGradient
+
+    BackgroundFillFreeformGradient(type: String, colors: List<Integer>)
+
+<p>The background is a freeform gradient that rotates after every message in the chat.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the background fill, always “freeform_gradient” |
+| colors | List<Integer> | true | A list of the 3 or 4 base colors that are used to generate the freeform gradient in the RGB24 format |
+
+#### BackgroundTypeFill
+
+    BackgroundTypeFill(type: String, fill: BackgroundFill, dark_theme_dimming: Integer)
+
+<p>The background is automatically filled based on the selected colors.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the background, always “fill” |
+| fill | BackgroundFill | true | The background fill |
+| dark_theme_dimming | Integer | true | Dimming of the background in dark themes, as a percentage; 0-100 |
+
+#### BackgroundTypeWallpaper
+
+    BackgroundTypeWallpaper(type: String, document: Document, dark_theme_dimming: Integer, is_blurred: Boolean, is_moving: Boolean)
+
+<p>The background is a wallpaper in the JPEG format.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the background, always “wallpaper” |
+| document | Document | true | Document with the wallpaper |
+| dark_theme_dimming | Integer | true | Dimming of the background in dark themes, as a percentage; 0-100 |
+| is_blurred | Boolean | false | <em>Optional</em>. <em>True</em>, if the wallpaper is downscaled to fit in a 450x450 square and then box-blurred with radius 12 |
+| is_moving | Boolean | false | <em>Optional</em>. <em>True</em>, if the background moves slightly when the device is tilted |
+
+#### BackgroundTypePattern
+
+    BackgroundTypePattern(type: String, document: Document, fill: BackgroundFill, intensity: Integer, is_inverted: Boolean, is_moving: Boolean)
+
+<p>The background is a PNG or TGV (gzipped subset of SVG with MIME type “application/x-tgwallpattern”) pattern to be combined with the background fill chosen by the user.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the background, always “pattern” |
+| document | Document | true | Document with the pattern |
+| fill | BackgroundFill | true | The background fill that is combined with the pattern |
+| intensity | Integer | true | Intensity of the pattern when it is shown above the filled background; 0-100 |
+| is_inverted | Boolean | false | <em>Optional</em>. <em>True</em>, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only |
+| is_moving | Boolean | false | <em>Optional</em>. <em>True</em>, if the background moves slightly when the device is tilted |
+
+#### BackgroundTypeChatTheme
+
+    BackgroundTypeChatTheme(type: String, theme_name: String)
+
+<p>The background is taken directly from a built-in chat theme.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the background, always “chat_theme” |
+| theme_name | String | true | Name of the chat theme, which is usually an emoji |
+
+#### ChatBackground
+
+    ChatBackground(type: BackgroundType)
+
+<p>This object represents a chat background.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | BackgroundType | true | Type of the background |
 
 #### ForumTopicCreated
 
@@ -896,7 +1028,7 @@
 
     ReplyKeyboardMarkup(keyboard: List<List<KeyboardButton>>, is_persistent: Boolean, resize_keyboard: Boolean, one_time_keyboard: Boolean, input_field_placeholder: String, selective: Boolean)
 
-<p>This object represents a <a href="/bots/features#keyboards">custom keyboard</a> with reply options (see <a href="/bots/features#keyboards">Introduction to bots</a> for details and examples).</p>
+<p>This object represents a <a href="/bots/features#keyboards">custom keyboard</a> with reply options (see <a href="/bots/features#keyboards">Introduction to bots</a> for details and examples). Not supported in channels and for messages sent on behalf of a Telegram Business account.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -911,7 +1043,7 @@
 
     KeyboardButton(text: String, request_users: KeyboardButtonRequestUsers, request_chat: KeyboardButtonRequestChat, request_contact: Boolean, request_location: Boolean, request_poll: KeyboardButtonPollType, web_app: WebAppInfo)
 
-<p>This object represents one button of the reply keyboard. For simple text buttons, <em>String</em> can be used instead of this object to specify the button text. The optional fields <em>web_app</em>, <em>request_users</em>, <em>request_chat</em>, <em>request_contact</em>, <em>request_location</em>, and <em>request_poll</em> are mutually exclusive.</p><p><strong>Note:</strong> <em>request_users</em> and <em>request_chat</em> options will only work in Telegram versions released after 3 February, 2023. Older clients will display <em>unsupported message</em>.</p>
+<p>This object represents one button of the reply keyboard. At most one of the optional fields must be used to specify type of the button. For simple text buttons, <em>String</em> can be used instead of this object to specify the button text.</p><p><strong>Note:</strong> <em>request_users</em> and <em>request_chat</em> options will only work in Telegram versions released after 3 February, 2023. Older clients will display <em>unsupported message</em>.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -973,7 +1105,7 @@
 
     ReplyKeyboardRemove(remove_keyboard: Boolean, selective: Boolean)
 
-<p>Upon receiving a message with this object, Telegram clients will remove the current custom keyboard and display the default letter-keyboard. By default, custom keyboards are displayed until a new keyboard is sent by a bot. An exception is made for one-time keyboards that are hidden immediately after the user presses a button (see <a href="#replykeyboardmarkup">ReplyKeyboardMarkup</a>).</p>
+<p>Upon receiving a message with this object, Telegram clients will remove the current custom keyboard and display the default letter-keyboard. By default, custom keyboards are displayed until a new keyboard is sent by a bot. An exception is made for one-time keyboards that are hidden immediately after the user presses a button (see <a href="#replykeyboardmarkup">ReplyKeyboardMarkup</a>). Not supported in channels and for messages sent on behalf of a Telegram Business account.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -994,20 +1126,20 @@
 
     InlineKeyboardButton(text: String, url: String, callback_data: String, web_app: WebAppInfo, login_url: LoginUrl, switch_inline_query: String, switch_inline_query_current_chat: String, switch_inline_query_chosen_chat: SwitchInlineQueryChosenChat, callback_game: CallbackGame, pay: Boolean)
 
-<p>This object represents one button of an inline keyboard. You <strong>must</strong> use exactly one of the optional fields.</p>
+<p>This object represents one button of an inline keyboard. Exactly one of the optional fields must be used to specify type of the button.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | text | String | true | Label text on the button |
 | url | String | false | <em>Optional</em>. HTTP or tg:// URL to be opened when the button is pressed. Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings. |
-| callback_data | String | false | <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when button is pressed, 1-64 bytes |
-| web_app | WebAppInfo | false | <em>Optional</em>. Description of the <a href="/bots/webapps">Web App</a> that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Available only in private chats between a user and the bot. |
+| callback_data | String | false | <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when button is pressed, 1-64 bytes. Not supported for messages sent on behalf of a Telegram Business account. |
+| web_app | WebAppInfo | false | <em>Optional</em>. Description of the <a href="/bots/webapps">Web App</a> that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a Telegram Business account. |
 | login_url | LoginUrl | false | <em>Optional</em>. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the <a href="/widgets/login">Telegram Login Widget</a>. |
-| switch_inline_query | String | false | <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. |
-| switch_inline_query_current_chat | String | false | <em>Optional</em>. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted.<br><br>This offers a quick way for the user to open your bot in inline mode in the same chat - good for selecting something from multiple options. |
-| switch_inline_query_chosen_chat | SwitchInlineQueryChosenChat | false | <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field |
+| switch_inline_query | String | false | <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent on behalf of a Telegram Business account. |
+| switch_inline_query_current_chat | String | false | <em>Optional</em>. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted.<br><br>This offers a quick way for the user to open your bot in inline mode in the same chat - good for selecting something from multiple options. Not supported in channels and for messages sent on behalf of a Telegram Business account. |
+| switch_inline_query_chosen_chat | SwitchInlineQueryChosenChat | false | <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent on behalf of a Telegram Business account. |
 | callback_game | CallbackGame | false | <em>Optional</em>. Description of the game that will be launched when the user presses the button.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row. |
-| pay | Boolean | false | <em>Optional</em>. Specify <em>True</em>, to send a <a href="#payments">Pay button</a>.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row and can only be used in invoice messages. |
+| pay | Boolean | false | <em>Optional</em>. Specify <em>True</em>, to send a <a href="#payments">Pay button</a>. Substrings “<img class="emoji" src="//telegram.org/img/emoji/40/E2AD90.png" width="20" height="20" alt="⭐">” and “XTR” in the buttons's text will be replaced with a Telegram Star icon.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row and can only be used in invoice messages. |
 
 #### LoginUrl
 
@@ -1060,7 +1192,7 @@
 
     ForceReply(force_reply: Boolean, input_field_placeholder: String, selective: Boolean)
 
-<p>Upon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot's message and tapped 'Reply'). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice <a href="/bots/features#privacy-mode">privacy mode</a>.</p><blockquote>
+<p>Upon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot's message and tapped 'Reply'). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice <a href="/bots/features#privacy-mode">privacy mode</a>. Not supported in channels and for messages sent on behalf of a Telegram Business account.</p><blockquote>
  <p><strong>Example:</strong> A <a href="https://t.me/PollBot">poll bot</a> for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:</p>
  <ul>
   <li>Explain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.</li>
@@ -1123,7 +1255,7 @@
 | can_change_info | Boolean | true | <em>True</em>, if the user is allowed to change the chat title, photo and other settings |
 | can_invite_users | Boolean | true | <em>True</em>, if the user is allowed to invite new users to the chat |
 | can_post_stories | Boolean | true | <em>True</em>, if the administrator can post stories to the chat |
-| can_edit_stories | Boolean | true | <em>True</em>, if the administrator can edit stories posted by other users |
+| can_edit_stories | Boolean | true | <em>True</em>, if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive |
 | can_delete_stories | Boolean | true | <em>True</em>, if the administrator can delete stories posted by other users |
 | can_post_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; for channels only |
 | can_edit_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; for channels only |
@@ -1132,7 +1264,7 @@
 
 #### ChatMemberUpdated
 
-    ChatMemberUpdated(chat: Chat, from: User, date: Integer, old_chat_member: ChatMember, new_chat_member: ChatMember, invite_link: ChatInviteLink, via_chat_folder_invite_link: Boolean)
+    ChatMemberUpdated(chat: Chat, from: User, date: Integer, old_chat_member: ChatMember, new_chat_member: ChatMember, invite_link: ChatInviteLink, via_join_request: Boolean, via_chat_folder_invite_link: Boolean)
 
 <p>This object represents changes in the status of a chat member.</p>
 
@@ -1144,6 +1276,7 @@
 | old_chat_member | ChatMember | true | Previous information about the chat member |
 | new_chat_member | ChatMember | true | New information about the chat member |
 | invite_link | ChatInviteLink | false | <em>Optional</em>. Chat invite link, which was used by the user to join the chat; for joining by invite link events only. |
+| via_join_request | Boolean | false | <em>Optional</em>. True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator |
 | via_chat_folder_invite_link | Boolean | false | <em>Optional</em>. True, if the user joined the chat via a chat folder invite link |
 
 #### ChatMemberOwner
@@ -1179,7 +1312,7 @@
 | can_change_info | Boolean | true | <em>True</em>, if the user is allowed to change the chat title, photo and other settings |
 | can_invite_users | Boolean | true | <em>True</em>, if the user is allowed to invite new users to the chat |
 | can_post_stories | Boolean | true | <em>True</em>, if the administrator can post stories to the chat |
-| can_edit_stories | Boolean | true | <em>True</em>, if the administrator can edit stories posted by other users |
+| can_edit_stories | Boolean | true | <em>True</em>, if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive |
 | can_delete_stories | Boolean | true | <em>True</em>, if the administrator can delete stories posted by other users |
 | can_post_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; for channels only |
 | can_edit_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; for channels only |
@@ -1290,7 +1423,7 @@
 
     Birthdate(day: Integer, month: Integer, year: Integer)
 
-
+<p>Describes the birthdate of a user.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1302,7 +1435,7 @@
 
     BusinessIntro(title: String, message: String, sticker: Sticker)
 
-
+<p>Contains information about the start page settings of a Telegram Business account.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1314,7 +1447,7 @@
 
     BusinessLocation(address: String, location: Location)
 
-
+<p>Contains information about the location of a Telegram Business account.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1325,7 +1458,7 @@
 
     BusinessOpeningHoursInterval(opening_minute: Integer, closing_minute: Integer)
 
-
+<p>Describes an interval of time during which a business is open.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1336,7 +1469,7 @@
 
     BusinessOpeningHours(time_zone_name: String, opening_hours: List<BusinessOpeningHoursInterval>)
 
-
+<p>Describes the opening hours of a business.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -1698,7 +1831,7 @@
 
 #### InputMediaPhoto
 
-    InputMediaPhoto(type: String, media: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, has_spoiler: Boolean)
+    InputMediaPhoto(type: String, media: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_spoiler: Boolean)
 
 <p>Represents a photo to be sent.</p>
 
@@ -1709,11 +1842,12 @@
 | caption | String | false | <em>Optional</em>. Caption of the photo to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media |
 | has_spoiler | Boolean | false | <em>Optional</em>. Pass <em>True</em> if the photo needs to be covered with a spoiler animation |
 
 #### InputMediaVideo
 
-    InputMediaVideo(type: String, media: String, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, width: Integer, height: Integer, duration: Integer, supports_streaming: Boolean, has_spoiler: Boolean)
+    InputMediaVideo(type: String, media: String, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, width: Integer, height: Integer, duration: Integer, supports_streaming: Boolean, has_spoiler: Boolean)
 
 <p>Represents a video to be sent.</p>
 
@@ -1725,6 +1859,7 @@
 | caption | String | false | <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media |
 | width | Integer | false | <em>Optional</em>. Video width |
 | height | Integer | false | <em>Optional</em>. Video height |
 | duration | Integer | false | <em>Optional</em>. Video duration in seconds |
@@ -1733,7 +1868,7 @@
 
 #### InputMediaAnimation
 
-    InputMediaAnimation(type: String, media: String, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, width: Integer, height: Integer, duration: Integer, has_spoiler: Boolean)
+    InputMediaAnimation(type: String, media: String, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, width: Integer, height: Integer, duration: Integer, has_spoiler: Boolean)
 
 <p>Represents an animation file (GIF or H.264/MPEG-4 AVC video without sound) to be sent.</p>
 
@@ -1745,6 +1880,7 @@
 | caption | String | false | <em>Optional</em>. Caption of the animation to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media |
 | width | Integer | false | <em>Optional</em>. Animation width |
 | height | Integer | false | <em>Optional</em>. Animation height |
 | duration | Integer | false | <em>Optional</em>. Animation duration in seconds |
@@ -1803,7 +1939,7 @@
 
 #### sendMessage
 
-    sendMessage(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, text: String, parse_mode: ParseMode, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendMessage(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, text: String, parse_mode: ParseMode, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send text messages. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -1818,8 +1954,9 @@
 | link_preview_options | LinkPreviewOptions | false | Link preview generation options for the message |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
-| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account. |
+| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### forwardMessage
 
@@ -1853,7 +1990,7 @@
 
 #### copyMessage
 
-    copyMessage(chat_id: IntegerOrString, message_thread_id: Integer, from_chat_id: IntegerOrString, message_id: Integer, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    copyMessage(chat_id: IntegerOrString, message_thread_id: Integer, from_chat_id: IntegerOrString, message_id: Integer, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to copy messages of any kind. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
 
@@ -1866,10 +2003,11 @@
 | caption | String | false | New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept |
 | parse_mode | ParseMode | false | Mode for parsing entities in the new caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | Pass <em>True</em>, if the caption must be shown above the message media. Ignored if a new caption isn't specified. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
-| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. |
+| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### copyMessages
 
@@ -1889,7 +2027,7 @@
 
 #### sendPhoto
 
-    sendPhoto(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, photo: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, has_spoiler: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendPhoto(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, photo: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_spoiler: Boolean, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send photos. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -1902,15 +2040,17 @@
 | caption | String | false | Photo caption (may also be used when resending photos by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | Pass <em>True</em>, if the caption must be shown above the message media |
 | has_spoiler | Boolean | false | Pass <em>True</em> if the photo needs to be covered with a spoiler animation |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
-| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account. |
+| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendAudio
 
-    sendAudio(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, audio: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, duration: Integer, performer: String, title: String, thumbnail: InputFileOrString, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendAudio(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, audio: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, duration: Integer, performer: String, title: String, thumbnail: InputFileOrString, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent <a href="#message">Message</a> is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.</p><p>For sending voice messages, use the <a href="#sendvoice">sendVoice</a> method instead.</p>
 
@@ -1929,12 +2069,13 @@
 | thumbnail | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
-| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account. |
+| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendDocument
 
-    sendDocument(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, document: InputFileOrString, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_content_type_detection: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendDocument(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, document: InputFileOrString, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_content_type_detection: Boolean, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send general files. On success, the sent <a href="#message">Message</a> is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.</p>
 
@@ -1951,12 +2092,13 @@
 | disable_content_type_detection | Boolean | false | Disables automatic server-side content type detection for files uploaded using multipart/form-data |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
-| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account. |
+| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendVideo
 
-    sendVideo(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, video: InputFileOrString, duration: Integer, width: Integer, height: Integer, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, has_spoiler: Boolean, supports_streaming: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendVideo(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, video: InputFileOrString, duration: Integer, width: Integer, height: Integer, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_spoiler: Boolean, supports_streaming: Boolean, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send video files, Telegram clients support MPEG4 videos (other formats may be sent as <a href="#document">Document</a>). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.</p>
 
@@ -1973,16 +2115,18 @@
 | caption | String | false | Video caption (may also be used when resending videos by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | Pass <em>True</em>, if the caption must be shown above the message media |
 | has_spoiler | Boolean | false | Pass <em>True</em> if the video needs to be covered with a spoiler animation |
 | supports_streaming | Boolean | false | Pass <em>True</em> if the uploaded video is suitable for streaming |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
-| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account. |
+| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendAnimation
 
-    sendAnimation(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, animation: InputFileOrString, duration: Integer, width: Integer, height: Integer, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, has_spoiler: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendAnimation(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, animation: InputFileOrString, duration: Integer, width: Integer, height: Integer, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_spoiler: Boolean, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.</p>
 
@@ -1999,17 +2143,19 @@
 | caption | String | false | Animation caption (may also be used when resending animation by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | Pass <em>True</em>, if the caption must be shown above the message media |
 | has_spoiler | Boolean | false | Pass <em>True</em> if the animation needs to be covered with a spoiler animation |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
-| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account. |
+| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendVoice
 
-    sendVoice(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, voice: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, duration: Integer, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendVoice(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, voice: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, duration: Integer, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
-<p>Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as <a href="#audio">Audio</a> or <a href="#document">Document</a>). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.</p>
+<p>Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS, or in .MP3 format, or in .M4A format (other formats may be sent as <a href="#audio">Audio</a> or <a href="#document">Document</a>). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -2023,12 +2169,13 @@
 | duration | Integer | false | Duration of the voice message in seconds |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
-| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account. |
+| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendVideoNote
 
-    sendVideoNote(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, video_note: InputFileOrString, duration: Integer, length: Integer, thumbnail: InputFileOrString, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendVideoNote(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, video_note: InputFileOrString, duration: Integer, length: Integer, thumbnail: InputFileOrString, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>As of <a href="https://telegram.org/blog/video-messages-and-telescope">v.4.0</a>, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -2043,12 +2190,13 @@
 | thumbnail | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
-| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account. |
+| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendMediaGroup
 
-    sendMediaGroup(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, media: List<InputMedia>, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters)
+    sendMediaGroup(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, media: List<InputMedia>, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters)
 
 <p>Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of <a href="#message">Messages</a> that were sent is returned.</p>
 
@@ -2060,11 +2208,12 @@
 | media | List<InputMedia> | true | A JSON-serialized array describing messages to be sent, must include 2-10 items |
 | disable_notification | Boolean | false | Sends messages <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent messages from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 
 #### sendLocation
 
-    sendLocation(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, latitude: Float, longitude: Float, horizontal_accuracy: Float, live_period: Integer, heading: Integer, proximity_alert_radius: Integer, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendLocation(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, latitude: Float, longitude: Float, horizontal_accuracy: Float, live_period: Integer, heading: Integer, proximity_alert_radius: Integer, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send point on the map. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -2076,17 +2225,18 @@
 | latitude | Float | true | Latitude of the location |
 | longitude | Float | true | Longitude of the location |
 | horizontal_accuracy | Float | false | The radius of uncertainty for the location, measured in meters; 0-1500 |
-| live_period | Integer | false | Period in seconds for which the location will be updated (see <a href="https://telegram.org/blog/live-locations">Live Locations</a>, should be between 60 and 86400. |
+| live_period | Integer | false | Period in seconds during which the location will be updated (see <a href="https://telegram.org/blog/live-locations">Live Locations</a>, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely. |
 | heading | Integer | false | For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified. |
 | proximity_alert_radius | Integer | false | For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
-| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account. |
+| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendVenue
 
-    sendVenue(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, latitude: Float, longitude: Float, title: String, address: String, foursquare_id: String, foursquare_type: String, google_place_id: String, google_place_type: String, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendVenue(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, latitude: Float, longitude: Float, title: String, address: String, foursquare_id: String, foursquare_type: String, google_place_id: String, google_place_type: String, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send information about a venue. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -2105,12 +2255,13 @@
 | google_place_type | String | false | Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.) |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
-| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account. |
+| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendContact
 
-    sendContact(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, phone_number: String, first_name: String, last_name: String, vcard: String, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendContact(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, phone_number: String, first_name: String, last_name: String, vcard: String, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send phone contacts. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -2125,12 +2276,13 @@
 | vcard | String | false | Additional data about the contact in the form of a <a href="https://en.wikipedia.org/wiki/VCard">vCard</a>, 0-2048 bytes |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
-| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account. |
+| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendPoll
 
-    sendPoll(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, question: String, options: List<String>, is_anonymous: Boolean, type: String, allows_multiple_answers: Boolean, correct_option_id: Integer, explanation: String, explanation_parse_mode: String, explanation_entities: List<MessageEntity>, open_period: Integer, close_date: Integer, is_closed: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendPoll(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, question: String, question_parse_mode: String, question_entities: List<MessageEntity>, options: List<InputPollOption>, is_anonymous: Boolean, type: String, allows_multiple_answers: Boolean, correct_option_id: Integer, explanation: String, explanation_parse_mode: String, explanation_entities: List<MessageEntity>, open_period: Integer, close_date: Integer, is_closed: Boolean, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send a native poll. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -2140,25 +2292,28 @@
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
 | question | String | true | Poll question, 1-300 characters |
-| options | List<String> | true | A JSON-serialized list of answer options, 2-10 strings 1-100 characters each |
+| question_parse_mode | String | false | Mode for parsing entities in the question. See <a href="#formatting-options">formatting options</a> for more details. Currently, only custom emoji entities are allowed |
+| question_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of <em>question_parse_mode</em> |
+| options | List<InputPollOption> | true | A JSON-serialized list of 2-10 answer options |
 | is_anonymous | Boolean | false | <em>True</em>, if the poll needs to be anonymous, defaults to <em>True</em> |
 | type | String | false | Poll type, “quiz” or “regular”, defaults to “regular” |
 | allows_multiple_answers | Boolean | false | <em>True</em>, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to <em>False</em> |
 | correct_option_id | Integer | false | 0-based identifier of the correct answer option, required for polls in quiz mode |
 | explanation | String | false | Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing |
 | explanation_parse_mode | String | false | Mode for parsing entities in the explanation. See <a href="#formatting-options">formatting options</a> for more details. |
-| explanation_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of <em>parse_mode</em> |
+| explanation_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of <em>explanation_parse_mode</em> |
 | open_period | Integer | false | Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with <em>close_date</em>. |
 | close_date | Integer | false | Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with <em>open_period</em>. |
 | is_closed | Boolean | false | Pass <em>True</em> if the poll needs to be immediately closed. This can be useful for poll preview. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
-| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account. |
+| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendDice
 
-    sendDice(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, emoji: String, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendDice(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, emoji: String, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send an animated emoji that will display a random value. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -2170,8 +2325,9 @@
 | emoji | String | false | Emoji on which the dice throw animation is based. Currently, must be one of “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”, “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, or “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Dice can have values 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, values 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” and “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, and values 1-64 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Defaults to “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
-| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account. |
+| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendChatAction
 
@@ -2281,7 +2437,7 @@
 | can_change_info | Boolean | false | Pass <em>True</em> if the administrator can change chat title, photo and other settings |
 | can_invite_users | Boolean | false | Pass <em>True</em> if the administrator can invite new users to the chat |
 | can_post_stories | Boolean | false | Pass <em>True</em> if the administrator can post stories to the chat |
-| can_edit_stories | Boolean | false | Pass <em>True</em> if the administrator can edit stories posted by other users |
+| can_edit_stories | Boolean | false | Pass <em>True</em> if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive |
 | can_delete_stories | Boolean | false | Pass <em>True</em> if the administrator can delete stories posted by other users |
 | can_post_messages | Boolean | false | Pass <em>True</em> if the administrator can post messages in the channel, or access channel statistics; for channels only |
 | can_edit_messages | Boolean | false | Pass <em>True</em> if the administrator can edit messages of other users and can pin messages; for channels only |
@@ -2498,7 +2654,7 @@
 
     getChat(chat_id: IntegerOrString)
 
-<p>Use this method to get up to date information about the chat. Returns a <a href="#chat">Chat</a> object on success.</p>
+<p>Use this method to get up-to-date information about the chat. Returns a <a href="#chatfullinfo">ChatFullInfo</a> object on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -2893,7 +3049,7 @@
 
 #### editMessageCaption
 
-    editMessageCaption(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, reply_markup: InlineKeyboardMarkup)
+    editMessageCaption(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
 
@@ -2905,6 +3061,7 @@
 | caption | String | false | New caption of the message, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the message caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | Pass <em>True</em>, if the caption must be shown above the message media. Supported only for animation, photo and video messages. |
 | reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>. |
 
 #### editMessageMedia
@@ -2923,7 +3080,7 @@
 
 #### editMessageLiveLocation
 
-    editMessageLiveLocation(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, latitude: Float, longitude: Float, horizontal_accuracy: Float, heading: Integer, proximity_alert_radius: Integer, reply_markup: InlineKeyboardMarkup)
+    editMessageLiveLocation(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, latitude: Float, longitude: Float, live_period: Integer, horizontal_accuracy: Float, heading: Integer, proximity_alert_radius: Integer, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to edit live location messages. A location can be edited until its <em>live_period</em> expires or editing is explicitly disabled by a call to <a href="#stopmessagelivelocation">stopMessageLiveLocation</a>. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
 
@@ -2934,6 +3091,7 @@
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |
 | latitude | Float | true | Latitude of new location |
 | longitude | Float | true | Longitude of new location |
+| live_period | Integer | false | New period in seconds during which the location can be updated, starting from the message send date. If 0x7FFFFFFF is specified, then the location can be updated forever. Otherwise, the new value must not exceed the current <em>live_period</em> by more than a day, and the live location expiration date must remain within the next 90 days. If not specified, then <em>live_period</em> remains unchanged |
 | horizontal_accuracy | Float | false | The radius of uncertainty for the location, measured in meters; 0-1500 |
 | heading | Integer | false | Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified. |
 | proximity_alert_radius | Integer | false | The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified. |
@@ -3073,7 +3231,7 @@
 ### Methods
 #### sendSticker
 
-    sendSticker(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, sticker: InputFileOrString, emoji: String, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendSticker(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, sticker: InputFileOrString, emoji: String, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send static .WEBP, <a href="https://telegram.org/blog/animated-stickers">animated</a> .TGS, or <a href="https://telegram.org/blog/video-stickers-better-reactions">video</a> .WEBM stickers. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -3086,8 +3244,9 @@
 | emoji | String | false | Emoji associated with the sticker; only for just uploaded stickers |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
-| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account. |
+| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### getStickerSet
 
@@ -3314,7 +3473,7 @@
 
 #### InlineQueryResultPhoto
 
-    InlineQueryResultPhoto(type: String, id: String, photo_url: String, thumbnail_url: String, photo_width: Integer, photo_height: Integer, title: String, description: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
+    InlineQueryResultPhoto(type: String, id: String, photo_url: String, thumbnail_url: String, photo_width: Integer, photo_height: Integer, title: String, description: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
 
 <p>Represents a link to a photo. By default, this photo will be sent by the user with optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the photo.</p>
 
@@ -3331,12 +3490,13 @@
 | caption | String | false | <em>Optional</em>. Caption of the photo to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media |
 | reply_markup | InlineKeyboardMarkup | false | <em>Optional</em>. <a href="/bots/features#inline-keyboards">Inline keyboard</a> attached to the message |
 | input_message_content | InputMessageContent | false | <em>Optional</em>. Content of the message to be sent instead of the photo |
 
 #### InlineQueryResultGif
 
-    InlineQueryResultGif(type: String, id: String, gif_url: String, gif_width: Integer, gif_height: Integer, gif_duration: Integer, thumbnail_url: String, thumbnail_mime_type: String, title: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
+    InlineQueryResultGif(type: String, id: String, gif_url: String, gif_width: Integer, gif_height: Integer, gif_duration: Integer, thumbnail_url: String, thumbnail_mime_type: String, title: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
 
 <p>Represents a link to an animated GIF file. By default, this animated GIF file will be sent by the user with optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the animation.</p>
 
@@ -3354,12 +3514,13 @@
 | caption | String | false | <em>Optional</em>. Caption of the GIF file to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media |
 | reply_markup | InlineKeyboardMarkup | false | <em>Optional</em>. <a href="/bots/features#inline-keyboards">Inline keyboard</a> attached to the message |
 | input_message_content | InputMessageContent | false | <em>Optional</em>. Content of the message to be sent instead of the GIF animation |
 
 #### InlineQueryResultMpeg4Gif
 
-    InlineQueryResultMpeg4Gif(type: String, id: String, mpeg4_url: String, mpeg4_width: Integer, mpeg4_height: Integer, mpeg4_duration: Integer, thumbnail_url: String, thumbnail_mime_type: String, title: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
+    InlineQueryResultMpeg4Gif(type: String, id: String, mpeg4_url: String, mpeg4_width: Integer, mpeg4_height: Integer, mpeg4_duration: Integer, thumbnail_url: String, thumbnail_mime_type: String, title: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
 
 <p>Represents a link to a video animation (H.264/MPEG-4 AVC video without sound). By default, this animated MPEG-4 file will be sent by the user with optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the animation.</p>
 
@@ -3377,12 +3538,13 @@
 | caption | String | false | <em>Optional</em>. Caption of the MPEG-4 file to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media |
 | reply_markup | InlineKeyboardMarkup | false | <em>Optional</em>. <a href="/bots/features#inline-keyboards">Inline keyboard</a> attached to the message |
 | input_message_content | InputMessageContent | false | <em>Optional</em>. Content of the message to be sent instead of the video animation |
 
 #### InlineQueryResultVideo
 
-    InlineQueryResultVideo(type: String, id: String, video_url: String, mime_type: String, thumbnail_url: String, title: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, video_width: Integer, video_height: Integer, video_duration: Integer, description: String, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
+    InlineQueryResultVideo(type: String, id: String, video_url: String, mime_type: String, thumbnail_url: String, title: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, video_width: Integer, video_height: Integer, video_duration: Integer, description: String, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
 
 <p>Represents a link to a page containing an embedded video player or a video file. By default, this video file will be sent by the user with an optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the video.</p><blockquote>
  <p>If an InlineQueryResultVideo message contains an embedded video (e.g., YouTube), you <strong>must</strong> replace its content using <em>input_message_content</em>.</p>
@@ -3399,6 +3561,7 @@
 | caption | String | false | <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media |
 | video_width | Integer | false | <em>Optional</em>. Video width |
 | video_height | Integer | false | <em>Optional</em>. Video height |
 | video_duration | Integer | false | <em>Optional</em>. Video duration in seconds |
@@ -3482,7 +3645,7 @@
 | longitude | Float | true | Location longitude in degrees |
 | title | String | true | Location title |
 | horizontal_accuracy | Float | false | <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500 |
-| live_period | Integer | false | <em>Optional</em>. Period in seconds for which the location can be updated, should be between 60 and 86400. |
+| live_period | Integer | false | <em>Optional</em>. Period in seconds during which the location can be updated, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely. |
 | heading | Integer | false | <em>Optional</em>. For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified. |
 | proximity_alert_radius | Integer | false | <em>Optional</em>. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified. |
 | reply_markup | InlineKeyboardMarkup | false | <em>Optional</em>. <a href="/bots/features#inline-keyboards">Inline keyboard</a> attached to the message |
@@ -3550,7 +3713,7 @@
 
 #### InlineQueryResultCachedPhoto
 
-    InlineQueryResultCachedPhoto(type: String, id: String, photo_file_id: String, title: String, description: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
+    InlineQueryResultCachedPhoto(type: String, id: String, photo_file_id: String, title: String, description: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
 
 <p>Represents a link to a photo stored on the Telegram servers. By default, this photo will be sent by the user with an optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the photo.</p>
 
@@ -3564,12 +3727,13 @@
 | caption | String | false | <em>Optional</em>. Caption of the photo to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the photo caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media |
 | reply_markup | InlineKeyboardMarkup | false | <em>Optional</em>. <a href="/bots/features#inline-keyboards">Inline keyboard</a> attached to the message |
 | input_message_content | InputMessageContent | false | <em>Optional</em>. Content of the message to be sent instead of the photo |
 
 #### InlineQueryResultCachedGif
 
-    InlineQueryResultCachedGif(type: String, id: String, gif_file_id: String, title: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
+    InlineQueryResultCachedGif(type: String, id: String, gif_file_id: String, title: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
 
 <p>Represents a link to an animated GIF file stored on the Telegram servers. By default, this animated GIF file will be sent by the user with an optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with specified content instead of the animation.</p>
 
@@ -3582,12 +3746,13 @@
 | caption | String | false | <em>Optional</em>. Caption of the GIF file to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media |
 | reply_markup | InlineKeyboardMarkup | false | <em>Optional</em>. <a href="/bots/features#inline-keyboards">Inline keyboard</a> attached to the message |
 | input_message_content | InputMessageContent | false | <em>Optional</em>. Content of the message to be sent instead of the GIF animation |
 
 #### InlineQueryResultCachedMpeg4Gif
 
-    InlineQueryResultCachedMpeg4Gif(type: String, id: String, mpeg4_file_id: String, title: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
+    InlineQueryResultCachedMpeg4Gif(type: String, id: String, mpeg4_file_id: String, title: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
 
 <p>Represents a link to a video animation (H.264/MPEG-4 AVC video without sound) stored on the Telegram servers. By default, this animated MPEG-4 file will be sent by the user with an optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the animation.</p>
 
@@ -3600,6 +3765,7 @@
 | caption | String | false | <em>Optional</em>. Caption of the MPEG-4 file to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media |
 | reply_markup | InlineKeyboardMarkup | false | <em>Optional</em>. <a href="/bots/features#inline-keyboards">Inline keyboard</a> attached to the message |
 | input_message_content | InputMessageContent | false | <em>Optional</em>. Content of the message to be sent instead of the video animation |
 
@@ -3638,7 +3804,7 @@
 
 #### InlineQueryResultCachedVideo
 
-    InlineQueryResultCachedVideo(type: String, id: String, video_file_id: String, title: String, description: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
+    InlineQueryResultCachedVideo(type: String, id: String, video_file_id: String, title: String, description: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, reply_markup: InlineKeyboardMarkup, input_message_content: InputMessageContent)
 
 <p>Represents a link to a video file stored on the Telegram servers. By default, this video file will be sent by the user with an optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the video.</p>
 
@@ -3652,6 +3818,7 @@
 | caption | String | false | <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | <em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media |
 | reply_markup | InlineKeyboardMarkup | false | <em>Optional</em>. <a href="/bots/features#inline-keyboards">Inline keyboard</a> attached to the message |
 | input_message_content | InputMessageContent | false | <em>Optional</em>. Content of the message to be sent instead of the video |
 
@@ -3714,7 +3881,7 @@
 | latitude | Float | true | Latitude of the location in degrees |
 | longitude | Float | true | Longitude of the location in degrees |
 | horizontal_accuracy | Float | false | <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500 |
-| live_period | Integer | false | <em>Optional</em>. Period in seconds for which the location can be updated, should be between 60 and 86400. |
+| live_period | Integer | false | <em>Optional</em>. Period in seconds during which the location can be updated, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely. |
 | heading | Integer | false | <em>Optional</em>. For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified. |
 | proximity_alert_radius | Integer | false | <em>Optional</em>. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified. |
 
@@ -3759,23 +3926,23 @@
 | title | String | true | Product name, 1-32 characters |
 | description | String | true | Product description, 1-255 characters |
 | payload | String | true | Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes. |
-| provider_token | String | true | Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a> |
-| currency | String | true | Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a> |
-| prices | List<LabeledPrice> | true | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.) |
-| max_tip_amount | Integer | false | <em>Optional</em>. The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0 |
+| provider_token | String | false | <em>Optional</em>. Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a>. Pass an empty string for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| currency | String | true | Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>. Pass “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| prices | List<LabeledPrice> | true | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| max_tip_amount | Integer | false | <em>Optional</em>. The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
 | suggested_tip_amounts | List<Integer> | false | <em>Optional</em>. A JSON-serialized array of suggested amounts of tip in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>. |
 | provider_data | String | false | <em>Optional</em>. A JSON-serialized object for data about the invoice, which will be shared with the payment provider. A detailed description of the required fields should be provided by the payment provider. |
 | photo_url | String | false | <em>Optional</em>. URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. |
 | photo_size | Integer | false | <em>Optional</em>. Photo size in bytes |
 | photo_width | Integer | false | <em>Optional</em>. Photo width |
 | photo_height | Integer | false | <em>Optional</em>. Photo height |
-| need_name | Boolean | false | <em>Optional</em>. Pass <em>True</em> if you require the user's full name to complete the order |
-| need_phone_number | Boolean | false | <em>Optional</em>. Pass <em>True</em> if you require the user's phone number to complete the order |
-| need_email | Boolean | false | <em>Optional</em>. Pass <em>True</em> if you require the user's email address to complete the order |
-| need_shipping_address | Boolean | false | <em>Optional</em>. Pass <em>True</em> if you require the user's shipping address to complete the order |
-| send_phone_number_to_provider | Boolean | false | <em>Optional</em>. Pass <em>True</em> if the user's phone number should be sent to provider |
-| send_email_to_provider | Boolean | false | <em>Optional</em>. Pass <em>True</em> if the user's email address should be sent to provider |
-| is_flexible | Boolean | false | <em>Optional</em>. Pass <em>True</em> if the final price depends on the shipping method |
+| need_name | Boolean | false | <em>Optional</em>. Pass <em>True</em> if you require the user's full name to complete the order. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| need_phone_number | Boolean | false | <em>Optional</em>. Pass <em>True</em> if you require the user's phone number to complete the order. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| need_email | Boolean | false | <em>Optional</em>. Pass <em>True</em> if you require the user's email address to complete the order. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| need_shipping_address | Boolean | false | <em>Optional</em>. Pass <em>True</em> if you require the user's shipping address to complete the order. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| send_phone_number_to_provider | Boolean | false | <em>Optional</em>. Pass <em>True</em> if the user's phone number should be sent to the provider. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| send_email_to_provider | Boolean | false | <em>Optional</em>. Pass <em>True</em> if the user's email address should be sent to the provider. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| is_flexible | Boolean | false | <em>Optional</em>. Pass <em>True</em> if the final price depends on the shipping method. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
 
 #### ChosenInlineResult
 
@@ -3856,7 +4023,7 @@
 | title | String | true | Product name |
 | description | String | true | Product description |
 | start_parameter | String | true | Unique bot deep-linking parameter that can be used to generate this invoice |
-| currency | String | true | Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code |
+| currency | String | true | Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a> |
 | total_amount | Integer | true | Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). |
 
 #### ShippingAddress
@@ -3907,7 +4074,7 @@
 
 | name | type | required | description |
 |---|---|---|---|
-| currency | String | true | Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code |
+| currency | String | true | Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a> |
 | total_amount | Integer | true | Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). |
 | invoice_payload | String | true | Bot specified invoice payload |
 | shipping_option_id | String | false | <em>Optional</em>. Identifier of the shipping option chosen by the user |
@@ -3938,7 +4105,7 @@
 |---|---|---|---|
 | id | String | true | Unique query identifier |
 | from | User | true | User who sent the query |
-| currency | String | true | Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code |
+| currency | String | true | Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a> |
 | total_amount | Integer | true | Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). |
 | invoice_payload | String | true | Bot specified invoice payload |
 | shipping_option_id | String | false | <em>Optional</em>. Identifier of the shipping option chosen by the user |
@@ -3948,7 +4115,7 @@
 ### Methods
 #### sendInvoice
 
-    sendInvoice(chat_id: IntegerOrString, message_thread_id: Integer, title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, start_parameter: String, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: InlineKeyboardMarkup)
+    sendInvoice(chat_id: IntegerOrString, message_thread_id: Integer, title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, start_parameter: String, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to send invoices. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -3959,10 +4126,10 @@
 | title | String | true | Product name, 1-32 characters |
 | description | String | true | Product description, 1-255 characters |
 | payload | String | true | Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes. |
-| provider_token | String | true | Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a> |
-| currency | String | true | Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a> |
-| prices | List<LabeledPrice> | true | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.) |
-| max_tip_amount | Integer | false | The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0 |
+| provider_token | String | false | Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a>. Pass an empty string for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| currency | String | true | Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>. Pass “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| prices | List<LabeledPrice> | true | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| max_tip_amount | Integer | false | The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
 | suggested_tip_amounts | List<Integer> | false | A JSON-serialized array of suggested amounts of tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>. |
 | start_parameter | String | false | Unique deep-linking parameter. If left empty, <strong>forwarded copies</strong> of the sent message will have a <em>Pay</em> button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a <em>URL</em> button with a deep link to the bot (instead of a <em>Pay</em> button), with the value used as the start parameter |
 | provider_data | String | false | JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider. |
@@ -3970,15 +4137,16 @@
 | photo_size | Integer | false | Photo size in bytes |
 | photo_width | Integer | false | Photo width |
 | photo_height | Integer | false | Photo height |
-| need_name | Boolean | false | Pass <em>True</em> if you require the user's full name to complete the order |
-| need_phone_number | Boolean | false | Pass <em>True</em> if you require the user's phone number to complete the order |
-| need_email | Boolean | false | Pass <em>True</em> if you require the user's email address to complete the order |
-| need_shipping_address | Boolean | false | Pass <em>True</em> if you require the user's shipping address to complete the order |
-| send_phone_number_to_provider | Boolean | false | Pass <em>True</em> if the user's phone number should be sent to provider |
-| send_email_to_provider | Boolean | false | Pass <em>True</em> if the user's email address should be sent to provider |
-| is_flexible | Boolean | false | Pass <em>True</em> if the final price depends on the shipping method |
+| need_name | Boolean | false | Pass <em>True</em> if you require the user's full name to complete the order. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| need_phone_number | Boolean | false | Pass <em>True</em> if you require the user's phone number to complete the order. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| need_email | Boolean | false | Pass <em>True</em> if you require the user's email address to complete the order. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| need_shipping_address | Boolean | false | Pass <em>True</em> if you require the user's shipping address to complete the order. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| send_phone_number_to_provider | Boolean | false | Pass <em>True</em> if the user's phone number should be sent to the provider. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| send_email_to_provider | Boolean | false | Pass <em>True</em> if the user's email address should be sent to the provider. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| is_flexible | Boolean | false | Pass <em>True</em> if the final price depends on the shipping method. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>. If empty, one 'Pay <code>total price</code>' button will be shown. If not empty, the first button must be a Pay button. |
 
@@ -3993,23 +4161,23 @@
 | title | String | true | Product name, 1-32 characters |
 | description | String | true | Product description, 1-255 characters |
 | payload | String | true | Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes. |
-| provider_token | String | true | Payment provider token, obtained via <a href="https://t.me/botfather">BotFather</a> |
-| currency | String | true | Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a> |
-| prices | List<LabeledPrice> | true | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.) |
-| max_tip_amount | Integer | false | The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0 |
+| provider_token | String | false | Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a>. Pass an empty string for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| currency | String | true | Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>. Pass “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| prices | List<LabeledPrice> | true | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| max_tip_amount | Integer | false | The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
 | suggested_tip_amounts | List<Integer> | false | A JSON-serialized array of suggested amounts of tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>. |
 | provider_data | String | false | JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider. |
 | photo_url | String | false | URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. |
 | photo_size | Integer | false | Photo size in bytes |
 | photo_width | Integer | false | Photo width |
 | photo_height | Integer | false | Photo height |
-| need_name | Boolean | false | Pass <em>True</em> if you require the user's full name to complete the order |
-| need_phone_number | Boolean | false | Pass <em>True</em> if you require the user's phone number to complete the order |
-| need_email | Boolean | false | Pass <em>True</em> if you require the user's email address to complete the order |
-| need_shipping_address | Boolean | false | Pass <em>True</em> if you require the user's shipping address to complete the order |
-| send_phone_number_to_provider | Boolean | false | Pass <em>True</em> if the user's phone number should be sent to the provider |
-| send_email_to_provider | Boolean | false | Pass <em>True</em> if the user's email address should be sent to the provider |
-| is_flexible | Boolean | false | Pass <em>True</em> if the final price depends on the shipping method |
+| need_name | Boolean | false | Pass <em>True</em> if you require the user's full name to complete the order. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| need_phone_number | Boolean | false | Pass <em>True</em> if you require the user's phone number to complete the order. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| need_email | Boolean | false | Pass <em>True</em> if you require the user's email address to complete the order. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| need_shipping_address | Boolean | false | Pass <em>True</em> if you require the user's shipping address to complete the order. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| send_phone_number_to_provider | Boolean | false | Pass <em>True</em> if the user's phone number should be sent to the provider. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| send_email_to_provider | Boolean | false | Pass <em>True</em> if the user's email address should be sent to the provider. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| is_flexible | Boolean | false | Pass <em>True</em> if the final price depends on the shipping method. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
 
 #### answerShippingQuery
 
@@ -4035,6 +4203,17 @@
 | pre_checkout_query_id | String | true | Unique identifier for the query to be answered |
 | ok | Boolean | true | Specify <em>True</em> if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order. Use <em>False</em> if there are any problems. |
 | error_message | String | false | Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user. |
+
+#### refundStarPayment
+
+    refundStarPayment(user_id: Integer, telegram_payment_charge_id: String)
+
+<p>Refunds a successful payment in <a href="https://t.me/BotNews/90">Telegram Stars</a>. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| user_id | Integer | true | Identifier of the user whose payment will be refunded |
+| telegram_payment_charge_id | String | true | Telegram payment identifier |
 
 
 
@@ -4263,7 +4442,7 @@
 ### Methods
 #### sendGame
 
-    sendGame(business_connection_id: String, chat_id: Integer, message_thread_id: Integer, game_short_name: String, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: InlineKeyboardMarkup)
+    sendGame(business_connection_id: String, chat_id: Integer, message_thread_id: Integer, game_short_name: String, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to send a game. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -4275,8 +4454,9 @@
 | game_short_name | String | true | Short name of the game, serves as the unique identifier for the game. Set up your games via <a href="https://t.me/botfather">@BotFather</a>. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
-| reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game. Not supported for messages sent on behalf of a business account. |
+| reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game. |
 
 #### setGameScore
 
