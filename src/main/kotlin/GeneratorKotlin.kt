@@ -224,7 +224,7 @@ private fun DocType.toKotlinDoc() = buildString {
 
 private fun DocMethod.toKotlinDoc(showReturn: Boolean = true) = buildString {
     appendLine("    /**")
-    appendLine("     * ${description.replace("\n", "\n * ")}")
+    appendLine("     * ${description.replace("\n", "\n     * ")}")
     appendLine("     *")
     docParametersSorded.forEach {
         appendLine("     * @property ${it.name.snakeToCamelCase()} ${it.description}")
