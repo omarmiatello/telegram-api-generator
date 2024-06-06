@@ -239,7 +239,9 @@ private fun DocMethod.toKotlinDoc(showReturn: Boolean = true) = buildString {
 private fun DocType.toKotlinDataClass(useKotlinXSerialization: Boolean) = buildString {
     appendLine("data class $name(")
     docFields.forEachIndexed { index, field ->
-        appendLine("    @SerialName(\"${field.name}\")")
+        if (useKotlinXSerialization) {
+            appendLine("    @SerialName(\"${field.name}\")")
+        }
         appendLine("    val ${field.name.snakeToCamelCase()}: ${field.toKotlinType(useKotlinXSerialization)},")
     }
     val superType = TelegramType.from(name).superType ?: "TelegramModel"
@@ -260,7 +262,9 @@ private fun DocMethod.toKotlinDataClass(useKotlinXSerialization: Boolean) = buil
         name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
     appendLine("    data class ${nameWithReplacedFirstChar}Request(")
     docParametersSorded.forEachIndexed { index, field ->
-        appendLine("        @SerialName(\"${field.name}\")")
+        if (useKotlinXSerialization) {
+            appendLine("        @SerialName(\"${field.name}\")")
+        }
         appendLine("        val ${field.name.snakeToCamelCase()}: ${field.toKotlinType(useKotlinXSerialization)},")
     }
     if (useKotlinXSerialization) {
