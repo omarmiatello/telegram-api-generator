@@ -26,7 +26,9 @@ data class DocMethod(
     val description: String,
     val docParameters: List<DocParameter>,
     val returns: TelegramType
-)
+) {
+    val docParametersSorded: List<DocParameter> = docParameters.sortedBy { !it.required }
+}
 
 data class DocParameter(
     val name: String,

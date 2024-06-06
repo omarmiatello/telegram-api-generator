@@ -106,27 +106,37 @@ fun List<DocSection>.toKotlinModels(useKotlinXSerialization: Boolean) = buildStr
     if (useKotlinXSerialization) appendLine("@Serializable")
     appendLine("data class TelegramResponse<T>(val ok: Boolean, val result: T? = null)")
     appendLine()
+    appendLine(comment("--- Utility ---"))
+    appendLine()
     appendLine("enum class ParseMode { MarkdownV2, Markdown, HTML }")
     appendLine()
     if (useKotlinXSerialization) appendLine("fun String.parseTelegramRequest() = Update.fromJson(this)")
     appendLine()
     this@toKotlinModels.forEach { section ->
         if (section.docTypes.isNotEmpty()) {
+            appendLine(comment(section.name))
+            appendLine()
             section.docTypes.forEach { type ->
+                appendLine(type.toKotlinDoc())
                 if (useKotlinXSerialization) appendLine("@Serializable")
                 appendLine(type.toKotlinDataClass(useKotlinXSerialization))
                 appendLine()
             }
         }
     }
+    appendLine(comment("--- Requests ---"))
+    appendLine()
     appendLine("sealed class TelegramRequest {")
     if (useKotlinXSerialization) appendLine("    abstract fun toJsonForRequest(): String")
     if (useKotlinXSerialization) appendLine("    abstract fun toJsonForResponse(): String")
     this@toKotlinModels.forEach { section ->
         if (section.docMethods.isNotEmpty()) {
+            appendLine()
+            appendLine("    " + comment(section.name))
             section.docMethods.forEach { method ->
-                if (method.docParameters.isNotEmpty()) {
+                if (method.docParametersSorded.isNotEmpty()) {
                     appendLine()
+                    appendLine(method.toKotlinDoc(showReturn = false))
                     if (useKotlinXSerialization) appendLine("    @Serializable")
                     appendLine(method.toKotlinDataClass(useKotlinXSerialization))
                 }
@@ -157,7 +167,7 @@ fun List<DocSection>.toKotlinMethods() = buildString {
     appendLine("    apiKey: String,")
     appendLine("    private val httpClient: HttpClient = HttpClient(),")
     appendLine("    private val apiUrl: String = \"https://api.telegram.org\",")
-    appendLine("    private val suspend HttpRequestBuilder: HttpRequestBuilder.() -> Unit = {},")
+    appendLine("    private val requestConfigurer: suspend HttpRequestBuilder.() -> Unit = {},")
     appendLine(") {")
     appendLine("""    private val basePath = "${"$"}apiUrl/bot${"$"}apiKey"""")
     appendLine("    private val json = Json {")
@@ -185,12 +195,45 @@ fun List<DocSection>.toKotlinMethods() = buildString {
 
     this@toKotlinMethods.forEach { section ->
         if (section.docMethods.isNotEmpty()) {
+            appendLine()
+            appendLine(comment(section.name))
             section.docMethods.forEach { method ->
                 appendLine(method.toKotlinRequestMethod())
             }
         }
     }
     appendLine("}")
+}
+
+private fun comment(text: String) = buildString {
+    val trimmed = text.trim('\n', '\t', ' ')
+    append("// $trimmed")
+}
+
+private fun DocType.toKotlinDoc() = buildString {
+    appendLine("/**")
+    appendLine(" * ${description.replace("\n", "\n * ")}")
+    appendLine(" *")
+    docFields.forEach {
+        appendLine(" * @property ${it.name.snakeToCamelCase()} ${it.description}")
+    }
+    appendLine(" *")
+    appendLine(" * @constructor Creates a [$name].")
+    append(" * */")
+}
+
+private fun DocMethod.toKotlinDoc(showReturn: Boolean = true) = buildString {
+    appendLine("    /**")
+    appendLine("     * ${description.replace("\n", "\n * ")}")
+    appendLine("     *")
+    docParametersSorded.forEach {
+        appendLine("     * @property ${it.name.snakeToCamelCase()} ${it.description}")
+    }
+    if (showReturn) {
+        appendLine("     *")
+        appendLine("     * @return [${returns.toKotlinType()}]")
+    }
+    append("     * */")
 }
 
 private fun DocType.toKotlinDataClass(useKotlinXSerialization: Boolean) = buildString {
@@ -216,7 +259,7 @@ private fun DocMethod.toKotlinDataClass(useKotlinXSerialization: Boolean) = buil
     val nameWithReplacedFirstChar =
         name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
     appendLine("    data class ${nameWithReplacedFirstChar}Request(")
-    docParameters.forEachIndexed { index, field ->
+    docParametersSorded.forEachIndexed { index, field ->
         appendLine("        @SerialName(\"${field.name}\")")
         appendLine("        val ${field.name.snakeToCamelCase()}: ${field.toKotlinType(useKotlinXSerialization)},")
     }
@@ -237,22 +280,22 @@ private fun DocMethod.toKotlinDataClass(useKotlinXSerialization: Boolean) = buil
 
 private fun DocMethod.toKotlinRequestMethod() = buildString {
     val path = """"${"$"}basePath/$name""""
-    val parameters = docParameters.map { f -> f.name.snakeToCamelCase() }.joinToString(",\n")
     appendLine()
-    if (docParameters.isEmpty()) {
+    appendLine(toKotlinDoc())
+    if (docParametersSorded.isEmpty()) {
         appendLine("    suspend fun $name() = telegramGet(")
         appendLine("        $path,")
         appendLine("        ${returns.toKotlinSerializerType()},")
         append("    )")
     } else {
         appendLine("    suspend fun $name(")
-        docParameters.sortedBy { !it.required }.forEachIndexed { index, parameter ->
+        docParametersSorded.forEachIndexed { index, parameter ->
             appendLine("        ${parameter.name.snakeToCamelCase()}: ${parameter.toKotlinType(useContextualSerialization = false)},")
         }
         appendLine("    ) = telegramPost(")
         appendLine("        $path,")
         appendLine("        ${name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}Request(")
-        docParameters.forEachIndexed { index, parameter ->
+        docParametersSorded.forEachIndexed { index, parameter ->
             appendLine("            ${parameter.name.snakeToCamelCase()},")
         }
         appendLine("        ).toJsonForRequest(),")
