@@ -45,7 +45,7 @@ class TelegramClient(
         return json.decodeFromString(TelegramResponse.serializer(serializer), responseString)
     }
 
-// Getting updates
+    // Getting updates
 
     /**
      * <p>Use this method to receive incoming updates using long polling (<a href="https://en.wikipedia.org/wiki/Push_technology#Long_polling">wiki</a>). Returns an Array of <a href="#update">Update</a> objects.</p><blockquote>
@@ -141,7 +141,7 @@ class TelegramClient(
         WebhookInfo.serializer(),
     )
 
-// Available methods
+    // Available methods
 
     /**
      * <p>Use this method to log out from the cloud Bot API server before launching the bot locally. You <strong>must</strong> log out the bot before running it locally, otherwise there is no guarantee that the bot will receive updates. After a successful call, you can immediately log in on a local server, but will not be able to log in back to the cloud Bot API server for 10 minutes. Returns <em>True</em> on success. Requires no parameters.</p>
@@ -2396,7 +2396,7 @@ class TelegramClient(
         ChatAdministratorRights.serializer()
     )
 
-// Updating messages
+    // Updating messages
 
     /**
      * <p>Use this method to edit text and <a href="#games">game</a> messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
@@ -2662,7 +2662,7 @@ class TelegramClient(
         Boolean.serializer()
     )
 
-// Stickers
+    // Stickers
 
     /**
      * <p>Use this method to send static .WEBP, <a href="https://telegram.org/blog/animated-stickers">animated</a> .TGS, or <a href="https://telegram.org/blog/video-stickers-better-reactions">video</a> .WEBM stickers. On success, the sent <a href="#message">Message</a> is returned.</p>
@@ -3026,7 +3026,7 @@ class TelegramClient(
         Boolean.serializer()
     )
 
-// Inline mode
+    // Inline mode
 
     /**
      * <p>Use this method to send answers to an inline query. On success, <em>True</em> is returned.<br>No more than <strong>50</strong> results per query are allowed.</p>
@@ -3080,7 +3080,7 @@ class TelegramClient(
         SentWebAppMessage.serializer()
     )
 
-// Payments
+    // Payments
 
     /**
      * <p>Use this method to send invoices. On success, the sent <a href="#message">Message</a> is returned.</p>
@@ -3323,7 +3323,7 @@ class TelegramClient(
         Boolean.serializer()
     )
 
-// Telegram Passport
+    // Telegram Passport
 
     /**
      * <p>Informs a user that some of the Telegram Passport elements they provided contains errors. The user will not be able to re-submit their Passport to you until the errors are fixed (the contents of the field for which you returned the error must change). Returns <em>True</em> on success.</p><p>Use this if the data submitted by the user doesn't satisfy the standards your service requires for any reason. For example, if a birthday date seems invalid, a submitted document is blurry, a scan shows evidence of tampering, etc. Supply some details in the error message to make sure the user knows how to correct the issues.</p>
@@ -3345,7 +3345,7 @@ class TelegramClient(
         Boolean.serializer()
     )
 
-// Games
+    // Games
 
     /**
      * <p>Use this method to send a game. On success, the sent <a href="#message">Message</a> is returned.</p>

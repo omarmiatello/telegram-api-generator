@@ -196,7 +196,7 @@ fun List<DocSection>.toKotlinMethods() = buildString {
     this@toKotlinMethods.forEach { section ->
         if (section.docMethods.isNotEmpty()) {
             appendLine()
-            appendLine(comment(section.name))
+            appendLine("    " + comment(section.name))
             section.docMethods.forEach { method ->
                 appendLine(method.toKotlinRequestMethod())
             }
