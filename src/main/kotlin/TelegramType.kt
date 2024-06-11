@@ -95,6 +95,18 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             deserializer = ""
         )
 
+        object BackgroundFill : Super(
+            name = "BackgroundFill",
+            subclasses = { it.startsWith("BackgroundFill") },
+            deserializer = ""
+        )
+
+        object BackgroundType : Super(
+            name = "BackgroundType",
+            subclasses = { it.startsWith("BackgroundType") },
+            deserializer = ""
+        )
+
         object KeyboardOption : Super(
             name = "KeyboardOption",
             subclasses = { it in listOf("InlineKeyboardMarkup", "ReplyKeyboardMarkup", "ReplyKeyboardRemove", "ForceReply") },
@@ -149,6 +161,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             Super.MessageOrigin,
             Super.ChatBoostSource,
             Super.MenuButton,
+            Super.BackgroundFill,
+            Super.BackgroundType,
             Super.KeyboardOption,
             Super.MaybeInaccessibleMessage,
             WithAlternative.InputFileOrString,
@@ -184,6 +198,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             "PassportElementError" -> Super.PassportElementError
             "ChatMember" -> Super.ChatMember
             "MenuButton" -> Super.MenuButton
+            "BackgroundFill" -> Super.BackgroundFill
+            "BackgroundType" -> Super.BackgroundType
             "BotCommandScope" -> Super.BotCommandScope
             "KeyboardOption" -> Super.KeyboardOption
             "MaybeInaccessibleMessage" -> Super.MaybeInaccessibleMessage
