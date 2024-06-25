@@ -2376,7 +2376,7 @@ pub struct InlineKeyboardMarkup {
  *
  * @property text Label text on the button
  * @property url <em>Optional</em>. HTTP or tg:// URL to be opened when the button is pressed. Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.
- * @property callback_data <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when button is pressed, 1-64 bytes. Not supported for messages sent on behalf of a Telegram Business account.
+ * @property callback_data <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when the button is pressed, 1-64 bytes
  * @property web_app <em>Optional</em>. Description of the <a href="/bots/webapps">Web App</a> that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a Telegram Business account.
  * @property login_url <em>Optional</em>. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the <a href="/widgets/login">Telegram Login Widget</a>.
  * @property switch_inline_query <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent on behalf of a Telegram Business account.
@@ -2394,7 +2394,7 @@ pub struct InlineKeyboardButton {
     /// <em>Optional</em>. HTTP or tg:// URL to be opened when the button is pressed. Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
-    /// <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when button is pressed, 1-64 bytes. Not supported for messages sent on behalf of a Telegram Business account.
+    /// <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when the button is pressed, 1-64 bytes
     #[serde(skip_serializing_if = "Option::is_none")]
     pub callback_data: Option<String>,
     /// <em>Optional</em>. Description of the <a href="/bots/webapps">Web App</a> that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a Telegram Business account.
@@ -5563,6 +5563,143 @@ pub struct PreCheckoutQuery {
     pub order_info: Option<OrderInfo>
 }
 
+/**
+ * <p>The withdrawal is in progress.</p>
+ *
+ * @property type Type of the state, always “pending”
+ *
+ * @constructor Creates a [RevenueWithdrawalStatePending].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct RevenueWithdrawalStatePending {
+    /// Type of the state, always “pending”
+    #[serde(rename = "type")]
+    pub type_: String
+}
+
+/**
+ * <p>The withdrawal succeeded.</p>
+ *
+ * @property type Type of the state, always “succeeded”
+ * @property date Date the withdrawal was completed in Unix time
+ * @property url An HTTPS URL that can be used to see transaction details
+ *
+ * @constructor Creates a [RevenueWithdrawalStateSucceeded].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct RevenueWithdrawalStateSucceeded {
+    /// Type of the state, always “succeeded”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// Date the withdrawal was completed in Unix time
+    pub date: Integer,
+    /// An HTTPS URL that can be used to see transaction details
+    pub url: String
+}
+
+/**
+ * <p>The withdrawal failed and the transaction was refunded.</p>
+ *
+ * @property type Type of the state, always “failed”
+ *
+ * @constructor Creates a [RevenueWithdrawalStateFailed].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct RevenueWithdrawalStateFailed {
+    /// Type of the state, always “failed”
+    #[serde(rename = "type")]
+    pub type_: String
+}
+
+/**
+ * <p>Describes a withdrawal transaction with Fragment.</p>
+ *
+ * @property type Type of the transaction partner, always “fragment”
+ * @property withdrawal_state <em>Optional</em>. State of the transaction if the transaction is outgoing
+ *
+ * @constructor Creates a [TransactionPartnerFragment].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct TransactionPartnerFragment {
+    /// Type of the transaction partner, always “fragment”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// <em>Optional</em>. State of the transaction if the transaction is outgoing
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub withdrawal_state: Option<RevenueWithdrawalState>
+}
+
+/**
+ * <p>Describes a transaction with a user.</p>
+ *
+ * @property type Type of the transaction partner, always “user”
+ * @property user Information about the user
+ *
+ * @constructor Creates a [TransactionPartnerUser].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct TransactionPartnerUser {
+    /// Type of the transaction partner, always “user”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// Information about the user
+    pub user: User
+}
+
+/**
+ * <p>Describes a transaction with an unknown source or recipient.</p>
+ *
+ * @property type Type of the transaction partner, always “other”
+ *
+ * @constructor Creates a [TransactionPartnerOther].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct TransactionPartnerOther {
+    /// Type of the transaction partner, always “other”
+    #[serde(rename = "type")]
+    pub type_: String
+}
+
+/**
+ * <p>Describes a Telegram Star transaction.</p>
+ *
+ * @property id Unique identifier of the transaction. Coincides with the identifer of the original transaction for refund transactions. Coincides with <em>SuccessfulPayment.telegram_payment_charge_id</em> for successful incoming payments from users.
+ * @property amount Number of Telegram Stars transferred by the transaction
+ * @property date Date the transaction was created in Unix time
+ * @property source <em>Optional</em>. Source of an incoming transaction (e.g., a user purchasing goods or services, Fragment refunding a failed withdrawal). Only for incoming transactions
+ * @property receiver <em>Optional</em>. Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions
+ *
+ * @constructor Creates a [StarTransaction].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct StarTransaction {
+    /// Unique identifier of the transaction. Coincides with the identifer of the original transaction for refund transactions. Coincides with <em>SuccessfulPayment.telegram_payment_charge_id</em> for successful incoming payments from users.
+    pub id: String,
+    /// Number of Telegram Stars transferred by the transaction
+    pub amount: Integer,
+    /// Date the transaction was created in Unix time
+    pub date: Integer,
+    /// <em>Optional</em>. Source of an incoming transaction (e.g., a user purchasing goods or services, Fragment refunding a failed withdrawal). Only for incoming transactions
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source: Option<TransactionPartner>,
+    /// <em>Optional</em>. Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub receiver: Option<TransactionPartner>
+}
+
+/**
+ * <p>Contains a list of Telegram Star transactions.</p>
+ *
+ * @property transactions The list of transactions
+ *
+ * @constructor Creates a [StarTransactions].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct StarTransactions {
+    /// The list of transactions
+    pub transactions: Vec<StarTransaction>
+}
+
 
 /// Telegram Passport
 
@@ -7766,8 +7903,9 @@ pub struct GetMyDefaultAdministratorRightsRequest {
 /// Updating messages
 
 /**
- * <p>Use this method to edit text and <a href="#games">game</a> messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+ * <p>Use this method to edit text and <a href="#games">game</a> messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
  *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message to be edited was sent
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
@@ -7779,6 +7917,8 @@ pub struct GetMyDefaultAdministratorRightsRequest {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct EditMessageTextRequest {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
@@ -7798,8 +7938,9 @@ pub struct EditMessageTextRequest {
 }
 
 /**
- * <p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+ * <p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
  *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message to be edited was sent
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
@@ -7811,6 +7952,8 @@ pub struct EditMessageTextRequest {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct EditMessageCaptionRequest {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
@@ -7830,8 +7973,9 @@ pub struct EditMessageCaptionRequest {
 }
 
 /**
- * <p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+ * <p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
  *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message to be edited was sent
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
@@ -7840,6 +7984,8 @@ pub struct EditMessageCaptionRequest {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct EditMessageMediaRequest {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
@@ -7855,6 +8001,7 @@ pub struct EditMessageMediaRequest {
 /**
  * <p>Use this method to edit live location messages. A location can be edited until its <em>live_period</em> expires or editing is explicitly disabled by a call to <a href="#stopmessagelivelocation">stopMessageLiveLocation</a>. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
  *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message to be edited was sent
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
@@ -7868,6 +8015,8 @@ pub struct EditMessageMediaRequest {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct EditMessageLiveLocationRequest {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
@@ -7893,6 +8042,7 @@ pub struct EditMessageLiveLocationRequest {
 /**
  * <p>Use this method to stop updating a live location message before <em>live_period</em> expires. On success, if the message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
  *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message to be edited was sent
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message with live location to stop
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
@@ -7900,6 +8050,8 @@ pub struct EditMessageLiveLocationRequest {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct StopMessageLiveLocationRequest {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Identifier of the message with live location to stop
@@ -7911,8 +8063,9 @@ pub struct StopMessageLiveLocationRequest {
 }
 
 /**
- * <p>Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+ * <p>Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
  *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message to be edited was sent
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
@@ -7920,6 +8073,8 @@ pub struct StopMessageLiveLocationRequest {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct EditMessageReplyMarkupRequest {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
@@ -7933,12 +8088,15 @@ pub struct EditMessageReplyMarkupRequest {
 /**
  * <p>Use this method to stop a poll which was sent by the bot. On success, the stopped <a href="#poll">Poll</a> is returned.</p>
  *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message to be edited was sent
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Identifier of the original message with the poll
  * @property reply_markup A JSON-serialized object for a new message <a href="/bots/features#inline-keyboards">inline keyboard</a>.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct StopPollRequest {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: String,
     /// Identifier of the original message with the poll
@@ -8485,6 +8643,20 @@ pub struct AnswerPreCheckoutQueryRequest {
     pub ok: bool,
     /// Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user.
     pub error_message: Option<String>
+}
+
+/**
+ * <p>Returns the bot's Telegram Star transactions in chronological order. On success, returns a <a href="#startransactions">StarTransactions</a> object.</p>
+ *
+ * @property offset Number of transactions to skip in the response
+ * @property limit The maximum number of transactions to be retrieved. Values between 1-100 are accepted. Defaults to 100.
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct GetStarTransactionsRequest {
+    /// Number of transactions to skip in the response
+    pub offset: Option<Integer>,
+    /// The maximum number of transactions to be retrieved. Values between 1-100 are accepted. Defaults to 100.
+    pub limit: Option<Integer>
 }
 
 /**

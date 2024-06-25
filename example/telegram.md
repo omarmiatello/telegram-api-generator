@@ -884,33 +884,33 @@
 ## Updating messages
 
 ### Methods
-<p>Use this method to edit text and <a href="#games">game</a> messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to edit text and <a href="#games">game</a> messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
 
-    editMessageText(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, text: String, parse_mode: ParseMode, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, reply_markup: InlineKeyboardMarkup)
+    editMessageText(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, text: String, parse_mode: ParseMode, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, reply_markup: InlineKeyboardMarkup)
 
-<p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
 
-    editMessageCaption(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, reply_markup: InlineKeyboardMarkup)
+    editMessageCaption(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, reply_markup: InlineKeyboardMarkup)
 
-<p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
 
-    editMessageMedia(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, media: InputMedia, reply_markup: InlineKeyboardMarkup)
+    editMessageMedia(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, media: InputMedia, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to edit live location messages. A location can be edited until its <em>live_period</em> expires or editing is explicitly disabled by a call to <a href="#stopmessagelivelocation">stopMessageLiveLocation</a>. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
 
-    editMessageLiveLocation(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, latitude: Float, longitude: Float, live_period: Integer, horizontal_accuracy: Float, heading: Integer, proximity_alert_radius: Integer, reply_markup: InlineKeyboardMarkup)
+    editMessageLiveLocation(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, latitude: Float, longitude: Float, live_period: Integer, horizontal_accuracy: Float, heading: Integer, proximity_alert_radius: Integer, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to stop updating a live location message before <em>live_period</em> expires. On success, if the message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
 
-    stopMessageLiveLocation(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
+    stopMessageLiveLocation(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
 
-<p>Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
 
-    editMessageReplyMarkup(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
+    editMessageReplyMarkup(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to stop a poll which was sent by the bot. On success, the stopped <a href="#poll">Poll</a> is returned.</p>
 
-    stopPoll(chat_id: IntegerOrString, message_id: Integer, reply_markup: InlineKeyboardMarkup)
+    stopPoll(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to delete a message, including service messages, with the following limitations:<br>- A message can only be deleted if it was sent less than 48 hours ago.<br>- Service messages about a supergroup, channel, or forum topic creation can't be deleted.<br>- A dice message in a private chat can only be deleted if it was sent more than 24 hours ago.<br>- Bots can delete outgoing messages in private chats, groups, and supergroups.<br>- Bots can delete incoming messages in private chats.<br>- Bots granted <em>can_post_messages</em> permissions can delete outgoing messages in channels.<br>- If the bot is an administrator of a group, it can delete any message there.<br>- If the bot has <em>can_delete_messages</em> permission in a supergroup or a channel, it can delete any message there.<br>Returns <em>True</em> on success.</p>
 
@@ -1177,6 +1177,38 @@
 
     PreCheckoutQuery(id: String, from: User, currency: String, total_amount: Integer, invoice_payload: String, shipping_option_id: String, order_info: OrderInfo)
 
+<p>The withdrawal is in progress.</p>
+
+    RevenueWithdrawalStatePending(type: String)
+
+<p>The withdrawal succeeded.</p>
+
+    RevenueWithdrawalStateSucceeded(type: String, date: Integer, url: String)
+
+<p>The withdrawal failed and the transaction was refunded.</p>
+
+    RevenueWithdrawalStateFailed(type: String)
+
+<p>Describes a withdrawal transaction with Fragment.</p>
+
+    TransactionPartnerFragment(type: String, withdrawal_state: RevenueWithdrawalState)
+
+<p>Describes a transaction with a user.</p>
+
+    TransactionPartnerUser(type: String, user: User)
+
+<p>Describes a transaction with an unknown source or recipient.</p>
+
+    TransactionPartnerOther(type: String)
+
+<p>Describes a Telegram Star transaction.</p>
+
+    StarTransaction(id: String, amount: Integer, date: Integer, source: TransactionPartner, receiver: TransactionPartner)
+
+<p>Contains a list of Telegram Star transactions.</p>
+
+    StarTransactions(transactions: List<StarTransaction>)
+
 
 ### Methods
 <p>Use this method to send invoices. On success, the sent <a href="#message">Message</a> is returned.</p>
@@ -1194,6 +1226,10 @@
 <p>Once the user has confirmed their payment and shipping details, the Bot API sends the final confirmation in the form of an <a href="#update">Update</a> with the field <em>pre_checkout_query</em>. Use this method to respond to such pre-checkout queries. On success, <em>True</em> is returned. <strong>Note:</strong> The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.</p>
 
     answerPreCheckoutQuery(pre_checkout_query_id: String, ok: Boolean, error_message: String)
+
+<p>Returns the bot's Telegram Star transactions in chronological order. On success, returns a <a href="#startransactions">StarTransactions</a> object.</p>
+
+    getStarTransactions(offset: Integer, limit: Integer)
 
 <p>Refunds a successful payment in <a href="https://t.me/BotNews/90">Telegram Stars</a>. Returns <em>True</em> on success.</p>
 

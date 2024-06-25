@@ -1131,7 +1131,7 @@
 |---|---|---|---|
 | text | String | true | Label text on the button |
 | url | String | false | <em>Optional</em>. HTTP or tg:// URL to be opened when the button is pressed. Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings. |
-| callback_data | String | false | <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when button is pressed, 1-64 bytes. Not supported for messages sent on behalf of a Telegram Business account. |
+| callback_data | String | false | <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when the button is pressed, 1-64 bytes |
 | web_app | WebAppInfo | false | <em>Optional</em>. Description of the <a href="/bots/webapps">Web App</a> that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a Telegram Business account. |
 | login_url | LoginUrl | false | <em>Optional</em>. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the <a href="/widgets/login">Telegram Login Widget</a>. |
 | switch_inline_query | String | false | <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent on behalf of a Telegram Business account. |
@@ -3031,12 +3031,13 @@
 ### Methods
 #### editMessageText
 
-    editMessageText(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, text: String, parse_mode: ParseMode, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, reply_markup: InlineKeyboardMarkup)
+    editMessageText(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, text: String, parse_mode: ParseMode, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, reply_markup: InlineKeyboardMarkup)
 
-<p>Use this method to edit text and <a href="#games">game</a> messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to edit text and <a href="#games">game</a> messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message to be edited was sent |
 | chat_id | IntegerOrString | false | Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | false | Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit |
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |
@@ -3048,12 +3049,13 @@
 
 #### editMessageCaption
 
-    editMessageCaption(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, reply_markup: InlineKeyboardMarkup)
+    editMessageCaption(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, reply_markup: InlineKeyboardMarkup)
 
-<p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message to be edited was sent |
 | chat_id | IntegerOrString | false | Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | false | Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit |
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |
@@ -3065,12 +3067,13 @@
 
 #### editMessageMedia
 
-    editMessageMedia(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, media: InputMedia, reply_markup: InlineKeyboardMarkup)
+    editMessageMedia(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, media: InputMedia, reply_markup: InlineKeyboardMarkup)
 
-<p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message to be edited was sent |
 | chat_id | IntegerOrString | false | Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | false | Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit |
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |
@@ -3079,12 +3082,13 @@
 
 #### editMessageLiveLocation
 
-    editMessageLiveLocation(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, latitude: Float, longitude: Float, live_period: Integer, horizontal_accuracy: Float, heading: Integer, proximity_alert_radius: Integer, reply_markup: InlineKeyboardMarkup)
+    editMessageLiveLocation(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, latitude: Float, longitude: Float, live_period: Integer, horizontal_accuracy: Float, heading: Integer, proximity_alert_radius: Integer, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to edit live location messages. A location can be edited until its <em>live_period</em> expires or editing is explicitly disabled by a call to <a href="#stopmessagelivelocation">stopMessageLiveLocation</a>. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message to be edited was sent |
 | chat_id | IntegerOrString | false | Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | false | Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit |
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |
@@ -3098,12 +3102,13 @@
 
 #### stopMessageLiveLocation
 
-    stopMessageLiveLocation(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
+    stopMessageLiveLocation(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to stop updating a live location message before <em>live_period</em> expires. On success, if the message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message to be edited was sent |
 | chat_id | IntegerOrString | false | Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | false | Required if <em>inline_message_id</em> is not specified. Identifier of the message with live location to stop |
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |
@@ -3111,12 +3116,13 @@
 
 #### editMessageReplyMarkup
 
-    editMessageReplyMarkup(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
+    editMessageReplyMarkup(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
 
-<p>Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message to be edited was sent |
 | chat_id | IntegerOrString | false | Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | false | Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit |
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |
@@ -3124,12 +3130,13 @@
 
 #### stopPoll
 
-    stopPoll(chat_id: IntegerOrString, message_id: Integer, reply_markup: InlineKeyboardMarkup)
+    stopPoll(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to stop a poll which was sent by the bot. On success, the stopped <a href="#poll">Poll</a> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message to be edited was sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | true | Identifier of the original message with the poll |
 | reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for a new message <a href="/bots/features#inline-keyboards">inline keyboard</a>. |
@@ -4110,6 +4117,94 @@
 | shipping_option_id | String | false | <em>Optional</em>. Identifier of the shipping option chosen by the user |
 | order_info | OrderInfo | false | <em>Optional</em>. Order information provided by the user |
 
+#### RevenueWithdrawalStatePending
+
+    RevenueWithdrawalStatePending(type: String)
+
+<p>The withdrawal is in progress.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the state, always “pending” |
+
+#### RevenueWithdrawalStateSucceeded
+
+    RevenueWithdrawalStateSucceeded(type: String, date: Integer, url: String)
+
+<p>The withdrawal succeeded.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the state, always “succeeded” |
+| date | Integer | true | Date the withdrawal was completed in Unix time |
+| url | String | true | An HTTPS URL that can be used to see transaction details |
+
+#### RevenueWithdrawalStateFailed
+
+    RevenueWithdrawalStateFailed(type: String)
+
+<p>The withdrawal failed and the transaction was refunded.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the state, always “failed” |
+
+#### TransactionPartnerFragment
+
+    TransactionPartnerFragment(type: String, withdrawal_state: RevenueWithdrawalState)
+
+<p>Describes a withdrawal transaction with Fragment.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the transaction partner, always “fragment” |
+| withdrawal_state | RevenueWithdrawalState | false | <em>Optional</em>. State of the transaction if the transaction is outgoing |
+
+#### TransactionPartnerUser
+
+    TransactionPartnerUser(type: String, user: User)
+
+<p>Describes a transaction with a user.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the transaction partner, always “user” |
+| user | User | true | Information about the user |
+
+#### TransactionPartnerOther
+
+    TransactionPartnerOther(type: String)
+
+<p>Describes a transaction with an unknown source or recipient.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the transaction partner, always “other” |
+
+#### StarTransaction
+
+    StarTransaction(id: String, amount: Integer, date: Integer, source: TransactionPartner, receiver: TransactionPartner)
+
+<p>Describes a Telegram Star transaction.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| id | String | true | Unique identifier of the transaction. Coincides with the identifer of the original transaction for refund transactions. Coincides with <em>SuccessfulPayment.telegram_payment_charge_id</em> for successful incoming payments from users. |
+| amount | Integer | true | Number of Telegram Stars transferred by the transaction |
+| date | Integer | true | Date the transaction was created in Unix time |
+| source | TransactionPartner | false | <em>Optional</em>. Source of an incoming transaction (e.g., a user purchasing goods or services, Fragment refunding a failed withdrawal). Only for incoming transactions |
+| receiver | TransactionPartner | false | <em>Optional</em>. Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions |
+
+#### StarTransactions
+
+    StarTransactions(transactions: List<StarTransaction>)
+
+<p>Contains a list of Telegram Star transactions.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| transactions | List<StarTransaction> | true | The list of transactions |
+
 
 ### Methods
 #### sendInvoice
@@ -4202,6 +4297,17 @@
 | pre_checkout_query_id | String | true | Unique identifier for the query to be answered |
 | ok | Boolean | true | Specify <em>True</em> if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order. Use <em>False</em> if there are any problems. |
 | error_message | String | false | Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user. |
+
+#### getStarTransactions
+
+    getStarTransactions(offset: Integer, limit: Integer)
+
+<p>Returns the bot's Telegram Star transactions in chronological order. On success, returns a <a href="#startransactions">StarTransactions</a> object.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| offset | Integer | false | Number of transactions to skip in the response |
+| limit | Integer | false | The maximum number of transactions to be retrieved. Values between 1-100 are accepted. Defaults to 100. |
 
 #### refundStarPayment
 

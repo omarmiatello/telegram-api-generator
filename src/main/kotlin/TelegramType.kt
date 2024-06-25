@@ -107,9 +107,28 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             deserializer = ""
         )
 
+        object RevenueWithdrawalState : Super(
+            name = "RevenueWithdrawalState",
+            subclasses = { it.startsWith("RevenueWithdrawalState") },
+            deserializer = ""
+        )
+
+        object TransactionPartner : Super(
+            name = "TransactionPartner",
+            subclasses = { it.startsWith("TransactionPartner") },
+            deserializer = ""
+        )
+
         object KeyboardOption : Super(
             name = "KeyboardOption",
-            subclasses = { it in listOf("InlineKeyboardMarkup", "ReplyKeyboardMarkup", "ReplyKeyboardRemove", "ForceReply") },
+            subclasses = {
+                it in listOf(
+                    "InlineKeyboardMarkup",
+                    "ReplyKeyboardMarkup",
+                    "ReplyKeyboardRemove",
+                    "ForceReply"
+                )
+            },
             deserializer = ""
         )
 
@@ -163,6 +182,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             Super.MenuButton,
             Super.BackgroundFill,
             Super.BackgroundType,
+            Super.RevenueWithdrawalState,
+            Super.TransactionPartner,
             Super.KeyboardOption,
             Super.MaybeInaccessibleMessage,
             WithAlternative.InputFileOrString,
@@ -200,6 +221,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             "MenuButton" -> Super.MenuButton
             "BackgroundFill" -> Super.BackgroundFill
             "BackgroundType" -> Super.BackgroundType
+            "RevenueWithdrawalState" -> Super.RevenueWithdrawalState
+            "TransactionPartner" -> Super.TransactionPartner
             "BotCommandScope" -> Super.BotCommandScope
             "KeyboardOption" -> Super.KeyboardOption
             "MaybeInaccessibleMessage" -> Super.MaybeInaccessibleMessage

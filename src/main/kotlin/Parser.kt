@@ -38,7 +38,7 @@ data class DocParameter(
 fun Document.toSection(): List<DocSection> {
     val returnsRegex = listOf(
         "((?:Array of )?\\S+) (?:objects? )?is returned".toRegex(),
-        "[Rr]eturns .*?((?:Array of )?[A-Z]\\w+)".toRegex()
+        ".*[Rr]eturns .*?((?:Array of )?[A-Z]\\w+)".toRegex()
     )
     val content = select("#dev_page_content").first()!!
     var splitBy = ""
