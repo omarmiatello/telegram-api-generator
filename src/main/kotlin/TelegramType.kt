@@ -119,6 +119,18 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             deserializer = ""
         )
 
+        object PaidMedia : Super(
+            name = "PaidMedia",
+            subclasses = { it.startsWith("PaidMedia") },
+            deserializer = ""
+        )
+
+        object InputPaidMedia : Super(
+            name = "InputPaidMedia",
+            subclasses = { it.startsWith("InputPaidMedia") },
+            deserializer = ""
+        )
+
         object KeyboardOption : Super(
             name = "KeyboardOption",
             subclasses = {
@@ -184,6 +196,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             Super.BackgroundType,
             Super.RevenueWithdrawalState,
             Super.TransactionPartner,
+            Super.PaidMedia,
+            Super.InputPaidMedia,
             Super.KeyboardOption,
             Super.MaybeInaccessibleMessage,
             WithAlternative.InputFileOrString,
@@ -223,6 +237,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             "BackgroundType" -> Super.BackgroundType
             "RevenueWithdrawalState" -> Super.RevenueWithdrawalState
             "TransactionPartner" -> Super.TransactionPartner
+            "PaidMedia" -> Super.PaidMedia
+            "InputPaidMedia" -> Super.InputPaidMedia
             "BotCommandScope" -> Super.BotCommandScope
             "KeyboardOption" -> Super.KeyboardOption
             "MaybeInaccessibleMessage" -> Super.MaybeInaccessibleMessage

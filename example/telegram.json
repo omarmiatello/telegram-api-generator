@@ -892,6 +892,14 @@
             "required": false
           },
           {
+            "name": "can_send_paid_media",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
             "name": "slow_mode_delay",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds",
             "type": {
@@ -1236,6 +1244,19 @@
             "required": false
           },
           {
+            "name": "paid_media",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message contains paid media; information about the paid media",
+            "type": {
+              "name": "PaidMediaInfo",
+              "superType": {
+                "subclasses": {},
+                "deserializer": "",
+                "name": "PaidMedia"
+              }
+            },
+            "required": false
+          },
+          {
             "name": "photo",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a photo, available sizes of the photo",
             "type": {
@@ -1288,7 +1309,7 @@
           },
           {
             "name": "caption",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption for the animation, audio, document, photo, video or voice",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Caption for the animation, audio, document, paid media, photo, video or voice",
             "type": {
               "name": "String"
             },
@@ -1898,6 +1919,19 @@
             "required": false
           },
           {
+            "name": "paid_media",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message contains paid media; information about the paid media",
+            "type": {
+              "name": "PaidMediaInfo",
+              "superType": {
+                "subclasses": {},
+                "deserializer": "",
+                "name": "PaidMedia"
+              }
+            },
+            "required": false
+          },
+          {
             "name": "photo",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a photo, available sizes of the photo",
             "type": {
@@ -2315,7 +2349,7 @@
           },
           {
             "name": "width",
-            "description": "Video width as defined by sender",
+            "description": "Video width as defined by the sender",
             "type": {
               "name": "Integer"
             },
@@ -2323,7 +2357,7 @@
           },
           {
             "name": "height",
-            "description": "Video height as defined by sender",
+            "description": "Video height as defined by the sender",
             "type": {
               "name": "Integer"
             },
@@ -2331,7 +2365,7 @@
           },
           {
             "name": "duration",
-            "description": "Duration of the video in seconds as defined by sender",
+            "description": "Duration of the video in seconds as defined by the sender",
             "type": {
               "name": "Integer"
             },
@@ -2339,7 +2373,7 @@
           },
           {
             "name": "thumbnail",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Animation thumbnail as defined by sender",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Animation thumbnail as defined by the sender",
             "type": {
               "name": "PhotoSize"
             },
@@ -2347,7 +2381,7 @@
           },
           {
             "name": "file_name",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Original animation filename as defined by sender",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Original animation filename as defined by the sender",
             "type": {
               "name": "String"
             },
@@ -2355,7 +2389,7 @@
           },
           {
             "name": "mime_type",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. MIME type of the file as defined by sender",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. MIME type of the file as defined by the sender",
             "type": {
               "name": "String"
             },
@@ -2393,7 +2427,7 @@
           },
           {
             "name": "duration",
-            "description": "Duration of the audio in seconds as defined by sender",
+            "description": "Duration of the audio in seconds as defined by the sender",
             "type": {
               "name": "Integer"
             },
@@ -2401,7 +2435,7 @@
           },
           {
             "name": "performer",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Performer of the audio as defined by sender or by audio tags",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Performer of the audio as defined by the sender or by audio tags",
             "type": {
               "name": "String"
             },
@@ -2409,7 +2443,7 @@
           },
           {
             "name": "title",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Title of the audio as defined by sender or by audio tags",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Title of the audio as defined by the sender or by audio tags",
             "type": {
               "name": "String"
             },
@@ -2417,7 +2451,7 @@
           },
           {
             "name": "file_name",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Original filename as defined by sender",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Original filename as defined by the sender",
             "type": {
               "name": "String"
             },
@@ -2425,7 +2459,7 @@
           },
           {
             "name": "mime_type",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. MIME type of the file as defined by sender",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. MIME type of the file as defined by the sender",
             "type": {
               "name": "String"
             },
@@ -2471,7 +2505,7 @@
           },
           {
             "name": "thumbnail",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Document thumbnail as defined by sender",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Document thumbnail as defined by the sender",
             "type": {
               "name": "PhotoSize"
             },
@@ -2479,7 +2513,7 @@
           },
           {
             "name": "file_name",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Original filename as defined by sender",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Original filename as defined by the sender",
             "type": {
               "name": "String"
             },
@@ -2487,7 +2521,7 @@
           },
           {
             "name": "mime_type",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. MIME type of the file as defined by sender",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. MIME type of the file as defined by the sender",
             "type": {
               "name": "String"
             },
@@ -2547,7 +2581,7 @@
           },
           {
             "name": "width",
-            "description": "Video width as defined by sender",
+            "description": "Video width as defined by the sender",
             "type": {
               "name": "Integer"
             },
@@ -2555,7 +2589,7 @@
           },
           {
             "name": "height",
-            "description": "Video height as defined by sender",
+            "description": "Video height as defined by the sender",
             "type": {
               "name": "Integer"
             },
@@ -2563,7 +2597,7 @@
           },
           {
             "name": "duration",
-            "description": "Duration of the video in seconds as defined by sender",
+            "description": "Duration of the video in seconds as defined by the sender",
             "type": {
               "name": "Integer"
             },
@@ -2579,7 +2613,7 @@
           },
           {
             "name": "file_name",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Original filename as defined by sender",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Original filename as defined by the sender",
             "type": {
               "name": "String"
             },
@@ -2587,7 +2621,7 @@
           },
           {
             "name": "mime_type",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. MIME type of the file as defined by sender",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. MIME type of the file as defined by the sender",
             "type": {
               "name": "String"
             },
@@ -2625,7 +2659,7 @@
           },
           {
             "name": "length",
-            "description": "Video width and height (diameter of the video message) as defined by sender",
+            "description": "Video width and height (diameter of the video message) as defined by the sender",
             "type": {
               "name": "Integer"
             },
@@ -2633,7 +2667,7 @@
           },
           {
             "name": "duration",
-            "description": "Duration of the video in seconds as defined by sender",
+            "description": "Duration of the video in seconds as defined by the sender",
             "type": {
               "name": "Integer"
             },
@@ -2679,7 +2713,7 @@
           },
           {
             "name": "duration",
-            "description": "Duration of the audio in seconds as defined by sender",
+            "description": "Duration of the audio in seconds as defined by the sender",
             "type": {
               "name": "Integer"
             },
@@ -2687,7 +2721,7 @@
           },
           {
             "name": "mime_type",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. MIME type of the file as defined by sender",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. MIME type of the file as defined by the sender",
             "type": {
               "name": "String"
             },
@@ -2700,6 +2734,118 @@
               "name": "Integer"
             },
             "required": false
+          }
+        ]
+      },
+      {
+        "name": "PaidMediaInfo",
+        "description": "\u003cp\u003eDescribes the paid media added to a message.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "star_count",
+            "description": "The number of Telegram Stars that must be paid to buy access to the media",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          },
+          {
+            "name": "paid_media",
+            "description": "Information about the paid media",
+            "type": {
+              "elementType": {
+                "subclasses": {},
+                "deserializer": "",
+                "name": "PaidMedia"
+              },
+              "name": "List\u003cPaidMedia\u003e"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "PaidMediaPreview",
+        "description": "\u003cp\u003eThe paid media isn\u0027t available before the payment.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "Type of the paid media, always “preview”",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "width",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Media width as defined by the sender",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "height",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Media height as defined by the sender",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "duration",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Duration of the media in seconds as defined by the sender",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          }
+        ]
+      },
+      {
+        "name": "PaidMediaPhoto",
+        "description": "\u003cp\u003eThe paid media is a photo.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "Type of the paid media, always “photo”",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "photo",
+            "description": "The photo",
+            "type": {
+              "elementType": {
+                "name": "PhotoSize"
+              },
+              "name": "List\u003cPhotoSize\u003e"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "PaidMediaVideo",
+        "description": "\u003cp\u003eThe paid media is a video.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "Type of the paid media, always “video”",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "video",
+            "description": "The video",
+            "type": {
+              "name": "Video"
+            },
+            "required": true
           }
         ]
       },
@@ -2806,7 +2952,7 @@
       },
       {
         "name": "InputPollOption",
-        "description": "\u003cp\u003eThis object contains information about one answer option in a poll to send.\u003c/p\u003e",
+        "description": "\u003cp\u003eThis object contains information about one answer option in a poll to be sent.\u003c/p\u003e",
         "docFields": [
           {
             "name": "text",
@@ -3011,7 +3157,7 @@
         "docFields": [
           {
             "name": "latitude",
-            "description": "Latitude as defined by sender",
+            "description": "Latitude as defined by the sender",
             "type": {
               "name": "Float"
             },
@@ -3019,7 +3165,7 @@
           },
           {
             "name": "longitude",
-            "description": "Longitude as defined by sender",
+            "description": "Longitude as defined by the sender",
             "type": {
               "name": "Float"
             },
@@ -6172,7 +6318,7 @@
           },
           {
             "name": "web_app",
-            "description": "Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method \u003ca href\u003d\"#answerwebappquery\"\u003eanswerWebAppQuery\u003c/a\u003e.",
+            "description": "Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method \u003ca href\u003d\"#answerwebappquery\"\u003eanswerWebAppQuery\u003c/a\u003e. Alternatively, a \u003ccode\u003et.me\u003c/code\u003e link to a Web App of the bot can be specified in the object instead of the Web App\u0027s URL, in which case the Web App will be opened as if the user pressed the link.",
             "type": {
               "name": "WebAppInfo"
             },
@@ -6948,6 +7094,98 @@
             "required": false
           }
         ]
+      },
+      {
+        "name": "InputPaidMediaPhoto",
+        "description": "\u003cp\u003eThe paid media to send is a photo.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "Type of the media, must be \u003cem\u003ephoto\u003c/em\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "media",
+            "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://\u0026lt;file_attach_name\u0026gt;” to upload a new one using multipart/form-data under \u0026lt;file_attach_name\u0026gt; name. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "InputPaidMediaVideo",
+        "description": "\u003cp\u003eThe paid media to send is a video.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "Type of the media, must be \u003cem\u003evideo\u003c/em\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "media",
+            "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://\u0026lt;file_attach_name\u0026gt;” to upload a new one using multipart/form-data under \u0026lt;file_attach_name\u0026gt; name. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "thumbnail",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail\u0027s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can\u0027t be reused and can be only uploaded as a new file, so you can pass “attach://\u0026lt;file_attach_name\u0026gt;” if the thumbnail was uploaded using multipart/form-data under \u0026lt;file_attach_name\u0026gt;. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "InputFile"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "InputFileOrString"
+            },
+            "required": false
+          },
+          {
+            "name": "width",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Video width",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "height",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Video height",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "duration",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Video duration in seconds",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
+          },
+          {
+            "name": "supports_streaming",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Pass \u003cem\u003eTrue\u003c/em\u003e if the uploaded video is suitable for streaming",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          }
+        ]
       }
     ],
     "docMethods": []
@@ -7255,7 +7493,7 @@
       },
       {
         "name": "copyMessage",
-        "description": "\u003cp\u003eUse this method to copy messages of any kind. Service messages, giveaway messages, giveaway winners messages, and invoice messages can\u0027t be copied. A quiz \u003ca href\u003d\"#poll\"\u003epoll\u003c/a\u003e can be copied only if the value of the field \u003cem\u003ecorrect_option_id\u003c/em\u003e is known to the bot. The method is analogous to the method \u003ca href\u003d\"#forwardmessage\"\u003eforwardMessage\u003c/a\u003e, but the copied message doesn\u0027t have a link to the original message. Returns the \u003ca href\u003d\"#messageid\"\u003eMessageId\u003c/a\u003e of the sent message on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can\u0027t be copied. A quiz \u003ca href\u003d\"#poll\"\u003epoll\u003c/a\u003e can be copied only if the value of the field \u003cem\u003ecorrect_option_id\u003c/em\u003e is known to the bot. The method is analogous to the method \u003ca href\u003d\"#forwardmessage\"\u003eforwardMessage\u003c/a\u003e, but the copied message doesn\u0027t have a link to the original message. Returns the \u003ca href\u003d\"#messageid\"\u003eMessageId\u003c/a\u003e of the sent message on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -7381,7 +7619,7 @@
       },
       {
         "name": "copyMessages",
-        "description": "\u003cp\u003eUse this method to copy messages of any kind. If some of the specified messages can\u0027t be found or copied, they are skipped. Service messages, giveaway messages, giveaway winners messages, and invoice messages can\u0027t be copied. A quiz \u003ca href\u003d\"#poll\"\u003epoll\u003c/a\u003e can be copied only if the value of the field \u003cem\u003ecorrect_option_id\u003c/em\u003e is known to the bot. The method is analogous to the method \u003ca href\u003d\"#forwardmessages\"\u003eforwardMessages\u003c/a\u003e, but the copied messages don\u0027t have a link to the original message. Album grouping is kept for copied messages. On success, an array of \u003ca href\u003d\"#messageid\"\u003eMessageId\u003c/a\u003e of the sent messages is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to copy messages of any kind. If some of the specified messages can\u0027t be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can\u0027t be copied. A quiz \u003ca href\u003d\"#poll\"\u003epoll\u003c/a\u003e can be copied only if the value of the field \u003cem\u003ecorrect_option_id\u003c/em\u003e is known to the bot. The method is analogous to the method \u003ca href\u003d\"#forwardmessages\"\u003eforwardMessages\u003c/a\u003e, but the copied messages don\u0027t have a link to the original message. Album grouping is kept for copied messages. On success, an array of \u003ca href\u003d\"#messageid\"\u003eMessageId\u003c/a\u003e of the sent messages is returned.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -8565,6 +8803,126 @@
             "description": "Unique identifier of the message effect to be added to the message; for private chats only",
             "type": {
               "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "reply_parameters",
+            "description": "Description of the message to reply to",
+            "type": {
+              "name": "ReplyParameters"
+            },
+            "required": false
+          },
+          {
+            "name": "reply_markup",
+            "description": "Additional interface options. A JSON-serialized object for an \u003ca href\u003d\"/bots/features#inline-keyboards\"\u003einline keyboard\u003c/a\u003e, \u003ca href\u003d\"/bots/features#keyboards\"\u003ecustom reply keyboard\u003c/a\u003e, instructions to remove a reply keyboard or to force a reply from the user",
+            "type": {
+              "subclasses": {},
+              "deserializer": "",
+              "name": "KeyboardOption"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "name": "Message",
+          "superType": {
+            "subclasses": {},
+            "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "name": "MaybeInaccessibleMessage"
+          }
+        }
+      },
+      {
+        "name": "sendPaidMedia",
+        "description": "\u003cp\u003eUse this method to send paid media to channel chats. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          },
+          {
+            "name": "star_count",
+            "description": "The number of Telegram Stars that must be paid to buy access to the media",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          },
+          {
+            "name": "media",
+            "description": "A JSON-serialized array describing the media to be sent; up to 10 items",
+            "type": {
+              "elementType": {
+                "subclasses": {},
+                "deserializer": "",
+                "name": "InputPaidMedia"
+              },
+              "name": "List\u003cInputPaidMedia\u003e"
+            },
+            "required": true
+          },
+          {
+            "name": "caption",
+            "description": "Media caption, 0-1024 characters after entities parsing",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "parse_mode",
+            "description": "Mode for parsing entities in the media caption. See \u003ca href\u003d\"#formatting-options\"\u003eformatting options\u003c/a\u003e for more details.",
+            "type": {
+              "name": "ParseMode"
+            },
+            "required": false
+          },
+          {
+            "name": "caption_entities",
+            "description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of \u003cem\u003eparse_mode\u003c/em\u003e",
+            "type": {
+              "elementType": {
+                "name": "MessageEntity"
+              },
+              "name": "List\u003cMessageEntity\u003e"
+            },
+            "required": false
+          },
+          {
+            "name": "show_caption_above_media",
+            "description": "Pass \u003cem\u003eTrue\u003c/em\u003e, if the caption must be shown above the message media",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "disable_notification",
+            "description": "Sends the message \u003ca href\u003d\"https://telegram.org/blog/channels-2-0#silent-messages\"\u003esilently\u003c/a\u003e. Users will receive a notification with no sound.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
+          },
+          {
+            "name": "protect_content",
+            "description": "Protects the contents of the sent message from forwarding and saving",
+            "type": {
+              "name": "Boolean"
             },
             "required": false
           },
@@ -15906,7 +16264,7 @@
           },
           {
             "name": "invoice_payload",
-            "description": "Bot specified invoice payload",
+            "description": "Bot-specified invoice payload",
             "type": {
               "name": "String"
             },
@@ -15968,7 +16326,7 @@
           },
           {
             "name": "invoice_payload",
-            "description": "Bot specified invoice payload",
+            "description": "Bot-specified invoice payload",
             "type": {
               "name": "String"
             },
@@ -16022,7 +16380,7 @@
           },
           {
             "name": "invoice_payload",
-            "description": "Bot specified invoice payload",
+            "description": "Bot-specified invoice payload",
             "type": {
               "name": "String"
             },
@@ -16105,6 +16463,36 @@
         ]
       },
       {
+        "name": "TransactionPartnerUser",
+        "description": "\u003cp\u003eDescribes a transaction with a user.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "Type of the transaction partner, always “user”",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "user",
+            "description": "Information about the user",
+            "type": {
+              "name": "User"
+            },
+            "required": true
+          },
+          {
+            "name": "invoice_payload",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Bot-specified invoice payload",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          }
+        ]
+      },
+      {
         "name": "TransactionPartnerFragment",
         "description": "\u003cp\u003eDescribes a withdrawal transaction with Fragment.\u003c/p\u003e",
         "docFields": [
@@ -16129,22 +16517,14 @@
         ]
       },
       {
-        "name": "TransactionPartnerUser",
-        "description": "\u003cp\u003eDescribes a transaction with a user.\u003c/p\u003e",
+        "name": "TransactionPartnerTelegramAds",
+        "description": "\u003cp\u003eDescribes a withdrawal transaction to the Telegram Ads platform.\u003c/p\u003e",
         "docFields": [
           {
             "name": "type",
-            "description": "Type of the transaction partner, always “user”",
+            "description": "Type of the transaction partner, always “telegram_ads”",
             "type": {
               "name": "String"
-            },
-            "required": true
-          },
-          {
-            "name": "user",
-            "description": "Information about the user",
-            "type": {
-              "name": "User"
             },
             "required": true
           }

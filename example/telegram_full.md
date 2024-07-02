@@ -149,7 +149,7 @@
 
 #### ChatFullInfo
 
-    ChatFullInfo(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, is_forum: Boolean, accent_color_id: Integer, max_reaction_count: Integer, photo: ChatPhoto, active_usernames: List<String>, birthdate: Birthdate, business_intro: BusinessIntro, business_location: BusinessLocation, business_opening_hours: BusinessOpeningHours, personal_chat: Chat, available_reactions: List<ReactionType>, background_custom_emoji_id: String, profile_accent_color_id: Integer, profile_background_custom_emoji_id: String, emoji_status_custom_emoji_id: String, emoji_status_expiration_date: Integer, bio: String, has_private_forwards: Boolean, has_restricted_voice_and_video_messages: Boolean, join_to_send_messages: Boolean, join_by_request: Boolean, description: String, invite_link: String, pinned_message: Message, permissions: ChatPermissions, slow_mode_delay: Integer, unrestrict_boost_count: Integer, message_auto_delete_time: Integer, has_aggressive_anti_spam_enabled: Boolean, has_hidden_members: Boolean, has_protected_content: Boolean, has_visible_history: Boolean, sticker_set_name: String, can_set_sticker_set: Boolean, custom_emoji_sticker_set_name: String, linked_chat_id: Integer, location: ChatLocation)
+    ChatFullInfo(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, is_forum: Boolean, accent_color_id: Integer, max_reaction_count: Integer, photo: ChatPhoto, active_usernames: List<String>, birthdate: Birthdate, business_intro: BusinessIntro, business_location: BusinessLocation, business_opening_hours: BusinessOpeningHours, personal_chat: Chat, available_reactions: List<ReactionType>, background_custom_emoji_id: String, profile_accent_color_id: Integer, profile_background_custom_emoji_id: String, emoji_status_custom_emoji_id: String, emoji_status_expiration_date: Integer, bio: String, has_private_forwards: Boolean, has_restricted_voice_and_video_messages: Boolean, join_to_send_messages: Boolean, join_by_request: Boolean, description: String, invite_link: String, pinned_message: Message, permissions: ChatPermissions, can_send_paid_media: Boolean, slow_mode_delay: Integer, unrestrict_boost_count: Integer, message_auto_delete_time: Integer, has_aggressive_anti_spam_enabled: Boolean, has_hidden_members: Boolean, has_protected_content: Boolean, has_visible_history: Boolean, sticker_set_name: String, can_set_sticker_set: Boolean, custom_emoji_sticker_set_name: String, linked_chat_id: Integer, location: ChatLocation)
 
 <p>This object contains full information about a chat.</p>
 
@@ -186,6 +186,7 @@
 | invite_link | String | false | <em>Optional</em>. Primary invite link, for groups, supergroups and channel chats |
 | pinned_message | Message | false | <em>Optional</em>. The most recent pinned message (by sending date) |
 | permissions | ChatPermissions | false | <em>Optional</em>. Default chat member permissions, for groups and supergroups |
+| can_send_paid_media | Boolean | false | <em>Optional</em>. <em>True</em>, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats. |
 | slow_mode_delay | Integer | false | <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds |
 | unrestrict_boost_count | Integer | false | <em>Optional</em>. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions |
 | message_auto_delete_time | Integer | false | <em>Optional</em>. The time after which all messages sent to the chat will be automatically deleted; in seconds |
@@ -201,7 +202,7 @@
 
 #### Message
 
-    Message(message_id: Integer, message_thread_id: Integer, from: User, sender_chat: Chat, sender_boost_count: Integer, sender_business_bot: User, date: Integer, business_connection_id: String, chat: Chat, forward_origin: MessageOrigin, is_topic_message: Boolean, is_automatic_forward: Boolean, reply_to_message: Message, external_reply: ExternalReplyInfo, quote: TextQuote, reply_to_story: Story, via_bot: User, edit_date: Integer, has_protected_content: Boolean, is_from_offline: Boolean, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, effect_id: String, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, story: Story, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_media_spoiler: Boolean, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: MaybeInaccessibleMessage, invoice: Invoice, successful_payment: SuccessfulPayment, users_shared: UsersShared, chat_shared: ChatShared, connected_website: String, write_access_allowed: WriteAccessAllowed, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, boost_added: ChatBoostAdded, chat_background_set: ChatBackground, forum_topic_created: ForumTopicCreated, forum_topic_edited: ForumTopicEdited, forum_topic_closed: ForumTopicClosed, forum_topic_reopened: ForumTopicReopened, general_forum_topic_hidden: GeneralForumTopicHidden, general_forum_topic_unhidden: GeneralForumTopicUnhidden, giveaway_created: GiveawayCreated, giveaway: Giveaway, giveaway_winners: GiveawayWinners, giveaway_completed: GiveawayCompleted, video_chat_scheduled: VideoChatScheduled, video_chat_started: VideoChatStarted, video_chat_ended: VideoChatEnded, video_chat_participants_invited: VideoChatParticipantsInvited, web_app_data: WebAppData, reply_markup: InlineKeyboardMarkup)
+    Message(message_id: Integer, message_thread_id: Integer, from: User, sender_chat: Chat, sender_boost_count: Integer, sender_business_bot: User, date: Integer, business_connection_id: String, chat: Chat, forward_origin: MessageOrigin, is_topic_message: Boolean, is_automatic_forward: Boolean, reply_to_message: Message, external_reply: ExternalReplyInfo, quote: TextQuote, reply_to_story: Story, via_bot: User, edit_date: Integer, has_protected_content: Boolean, is_from_offline: Boolean, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, effect_id: String, animation: Animation, audio: Audio, document: Document, paid_media: PaidMediaInfo, photo: List<PhotoSize>, sticker: Sticker, story: Story, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_media_spoiler: Boolean, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: MaybeInaccessibleMessage, invoice: Invoice, successful_payment: SuccessfulPayment, users_shared: UsersShared, chat_shared: ChatShared, connected_website: String, write_access_allowed: WriteAccessAllowed, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, boost_added: ChatBoostAdded, chat_background_set: ChatBackground, forum_topic_created: ForumTopicCreated, forum_topic_edited: ForumTopicEdited, forum_topic_closed: ForumTopicClosed, forum_topic_reopened: ForumTopicReopened, general_forum_topic_hidden: GeneralForumTopicHidden, general_forum_topic_unhidden: GeneralForumTopicUnhidden, giveaway_created: GiveawayCreated, giveaway: Giveaway, giveaway_winners: GiveawayWinners, giveaway_completed: GiveawayCompleted, video_chat_scheduled: VideoChatScheduled, video_chat_started: VideoChatStarted, video_chat_ended: VideoChatEnded, video_chat_participants_invited: VideoChatParticipantsInvited, web_app_data: WebAppData, reply_markup: InlineKeyboardMarkup)
 
 <p>This object represents a message.</p>
 
@@ -236,13 +237,14 @@
 | animation | Animation | false | <em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set |
 | audio | Audio | false | <em>Optional</em>. Message is an audio file, information about the file |
 | document | Document | false | <em>Optional</em>. Message is a general file, information about the file |
+| paid_media | PaidMediaInfo | false | <em>Optional</em>. Message contains paid media; information about the paid media |
 | photo | List<PhotoSize> | false | <em>Optional</em>. Message is a photo, available sizes of the photo |
 | sticker | Sticker | false | <em>Optional</em>. Message is a sticker, information about the sticker |
 | story | Story | false | <em>Optional</em>. Message is a forwarded story |
 | video | Video | false | <em>Optional</em>. Message is a video, information about the video |
 | video_note | VideoNote | false | <em>Optional</em>. Message is a <a href="https://telegram.org/blog/video-messages-and-telescope">video note</a>, information about the video message |
 | voice | Voice | false | <em>Optional</em>. Message is a voice message, information about the file |
-| caption | String | false | <em>Optional</em>. Caption for the animation, audio, document, photo, video or voice |
+| caption | String | false | <em>Optional</em>. Caption for the animation, audio, document, paid media, photo, video or voice |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption |
 | show_caption_above_media | Boolean | false | <em>Optional</em>. True, if the caption must be shown above the message media |
 | has_media_spoiler | Boolean | false | <em>Optional</em>. <em>True</em>, if the message media is covered by a spoiler animation |
@@ -344,7 +346,7 @@
 
 #### ExternalReplyInfo
 
-    ExternalReplyInfo(origin: MessageOrigin, chat: Chat, message_id: Integer, link_preview_options: LinkPreviewOptions, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, story: Story, video: Video, video_note: VideoNote, voice: Voice, has_media_spoiler: Boolean, contact: Contact, dice: Dice, game: Game, giveaway: Giveaway, giveaway_winners: GiveawayWinners, invoice: Invoice, location: Location, poll: Poll, venue: Venue)
+    ExternalReplyInfo(origin: MessageOrigin, chat: Chat, message_id: Integer, link_preview_options: LinkPreviewOptions, animation: Animation, audio: Audio, document: Document, paid_media: PaidMediaInfo, photo: List<PhotoSize>, sticker: Sticker, story: Story, video: Video, video_note: VideoNote, voice: Voice, has_media_spoiler: Boolean, contact: Contact, dice: Dice, game: Game, giveaway: Giveaway, giveaway_winners: GiveawayWinners, invoice: Invoice, location: Location, poll: Poll, venue: Venue)
 
 <p>This object contains information about a message that is being replied to, which may come from another chat or forum topic.</p>
 
@@ -357,6 +359,7 @@
 | animation | Animation | false | <em>Optional</em>. Message is an animation, information about the animation |
 | audio | Audio | false | <em>Optional</em>. Message is an audio file, information about the file |
 | document | Document | false | <em>Optional</em>. Message is a general file, information about the file |
+| paid_media | PaidMediaInfo | false | <em>Optional</em>. Message contains paid media; information about the paid media |
 | photo | List<PhotoSize> | false | <em>Optional</em>. Message is a photo, available sizes of the photo |
 | sticker | Sticker | false | <em>Optional</em>. Message is a sticker, information about the sticker |
 | story | Story | false | <em>Optional</em>. Message is a forwarded story |
@@ -465,12 +468,12 @@
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| width | Integer | true | Video width as defined by sender |
-| height | Integer | true | Video height as defined by sender |
-| duration | Integer | true | Duration of the video in seconds as defined by sender |
-| thumbnail | PhotoSize | false | <em>Optional</em>. Animation thumbnail as defined by sender |
-| file_name | String | false | <em>Optional</em>. Original animation filename as defined by sender |
-| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
+| width | Integer | true | Video width as defined by the sender |
+| height | Integer | true | Video height as defined by the sender |
+| duration | Integer | true | Duration of the video in seconds as defined by the sender |
+| thumbnail | PhotoSize | false | <em>Optional</em>. Animation thumbnail as defined by the sender |
+| file_name | String | false | <em>Optional</em>. Original animation filename as defined by the sender |
+| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by the sender |
 | file_size | Integer | false | <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value. |
 
 #### Audio
@@ -483,11 +486,11 @@
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| duration | Integer | true | Duration of the audio in seconds as defined by sender |
-| performer | String | false | <em>Optional</em>. Performer of the audio as defined by sender or by audio tags |
-| title | String | false | <em>Optional</em>. Title of the audio as defined by sender or by audio tags |
-| file_name | String | false | <em>Optional</em>. Original filename as defined by sender |
-| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
+| duration | Integer | true | Duration of the audio in seconds as defined by the sender |
+| performer | String | false | <em>Optional</em>. Performer of the audio as defined by the sender or by audio tags |
+| title | String | false | <em>Optional</em>. Title of the audio as defined by the sender or by audio tags |
+| file_name | String | false | <em>Optional</em>. Original filename as defined by the sender |
+| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by the sender |
 | file_size | Integer | false | <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value. |
 | thumbnail | PhotoSize | false | <em>Optional</em>. Thumbnail of the album cover to which the music file belongs |
 
@@ -501,9 +504,9 @@
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| thumbnail | PhotoSize | false | <em>Optional</em>. Document thumbnail as defined by sender |
-| file_name | String | false | <em>Optional</em>. Original filename as defined by sender |
-| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
+| thumbnail | PhotoSize | false | <em>Optional</em>. Document thumbnail as defined by the sender |
+| file_name | String | false | <em>Optional</em>. Original filename as defined by the sender |
+| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by the sender |
 | file_size | Integer | false | <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value. |
 
 #### Story
@@ -527,12 +530,12 @@
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| width | Integer | true | Video width as defined by sender |
-| height | Integer | true | Video height as defined by sender |
-| duration | Integer | true | Duration of the video in seconds as defined by sender |
+| width | Integer | true | Video width as defined by the sender |
+| height | Integer | true | Video height as defined by the sender |
+| duration | Integer | true | Duration of the video in seconds as defined by the sender |
 | thumbnail | PhotoSize | false | <em>Optional</em>. Video thumbnail |
-| file_name | String | false | <em>Optional</em>. Original filename as defined by sender |
-| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
+| file_name | String | false | <em>Optional</em>. Original filename as defined by the sender |
+| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by the sender |
 | file_size | Integer | false | <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value. |
 
 #### VideoNote
@@ -545,8 +548,8 @@
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| length | Integer | true | Video width and height (diameter of the video message) as defined by sender |
-| duration | Integer | true | Duration of the video in seconds as defined by sender |
+| length | Integer | true | Video width and height (diameter of the video message) as defined by the sender |
+| duration | Integer | true | Duration of the video in seconds as defined by the sender |
 | thumbnail | PhotoSize | false | <em>Optional</em>. Video thumbnail |
 | file_size | Integer | false | <em>Optional</em>. File size in bytes |
 
@@ -560,9 +563,55 @@
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| duration | Integer | true | Duration of the audio in seconds as defined by sender |
-| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
+| duration | Integer | true | Duration of the audio in seconds as defined by the sender |
+| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by the sender |
 | file_size | Integer | false | <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value. |
+
+#### PaidMediaInfo
+
+    PaidMediaInfo(star_count: Integer, paid_media: List<PaidMedia>)
+
+<p>Describes the paid media added to a message.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| star_count | Integer | true | The number of Telegram Stars that must be paid to buy access to the media |
+| paid_media | List<PaidMedia> | true | Information about the paid media |
+
+#### PaidMediaPreview
+
+    PaidMediaPreview(type: String, width: Integer, height: Integer, duration: Integer)
+
+<p>The paid media isn't available before the payment.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the paid media, always “preview” |
+| width | Integer | false | <em>Optional</em>. Media width as defined by the sender |
+| height | Integer | false | <em>Optional</em>. Media height as defined by the sender |
+| duration | Integer | false | <em>Optional</em>. Duration of the media in seconds as defined by the sender |
+
+#### PaidMediaPhoto
+
+    PaidMediaPhoto(type: String, photo: List<PhotoSize>)
+
+<p>The paid media is a photo.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the paid media, always “photo” |
+| photo | List<PhotoSize> | true | The photo |
+
+#### PaidMediaVideo
+
+    PaidMediaVideo(type: String, video: Video)
+
+<p>The paid media is a video.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the paid media, always “video” |
+| video | Video | true | The video |
 
 #### Contact
 
@@ -605,7 +654,7 @@
 
     InputPollOption(text: String, text_parse_mode: String, text_entities: List<MessageEntity>)
 
-<p>This object contains information about one answer option in a poll to send.</p>
+<p>This object contains information about one answer option in a poll to be sent.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -657,8 +706,8 @@
 
 | name | type | required | description |
 |---|---|---|---|
-| latitude | Float | true | Latitude as defined by sender |
-| longitude | Float | true | Longitude as defined by sender |
+| latitude | Float | true | Latitude as defined by the sender |
+| longitude | Float | true | Longitude as defined by the sender |
 | horizontal_accuracy | Float | false | <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500 |
 | live_period | Integer | false | <em>Optional</em>. Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only. |
 | heading | Integer | false | <em>Optional</em>. The direction in which user is moving, in degrees; 1-360. For active live locations only. |
@@ -1696,7 +1745,7 @@
 |---|---|---|---|
 | type | String | true | Type of the button, must be <em>web_app</em> |
 | text | String | true | Text on the button |
-| web_app | WebAppInfo | true | Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. |
+| web_app | WebAppInfo | true | Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Alternatively, a <code>t.me</code> link to a Web App of the bot can be specified in the object instead of the Web App's URL, in which case the Web App will be opened as if the user pressed the link. |
 
 #### MenuButtonDefault
 
@@ -1919,6 +1968,33 @@
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | disable_content_type_detection | Boolean | false | <em>Optional</em>. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always <em>True</em>, if the document is sent as part of an album. |
 
+#### InputPaidMediaPhoto
+
+    InputPaidMediaPhoto(type: String, media: String)
+
+<p>The paid media to send is a photo.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the media, must be <em>photo</em> |
+| media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a> |
+
+#### InputPaidMediaVideo
+
+    InputPaidMediaVideo(type: String, media: String, thumbnail: InputFileOrString, width: Integer, height: Integer, duration: Integer, supports_streaming: Boolean)
+
+<p>The paid media to send is a video.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the media, must be <em>video</em> |
+| media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a> |
+| thumbnail | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
+| width | Integer | false | <em>Optional</em>. Video width |
+| height | Integer | false | <em>Optional</em>. Video height |
+| duration | Integer | false | <em>Optional</em>. Video duration in seconds |
+| supports_streaming | Boolean | false | <em>Optional</em>. Pass <em>True</em> if the uploaded video is suitable for streaming |
+
 
 
 ## Available methods
@@ -1991,7 +2067,7 @@
 
     copyMessage(chat_id: IntegerOrString, message_thread_id: Integer, from_chat_id: IntegerOrString, message_id: Integer, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
-<p>Use this method to copy messages of any kind. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
+<p>Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -2012,7 +2088,7 @@
 
     copyMessages(chat_id: IntegerOrString, message_thread_id: Integer, from_chat_id: IntegerOrString, message_ids: List<Integer>, disable_notification: Boolean, protect_content: Boolean, remove_caption: Boolean)
 
-<p>Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessages">forwardMessages</a>, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of <a href="#messageid">MessageId</a> of the sent messages is returned.</p>
+<p>Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessages">forwardMessages</a>, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of <a href="#messageid">MessageId</a> of the sent messages is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -2190,6 +2266,26 @@
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
+| reply_parameters | ReplyParameters | false | Description of the message to reply to |
+| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
+
+#### sendPaidMedia
+
+    sendPaidMedia(chat_id: IntegerOrString, star_count: Integer, media: List<InputPaidMedia>, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+
+<p>Use this method to send paid media to channel chats. On success, the sent <a href="#message">Message</a> is returned.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
+| star_count | Integer | true | The number of Telegram Stars that must be paid to buy access to the media |
+| media | List<InputPaidMedia> | true | A JSON-serialized array describing the media to be sent; up to 10 items |
+| caption | String | false | Media caption, 0-1024 characters after entities parsing |
+| parse_mode | ParseMode | false | Mode for parsing entities in the media caption. See <a href="#formatting-options">formatting options</a> for more details. |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | Pass <em>True</em>, if the caption must be shown above the message media |
+| disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
@@ -4082,7 +4178,7 @@
 |---|---|---|---|
 | currency | String | true | Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a> |
 | total_amount | Integer | true | Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). |
-| invoice_payload | String | true | Bot specified invoice payload |
+| invoice_payload | String | true | Bot-specified invoice payload |
 | shipping_option_id | String | false | <em>Optional</em>. Identifier of the shipping option chosen by the user |
 | order_info | OrderInfo | false | <em>Optional</em>. Order information provided by the user |
 | telegram_payment_charge_id | String | true | Telegram payment identifier |
@@ -4098,7 +4194,7 @@
 |---|---|---|---|
 | id | String | true | Unique query identifier |
 | from | User | true | User who sent the query |
-| invoice_payload | String | true | Bot specified invoice payload |
+| invoice_payload | String | true | Bot-specified invoice payload |
 | shipping_address | ShippingAddress | true | User specified shipping address |
 
 #### PreCheckoutQuery
@@ -4113,7 +4209,7 @@
 | from | User | true | User who sent the query |
 | currency | String | true | Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a> |
 | total_amount | Integer | true | Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). |
-| invoice_payload | String | true | Bot specified invoice payload |
+| invoice_payload | String | true | Bot-specified invoice payload |
 | shipping_option_id | String | false | <em>Optional</em>. Identifier of the shipping option chosen by the user |
 | order_info | OrderInfo | false | <em>Optional</em>. Order information provided by the user |
 
@@ -4149,6 +4245,18 @@
 |---|---|---|---|
 | type | String | true | Type of the state, always “failed” |
 
+#### TransactionPartnerUser
+
+    TransactionPartnerUser(type: String, user: User, invoice_payload: String)
+
+<p>Describes a transaction with a user.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the transaction partner, always “user” |
+| user | User | true | Information about the user |
+| invoice_payload | String | false | <em>Optional</em>. Bot-specified invoice payload |
+
 #### TransactionPartnerFragment
 
     TransactionPartnerFragment(type: String, withdrawal_state: RevenueWithdrawalState)
@@ -4160,16 +4268,15 @@
 | type | String | true | Type of the transaction partner, always “fragment” |
 | withdrawal_state | RevenueWithdrawalState | false | <em>Optional</em>. State of the transaction if the transaction is outgoing |
 
-#### TransactionPartnerUser
+#### TransactionPartnerTelegramAds
 
-    TransactionPartnerUser(type: String, user: User)
+    TransactionPartnerTelegramAds(type: String)
 
-<p>Describes a transaction with a user.</p>
+<p>Describes a withdrawal transaction to the Telegram Ads platform.</p>
 
 | name | type | required | description |
 |---|---|---|---|
-| type | String | true | Type of the transaction partner, always “user” |
-| user | User | true | Information about the user |
+| type | String | true | Type of the transaction partner, always “telegram_ads” |
 
 #### TransactionPartnerOther
 

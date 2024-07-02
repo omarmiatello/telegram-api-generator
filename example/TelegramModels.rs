@@ -277,6 +277,7 @@ pub struct Chat {
  * @property invite_link <em>Optional</em>. Primary invite link, for groups, supergroups and channel chats
  * @property pinned_message <em>Optional</em>. The most recent pinned message (by sending date)
  * @property permissions <em>Optional</em>. Default chat member permissions, for groups and supergroups
+ * @property can_send_paid_media <em>Optional</em>. <em>True</em>, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.
  * @property slow_mode_delay <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds
  * @property unrestrict_boost_count <em>Optional</em>. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions
  * @property message_auto_delete_time <em>Optional</em>. The time after which all messages sent to the chat will be automatically deleted; in seconds
@@ -384,6 +385,9 @@ pub struct ChatFullInfo {
     /// <em>Optional</em>. Default chat member permissions, for groups and supergroups
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<ChatPermissions>,
+    /// <em>Optional</em>. <em>True</em>, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_send_paid_media: Option<bool>,
     /// <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub slow_mode_delay: Option<Integer>,
@@ -454,13 +458,14 @@ pub struct ChatFullInfo {
  * @property animation <em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set
  * @property audio <em>Optional</em>. Message is an audio file, information about the file
  * @property document <em>Optional</em>. Message is a general file, information about the file
+ * @property paid_media <em>Optional</em>. Message contains paid media; information about the paid media
  * @property photo <em>Optional</em>. Message is a photo, available sizes of the photo
  * @property sticker <em>Optional</em>. Message is a sticker, information about the sticker
  * @property story <em>Optional</em>. Message is a forwarded story
  * @property video <em>Optional</em>. Message is a video, information about the video
  * @property video_note <em>Optional</em>. Message is a <a href="https://telegram.org/blog/video-messages-and-telescope">video note</a>, information about the video message
  * @property voice <em>Optional</em>. Message is a voice message, information about the file
- * @property caption <em>Optional</em>. Caption for the animation, audio, document, photo, video or voice
+ * @property caption <em>Optional</em>. Caption for the animation, audio, document, paid media, photo, video or voice
  * @property caption_entities <em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption
  * @property show_caption_above_media <em>Optional</em>. True, if the caption must be shown above the message media
  * @property has_media_spoiler <em>Optional</em>. <em>True</em>, if the message media is covered by a spoiler animation
@@ -597,6 +602,9 @@ pub struct Message {
     /// <em>Optional</em>. Message is a general file, information about the file
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<Document>,
+    /// <em>Optional</em>. Message contains paid media; information about the paid media
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid_media: Option<PaidMediaInfo>,
     /// <em>Optional</em>. Message is a photo, available sizes of the photo
     #[serde(skip_serializing_if = "Option::is_none")]
     pub photo: Option<Vec<PhotoSize>>,
@@ -615,7 +623,7 @@ pub struct Message {
     /// <em>Optional</em>. Message is a voice message, information about the file
     #[serde(skip_serializing_if = "Option::is_none")]
     pub voice: Option<Voice>,
-    /// <em>Optional</em>. Caption for the animation, audio, document, photo, video or voice
+    /// <em>Optional</em>. Caption for the animation, audio, document, paid media, photo, video or voice
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
     /// <em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption
@@ -863,6 +871,7 @@ pub struct TextQuote {
  * @property animation <em>Optional</em>. Message is an animation, information about the animation
  * @property audio <em>Optional</em>. Message is an audio file, information about the file
  * @property document <em>Optional</em>. Message is a general file, information about the file
+ * @property paid_media <em>Optional</em>. Message contains paid media; information about the paid media
  * @property photo <em>Optional</em>. Message is a photo, available sizes of the photo
  * @property sticker <em>Optional</em>. Message is a sticker, information about the sticker
  * @property story <em>Optional</em>. Message is a forwarded story
@@ -904,6 +913,9 @@ pub struct ExternalReplyInfo {
     /// <em>Optional</em>. Message is a general file, information about the file
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<Document>,
+    /// <em>Optional</em>. Message contains paid media; information about the paid media
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid_media: Option<PaidMediaInfo>,
     /// <em>Optional</em>. Message is a photo, available sizes of the photo
     #[serde(skip_serializing_if = "Option::is_none")]
     pub photo: Option<Vec<PhotoSize>>,
@@ -1113,12 +1125,12 @@ pub struct PhotoSize {
  *
  * @property file_id Identifier for this file, which can be used to download or reuse the file
  * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property width Video width as defined by sender
- * @property height Video height as defined by sender
- * @property duration Duration of the video in seconds as defined by sender
- * @property thumbnail <em>Optional</em>. Animation thumbnail as defined by sender
- * @property file_name <em>Optional</em>. Original animation filename as defined by sender
- * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
+ * @property width Video width as defined by the sender
+ * @property height Video height as defined by the sender
+ * @property duration Duration of the video in seconds as defined by the sender
+ * @property thumbnail <em>Optional</em>. Animation thumbnail as defined by the sender
+ * @property file_name <em>Optional</em>. Original animation filename as defined by the sender
+ * @property mime_type <em>Optional</em>. MIME type of the file as defined by the sender
  * @property file_size <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
  *
  * @constructor Creates a [Animation].
@@ -1129,19 +1141,19 @@ pub struct Animation {
     pub file_id: String,
     /// Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// Video width as defined by sender
+    /// Video width as defined by the sender
     pub width: Integer,
-    /// Video height as defined by sender
+    /// Video height as defined by the sender
     pub height: Integer,
-    /// Duration of the video in seconds as defined by sender
+    /// Duration of the video in seconds as defined by the sender
     pub duration: Integer,
-    /// <em>Optional</em>. Animation thumbnail as defined by sender
+    /// <em>Optional</em>. Animation thumbnail as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<PhotoSize>,
-    /// <em>Optional</em>. Original animation filename as defined by sender
+    /// <em>Optional</em>. Original animation filename as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
-    /// <em>Optional</em>. MIME type of the file as defined by sender
+    /// <em>Optional</em>. MIME type of the file as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
     /// <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
@@ -1154,11 +1166,11 @@ pub struct Animation {
  *
  * @property file_id Identifier for this file, which can be used to download or reuse the file
  * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property duration Duration of the audio in seconds as defined by sender
- * @property performer <em>Optional</em>. Performer of the audio as defined by sender or by audio tags
- * @property title <em>Optional</em>. Title of the audio as defined by sender or by audio tags
- * @property file_name <em>Optional</em>. Original filename as defined by sender
- * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
+ * @property duration Duration of the audio in seconds as defined by the sender
+ * @property performer <em>Optional</em>. Performer of the audio as defined by the sender or by audio tags
+ * @property title <em>Optional</em>. Title of the audio as defined by the sender or by audio tags
+ * @property file_name <em>Optional</em>. Original filename as defined by the sender
+ * @property mime_type <em>Optional</em>. MIME type of the file as defined by the sender
  * @property file_size <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
  * @property thumbnail <em>Optional</em>. Thumbnail of the album cover to which the music file belongs
  *
@@ -1170,18 +1182,18 @@ pub struct Audio {
     pub file_id: String,
     /// Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// Duration of the audio in seconds as defined by sender
+    /// Duration of the audio in seconds as defined by the sender
     pub duration: Integer,
-    /// <em>Optional</em>. Performer of the audio as defined by sender or by audio tags
+    /// <em>Optional</em>. Performer of the audio as defined by the sender or by audio tags
     #[serde(skip_serializing_if = "Option::is_none")]
     pub performer: Option<String>,
-    /// <em>Optional</em>. Title of the audio as defined by sender or by audio tags
+    /// <em>Optional</em>. Title of the audio as defined by the sender or by audio tags
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
-    /// <em>Optional</em>. Original filename as defined by sender
+    /// <em>Optional</em>. Original filename as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
-    /// <em>Optional</em>. MIME type of the file as defined by sender
+    /// <em>Optional</em>. MIME type of the file as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
     /// <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
@@ -1197,9 +1209,9 @@ pub struct Audio {
  *
  * @property file_id Identifier for this file, which can be used to download or reuse the file
  * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property thumbnail <em>Optional</em>. Document thumbnail as defined by sender
- * @property file_name <em>Optional</em>. Original filename as defined by sender
- * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
+ * @property thumbnail <em>Optional</em>. Document thumbnail as defined by the sender
+ * @property file_name <em>Optional</em>. Original filename as defined by the sender
+ * @property mime_type <em>Optional</em>. MIME type of the file as defined by the sender
  * @property file_size <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
  *
  * @constructor Creates a [Document].
@@ -1210,13 +1222,13 @@ pub struct Document {
     pub file_id: String,
     /// Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// <em>Optional</em>. Document thumbnail as defined by sender
+    /// <em>Optional</em>. Document thumbnail as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<PhotoSize>,
-    /// <em>Optional</em>. Original filename as defined by sender
+    /// <em>Optional</em>. Original filename as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
-    /// <em>Optional</em>. MIME type of the file as defined by sender
+    /// <em>Optional</em>. MIME type of the file as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
     /// <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
@@ -1245,12 +1257,12 @@ pub struct Story {
  *
  * @property file_id Identifier for this file, which can be used to download or reuse the file
  * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property width Video width as defined by sender
- * @property height Video height as defined by sender
- * @property duration Duration of the video in seconds as defined by sender
+ * @property width Video width as defined by the sender
+ * @property height Video height as defined by the sender
+ * @property duration Duration of the video in seconds as defined by the sender
  * @property thumbnail <em>Optional</em>. Video thumbnail
- * @property file_name <em>Optional</em>. Original filename as defined by sender
- * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
+ * @property file_name <em>Optional</em>. Original filename as defined by the sender
+ * @property mime_type <em>Optional</em>. MIME type of the file as defined by the sender
  * @property file_size <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
  *
  * @constructor Creates a [Video].
@@ -1261,19 +1273,19 @@ pub struct Video {
     pub file_id: String,
     /// Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// Video width as defined by sender
+    /// Video width as defined by the sender
     pub width: Integer,
-    /// Video height as defined by sender
+    /// Video height as defined by the sender
     pub height: Integer,
-    /// Duration of the video in seconds as defined by sender
+    /// Duration of the video in seconds as defined by the sender
     pub duration: Integer,
     /// <em>Optional</em>. Video thumbnail
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<PhotoSize>,
-    /// <em>Optional</em>. Original filename as defined by sender
+    /// <em>Optional</em>. Original filename as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
-    /// <em>Optional</em>. MIME type of the file as defined by sender
+    /// <em>Optional</em>. MIME type of the file as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
     /// <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
@@ -1286,8 +1298,8 @@ pub struct Video {
  *
  * @property file_id Identifier for this file, which can be used to download or reuse the file
  * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property length Video width and height (diameter of the video message) as defined by sender
- * @property duration Duration of the video in seconds as defined by sender
+ * @property length Video width and height (diameter of the video message) as defined by the sender
+ * @property duration Duration of the video in seconds as defined by the sender
  * @property thumbnail <em>Optional</em>. Video thumbnail
  * @property file_size <em>Optional</em>. File size in bytes
  *
@@ -1299,9 +1311,9 @@ pub struct VideoNote {
     pub file_id: String,
     /// Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// Video width and height (diameter of the video message) as defined by sender
+    /// Video width and height (diameter of the video message) as defined by the sender
     pub length: Integer,
-    /// Duration of the video in seconds as defined by sender
+    /// Duration of the video in seconds as defined by the sender
     pub duration: Integer,
     /// <em>Optional</em>. Video thumbnail
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1316,8 +1328,8 @@ pub struct VideoNote {
  *
  * @property file_id Identifier for this file, which can be used to download or reuse the file
  * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property duration Duration of the audio in seconds as defined by sender
- * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
+ * @property duration Duration of the audio in seconds as defined by the sender
+ * @property mime_type <em>Optional</em>. MIME type of the file as defined by the sender
  * @property file_size <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
  *
  * @constructor Creates a [Voice].
@@ -1328,14 +1340,90 @@ pub struct Voice {
     pub file_id: String,
     /// Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// Duration of the audio in seconds as defined by sender
+    /// Duration of the audio in seconds as defined by the sender
     pub duration: Integer,
-    /// <em>Optional</em>. MIME type of the file as defined by sender
+    /// <em>Optional</em>. MIME type of the file as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
     /// <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>
+}
+
+/**
+ * <p>Describes the paid media added to a message.</p>
+ *
+ * @property star_count The number of Telegram Stars that must be paid to buy access to the media
+ * @property paid_media Information about the paid media
+ *
+ * @constructor Creates a [PaidMediaInfo].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct PaidMediaInfo {
+    /// The number of Telegram Stars that must be paid to buy access to the media
+    pub star_count: Integer,
+    /// Information about the paid media
+    pub paid_media: Vec<PaidMedia>
+}
+
+/**
+ * <p>The paid media isn't available before the payment.</p>
+ *
+ * @property type Type of the paid media, always “preview”
+ * @property width <em>Optional</em>. Media width as defined by the sender
+ * @property height <em>Optional</em>. Media height as defined by the sender
+ * @property duration <em>Optional</em>. Duration of the media in seconds as defined by the sender
+ *
+ * @constructor Creates a [PaidMediaPreview].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct PaidMediaPreview {
+    /// Type of the paid media, always “preview”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// <em>Optional</em>. Media width as defined by the sender
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub width: Option<Integer>,
+    /// <em>Optional</em>. Media height as defined by the sender
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub height: Option<Integer>,
+    /// <em>Optional</em>. Duration of the media in seconds as defined by the sender
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<Integer>
+}
+
+/**
+ * <p>The paid media is a photo.</p>
+ *
+ * @property type Type of the paid media, always “photo”
+ * @property photo The photo
+ *
+ * @constructor Creates a [PaidMediaPhoto].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct PaidMediaPhoto {
+    /// Type of the paid media, always “photo”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// The photo
+    pub photo: Vec<PhotoSize>
+}
+
+/**
+ * <p>The paid media is a video.</p>
+ *
+ * @property type Type of the paid media, always “video”
+ * @property video The video
+ *
+ * @constructor Creates a [PaidMediaVideo].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct PaidMediaVideo {
+    /// Type of the paid media, always “video”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// The video
+    pub video: Video
 }
 
 /**
@@ -1403,7 +1491,7 @@ pub struct PollOption {
 }
 
 /**
- * <p>This object contains information about one answer option in a poll to send.</p>
+ * <p>This object contains information about one answer option in a poll to be sent.</p>
  *
  * @property text Option text, 1-100 characters
  * @property text_parse_mode <em>Optional</em>. Mode for parsing entities in the text. See <a href="#formatting-options">formatting options</a> for more details. Currently, only custom emoji entities are allowed
@@ -1509,8 +1597,8 @@ pub struct Poll {
 /**
  * <p>This object represents a point on the map.</p>
  *
- * @property latitude Latitude as defined by sender
- * @property longitude Longitude as defined by sender
+ * @property latitude Latitude as defined by the sender
+ * @property longitude Longitude as defined by the sender
  * @property horizontal_accuracy <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500
  * @property live_period <em>Optional</em>. Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only.
  * @property heading <em>Optional</em>. The direction in which user is moving, in degrees; 1-360. For active live locations only.
@@ -1520,9 +1608,9 @@ pub struct Poll {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct Location {
-    /// Latitude as defined by sender
+    /// Latitude as defined by the sender
     pub latitude: Float,
-    /// Longitude as defined by sender
+    /// Longitude as defined by the sender
     pub longitude: Float,
     /// <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3427,7 +3515,7 @@ pub struct MenuButtonCommands {
  *
  * @property type Type of the button, must be <em>web_app</em>
  * @property text Text on the button
- * @property web_app Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>.
+ * @property web_app Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Alternatively, a <code>t.me</code> link to a Web App of the bot can be specified in the object instead of the Web App's URL, in which case the Web App will be opened as if the user pressed the link.
  *
  * @constructor Creates a [MenuButtonWebApp].
  * */
@@ -3438,7 +3526,7 @@ pub struct MenuButtonWebApp {
     pub type_: String,
     /// Text on the button
     pub text: String,
-    /// Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>.
+    /// Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Alternatively, a <code>t.me</code> link to a Web App of the bot can be specified in the object instead of the Web App's URL, in which case the Web App will be opened as if the user pressed the link.
     pub web_app: WebAppInfo
 }
 
@@ -3877,6 +3965,60 @@ pub struct InputMediaDocument {
     /// <em>Optional</em>. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always <em>True</em>, if the document is sent as part of an album.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_content_type_detection: Option<bool>
+}
+
+/**
+ * <p>The paid media to send is a photo.</p>
+ *
+ * @property type Type of the media, must be <em>photo</em>
+ * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+ *
+ * @constructor Creates a [InputPaidMediaPhoto].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct InputPaidMediaPhoto {
+    /// Type of the media, must be <em>photo</em>
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+    pub media: String
+}
+
+/**
+ * <p>The paid media to send is a video.</p>
+ *
+ * @property type Type of the media, must be <em>video</em>
+ * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+ * @property thumbnail <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+ * @property width <em>Optional</em>. Video width
+ * @property height <em>Optional</em>. Video height
+ * @property duration <em>Optional</em>. Video duration in seconds
+ * @property supports_streaming <em>Optional</em>. Pass <em>True</em> if the uploaded video is suitable for streaming
+ *
+ * @constructor Creates a [InputPaidMediaVideo].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct InputPaidMediaVideo {
+    /// Type of the media, must be <em>video</em>
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+    pub media: String,
+    /// <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub thumbnail: Option<String>,
+    /// <em>Optional</em>. Video width
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub width: Option<Integer>,
+    /// <em>Optional</em>. Video height
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub height: Option<Integer>,
+    /// <em>Optional</em>. Video duration in seconds
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<Integer>,
+    /// <em>Optional</em>. Pass <em>True</em> if the uploaded video is suitable for streaming
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub supports_streaming: Option<bool>
 }
 
 
@@ -5480,7 +5622,7 @@ pub struct ShippingOption {
  *
  * @property currency Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>
  * @property total_amount Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
- * @property invoice_payload Bot specified invoice payload
+ * @property invoice_payload Bot-specified invoice payload
  * @property shipping_option_id <em>Optional</em>. Identifier of the shipping option chosen by the user
  * @property order_info <em>Optional</em>. Order information provided by the user
  * @property telegram_payment_charge_id Telegram payment identifier
@@ -5494,7 +5636,7 @@ pub struct SuccessfulPayment {
     pub currency: String,
     /// Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
     pub total_amount: Integer,
-    /// Bot specified invoice payload
+    /// Bot-specified invoice payload
     pub invoice_payload: String,
     /// <em>Optional</em>. Identifier of the shipping option chosen by the user
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5513,7 +5655,7 @@ pub struct SuccessfulPayment {
  *
  * @property id Unique query identifier
  * @property from User who sent the query
- * @property invoice_payload Bot specified invoice payload
+ * @property invoice_payload Bot-specified invoice payload
  * @property shipping_address User specified shipping address
  *
  * @constructor Creates a [ShippingQuery].
@@ -5524,7 +5666,7 @@ pub struct ShippingQuery {
     pub id: String,
     /// User who sent the query
     pub from: User,
-    /// Bot specified invoice payload
+    /// Bot-specified invoice payload
     pub invoice_payload: String,
     /// User specified shipping address
     pub shipping_address: ShippingAddress
@@ -5537,7 +5679,7 @@ pub struct ShippingQuery {
  * @property from User who sent the query
  * @property currency Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>
  * @property total_amount Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
- * @property invoice_payload Bot specified invoice payload
+ * @property invoice_payload Bot-specified invoice payload
  * @property shipping_option_id <em>Optional</em>. Identifier of the shipping option chosen by the user
  * @property order_info <em>Optional</em>. Order information provided by the user
  *
@@ -5553,7 +5695,7 @@ pub struct PreCheckoutQuery {
     pub currency: String,
     /// Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
     pub total_amount: Integer,
-    /// Bot specified invoice payload
+    /// Bot-specified invoice payload
     pub invoice_payload: String,
     /// <em>Optional</em>. Identifier of the shipping option chosen by the user
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5612,6 +5754,27 @@ pub struct RevenueWithdrawalStateFailed {
 }
 
 /**
+ * <p>Describes a transaction with a user.</p>
+ *
+ * @property type Type of the transaction partner, always “user”
+ * @property user Information about the user
+ * @property invoice_payload <em>Optional</em>. Bot-specified invoice payload
+ *
+ * @constructor Creates a [TransactionPartnerUser].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct TransactionPartnerUser {
+    /// Type of the transaction partner, always “user”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// Information about the user
+    pub user: User,
+    /// <em>Optional</em>. Bot-specified invoice payload
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_payload: Option<String>
+}
+
+/**
  * <p>Describes a withdrawal transaction with Fragment.</p>
  *
  * @property type Type of the transaction partner, always “fragment”
@@ -5630,20 +5793,17 @@ pub struct TransactionPartnerFragment {
 }
 
 /**
- * <p>Describes a transaction with a user.</p>
+ * <p>Describes a withdrawal transaction to the Telegram Ads platform.</p>
  *
- * @property type Type of the transaction partner, always “user”
- * @property user Information about the user
+ * @property type Type of the transaction partner, always “telegram_ads”
  *
- * @constructor Creates a [TransactionPartnerUser].
+ * @constructor Creates a [TransactionPartnerTelegramAds].
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
-pub struct TransactionPartnerUser {
-    /// Type of the transaction partner, always “user”
+pub struct TransactionPartnerTelegramAds {
+    /// Type of the transaction partner, always “telegram_ads”
     #[serde(rename = "type")]
-    pub type_: String,
-    /// Information about the user
-    pub user: User
+    pub type_: String
 }
 
 /**
@@ -6243,7 +6403,7 @@ pub struct ForwardMessagesRequest {
 }
 
 /**
- * <p>Use this method to copy messages of any kind. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
+ * <p>Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_thread_id Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
@@ -6287,7 +6447,7 @@ pub struct CopyMessageRequest {
 }
 
 /**
- * <p>Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessages">forwardMessages</a>, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of <a href="#messageid">MessageId</a> of the sent messages is returned.</p>
+ * <p>Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessages">forwardMessages</a>, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of <a href="#messageid">MessageId</a> of the sent messages is returned.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_thread_id Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
@@ -6683,6 +6843,47 @@ pub struct SendVideoNoteRequest {
     pub protect_content: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
+    /// Description of the message to reply to
+    pub reply_parameters: Option<ReplyParameters>,
+    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
+    pub reply_markup: Option<KeyboardOption>
+}
+
+/**
+ * <p>Use this method to send paid media to channel chats. On success, the sent <a href="#message">Message</a> is returned.</p>
+ *
+ * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+ * @property star_count The number of Telegram Stars that must be paid to buy access to the media
+ * @property media A JSON-serialized array describing the media to be sent; up to 10 items
+ * @property caption Media caption, 0-1024 characters after entities parsing
+ * @property parse_mode Mode for parsing entities in the media caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+ * @property show_caption_above_media Pass <em>True</em>, if the caption must be shown above the message media
+ * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property reply_parameters Description of the message to reply to
+ * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct SendPaidMediaRequest {
+    /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+    pub chat_id: String,
+    /// The number of Telegram Stars that must be paid to buy access to the media
+    pub star_count: Integer,
+    /// A JSON-serialized array describing the media to be sent; up to 10 items
+    pub media: Vec<InputPaidMedia>,
+    /// Media caption, 0-1024 characters after entities parsing
+    pub caption: Option<String>,
+    /// Mode for parsing entities in the media caption. See <a href="#formatting-options">formatting options</a> for more details.
+    pub parse_mode: Option<ParseMode>,
+    /// A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    pub caption_entities: Option<Vec<MessageEntity>>,
+    /// Pass <em>True</em>, if the caption must be shown above the message media
+    pub show_caption_above_media: Option<bool>,
+    /// Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+    pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    pub protect_content: Option<bool>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
     /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
