@@ -489,6 +489,7 @@ pub struct ChatFullInfo {
  * @property pinned_message <em>Optional</em>. Specified message was pinned. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply.
  * @property invoice <em>Optional</em>. Message is an invoice for a <a href="#payments">payment</a>, information about the invoice. <a href="#payments">More about payments »</a>
  * @property successful_payment <em>Optional</em>. Message is a service message about a successful payment, information about the payment. <a href="#payments">More about payments »</a>
+ * @property refunded_payment <em>Optional</em>. Message is a service message about a refunded payment, information about the payment. <a href="#payments">More about payments »</a>
  * @property users_shared <em>Optional</em>. Service message: users were shared with the bot
  * @property chat_shared <em>Optional</em>. Service message: a chat was shared with the bot
  * @property connected_website <em>Optional</em>. The domain name of the website on which the user has logged in. <a href="/widgets/login">More about Telegram Login »</a>
@@ -695,6 +696,9 @@ pub struct Message {
     /// <em>Optional</em>. Message is a service message about a successful payment, information about the payment. <a href="#payments">More about payments »</a>
     #[serde(skip_serializing_if = "Option::is_none")]
     pub successful_payment: Option<SuccessfulPayment>,
+    /// <em>Optional</em>. Message is a service message about a refunded payment, information about the payment. <a href="#payments">More about payments »</a>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refunded_payment: Option<RefundedPayment>,
     /// <em>Optional</em>. Service message: users were shared with the bot
     #[serde(skip_serializing_if = "Option::is_none")]
     pub users_shared: Option<UsersShared>,
@@ -5648,6 +5652,32 @@ pub struct SuccessfulPayment {
     pub telegram_payment_charge_id: String,
     /// Provider payment identifier
     pub provider_payment_charge_id: String
+}
+
+/**
+ * <p>This object contains basic information about a refunded payment.</p>
+ *
+ * @property currency Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. Currently, always “XTR”
+ * @property total_amount Total refunded price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code>, <code>total_amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
+ * @property invoice_payload Bot-specified invoice payload
+ * @property telegram_payment_charge_id Telegram payment identifier
+ * @property provider_payment_charge_id <em>Optional</em>. Provider payment identifier
+ *
+ * @constructor Creates a [RefundedPayment].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct RefundedPayment {
+    /// Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. Currently, always “XTR”
+    pub currency: String,
+    /// Total refunded price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code>, <code>total_amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
+    pub total_amount: Integer,
+    /// Bot-specified invoice payload
+    pub invoice_payload: String,
+    /// Telegram payment identifier
+    pub telegram_payment_charge_id: String,
+    /// <em>Optional</em>. Provider payment identifier
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub provider_payment_charge_id: Option<String>
 }
 
 /**

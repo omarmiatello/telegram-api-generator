@@ -1511,6 +1511,14 @@
             "required": false
           },
           {
+            "name": "refunded_payment",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Message is a service message about a refunded payment, information about the payment. \u003ca href\u003d\"#payments\"\u003eMore about payments »\u003c/a\u003e",
+            "type": {
+              "name": "RefundedPayment"
+            },
+            "required": false
+          },
+          {
             "name": "users_shared",
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Service message: users were shared with the bot",
             "type": {
@@ -16301,6 +16309,52 @@
               "name": "String"
             },
             "required": true
+          }
+        ]
+      },
+      {
+        "name": "RefundedPayment",
+        "description": "\u003cp\u003eThis object contains basic information about a refunded payment.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "currency",
+            "description": "Three-letter ISO 4217 \u003ca href\u003d\"/bots/payments#supported-currencies\"\u003ecurrency\u003c/a\u003e code, or “XTR” for payments in \u003ca href\u003d\"https://t.me/BotNews/90\"\u003eTelegram Stars\u003c/a\u003e. Currently, always “XTR”",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "total_amount",
+            "description": "Total refunded price in the \u003cem\u003esmallest units\u003c/em\u003e of the currency (integer, \u003cstrong\u003enot\u003c/strong\u003e float/double). For example, for a price of \u003ccode\u003eUS$ 1.45\u003c/code\u003e, \u003ccode\u003etotal_amount \u003d 145\u003c/code\u003e. See the \u003cem\u003eexp\u003c/em\u003e parameter in \u003ca href\u003d\"/bots/payments/currencies.json\"\u003ecurrencies.json\u003c/a\u003e, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          },
+          {
+            "name": "invoice_payload",
+            "description": "Bot-specified invoice payload",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "telegram_payment_charge_id",
+            "description": "Telegram payment identifier",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "provider_payment_charge_id",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Provider payment identifier",
+            "type": {
+              "name": "String"
+            },
+            "required": false
           }
         ]
       },
