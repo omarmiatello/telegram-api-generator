@@ -1164,7 +1164,7 @@ is_big: Boolean? = null,
  * @return [UserProfilePhotos]
  * */
 suspend fun getUserProfilePhotos(
-user_id: Long,
+user_id: UserId,
 offset: Long? = null,
 limit: Long? = null,
 ) = telegramPost(
@@ -1204,7 +1204,7 @@ file_id: String,
  * */
 suspend fun banChatMember(
 chat_id: ChatId,
-user_id: Long,
+user_id: UserId,
 until_date: Long? = null,
 revoke_messages: Boolean? = null,
 ) = telegramPost(
@@ -1228,7 +1228,7 @@ revoke_messages: Boolean? = null,
  * */
 suspend fun unbanChatMember(
 chat_id: ChatId,
-user_id: Long,
+user_id: UserId,
 only_if_banned: Boolean? = null,
 ) = telegramPost(
     "$basePath/unbanChatMember",
@@ -1252,7 +1252,7 @@ only_if_banned: Boolean? = null,
  * */
 suspend fun restrictChatMember(
 chat_id: ChatId,
-user_id: Long,
+user_id: UserId,
 permissions: ChatPermissions,
 use_independent_chat_permissions: Boolean? = null,
 until_date: Long? = null,
@@ -1292,7 +1292,7 @@ until_date: Long? = null,
  * */
 suspend fun promoteChatMember(
 chat_id: ChatId,
-user_id: Long,
+user_id: UserId,
 is_anonymous: Boolean? = null,
 can_manage_chat: Boolean? = null,
 can_delete_messages: Boolean? = null,
@@ -1342,7 +1342,7 @@ can_manage_topics: Boolean? = null,
  * */
 suspend fun setChatAdministratorCustomTitle(
 chat_id: ChatId,
-user_id: Long,
+user_id: UserId,
 custom_title: String,
 ) = telegramPost(
     "$basePath/setChatAdministratorCustomTitle",
@@ -1519,7 +1519,7 @@ invite_link: String,
  * */
 suspend fun approveChatJoinRequest(
 chat_id: ChatId,
-user_id: Long,
+user_id: UserId,
 ) = telegramPost(
     "$basePath/approveChatJoinRequest",
     ApproveChatJoinRequestRequest(
@@ -1538,7 +1538,7 @@ user_id: Long,
  * */
 suspend fun declineChatJoinRequest(
 chat_id: ChatId,
-user_id: Long,
+user_id: UserId,
 ) = telegramPost(
     "$basePath/declineChatJoinRequest",
     DeclineChatJoinRequestRequest(
@@ -1751,7 +1751,7 @@ chat_id: ChatId,
  * */
 suspend fun getChatMember(
 chat_id: ChatId,
-user_id: Long,
+user_id: UserId,
 ) = telegramPost(
     "$basePath/getChatMember",
     GetChatMemberRequest(
@@ -2067,7 +2067,7 @@ cache_time: Long? = null,
  * */
 suspend fun getUserChatBoosts(
 chat_id: ChatId,
-user_id: Long,
+user_id: UserId,
 ) = telegramPost(
     "$basePath/getUserChatBoosts",
     GetUserChatBoostsRequest(
@@ -2694,7 +2694,7 @@ custom_emoji_ids: List<String>,
  * @return [File]
  * */
 suspend fun uploadStickerFile(
-user_id: Long,
+user_id: UserId,
 sticker: Any,
 sticker_format: String,
 ) = telegramPost(
@@ -2719,7 +2719,7 @@ sticker_format: String,
  * @return [Boolean]
  * */
 suspend fun createNewStickerSet(
-user_id: Long,
+user_id: UserId,
 name: String,
 title: String,
 stickers: List<InputSticker>,
@@ -2747,7 +2747,7 @@ needs_repainting: Boolean? = null,
  * @return [Boolean]
  * */
 suspend fun addStickerToSet(
-user_id: Long,
+user_id: UserId,
 name: String,
 sticker: InputSticker,
 ) = telegramPost(
@@ -2805,7 +2805,7 @@ sticker: String,
  * @return [Boolean]
  * */
 suspend fun replaceStickerInSet(
-user_id: Long,
+user_id: UserId,
 name: String,
 old_sticker: String,
 sticker: InputSticker,
@@ -2907,7 +2907,7 @@ title: String,
  * */
 suspend fun setStickerSetThumbnail(
 name: String,
-user_id: Long,
+user_id: UserId,
 format: String,
 thumbnail: String? = null,
 ) = telegramPost(
@@ -3256,7 +3256,7 @@ limit: Long? = null,
  * @return [Boolean]
  * */
 suspend fun refundStarPayment(
-user_id: Long,
+user_id: UserId,
 telegram_payment_charge_id: String,
 ) = telegramPost(
     "$basePath/refundStarPayment",
@@ -3278,7 +3278,7 @@ telegram_payment_charge_id: String,
  * @return [Boolean]
  * */
 suspend fun setPassportDataErrors(
-user_id: Long,
+user_id: UserId,
 errors: List<PassportElementError>,
 ) = telegramPost(
     "$basePath/setPassportDataErrors",
@@ -3345,7 +3345,7 @@ reply_markup: InlineKeyboardMarkup? = null,
  * @return [Message]
  * */
 suspend fun setGameScore(
-user_id: Long,
+user_id: UserId,
 score: Long,
 force: Boolean? = null,
 disable_edit_message: Boolean? = null,
@@ -3378,7 +3378,7 @@ inline_message_id: String? = null,
  * @return [List<GameHighScore>]
  * */
 suspend fun getGameHighScores(
-user_id: Long,
+user_id: UserId,
 chat_id: ChatId? = null,
 message_id: MessageId? = null,
 inline_message_id: String? = null,

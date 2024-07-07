@@ -41,6 +41,9 @@ fun List<DocSection>.toKotlinModels(useKotlinXSerialization: Boolean) = buildStr
         appendLine("        }?.also { return it }")
         appendLine("    })")
         appendLine("}")
+        appendLine("@Serializable @JvmInline value class UserId(val longValue: Long) {") // user_id
+        appendLine("    fun toChatId(): ChatId = ChatId(longValue.toString())")
+        appendLine("}")
         appendLine("@Serializable @JvmInline value class ChatId(val stringValue: String) {") // chat_id
         appendLine("    val longValue: Long get() = stringValue.toLong()")
         appendLine("}")
@@ -204,6 +207,7 @@ private fun DocType.toKotlinDataClass(useKotlinXSerialization: Boolean) = buildS
         appendLine(
             "    val ${field.name}: ${
                 field.toKotlinType(
+                    className = name,
                     useInlineClasses = useKotlinXSerialization,
                     useContextualSerialization = useKotlinXSerialization,
                 )
@@ -229,6 +233,7 @@ private fun DocMethod.toKotlinDataClass(useKotlinXSerialization: Boolean) = buil
         appendLine(
             "    val ${field.name}: ${
                 field.toKotlinType(
+                    className = name,
                     useInlineClasses = useKotlinXSerialization,
                     useContextualSerialization = useKotlinXSerialization,
                 )
@@ -260,6 +265,7 @@ private fun DocMethod.toKotlinRequestMethod() = buildString {
             appendLine(
                 "${parameter.name}: ${
                     parameter.toKotlinType(
+                        className = name,
                         useInlineClasses = true,
                         useContextualSerialization = false,
                     )
@@ -278,41 +284,55 @@ private fun DocMethod.toKotlinRequestMethod() = buildString {
     }
 }
 
-private fun DocField.toKotlinType(useInlineClasses: Boolean, useContextualSerialization: Boolean) =
-    type.toKotlinTypeWithValueClasses(
-        propertyName = name.takeIf { useInlineClasses },
-        prefixPolymorphic = if (useContextualSerialization) "@Contextual " else "",
-    ) + if (required) "" else "? = null"
+private fun DocField.toKotlinType(
+    className: String,
+    useInlineClasses: Boolean,
+    useContextualSerialization: Boolean
+) = type.toKotlinTypeWithValueClasses(
+    className = className,
+    propertyName = name.takeIf { useInlineClasses },
+    prefixPolymorphic = if (useContextualSerialization) "@Contextual " else "",
+) + if (required) "" else "? = null"
 
-private fun DocParameter.toKotlinType(useInlineClasses: Boolean, useContextualSerialization: Boolean) =
-    type.toKotlinTypeWithValueClasses(
-        propertyName = name.takeIf { useInlineClasses },
-        prefixPolymorphic = if (useContextualSerialization) "@Contextual " else "",
-    ) + if (required) "" else "? = null"
+private fun DocParameter.toKotlinType(
+    className: String,
+    useInlineClasses: Boolean,
+    useContextualSerialization: Boolean,
+) = type.toKotlinTypeWithValueClasses(
+    className = className,
+    propertyName = name.takeIf { useInlineClasses },
+    prefixPolymorphic = if (useContextualSerialization) "@Contextual " else "",
+) + if (required) "" else "? = null"
 
 private fun TelegramType.toKotlinTypeWithValueClasses(
+    className: String?,
     propertyName: String?,
     prefixPolymorphic: String = "",
 ): String {
     return when (this) {
         is TelegramType.ListType<*> -> "List<${
             elementType.toKotlinTypeWithValueClasses(
+                className = className,
                 propertyName = propertyName,
                 prefixPolymorphic = prefixPolymorphic
             )
         }>"
-        else -> when (propertyName) {
-            null -> toKotlinTypeNoValueClasses(prefixPolymorphic)
-            "chat_id" -> "ChatId"
-            "message_id" -> "MessageId"
-            "message_ids" -> "MessageId"
-            "business_connection_id" -> "BusinessConnectionId"
-            "message_thread_id" -> "MessageThreadId"
-            "message_effect_id" -> "MessageEffectId"
-            else -> when {
-                propertyName.endsWith("_chat_id") -> "ChatId"
-                else -> toKotlinTypeNoValueClasses(prefixPolymorphic)
-            }
+
+        else -> when {
+            propertyName == null -> toKotlinTypeNoValueClasses(prefixPolymorphic)
+            className == "User" && propertyName == "id" -> "UserId"
+            propertyName == "user_id" -> "UserId"
+            className == "Chat" && propertyName == "id" -> "ChatId"
+            className == "ChatFullInfo" && propertyName == "id" -> "ChatId"
+            propertyName == "chat_id" -> "ChatId"
+            propertyName.endsWith("_chat_id") -> "ChatId"
+            propertyName == "message_id" -> "MessageId"
+            propertyName == "message_ids" -> "MessageId"
+            className == "BusinessConnection" && propertyName == "id" -> "BusinessConnectionId"
+            propertyName == "business_connection_id" -> "BusinessConnectionId"
+            propertyName == "message_thread_id" -> "MessageThreadId"
+            propertyName == "message_effect_id" -> "MessageEffectId"
+            else -> toKotlinTypeNoValueClasses(prefixPolymorphic)
         }
     }
 }
