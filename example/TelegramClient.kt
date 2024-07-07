@@ -151,16 +151,16 @@ suspend fun close() = telegramGet("$basePath/close", Boolean.serializer())
  * @return [Message]
  * */
 suspend fun sendMessage(
-chat_id: String,
+chat_id: ChatId,
 text: String,
-business_connection_id: String? = null,
-message_thread_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+message_thread_id: MessageThreadId? = null,
 parse_mode: ParseMode? = null,
 entities: List<MessageEntity>? = null,
 link_preview_options: LinkPreviewOptions? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
-message_effect_id: String? = null,
+message_effect_id: MessageEffectId? = null,
 reply_parameters: ReplyParameters? = null,
 reply_markup: KeyboardOption? = null,
 ) = telegramPost(
@@ -194,10 +194,10 @@ reply_markup: KeyboardOption? = null,
  * @return [Message]
  * */
 suspend fun forwardMessage(
-chat_id: String,
-from_chat_id: String,
-message_id: Long,
-message_thread_id: Long? = null,
+chat_id: ChatId,
+from_chat_id: ChatId,
+message_id: MessageId,
+message_thread_id: MessageThreadId? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
 ) = telegramPost(
@@ -225,10 +225,10 @@ protect_content: Boolean? = null,
  * @return [List<MessageId>]
  * */
 suspend fun forwardMessages(
-chat_id: String,
-from_chat_id: String,
-message_ids: List<Long>,
-message_thread_id: Long? = null,
+chat_id: ChatId,
+from_chat_id: ChatId,
+message_ids: List<MessageId>,
+message_thread_id: MessageThreadId? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
 ) = telegramPost(
@@ -262,10 +262,10 @@ protect_content: Boolean? = null,
  * @return [MessageId]
  * */
 suspend fun copyMessage(
-chat_id: String,
-from_chat_id: String,
-message_id: Long,
-message_thread_id: Long? = null,
+chat_id: ChatId,
+from_chat_id: ChatId,
+message_id: MessageId,
+message_thread_id: MessageThreadId? = null,
 caption: String? = null,
 parse_mode: ParseMode? = null,
 caption_entities: List<MessageEntity>? = null,
@@ -306,10 +306,10 @@ reply_markup: KeyboardOption? = null,
  * @return [List<MessageId>]
  * */
 suspend fun copyMessages(
-chat_id: String,
-from_chat_id: String,
-message_ids: List<Long>,
-message_thread_id: Long? = null,
+chat_id: ChatId,
+from_chat_id: ChatId,
+message_ids: List<MessageId>,
+message_thread_id: MessageThreadId? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
 remove_caption: Boolean? = null,
@@ -347,10 +347,10 @@ remove_caption: Boolean? = null,
  * @return [Message]
  * */
 suspend fun sendPhoto(
-chat_id: String,
+chat_id: ChatId,
 photo: String,
-business_connection_id: String? = null,
-message_thread_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+message_thread_id: MessageThreadId? = null,
 caption: String? = null,
 parse_mode: ParseMode? = null,
 caption_entities: List<MessageEntity>? = null,
@@ -358,7 +358,7 @@ show_caption_above_media: Boolean? = null,
 has_spoiler: Boolean? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
-message_effect_id: String? = null,
+message_effect_id: MessageEffectId? = null,
 reply_parameters: ReplyParameters? = null,
 reply_markup: KeyboardOption? = null,
 ) = telegramPost(
@@ -404,10 +404,10 @@ reply_markup: KeyboardOption? = null,
  * @return [Message]
  * */
 suspend fun sendAudio(
-chat_id: String,
+chat_id: ChatId,
 audio: String,
-business_connection_id: String? = null,
-message_thread_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+message_thread_id: MessageThreadId? = null,
 caption: String? = null,
 parse_mode: ParseMode? = null,
 caption_entities: List<MessageEntity>? = null,
@@ -417,7 +417,7 @@ title: String? = null,
 thumbnail: String? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
-message_effect_id: String? = null,
+message_effect_id: MessageEffectId? = null,
 reply_parameters: ReplyParameters? = null,
 reply_markup: KeyboardOption? = null,
 ) = telegramPost(
@@ -463,10 +463,10 @@ reply_markup: KeyboardOption? = null,
  * @return [Message]
  * */
 suspend fun sendDocument(
-chat_id: String,
+chat_id: ChatId,
 document: String,
-business_connection_id: String? = null,
-message_thread_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+message_thread_id: MessageThreadId? = null,
 thumbnail: String? = null,
 caption: String? = null,
 parse_mode: ParseMode? = null,
@@ -474,7 +474,7 @@ caption_entities: List<MessageEntity>? = null,
 disable_content_type_detection: Boolean? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
-message_effect_id: String? = null,
+message_effect_id: MessageEffectId? = null,
 reply_parameters: ReplyParameters? = null,
 reply_markup: KeyboardOption? = null,
 ) = telegramPost(
@@ -523,10 +523,10 @@ reply_markup: KeyboardOption? = null,
  * @return [Message]
  * */
 suspend fun sendVideo(
-chat_id: String,
+chat_id: ChatId,
 video: String,
-business_connection_id: String? = null,
-message_thread_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+message_thread_id: MessageThreadId? = null,
 duration: Long? = null,
 width: Long? = null,
 height: Long? = null,
@@ -539,7 +539,7 @@ has_spoiler: Boolean? = null,
 supports_streaming: Boolean? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
-message_effect_id: String? = null,
+message_effect_id: MessageEffectId? = null,
 reply_parameters: ReplyParameters? = null,
 reply_markup: KeyboardOption? = null,
 ) = telegramPost(
@@ -592,10 +592,10 @@ reply_markup: KeyboardOption? = null,
  * @return [Message]
  * */
 suspend fun sendAnimation(
-chat_id: String,
+chat_id: ChatId,
 animation: String,
-business_connection_id: String? = null,
-message_thread_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+message_thread_id: MessageThreadId? = null,
 duration: Long? = null,
 width: Long? = null,
 height: Long? = null,
@@ -607,7 +607,7 @@ show_caption_above_media: Boolean? = null,
 has_spoiler: Boolean? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
-message_effect_id: String? = null,
+message_effect_id: MessageEffectId? = null,
 reply_parameters: ReplyParameters? = null,
 reply_markup: KeyboardOption? = null,
 ) = telegramPost(
@@ -654,17 +654,17 @@ reply_markup: KeyboardOption? = null,
  * @return [Message]
  * */
 suspend fun sendVoice(
-chat_id: String,
+chat_id: ChatId,
 voice: String,
-business_connection_id: String? = null,
-message_thread_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+message_thread_id: MessageThreadId? = null,
 caption: String? = null,
 parse_mode: ParseMode? = null,
 caption_entities: List<MessageEntity>? = null,
 duration: Long? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
-message_effect_id: String? = null,
+message_effect_id: MessageEffectId? = null,
 reply_parameters: ReplyParameters? = null,
 reply_markup: KeyboardOption? = null,
 ) = telegramPost(
@@ -705,16 +705,16 @@ reply_markup: KeyboardOption? = null,
  * @return [Message]
  * */
 suspend fun sendVideoNote(
-chat_id: String,
+chat_id: ChatId,
 video_note: String,
-business_connection_id: String? = null,
-message_thread_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+message_thread_id: MessageThreadId? = null,
 duration: Long? = null,
 length: Long? = null,
 thumbnail: String? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
-message_effect_id: String? = null,
+message_effect_id: MessageEffectId? = null,
 reply_parameters: ReplyParameters? = null,
 reply_markup: KeyboardOption? = null,
 ) = telegramPost(
@@ -753,7 +753,7 @@ reply_markup: KeyboardOption? = null,
  * @return [Message]
  * */
 suspend fun sendPaidMedia(
-chat_id: String,
+chat_id: ChatId,
 star_count: Long,
 media: List<InputPaidMedia>,
 caption: String? = null,
@@ -796,13 +796,13 @@ reply_markup: KeyboardOption? = null,
  * @return [List<Message>]
  * */
 suspend fun sendMediaGroup(
-chat_id: String,
+chat_id: ChatId,
 media: List<InputMedia>,
-business_connection_id: String? = null,
-message_thread_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+message_thread_id: MessageThreadId? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
-message_effect_id: String? = null,
+message_effect_id: MessageEffectId? = null,
 reply_parameters: ReplyParameters? = null,
 ) = telegramPost(
     "$basePath/sendMediaGroup",
@@ -839,18 +839,18 @@ reply_parameters: ReplyParameters? = null,
  * @return [Message]
  * */
 suspend fun sendLocation(
-chat_id: String,
+chat_id: ChatId,
 latitude: Float,
 longitude: Float,
-business_connection_id: String? = null,
-message_thread_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+message_thread_id: MessageThreadId? = null,
 horizontal_accuracy: Float? = null,
 live_period: Long? = null,
 heading: Long? = null,
 proximity_alert_radius: Long? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
-message_effect_id: String? = null,
+message_effect_id: MessageEffectId? = null,
 reply_parameters: ReplyParameters? = null,
 reply_markup: KeyboardOption? = null,
 ) = telegramPost(
@@ -896,20 +896,20 @@ reply_markup: KeyboardOption? = null,
  * @return [Message]
  * */
 suspend fun sendVenue(
-chat_id: String,
+chat_id: ChatId,
 latitude: Float,
 longitude: Float,
 title: String,
 address: String,
-business_connection_id: String? = null,
-message_thread_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+message_thread_id: MessageThreadId? = null,
 foursquare_id: String? = null,
 foursquare_type: String? = null,
 google_place_id: String? = null,
 google_place_type: String? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
-message_effect_id: String? = null,
+message_effect_id: MessageEffectId? = null,
 reply_parameters: ReplyParameters? = null,
 reply_markup: KeyboardOption? = null,
 ) = telegramPost(
@@ -953,16 +953,16 @@ reply_markup: KeyboardOption? = null,
  * @return [Message]
  * */
 suspend fun sendContact(
-chat_id: String,
+chat_id: ChatId,
 phone_number: String,
 first_name: String,
-business_connection_id: String? = null,
-message_thread_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+message_thread_id: MessageThreadId? = null,
 last_name: String? = null,
 vcard: String? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
-message_effect_id: String? = null,
+message_effect_id: MessageEffectId? = null,
 reply_parameters: ReplyParameters? = null,
 reply_markup: KeyboardOption? = null,
 ) = telegramPost(
@@ -1012,11 +1012,11 @@ reply_markup: KeyboardOption? = null,
  * @return [Message]
  * */
 suspend fun sendPoll(
-chat_id: String,
+chat_id: ChatId,
 question: String,
 options: List<InputPollOption>,
-business_connection_id: String? = null,
-message_thread_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+message_thread_id: MessageThreadId? = null,
 question_parse_mode: String? = null,
 question_entities: List<MessageEntity>? = null,
 is_anonymous: Boolean? = null,
@@ -1031,7 +1031,7 @@ close_date: Long? = null,
 is_closed: Boolean? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
-message_effect_id: String? = null,
+message_effect_id: MessageEffectId? = null,
 reply_parameters: ReplyParameters? = null,
 reply_markup: KeyboardOption? = null,
 ) = telegramPost(
@@ -1078,13 +1078,13 @@ reply_markup: KeyboardOption? = null,
  * @return [Message]
  * */
 suspend fun sendDice(
-chat_id: String,
-business_connection_id: String? = null,
-message_thread_id: Long? = null,
+chat_id: ChatId,
+business_connection_id: BusinessConnectionId? = null,
+message_thread_id: MessageThreadId? = null,
 emoji: String? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
-message_effect_id: String? = null,
+message_effect_id: MessageEffectId? = null,
 reply_parameters: ReplyParameters? = null,
 reply_markup: KeyboardOption? = null,
 ) = telegramPost(
@@ -1115,10 +1115,10 @@ reply_markup: KeyboardOption? = null,
  * @return [Boolean]
  * */
 suspend fun sendChatAction(
-chat_id: String,
+chat_id: ChatId,
 action: String,
-business_connection_id: String? = null,
-message_thread_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+message_thread_id: MessageThreadId? = null,
 ) = telegramPost(
     "$basePath/sendChatAction",
     SendChatActionRequest(
@@ -1140,8 +1140,8 @@ message_thread_id: Long? = null,
  * @return [Boolean]
  * */
 suspend fun setMessageReaction(
-chat_id: String,
-message_id: Long,
+chat_id: ChatId,
+message_id: MessageId,
 reaction: List<ReactionType>? = null,
 is_big: Boolean? = null,
 ) = telegramPost(
@@ -1203,7 +1203,7 @@ file_id: String,
  * @return [Boolean]
  * */
 suspend fun banChatMember(
-chat_id: String,
+chat_id: ChatId,
 user_id: Long,
 until_date: Long? = null,
 revoke_messages: Boolean? = null,
@@ -1227,7 +1227,7 @@ revoke_messages: Boolean? = null,
  * @return [Boolean]
  * */
 suspend fun unbanChatMember(
-chat_id: String,
+chat_id: ChatId,
 user_id: Long,
 only_if_banned: Boolean? = null,
 ) = telegramPost(
@@ -1251,7 +1251,7 @@ only_if_banned: Boolean? = null,
  * @return [Boolean]
  * */
 suspend fun restrictChatMember(
-chat_id: String,
+chat_id: ChatId,
 user_id: Long,
 permissions: ChatPermissions,
 use_independent_chat_permissions: Boolean? = null,
@@ -1291,7 +1291,7 @@ until_date: Long? = null,
  * @return [Boolean]
  * */
 suspend fun promoteChatMember(
-chat_id: String,
+chat_id: ChatId,
 user_id: Long,
 is_anonymous: Boolean? = null,
 can_manage_chat: Boolean? = null,
@@ -1341,7 +1341,7 @@ can_manage_topics: Boolean? = null,
  * @return [Boolean]
  * */
 suspend fun setChatAdministratorCustomTitle(
-chat_id: String,
+chat_id: ChatId,
 user_id: Long,
 custom_title: String,
 ) = telegramPost(
@@ -1362,8 +1362,8 @@ custom_title: String,
  * @return [Boolean]
  * */
 suspend fun banChatSenderChat(
-chat_id: String,
-sender_chat_id: Long,
+chat_id: ChatId,
+sender_chat_id: ChatId,
 ) = telegramPost(
     "$basePath/banChatSenderChat",
     BanChatSenderChatRequest(
@@ -1381,8 +1381,8 @@ sender_chat_id: Long,
  * @return [Boolean]
  * */
 suspend fun unbanChatSenderChat(
-chat_id: String,
-sender_chat_id: Long,
+chat_id: ChatId,
+sender_chat_id: ChatId,
 ) = telegramPost(
     "$basePath/unbanChatSenderChat",
     UnbanChatSenderChatRequest(
@@ -1401,7 +1401,7 @@ sender_chat_id: Long,
  * @return [Boolean]
  * */
 suspend fun setChatPermissions(
-chat_id: String,
+chat_id: ChatId,
 permissions: ChatPermissions,
 use_independent_chat_permissions: Boolean? = null,
 ) = telegramPost(
@@ -1423,7 +1423,7 @@ use_independent_chat_permissions: Boolean? = null,
  * @return [String]
  * */
 suspend fun exportChatInviteLink(
-chat_id: String,
+chat_id: ChatId,
 ) = telegramPost(
     "$basePath/exportChatInviteLink",
     ExportChatInviteLinkRequest(
@@ -1443,7 +1443,7 @@ chat_id: String,
  * @return [ChatInviteLink]
  * */
 suspend fun createChatInviteLink(
-chat_id: String,
+chat_id: ChatId,
 name: String? = null,
 expire_date: Long? = null,
 member_limit: Long? = null,
@@ -1472,7 +1472,7 @@ creates_join_request: Boolean? = null,
  * @return [ChatInviteLink]
  * */
 suspend fun editChatInviteLink(
-chat_id: String,
+chat_id: ChatId,
 invite_link: String,
 name: String? = null,
 expire_date: Long? = null,
@@ -1499,7 +1499,7 @@ creates_join_request: Boolean? = null,
  * @return [ChatInviteLink]
  * */
 suspend fun revokeChatInviteLink(
-chat_id: String,
+chat_id: ChatId,
 invite_link: String,
 ) = telegramPost(
     "$basePath/revokeChatInviteLink",
@@ -1518,7 +1518,7 @@ invite_link: String,
  * @return [Boolean]
  * */
 suspend fun approveChatJoinRequest(
-chat_id: String,
+chat_id: ChatId,
 user_id: Long,
 ) = telegramPost(
     "$basePath/approveChatJoinRequest",
@@ -1537,7 +1537,7 @@ user_id: Long,
  * @return [Boolean]
  * */
 suspend fun declineChatJoinRequest(
-chat_id: String,
+chat_id: ChatId,
 user_id: Long,
 ) = telegramPost(
     "$basePath/declineChatJoinRequest",
@@ -1556,7 +1556,7 @@ user_id: Long,
  * @return [Boolean]
  * */
 suspend fun setChatPhoto(
-chat_id: String,
+chat_id: ChatId,
 photo: Any,
 ) = telegramPost(
     "$basePath/setChatPhoto",
@@ -1574,7 +1574,7 @@ photo: Any,
  * @return [Boolean]
  * */
 suspend fun deleteChatPhoto(
-chat_id: String,
+chat_id: ChatId,
 ) = telegramPost(
     "$basePath/deleteChatPhoto",
     DeleteChatPhotoRequest(
@@ -1591,7 +1591,7 @@ chat_id: String,
  * @return [Boolean]
  * */
 suspend fun setChatTitle(
-chat_id: String,
+chat_id: ChatId,
 title: String,
 ) = telegramPost(
     "$basePath/setChatTitle",
@@ -1610,7 +1610,7 @@ title: String,
  * @return [Boolean]
  * */
 suspend fun setChatDescription(
-chat_id: String,
+chat_id: ChatId,
 description: String? = null,
 ) = telegramPost(
     "$basePath/setChatDescription",
@@ -1630,8 +1630,8 @@ description: String? = null,
  * @return [Boolean]
  * */
 suspend fun pinChatMessage(
-chat_id: String,
-message_id: Long,
+chat_id: ChatId,
+message_id: MessageId,
 disable_notification: Boolean? = null,
 ) = telegramPost(
     "$basePath/pinChatMessage",
@@ -1651,8 +1651,8 @@ disable_notification: Boolean? = null,
  * @return [Boolean]
  * */
 suspend fun unpinChatMessage(
-chat_id: String,
-message_id: Long? = null,
+chat_id: ChatId,
+message_id: MessageId? = null,
 ) = telegramPost(
     "$basePath/unpinChatMessage",
     UnpinChatMessageRequest(
@@ -1669,7 +1669,7 @@ message_id: Long? = null,
  * @return [Boolean]
  * */
 suspend fun unpinAllChatMessages(
-chat_id: String,
+chat_id: ChatId,
 ) = telegramPost(
     "$basePath/unpinAllChatMessages",
     UnpinAllChatMessagesRequest(
@@ -1685,7 +1685,7 @@ chat_id: String,
  * @return [Boolean]
  * */
 suspend fun leaveChat(
-chat_id: String,
+chat_id: ChatId,
 ) = telegramPost(
     "$basePath/leaveChat",
     LeaveChatRequest(
@@ -1701,7 +1701,7 @@ chat_id: String,
  * @return [ChatFullInfo]
  * */
 suspend fun getChat(
-chat_id: String,
+chat_id: ChatId,
 ) = telegramPost(
     "$basePath/getChat",
     GetChatRequest(
@@ -1717,7 +1717,7 @@ chat_id: String,
  * @return [List<ChatMember>]
  * */
 suspend fun getChatAdministrators(
-chat_id: String,
+chat_id: ChatId,
 ) = telegramPost(
     "$basePath/getChatAdministrators",
     GetChatAdministratorsRequest(
@@ -1733,7 +1733,7 @@ chat_id: String,
  * @return [Int]
  * */
 suspend fun getChatMemberCount(
-chat_id: String,
+chat_id: ChatId,
 ) = telegramPost(
     "$basePath/getChatMemberCount",
     GetChatMemberCountRequest(
@@ -1750,7 +1750,7 @@ chat_id: String,
  * @return [ChatMember]
  * */
 suspend fun getChatMember(
-chat_id: String,
+chat_id: ChatId,
 user_id: Long,
 ) = telegramPost(
     "$basePath/getChatMember",
@@ -1769,7 +1769,7 @@ user_id: Long,
  * @return [Boolean]
  * */
 suspend fun setChatStickerSet(
-chat_id: String,
+chat_id: ChatId,
 sticker_set_name: String,
 ) = telegramPost(
     "$basePath/setChatStickerSet",
@@ -1787,7 +1787,7 @@ sticker_set_name: String,
  * @return [Boolean]
  * */
 suspend fun deleteChatStickerSet(
-chat_id: String,
+chat_id: ChatId,
 ) = telegramPost(
     "$basePath/deleteChatStickerSet",
     DeleteChatStickerSetRequest(
@@ -1813,7 +1813,7 @@ suspend fun getForumTopicIconStickers() = telegramGet("$basePath/getForumTopicIc
  * @return [ForumTopic]
  * */
 suspend fun createForumTopic(
-chat_id: String,
+chat_id: ChatId,
 name: String,
 icon_color: Long? = null,
 icon_custom_emoji_id: String? = null,
@@ -1838,8 +1838,8 @@ icon_custom_emoji_id: String? = null,
  * @return [Boolean]
  * */
 suspend fun editForumTopic(
-chat_id: String,
-message_thread_id: Long,
+chat_id: ChatId,
+message_thread_id: MessageThreadId,
 name: String? = null,
 icon_custom_emoji_id: String? = null,
 ) = telegramPost(
@@ -1861,8 +1861,8 @@ icon_custom_emoji_id: String? = null,
  * @return [Boolean]
  * */
 suspend fun closeForumTopic(
-chat_id: String,
-message_thread_id: Long,
+chat_id: ChatId,
+message_thread_id: MessageThreadId,
 ) = telegramPost(
     "$basePath/closeForumTopic",
     CloseForumTopicRequest(
@@ -1880,8 +1880,8 @@ message_thread_id: Long,
  * @return [Boolean]
  * */
 suspend fun reopenForumTopic(
-chat_id: String,
-message_thread_id: Long,
+chat_id: ChatId,
+message_thread_id: MessageThreadId,
 ) = telegramPost(
     "$basePath/reopenForumTopic",
     ReopenForumTopicRequest(
@@ -1899,8 +1899,8 @@ message_thread_id: Long,
  * @return [Boolean]
  * */
 suspend fun deleteForumTopic(
-chat_id: String,
-message_thread_id: Long,
+chat_id: ChatId,
+message_thread_id: MessageThreadId,
 ) = telegramPost(
     "$basePath/deleteForumTopic",
     DeleteForumTopicRequest(
@@ -1918,8 +1918,8 @@ message_thread_id: Long,
  * @return [Boolean]
  * */
 suspend fun unpinAllForumTopicMessages(
-chat_id: String,
-message_thread_id: Long,
+chat_id: ChatId,
+message_thread_id: MessageThreadId,
 ) = telegramPost(
     "$basePath/unpinAllForumTopicMessages",
     UnpinAllForumTopicMessagesRequest(
@@ -1937,7 +1937,7 @@ message_thread_id: Long,
  * @return [Boolean]
  * */
 suspend fun editGeneralForumTopic(
-chat_id: String,
+chat_id: ChatId,
 name: String,
 ) = telegramPost(
     "$basePath/editGeneralForumTopic",
@@ -1955,7 +1955,7 @@ name: String,
  * @return [Boolean]
  * */
 suspend fun closeGeneralForumTopic(
-chat_id: String,
+chat_id: ChatId,
 ) = telegramPost(
     "$basePath/closeGeneralForumTopic",
     CloseGeneralForumTopicRequest(
@@ -1971,7 +1971,7 @@ chat_id: String,
  * @return [Boolean]
  * */
 suspend fun reopenGeneralForumTopic(
-chat_id: String,
+chat_id: ChatId,
 ) = telegramPost(
     "$basePath/reopenGeneralForumTopic",
     ReopenGeneralForumTopicRequest(
@@ -1987,7 +1987,7 @@ chat_id: String,
  * @return [Boolean]
  * */
 suspend fun hideGeneralForumTopic(
-chat_id: String,
+chat_id: ChatId,
 ) = telegramPost(
     "$basePath/hideGeneralForumTopic",
     HideGeneralForumTopicRequest(
@@ -2003,7 +2003,7 @@ chat_id: String,
  * @return [Boolean]
  * */
 suspend fun unhideGeneralForumTopic(
-chat_id: String,
+chat_id: ChatId,
 ) = telegramPost(
     "$basePath/unhideGeneralForumTopic",
     UnhideGeneralForumTopicRequest(
@@ -2019,7 +2019,7 @@ chat_id: String,
  * @return [Boolean]
  * */
 suspend fun unpinAllGeneralForumTopicMessages(
-chat_id: String,
+chat_id: ChatId,
 ) = telegramPost(
     "$basePath/unpinAllGeneralForumTopicMessages",
     UnpinAllGeneralForumTopicMessagesRequest(
@@ -2066,7 +2066,7 @@ cache_time: Long? = null,
  * @return [UserChatBoosts]
  * */
 suspend fun getUserChatBoosts(
-chat_id: String,
+chat_id: ChatId,
 user_id: Long,
 ) = telegramPost(
     "$basePath/getUserChatBoosts",
@@ -2084,7 +2084,7 @@ user_id: Long,
  * @return [BusinessConnection]
  * */
 suspend fun getBusinessConnection(
-business_connection_id: String,
+business_connection_id: BusinessConnectionId,
 ) = telegramPost(
     "$basePath/getBusinessConnection",
     GetBusinessConnectionRequest(
@@ -2266,7 +2266,7 @@ language_code: String? = null,
  * @return [Boolean]
  * */
 suspend fun setChatMenuButton(
-chat_id: Long? = null,
+chat_id: ChatId? = null,
 menu_button: MenuButton? = null,
 ) = telegramPost(
     "$basePath/setChatMenuButton",
@@ -2284,7 +2284,7 @@ menu_button: MenuButton? = null,
  * @return [MenuButton]
  * */
 suspend fun getChatMenuButton(
-chat_id: Long? = null,
+chat_id: ChatId? = null,
 ) = telegramPost(
     "$basePath/getChatMenuButton",
     GetChatMenuButtonRequest(
@@ -2347,9 +2347,9 @@ for_channels: Boolean? = null,
  * */
 suspend fun editMessageText(
 text: String,
-business_connection_id: String? = null,
-chat_id: String? = null,
-message_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+chat_id: ChatId? = null,
+message_id: MessageId? = null,
 inline_message_id: String? = null,
 parse_mode: ParseMode? = null,
 entities: List<MessageEntity>? = null,
@@ -2386,9 +2386,9 @@ reply_markup: InlineKeyboardMarkup? = null,
  * @return [Message]
  * */
 suspend fun editMessageCaption(
-business_connection_id: String? = null,
-chat_id: String? = null,
-message_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+chat_id: ChatId? = null,
+message_id: MessageId? = null,
 inline_message_id: String? = null,
 caption: String? = null,
 parse_mode: ParseMode? = null,
@@ -2424,9 +2424,9 @@ reply_markup: InlineKeyboardMarkup? = null,
  * */
 suspend fun editMessageMedia(
 media: InputMedia,
-business_connection_id: String? = null,
-chat_id: String? = null,
-message_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+chat_id: ChatId? = null,
+message_id: MessageId? = null,
 inline_message_id: String? = null,
 reply_markup: InlineKeyboardMarkup? = null,
 ) = telegramPost(
@@ -2461,9 +2461,9 @@ reply_markup: InlineKeyboardMarkup? = null,
 suspend fun editMessageLiveLocation(
 latitude: Float,
 longitude: Float,
-business_connection_id: String? = null,
-chat_id: String? = null,
-message_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+chat_id: ChatId? = null,
+message_id: MessageId? = null,
 inline_message_id: String? = null,
 live_period: Long? = null,
 horizontal_accuracy: Float? = null,
@@ -2499,9 +2499,9 @@ reply_markup: InlineKeyboardMarkup? = null,
  * @return [Message]
  * */
 suspend fun stopMessageLiveLocation(
-business_connection_id: String? = null,
-chat_id: String? = null,
-message_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+chat_id: ChatId? = null,
+message_id: MessageId? = null,
 inline_message_id: String? = null,
 reply_markup: InlineKeyboardMarkup? = null,
 ) = telegramPost(
@@ -2527,9 +2527,9 @@ reply_markup: InlineKeyboardMarkup? = null,
  * @return [Message]
  * */
 suspend fun editMessageReplyMarkup(
-business_connection_id: String? = null,
-chat_id: String? = null,
-message_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+chat_id: ChatId? = null,
+message_id: MessageId? = null,
 inline_message_id: String? = null,
 reply_markup: InlineKeyboardMarkup? = null,
 ) = telegramPost(
@@ -2554,9 +2554,9 @@ reply_markup: InlineKeyboardMarkup? = null,
  * @return [Poll]
  * */
 suspend fun stopPoll(
-chat_id: String,
-message_id: Long,
-business_connection_id: String? = null,
+chat_id: ChatId,
+message_id: MessageId,
+business_connection_id: BusinessConnectionId? = null,
 reply_markup: InlineKeyboardMarkup? = null,
 ) = telegramPost(
     "$basePath/stopPoll",
@@ -2577,8 +2577,8 @@ reply_markup: InlineKeyboardMarkup? = null,
  * @return [Boolean]
  * */
 suspend fun deleteMessage(
-chat_id: String,
-message_id: Long,
+chat_id: ChatId,
+message_id: MessageId,
 ) = telegramPost(
     "$basePath/deleteMessage",
     DeleteMessageRequest(
@@ -2596,8 +2596,8 @@ message_id: Long,
  * @return [Boolean]
  * */
 suspend fun deleteMessages(
-chat_id: String,
-message_ids: List<Long>,
+chat_id: ChatId,
+message_ids: List<MessageId>,
 ) = telegramPost(
     "$basePath/deleteMessages",
     DeleteMessagesRequest(
@@ -2626,14 +2626,14 @@ message_ids: List<Long>,
  * @return [Message]
  * */
 suspend fun sendSticker(
-chat_id: String,
+chat_id: ChatId,
 sticker: String,
-business_connection_id: String? = null,
-message_thread_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+message_thread_id: MessageThreadId? = null,
 emoji: String? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
-message_effect_id: String? = null,
+message_effect_id: MessageEffectId? = null,
 reply_parameters: ReplyParameters? = null,
 reply_markup: KeyboardOption? = null,
 ) = telegramPost(
@@ -3046,13 +3046,13 @@ result: InlineQueryResult,
  * @return [Message]
  * */
 suspend fun sendInvoice(
-chat_id: String,
+chat_id: ChatId,
 title: String,
 description: String,
 payload: String,
 currency: String,
 prices: List<LabeledPrice>,
-message_thread_id: Long? = null,
+message_thread_id: MessageThreadId? = null,
 provider_token: String? = null,
 max_tip_amount: Long? = null,
 suggested_tip_amounts: List<Long>? = null,
@@ -3071,7 +3071,7 @@ send_email_to_provider: Boolean? = null,
 is_flexible: Boolean? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
-message_effect_id: String? = null,
+message_effect_id: MessageEffectId? = null,
 reply_parameters: ReplyParameters? = null,
 reply_markup: InlineKeyboardMarkup? = null,
 ) = telegramPost(
@@ -3307,13 +3307,13 @@ errors: List<PassportElementError>,
  * @return [Message]
  * */
 suspend fun sendGame(
-chat_id: Long,
+chat_id: ChatId,
 game_short_name: String,
-business_connection_id: String? = null,
-message_thread_id: Long? = null,
+business_connection_id: BusinessConnectionId? = null,
+message_thread_id: MessageThreadId? = null,
 disable_notification: Boolean? = null,
 protect_content: Boolean? = null,
-message_effect_id: String? = null,
+message_effect_id: MessageEffectId? = null,
 reply_parameters: ReplyParameters? = null,
 reply_markup: InlineKeyboardMarkup? = null,
 ) = telegramPost(
@@ -3349,8 +3349,8 @@ user_id: Long,
 score: Long,
 force: Boolean? = null,
 disable_edit_message: Boolean? = null,
-chat_id: Long? = null,
-message_id: Long? = null,
+chat_id: ChatId? = null,
+message_id: MessageId? = null,
 inline_message_id: String? = null,
 ) = telegramPost(
     "$basePath/setGameScore",
@@ -3379,8 +3379,8 @@ inline_message_id: String? = null,
  * */
 suspend fun getGameHighScores(
 user_id: Long,
-chat_id: Long? = null,
-message_id: Long? = null,
+chat_id: ChatId? = null,
+message_id: MessageId? = null,
 inline_message_id: String? = null,
 ) = telegramPost(
     "$basePath/getGameHighScores",

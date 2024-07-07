@@ -19,7 +19,8 @@ fun List<DocSection>.toKotlinModels(useKotlinXSerialization: Boolean) = buildStr
         appendLine("import kotlinx.serialization.encoding.Decoder")
         appendLine("import kotlinx.serialization.encoding.Encoder")
         appendLine("import kotlinx.serialization.json.*")
-        appendLine("import kotlinx.serialization.serializer\n")
+        appendLine("import kotlinx.serialization.serializer")
+        appendLine("import kotlin.jvm.JvmInline\n")
         appendLine("private val json = Json {")
         appendLine("    ignoreUnknownKeys = true")
         appendLine("    prettyPrint = true")
@@ -27,14 +28,26 @@ fun List<DocSection>.toKotlinModels(useKotlinXSerialization: Boolean) = buildStr
         appendLine("}\n")
         appendLine("sealed class TelegramModel { abstract fun toJson(): String }")
         appendLine("private fun <T> Decoder.tryDeserializers(vararg serializers: KSerializer<out T>): T {")
-        appendLine("    return serializers.firstNotNullOf {")
-        appendLine("        try {")
-        appendLine("            decodeSerializableValue(it)")
-        appendLine("        } catch (e: Exception) {")
-        appendLine("            null")
-        appendLine("        }")
-        appendLine("    }")
+        appendLine("    error(buildString {")
+        appendLine("        appendLine(\"Tried \${serializers.size} deserializers, but all failed!\")")
+        appendLine("        val jsonEl = decodeSerializableValue(JsonElement.serializer())")
+        appendLine("        serializers.firstNotNullOfOrNull {")
+        appendLine("            try {")
+        appendLine("                json.decodeFromJsonElement(it, jsonEl)")
+        appendLine("            } catch (e: Exception) {")
+        appendLine("                appendLine(\"\$it: \$e\")")
+        appendLine("                null")
+        appendLine("            }")
+        appendLine("        }?.also { return it }")
+        appendLine("    })")
         appendLine("}")
+        appendLine("@Serializable @JvmInline value class ChatId(val stringValue: String) {") // chat_id
+        appendLine("    val longValue: Long get() = stringValue.toLong()")
+        appendLine("}")
+        appendLine("@Serializable @JvmInline value class MessageId(val longValue: Long)") // message_id
+        appendLine("@Serializable @JvmInline value class BusinessConnectionId(val stringValue: String)") // business_connection_id
+        appendLine("@Serializable @JvmInline value class MessageThreadId(val longValue: Long)") // message_thread_id
+        appendLine("@Serializable @JvmInline value class MessageEffectId(val stringValue: String)") // message_effect_id
     } else {
         appendLine("sealed class TelegramModel")
     }
@@ -180,7 +193,7 @@ private fun DocMethod.toKotlinDoc(showReturn: Boolean = true) = buildString {
     }
     if (showReturn) {
         appendLine(" *")
-        appendLine(" * @return [${returns.toKotlinType()}]")
+        appendLine(" * @return [${returns.toKotlinTypeNoValueClasses()}]")
     }
     append(" * */")
 }
@@ -188,7 +201,14 @@ private fun DocMethod.toKotlinDoc(showReturn: Boolean = true) = buildString {
 private fun DocType.toKotlinDataClass(useKotlinXSerialization: Boolean) = buildString {
     appendLine("data class $name(")
     docFields.forEachIndexed { index, field ->
-        appendLine("    val ${field.name}: ${field.toKotlinType(useKotlinXSerialization)},")
+        appendLine(
+            "    val ${field.name}: ${
+                field.toKotlinType(
+                    useInlineClasses = useKotlinXSerialization,
+                    useContextualSerialization = useKotlinXSerialization,
+                )
+            },"
+        )
     }
     val superType = TelegramType.from(name).superType ?: "TelegramModel"
     if (useKotlinXSerialization) {
@@ -206,7 +226,14 @@ private fun DocType.toKotlinDataClass(useKotlinXSerialization: Boolean) = buildS
 private fun DocMethod.toKotlinDataClass(useKotlinXSerialization: Boolean) = buildString {
     appendLine("data class ${name.capitalize()}Request(")
     docParameters.forEachIndexed { index, field ->
-        appendLine("    val ${field.name}: ${field.toKotlinType(useKotlinXSerialization)},")
+        appendLine(
+            "    val ${field.name}: ${
+                field.toKotlinType(
+                    useInlineClasses = useKotlinXSerialization,
+                    useContextualSerialization = useKotlinXSerialization,
+                )
+            },"
+        )
     }
     if (useKotlinXSerialization) {
         appendLine(") : TelegramRequest() {")
@@ -225,13 +252,19 @@ private fun DocMethod.toKotlinDataClass(useKotlinXSerialization: Boolean) = buil
 
 private fun DocMethod.toKotlinRequestMethod() = buildString {
     val path = """"${"$"}basePath/$name""""
-    val parameters = docParameters.map { f -> f.name }.joinToString(",\n")
     if (docParameters.isEmpty()) {
         append("suspend fun $name() = telegramGet($path, ${returns.toKotlinSerializerType()})")
     } else {
         appendLine("suspend fun $name(")
         docParameters.forEachIndexed { index, parameter ->
-            appendLine("${parameter.name}: ${parameter.toKotlinType(useContextualSerialization = false)},")
+            appendLine(
+                "${parameter.name}: ${
+                    parameter.toKotlinType(
+                        useInlineClasses = true,
+                        useContextualSerialization = false,
+                    )
+                },"
+            )
         }
         appendLine(") = telegramPost(")
         appendLine("    $path,")
@@ -245,15 +278,55 @@ private fun DocMethod.toKotlinRequestMethod() = buildString {
     }
 }
 
-private fun DocField.toKotlinType(useContextualSerialization: Boolean) =
-    type.toKotlinType(if (useContextualSerialization) "@Contextual " else "") + if (required) "" else "? = null"
+private fun DocField.toKotlinType(useInlineClasses: Boolean, useContextualSerialization: Boolean) =
+    type.toKotlinTypeWithValueClasses(
+        propertyName = name.takeIf { useInlineClasses },
+        prefixPolymorphic = if (useContextualSerialization) "@Contextual " else "",
+    ) + if (required) "" else "? = null"
 
-private fun DocParameter.toKotlinType(useContextualSerialization: Boolean) =
-    type.toKotlinType(if (useContextualSerialization) "@Contextual " else "") + if (required) "" else "? = null"
+private fun DocParameter.toKotlinType(useInlineClasses: Boolean, useContextualSerialization: Boolean) =
+    type.toKotlinTypeWithValueClasses(
+        propertyName = name.takeIf { useInlineClasses },
+        prefixPolymorphic = if (useContextualSerialization) "@Contextual " else "",
+    ) + if (required) "" else "? = null"
 
-private fun TelegramType.toKotlinType(prefixPolymorphic: String = ""): String = when (this) {
+private fun TelegramType.toKotlinTypeWithValueClasses(
+    propertyName: String?,
+    prefixPolymorphic: String = "",
+): String {
+    return when (this) {
+        is TelegramType.ListType<*> -> "List<${
+            elementType.toKotlinTypeWithValueClasses(
+                propertyName = propertyName,
+                prefixPolymorphic = prefixPolymorphic
+            )
+        }>"
+        else -> when (propertyName) {
+            null -> toKotlinTypeNoValueClasses(prefixPolymorphic)
+            "chat_id" -> "ChatId"
+            "message_id" -> "MessageId"
+            "message_ids" -> "MessageId"
+            "business_connection_id" -> "BusinessConnectionId"
+            "message_thread_id" -> "MessageThreadId"
+            "message_effect_id" -> "MessageEffectId"
+            else -> when {
+                propertyName.endsWith("_chat_id") -> "ChatId"
+                else -> toKotlinTypeNoValueClasses(prefixPolymorphic)
+            }
+        }
+    }
+}
+
+private fun TelegramType.toKotlinTypeNoValueClasses(
+    prefixPolymorphic: String = "",
+): String = when (this) {
     is TelegramType.Declared -> name
-    is TelegramType.ListType<*> -> "List<${elementType.toKotlinType(prefixPolymorphic)}>"
+    is TelegramType.ListType<*> -> "List<${
+        elementType.toKotlinTypeNoValueClasses(
+            prefixPolymorphic = prefixPolymorphic
+        )
+    }>"
+
     TelegramType.Integer -> "Long"
     TelegramType.StringType -> name
     TelegramType.Boolean -> name
@@ -284,5 +357,5 @@ private fun TelegramType.toKotlinType(prefixPolymorphic: String = ""): String = 
 
 private fun TelegramType.toKotlinSerializerType(): String = when (this) {
     is TelegramType.ListType<*> -> "ListSerializer(${elementType.toKotlinSerializerType()})"
-    else -> "${toKotlinType()}.serializer()"
+    else -> "${toKotlinTypeNoValueClasses()}.serializer()"
 }

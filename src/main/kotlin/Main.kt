@@ -20,7 +20,7 @@ fun main() = runBlocking {
                 type.copy(
                     docFields = type.docFields.sortedByDescending { it.required }
                 )
-            },
+            }.filter { it.name != "MessageId" },
             docMethods = doc.docMethods.map { method ->
                 method.copy(
                     docParameters = method.docParameters.sortedByDescending { it.required }
