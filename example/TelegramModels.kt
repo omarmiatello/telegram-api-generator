@@ -34,11 +34,7 @@ import kotlinx.serialization.json.*
 import kotlinx.serialization.serializer
 import kotlin.jvm.JvmInline
 
-private val json = Json {
-    ignoreUnknownKeys = true
-    prettyPrint = true
-    encodeDefaults = false
-}
+private val json = Json { ignoreUnknownKeys = true; prettyPrint = true; encodeDefaults = false; isLenient = true; }
 
 sealed class TelegramModel { abstract fun toJson(): String }
 private fun <T> Decoder.tryDeserializers(vararg serializers: KSerializer<out T>): T {
