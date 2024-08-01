@@ -41,7 +41,7 @@
 ### Data Types
 <p>This object represents a Telegram user or bot.</p>
 
-    User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String, is_premium: Boolean, added_to_attachment_menu: Boolean, can_join_groups: Boolean, can_read_all_group_messages: Boolean, supports_inline_queries: Boolean, can_connect_to_business: Boolean)
+    User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String, is_premium: Boolean, added_to_attachment_menu: Boolean, can_join_groups: Boolean, can_read_all_group_messages: Boolean, supports_inline_queries: Boolean, can_connect_to_business: Boolean, has_main_web_app: Boolean)
 
 <p>This object represents a chat.</p>
 
@@ -751,11 +751,11 @@
 
 <p>Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>
 
-    pinChatMessage(chat_id: IntegerOrString, message_id: Integer, disable_notification: Boolean)
+    pinChatMessage(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, disable_notification: Boolean)
 
 <p>Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>
 
-    unpinChatMessage(chat_id: IntegerOrString, message_id: Integer)
+    unpinChatMessage(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer)
 
 <p>Use this method to clear the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>
 

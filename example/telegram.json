@@ -561,6 +561,14 @@
               "name": "Boolean"
             },
             "required": false
+          },
+          {
+            "name": "has_main_web_app",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. \u003cem\u003eTrue\u003c/em\u003e, if the bot has a main Web App. Returned only in \u003ca href\u003d\"#getme\"\u003egetMe\u003c/a\u003e.",
+            "type": {
+              "name": "Boolean"
+            },
+            "required": false
           }
         ]
       },
@@ -10745,6 +10753,14 @@
         "description": "\u003cp\u003eUse this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the \u0027can_pin_messages\u0027 administrator right in a supergroup or \u0027can_edit_messages\u0027 administrator right in a channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
+            "name": "business_connection_id",
+            "description": "Unique identifier of the business connection on behalf of which the message will be pinned",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
@@ -10786,6 +10802,14 @@
         "description": "\u003cp\u003eUse this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the \u0027can_pin_messages\u0027 administrator right in a supergroup or \u0027can_edit_messages\u0027 administrator right in a channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
+            "name": "business_connection_id",
+            "description": "Unique identifier of the business connection on behalf of which the message will be unpinned",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
             "name": "chat_id",
             "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
             "type": {
@@ -10803,7 +10827,7 @@
           },
           {
             "name": "message_id",
-            "description": "Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned.",
+            "description": "Identifier of the message to unpin. Required if \u003cem\u003ebusiness_connection_id\u003c/em\u003e is specified. If not specified, the most recent pinned message (by sending date) will be unpinned.",
             "type": {
               "name": "Integer"
             },
@@ -13274,7 +13298,7 @@
           },
           {
             "name": "thumbnail",
-            "description": "A \u003cstrong\u003e.WEBP\u003c/strong\u003e or \u003cstrong\u003e.PNG\u003c/strong\u003e image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a \u003cstrong\u003e.TGS\u003c/strong\u003e animation with a thumbnail up to 32 kilobytes in size (see \u003ca href\u003d\"/stickers#animated-sticker-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/stickers#animated-sticker-requirements\"\u003ehttps://core.telegram.org/stickers#animated-sticker-requirements\u003c/a\u003e for animated sticker technical requirements), or a \u003cstrong\u003eWEBM\u003c/strong\u003e video with the thumbnail up to 32 kilobytes in size; see \u003ca href\u003d\"/stickers#video-sticker-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/stickers#video-sticker-requirements\"\u003ehttps://core.telegram.org/stickers#video-sticker-requirements\u003c/a\u003e for video sticker technical requirements. Pass a \u003cem\u003efile_id\u003c/em\u003e as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e. Animated and video sticker set thumbnails can\u0027t be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.",
+            "description": "A \u003cstrong\u003e.WEBP\u003c/strong\u003e or \u003cstrong\u003e.PNG\u003c/strong\u003e image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a \u003cstrong\u003e.TGS\u003c/strong\u003e animation with a thumbnail up to 32 kilobytes in size (see \u003ca href\u003d\"/stickers#animation-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/stickers#animation-requirements\"\u003ehttps://core.telegram.org/stickers#animation-requirements\u003c/a\u003e for animated sticker technical requirements), or a \u003cstrong\u003eWEBM\u003c/strong\u003e video with the thumbnail up to 32 kilobytes in size; see \u003ca href\u003d\"/stickers#video-requirements\"\u003e\u003c/a\u003e\u003ca href\u003d\"https://core.telegram.org/stickers#video-requirements\"\u003ehttps://core.telegram.org/stickers#video-requirements\u003c/a\u003e for video sticker technical requirements. Pass a \u003cem\u003efile_id\u003c/em\u003e as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. \u003ca href\u003d\"#sending-files\"\u003eMore information on Sending Files »\u003c/a\u003e. Animated and video sticker set thumbnails can\u0027t be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.",
             "type": {
               "validTypes": [
                 {
@@ -17809,7 +17833,7 @@
   },
   {
     "name": "Games",
-    "description": "\u003cp\u003eYour bot can offer users \u003cstrong\u003eHTML5 games\u003c/strong\u003e to play solo or to compete against each other in groups and one-on-one chats. Create games via \u003ca href\u003d\"https://t.me/botfather\"\u003e@BotFather\u003c/a\u003e using the \u003cem\u003e/newgame\u003c/em\u003e command. Please note that this kind of power requires responsibility: you will need to accept the terms for each game that your bots will be offering.\u003c/p\u003e\n\u003cul\u003e\n \u003cli\u003eGames are a new type of content on Telegram, represented by the \u003ca href\u003d\"#game\"\u003eGame\u003c/a\u003e and \u003ca href\u003d\"#inlinequeryresultgame\"\u003eInlineQueryResultGame\u003c/a\u003e objects.\u003c/li\u003e\n \u003cli\u003eOnce you\u0027ve created a game via \u003ca href\u003d\"https://t.me/botfather\"\u003eBotFather\u003c/a\u003e, you can send games to chats as regular messages using the \u003ca href\u003d\"#sendgame\"\u003esendGame\u003c/a\u003e method, or use \u003ca href\u003d\"#inline-mode\"\u003einline mode\u003c/a\u003e with \u003ca href\u003d\"#inlinequeryresultgame\"\u003eInlineQueryResultGame\u003c/a\u003e.\u003c/li\u003e\n \u003cli\u003eIf you send the game message without any buttons, it will automatically have a \u0027Play \u003cem\u003eGameName\u003c/em\u003e\u0027 button. When this button is pressed, your bot gets a \u003ca href\u003d\"#callbackquery\"\u003eCallbackQuery\u003c/a\u003e with the \u003cem\u003egame_short_name\u003c/em\u003e of the requested game. You provide the correct URL for this particular user and the app opens the game in the in-app browser.\u003c/li\u003e\n \u003cli\u003eYou can manually add multiple buttons to your game message. Please note that the first button in the first row \u003cstrong\u003emust always\u003c/strong\u003e launch the game, using the field \u003cem\u003ecallback_game\u003c/em\u003e in \u003ca href\u003d\"#inlinekeyboardbutton\"\u003eInlineKeyboardButton\u003c/a\u003e. You can add extra buttons according to taste: e.g., for a description of the rules, or to open the game\u0027s official community.\u003c/li\u003e\n \u003cli\u003eTo make your game more attractive, you can upload a GIF animation that demostrates the game to the users via \u003ca href\u003d\"https://t.me/botfather\"\u003eBotFather\u003c/a\u003e (see \u003ca href\u003d\"https://t.me/gamebot?game\u003dlumberjack\"\u003eLumberjack\u003c/a\u003e for example).\u003c/li\u003e\n \u003cli\u003eA game message will also display high scores for the current chat. Use \u003ca href\u003d\"#setgamescore\"\u003esetGameScore\u003c/a\u003e to post high scores to the chat with the game, add the \u003cem\u003eedit_message\u003c/em\u003e parameter to automatically update the message with the current scoreboard.\u003c/li\u003e\n \u003cli\u003eUse \u003ca href\u003d\"#getgamehighscores\"\u003egetGameHighScores\u003c/a\u003e to get data for in-game high score tables.\u003c/li\u003e\n \u003cli\u003eYou can also add an extra \u003ca href\u003d\"/bots/games#sharing-your-game-to-telegram-chats\"\u003esharing button\u003c/a\u003e for users to share their best score to different chats.\u003c/li\u003e\n \u003cli\u003eFor examples of what can be done using this new stuff, check the \u003ca href\u003d\"https://t.me/gamebot\"\u003e@gamebot\u003c/a\u003e and \u003ca href\u003d\"https://t.me/gamee\"\u003e@gamee\u003c/a\u003e bots.\u003c/li\u003e\n\u003c/ul\u003e",
+    "description": "\u003cp\u003eYour bot can offer users \u003cstrong\u003eHTML5 games\u003c/strong\u003e to play solo or to compete against each other in groups and one-on-one chats. Create games via \u003ca href\u003d\"https://t.me/botfather\"\u003e@BotFather\u003c/a\u003e using the \u003cem\u003e/newgame\u003c/em\u003e command. Please note that this kind of power requires responsibility: you will need to accept the terms for each game that your bots will be offering.\u003c/p\u003e\n\u003cul\u003e\n \u003cli\u003eGames are a new type of content on Telegram, represented by the \u003ca href\u003d\"#game\"\u003eGame\u003c/a\u003e and \u003ca href\u003d\"#inlinequeryresultgame\"\u003eInlineQueryResultGame\u003c/a\u003e objects.\u003c/li\u003e\n \u003cli\u003eOnce you\u0027ve created a game via \u003ca href\u003d\"https://t.me/botfather\"\u003eBotFather\u003c/a\u003e, you can send games to chats as regular messages using the \u003ca href\u003d\"#sendgame\"\u003esendGame\u003c/a\u003e method, or use \u003ca href\u003d\"#inline-mode\"\u003einline mode\u003c/a\u003e with \u003ca href\u003d\"#inlinequeryresultgame\"\u003eInlineQueryResultGame\u003c/a\u003e.\u003c/li\u003e\n \u003cli\u003eIf you send the game message without any buttons, it will automatically have a \u0027Play \u003cem\u003eGameName\u003c/em\u003e\u0027 button. When this button is pressed, your bot gets a \u003ca href\u003d\"#callbackquery\"\u003eCallbackQuery\u003c/a\u003e with the \u003cem\u003egame_short_name\u003c/em\u003e of the requested game. You provide the correct URL for this particular user and the app opens the game in the in-app browser.\u003c/li\u003e\n \u003cli\u003eYou can manually add multiple buttons to your game message. Please note that the first button in the first row \u003cstrong\u003emust always\u003c/strong\u003e launch the game, using the field \u003cem\u003ecallback_game\u003c/em\u003e in \u003ca href\u003d\"#inlinekeyboardbutton\"\u003eInlineKeyboardButton\u003c/a\u003e. You can add extra buttons according to taste: e.g., for a description of the rules, or to open the game\u0027s official community.\u003c/li\u003e\n \u003cli\u003eTo make your game more attractive, you can upload a GIF animation that demonstrates the game to the users via \u003ca href\u003d\"https://t.me/botfather\"\u003eBotFather\u003c/a\u003e (see \u003ca href\u003d\"https://t.me/gamebot?game\u003dlumberjack\"\u003eLumberjack\u003c/a\u003e for example).\u003c/li\u003e\n \u003cli\u003eA game message will also display high scores for the current chat. Use \u003ca href\u003d\"#setgamescore\"\u003esetGameScore\u003c/a\u003e to post high scores to the chat with the game, add the \u003cem\u003edisable_edit_message\u003c/em\u003e parameter to disable automatic update of the message with the current scoreboard.\u003c/li\u003e\n \u003cli\u003eUse \u003ca href\u003d\"#getgamehighscores\"\u003egetGameHighScores\u003c/a\u003e to get data for in-game high score tables.\u003c/li\u003e\n \u003cli\u003eYou can also add an extra \u003ca href\u003d\"/bots/games#sharing-your-game-to-telegram-chats\"\u003esharing button\u003c/a\u003e for users to share their best score to different chats.\u003c/li\u003e\n \u003cli\u003eFor examples of what can be done using this new stuff, check the \u003ca href\u003d\"https://t.me/gamebot\"\u003e@gamebot\u003c/a\u003e and \u003ca href\u003d\"https://t.me/gamee\"\u003e@gamee\u003c/a\u003e bots.\u003c/li\u003e\n\u003c/ul\u003e",
     "docTypes": [
       {
         "name": "Game",
