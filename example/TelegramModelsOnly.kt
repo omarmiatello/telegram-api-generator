@@ -16,9 +16,22 @@ sealed class KeyboardOption : TelegramModel()
 sealed class MaybeInaccessibleMessage : TelegramModel()
 sealed class BackgroundType : TelegramModel()
 sealed class BackgroundFill : TelegramModel()
+sealed class PaidMedia : TelegramModel()
+sealed class StoryAreaType : TelegramModel()
+sealed class OwnedGift : TelegramModel()
+sealed class RevenueWithdrawalState : TelegramModel()
+sealed class TransactionPartner : TelegramModel()
+sealed class InputPaidMedia : TelegramModel()
+sealed class InputProfilePhoto : TelegramModel()
+sealed class InputStoryContent : TelegramModel()
 sealed class InputFileOrString : TelegramModel()
 sealed class IntegerOrString : TelegramModel()
-data class TelegramResponse<T>(val ok: Boolean, val result: T? = null)
+data class TelegramResponse<T>(
+    val ok: Boolean,
+    val result: T? = null,
+    val errorCode: Int? = null,
+    val description: String? = null,
+)
 
 // --- Utility ---
 
@@ -46,6 +59,7 @@ enum class ParseMode { MarkdownV2, Markdown, HTML }
  * @property callbackQuery <em>Optional</em>. New incoming callback query
  * @property shippingQuery <em>Optional</em>. New incoming shipping query. Only for invoices with flexible price
  * @property preCheckoutQuery <em>Optional</em>. New incoming pre-checkout query. Contains full information about checkout
+ * @property purchasedPaidMedia <em>Optional</em>. A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat
  * @property poll <em>Optional</em>. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot
  * @property pollAnswer <em>Optional</em>. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.
  * @property myChatMember <em>Optional</em>. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user.
@@ -73,6 +87,7 @@ data class Update(
     val callbackQuery: CallbackQuery? = null,
     val shippingQuery: ShippingQuery? = null,
     val preCheckoutQuery: PreCheckoutQuery? = null,
+    val purchasedPaidMedia: PaidMediaPurchased? = null,
     val poll: Poll? = null,
     val pollAnswer: PollAnswer? = null,
     val myChatMember: ChatMemberUpdated? = null,
@@ -126,6 +141,7 @@ data class WebhookInfo(
  * @property canReadAllGroupMessages <em>Optional</em>. <em>True</em>, if <a href="/bots/features#privacy-mode">privacy mode</a> is disabled for the bot. Returned only in <a href="#getme">getMe</a>.
  * @property supportsInlineQueries <em>Optional</em>. <em>True</em>, if the bot supports inline queries. Returned only in <a href="#getme">getMe</a>.
  * @property canConnectToBusiness <em>Optional</em>. <em>True</em>, if the bot can be connected to a Telegram Business account to receive its messages. Returned only in <a href="#getme">getMe</a>.
+ * @property hasMainWebApp <em>Optional</em>. <em>True</em>, if the bot has a main Web App. Returned only in <a href="#getme">getMe</a>.
  *
  * @constructor Creates a [User].
  * */
@@ -142,6 +158,7 @@ data class User(
     val canReadAllGroupMessages: Boolean? = null,
     val supportsInlineQueries: Boolean? = null,
     val canConnectToBusiness: Boolean? = null,
+    val hasMainWebApp: Boolean? = null,
 ) : TelegramModel()
 
 /**
@@ -201,6 +218,8 @@ data class Chat(
  * @property inviteLink <em>Optional</em>. Primary invite link, for groups, supergroups and channel chats
  * @property pinnedMessage <em>Optional</em>. The most recent pinned message (by sending date)
  * @property permissions <em>Optional</em>. Default chat member permissions, for groups and supergroups
+ * @property acceptedGiftTypes Information about types of gifts that are accepted by the chat or by the corresponding user for private chats
+ * @property canSendPaidMedia <em>Optional</em>. <em>True</em>, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.
  * @property slowModeDelay <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds
  * @property unrestrictBoostCount <em>Optional</em>. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions
  * @property messageAutoDeleteTime <em>Optional</em>. The time after which all messages sent to the chat will be automatically deleted; in seconds
@@ -248,6 +267,8 @@ data class ChatFullInfo(
     val inviteLink: String? = null,
     val pinnedMessage: Message? = null,
     val permissions: ChatPermissions? = null,
+    val acceptedGiftTypes: AcceptedGiftTypes,
+    val canSendPaidMedia: Boolean? = null,
     val slowModeDelay: Long? = null,
     val unrestrictBoostCount: Long? = null,
     val messageAutoDeleteTime: Long? = null,
@@ -265,10 +286,10 @@ data class ChatFullInfo(
 /**
  * <p>This object represents a message.</p>
  *
- * @property messageId Unique message identifier inside this chat
+ * @property messageId Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent
  * @property messageThreadId <em>Optional</em>. Unique identifier of a message thread to which the message belongs; for supergroups only
- * @property from <em>Optional</em>. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
- * @property senderChat <em>Optional</em>. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field <em>from</em> contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
+ * @property from <em>Optional</em>. Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats
+ * @property senderChat <em>Optional</em>. Sender of the message when sent on behalf of a chat. For example, the supergroup itself for messages sent by its anonymous administrators or a linked channel for messages automatically forwarded to the channel's discussion group. For backward compatibility, if the message was sent on behalf of a chat, the field <em>from</em> contains a fake sender user in non-channel chats.
  * @property senderBoostCount <em>Optional</em>. If the sender of the message boosted the chat, the number of boosts added by the user
  * @property senderBusinessBot <em>Optional</em>. The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
  * @property date Date the message was sent in Unix time. It is always a positive number, representing a valid date.
@@ -284,9 +305,10 @@ data class ChatFullInfo(
  * @property viaBot <em>Optional</em>. Bot through which the message was sent
  * @property editDate <em>Optional</em>. Date the message was last edited in Unix time
  * @property hasProtectedContent <em>Optional</em>. <em>True</em>, if the message can't be forwarded
- * @property isFromOffline <em>Optional</em>. True, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+ * @property isFromOffline <em>Optional</em>. <em>True</em>, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
  * @property mediaGroupId <em>Optional</em>. The unique identifier of a media message group this message belongs to
  * @property authorSignature <em>Optional</em>. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
+ * @property paidStarCount <em>Optional</em>. The number of Telegram Stars that were paid by the sender of the message to send it
  * @property text <em>Optional</em>. For text messages, the actual UTF-8 text of the message
  * @property entities <em>Optional</em>. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text
  * @property linkPreviewOptions <em>Optional</em>. Options used for link preview generation for the message, if it is a text message and link preview options were changed
@@ -294,16 +316,18 @@ data class ChatFullInfo(
  * @property animation <em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set
  * @property audio <em>Optional</em>. Message is an audio file, information about the file
  * @property document <em>Optional</em>. Message is a general file, information about the file
+ * @property paidMedia <em>Optional</em>. Message contains paid media; information about the paid media
  * @property photo <em>Optional</em>. Message is a photo, available sizes of the photo
  * @property sticker <em>Optional</em>. Message is a sticker, information about the sticker
  * @property story <em>Optional</em>. Message is a forwarded story
  * @property video <em>Optional</em>. Message is a video, information about the video
  * @property videoNote <em>Optional</em>. Message is a <a href="https://telegram.org/blog/video-messages-and-telescope">video note</a>, information about the video message
  * @property voice <em>Optional</em>. Message is a voice message, information about the file
- * @property caption <em>Optional</em>. Caption for the animation, audio, document, photo, video or voice
+ * @property caption <em>Optional</em>. Caption for the animation, audio, document, paid media, photo, video or voice
  * @property captionEntities <em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption
- * @property showCaptionAboveMedia <em>Optional</em>. True, if the caption must be shown above the message media
+ * @property showCaptionAboveMedia <em>Optional</em>. <em>True</em>, if the caption must be shown above the message media
  * @property hasMediaSpoiler <em>Optional</em>. <em>True</em>, if the message media is covered by a spoiler animation
+ * @property checklist <em>Optional</em>. Message is a checklist
  * @property contact <em>Optional</em>. Message is a shared contact, information about the contact
  * @property dice <em>Optional</em>. Message is a dice with random value
  * @property game <em>Optional</em>. Message is a game, information about the game. <a href="#games">More about games »</a>
@@ -324,14 +348,20 @@ data class ChatFullInfo(
  * @property pinnedMessage <em>Optional</em>. Specified message was pinned. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply.
  * @property invoice <em>Optional</em>. Message is an invoice for a <a href="#payments">payment</a>, information about the invoice. <a href="#payments">More about payments »</a>
  * @property successfulPayment <em>Optional</em>. Message is a service message about a successful payment, information about the payment. <a href="#payments">More about payments »</a>
+ * @property refundedPayment <em>Optional</em>. Message is a service message about a refunded payment, information about the payment. <a href="#payments">More about payments »</a>
  * @property usersShared <em>Optional</em>. Service message: users were shared with the bot
  * @property chatShared <em>Optional</em>. Service message: a chat was shared with the bot
+ * @property gift <em>Optional</em>. Service message: a regular gift was sent or received
+ * @property uniqueGift <em>Optional</em>. Service message: a unique gift was sent or received
  * @property connectedWebsite <em>Optional</em>. The domain name of the website on which the user has logged in. <a href="/widgets/login">More about Telegram Login »</a>
  * @property writeAccessAllowed <em>Optional</em>. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method <a href="/bots/webapps#initializing-mini-apps">requestWriteAccess</a>
  * @property passportData <em>Optional</em>. Telegram Passport data
  * @property proximityAlertTriggered <em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.
  * @property boostAdded <em>Optional</em>. Service message: user boosted the chat
  * @property chatBackgroundSet <em>Optional</em>. Service message: chat background set
+ * @property checklistTasksDone <em>Optional</em>. Service message: some tasks in a checklist were marked as done or not done
+ * @property checklistTasksAdded <em>Optional</em>. Service message: tasks were added to a checklist
+ * @property directMessagePriceChanged <em>Optional</em>. Service message: the price for paid messages in the corresponding direct messages chat of a channel has changed
  * @property forumTopicCreated <em>Optional</em>. Service message: forum topic created
  * @property forumTopicEdited <em>Optional</em>. Service message: forum topic edited
  * @property forumTopicClosed <em>Optional</em>. Service message: forum topic closed
@@ -342,6 +372,7 @@ data class ChatFullInfo(
  * @property giveaway <em>Optional</em>. The message is a scheduled giveaway message
  * @property giveawayWinners <em>Optional</em>. A giveaway with public winners was completed
  * @property giveawayCompleted <em>Optional</em>. Service message: a giveaway without public winners was completed
+ * @property paidMessagePriceChanged <em>Optional</em>. Service message: the price for paid messages has changed in the chat
  * @property videoChatScheduled <em>Optional</em>. Service message: video chat scheduled
  * @property videoChatStarted <em>Optional</em>. Service message: video chat started
  * @property videoChatEnded <em>Optional</em>. Service message: video chat ended
@@ -374,6 +405,7 @@ data class Message(
     val isFromOffline: Boolean? = null,
     val mediaGroupId: String? = null,
     val authorSignature: String? = null,
+    val paidStarCount: Long? = null,
     val text: String? = null,
     val entities: List<MessageEntity>? = null,
     val linkPreviewOptions: LinkPreviewOptions? = null,
@@ -381,6 +413,7 @@ data class Message(
     val animation: Animation? = null,
     val audio: Audio? = null,
     val document: Document? = null,
+    val paidMedia: PaidMediaInfo? = null,
     val photo: List<PhotoSize>? = null,
     val sticker: Sticker? = null,
     val story: Story? = null,
@@ -391,6 +424,7 @@ data class Message(
     val captionEntities: List<MessageEntity>? = null,
     val showCaptionAboveMedia: Boolean? = null,
     val hasMediaSpoiler: Boolean? = null,
+    val checklist: Checklist? = null,
     val contact: Contact? = null,
     val dice: Dice? = null,
     val game: Game? = null,
@@ -411,14 +445,20 @@ data class Message(
     val pinnedMessage: MaybeInaccessibleMessage? = null,
     val invoice: Invoice? = null,
     val successfulPayment: SuccessfulPayment? = null,
+    val refundedPayment: RefundedPayment? = null,
     val usersShared: UsersShared? = null,
     val chatShared: ChatShared? = null,
+    val gift: GiftInfo? = null,
+    val uniqueGift: UniqueGiftInfo? = null,
     val connectedWebsite: String? = null,
     val writeAccessAllowed: WriteAccessAllowed? = null,
     val passportData: PassportData? = null,
     val proximityAlertTriggered: ProximityAlertTriggered? = null,
     val boostAdded: ChatBoostAdded? = null,
     val chatBackgroundSet: ChatBackground? = null,
+    val checklistTasksDone: ChecklistTasksDone? = null,
+    val checklistTasksAdded: ChecklistTasksAdded? = null,
+    val directMessagePriceChanged: DirectMessagePriceChanged? = null,
     val forumTopicCreated: ForumTopicCreated? = null,
     val forumTopicEdited: ForumTopicEdited? = null,
     val forumTopicClosed: Any? = null,
@@ -429,6 +469,7 @@ data class Message(
     val giveaway: Giveaway? = null,
     val giveawayWinners: GiveawayWinners? = null,
     val giveawayCompleted: GiveawayCompleted? = null,
+    val paidMessagePriceChanged: PaidMessagePriceChanged? = null,
     val videoChatScheduled: VideoChatScheduled? = null,
     val videoChatStarted: Any? = null,
     val videoChatEnded: VideoChatEnded? = null,
@@ -440,7 +481,7 @@ data class Message(
 /**
  * <p>This object represents a unique message identifier.</p>
  *
- * @property messageId Unique message identifier
+ * @property messageId Unique message identifier. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent
  *
  * @constructor Creates a [MessageId].
  * */
@@ -466,7 +507,7 @@ data class InaccessibleMessage(
 /**
  * <p>This object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc.</p>
  *
- * @property type Type of the entity. Currently, can be “mention” (<code>@username</code>), “hashtag” (<code>#hashtag</code>), “cashtag” (<code>$USD</code>), “bot_command” (<code>/start@jobs_bot</code>), “url” (<code>https://telegram.org</code>), “email” (<code>do-not-reply@telegram.org</code>), “phone_number” (<code>+1-212-555-0123</code>), “bold” (<strong>bold text</strong>), “italic” (<em>italic text</em>), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler” (spoiler message), “blockquote” (block quotation), “expandable_blockquote” (collapsed-by-default block quotation), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users <a href="https://telegram.org/blog/edit#new-mentions">without usernames</a>), “custom_emoji” (for inline custom emoji stickers)
+ * @property type Type of the entity. Currently, can be “mention” (<code>@username</code>), “hashtag” (<code>#hashtag</code> or <code>#hashtag@chatusername</code>), “cashtag” (<code>$USD</code> or <code>$USD@chatusername</code>), “bot_command” (<code>/start@jobs_bot</code>), “url” (<code>https://telegram.org</code>), “email” (<code>do-not-reply@telegram.org</code>), “phone_number” (<code>+1-212-555-0123</code>), “bold” (<strong>bold text</strong>), “italic” (<em>italic text</em>), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler” (spoiler message), “blockquote” (block quotation), “expandable_blockquote” (collapsed-by-default block quotation), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users <a href="https://telegram.org/blog/edit#new-mentions">without usernames</a>), “custom_emoji” (for inline custom emoji stickers)
  * @property offset Offset in <a href="/api/entities#entity-length">UTF-16 code units</a> to the start of the entity
  * @property length Length of the entity in <a href="/api/entities#entity-length">UTF-16 code units</a>
  * @property url <em>Optional</em>. For “text_link” only, URL that will be opened after user taps on the text
@@ -492,7 +533,7 @@ data class MessageEntity(
  * @property text Text of the quoted part of a message that is replied to by the given message
  * @property entities <em>Optional</em>. Special entities that appear in the quote. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities are kept in quotes.
  * @property position Approximate quote position in the original message in UTF-16 code units as specified by the sender
- * @property isManual <em>Optional</em>. True, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.
+ * @property isManual <em>Optional</em>. <em>True</em>, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.
  *
  * @constructor Creates a [TextQuote].
  * */
@@ -513,6 +554,7 @@ data class TextQuote(
  * @property animation <em>Optional</em>. Message is an animation, information about the animation
  * @property audio <em>Optional</em>. Message is an audio file, information about the file
  * @property document <em>Optional</em>. Message is a general file, information about the file
+ * @property paidMedia <em>Optional</em>. Message contains paid media; information about the paid media
  * @property photo <em>Optional</em>. Message is a photo, available sizes of the photo
  * @property sticker <em>Optional</em>. Message is a sticker, information about the sticker
  * @property story <em>Optional</em>. Message is a forwarded story
@@ -520,6 +562,7 @@ data class TextQuote(
  * @property videoNote <em>Optional</em>. Message is a <a href="https://telegram.org/blog/video-messages-and-telescope">video note</a>, information about the video message
  * @property voice <em>Optional</em>. Message is a voice message, information about the file
  * @property hasMediaSpoiler <em>Optional</em>. <em>True</em>, if the message media is covered by a spoiler animation
+ * @property checklist <em>Optional</em>. Message is a checklist
  * @property contact <em>Optional</em>. Message is a shared contact, information about the contact
  * @property dice <em>Optional</em>. Message is a dice with random value
  * @property game <em>Optional</em>. Message is a game, information about the game. <a href="#games">More about games »</a>
@@ -540,6 +583,7 @@ data class ExternalReplyInfo(
     val animation: Animation? = null,
     val audio: Audio? = null,
     val document: Document? = null,
+    val paidMedia: PaidMediaInfo? = null,
     val photo: List<PhotoSize>? = null,
     val sticker: Sticker? = null,
     val story: Story? = null,
@@ -547,6 +591,7 @@ data class ExternalReplyInfo(
     val videoNote: VideoNote? = null,
     val voice: Voice? = null,
     val hasMediaSpoiler: Boolean? = null,
+    val checklist: Checklist? = null,
     val contact: Contact? = null,
     val dice: Dice? = null,
     val game: Game? = null,
@@ -671,12 +716,12 @@ data class PhotoSize(
  *
  * @property fileId Identifier for this file, which can be used to download or reuse the file
  * @property fileUniqueId Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property width Video width as defined by sender
- * @property height Video height as defined by sender
- * @property duration Duration of the video in seconds as defined by sender
- * @property thumbnail <em>Optional</em>. Animation thumbnail as defined by sender
- * @property fileName <em>Optional</em>. Original animation filename as defined by sender
- * @property mimeType <em>Optional</em>. MIME type of the file as defined by sender
+ * @property width Video width as defined by the sender
+ * @property height Video height as defined by the sender
+ * @property duration Duration of the video in seconds as defined by the sender
+ * @property thumbnail <em>Optional</em>. Animation thumbnail as defined by the sender
+ * @property fileName <em>Optional</em>. Original animation filename as defined by the sender
+ * @property mimeType <em>Optional</em>. MIME type of the file as defined by the sender
  * @property fileSize <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
  *
  * @constructor Creates a [Animation].
@@ -698,11 +743,11 @@ data class Animation(
  *
  * @property fileId Identifier for this file, which can be used to download or reuse the file
  * @property fileUniqueId Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property duration Duration of the audio in seconds as defined by sender
- * @property performer <em>Optional</em>. Performer of the audio as defined by sender or by audio tags
- * @property title <em>Optional</em>. Title of the audio as defined by sender or by audio tags
- * @property fileName <em>Optional</em>. Original filename as defined by sender
- * @property mimeType <em>Optional</em>. MIME type of the file as defined by sender
+ * @property duration Duration of the audio in seconds as defined by the sender
+ * @property performer <em>Optional</em>. Performer of the audio as defined by the sender or by audio tags
+ * @property title <em>Optional</em>. Title of the audio as defined by the sender or by audio tags
+ * @property fileName <em>Optional</em>. Original filename as defined by the sender
+ * @property mimeType <em>Optional</em>. MIME type of the file as defined by the sender
  * @property fileSize <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
  * @property thumbnail <em>Optional</em>. Thumbnail of the album cover to which the music file belongs
  *
@@ -725,9 +770,9 @@ data class Audio(
  *
  * @property fileId Identifier for this file, which can be used to download or reuse the file
  * @property fileUniqueId Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property thumbnail <em>Optional</em>. Document thumbnail as defined by sender
- * @property fileName <em>Optional</em>. Original filename as defined by sender
- * @property mimeType <em>Optional</em>. MIME type of the file as defined by sender
+ * @property thumbnail <em>Optional</em>. Document thumbnail as defined by the sender
+ * @property fileName <em>Optional</em>. Original filename as defined by the sender
+ * @property mimeType <em>Optional</em>. MIME type of the file as defined by the sender
  * @property fileSize <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
  *
  * @constructor Creates a [Document].
@@ -759,12 +804,14 @@ data class Story(
  *
  * @property fileId Identifier for this file, which can be used to download or reuse the file
  * @property fileUniqueId Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property width Video width as defined by sender
- * @property height Video height as defined by sender
- * @property duration Duration of the video in seconds as defined by sender
+ * @property width Video width as defined by the sender
+ * @property height Video height as defined by the sender
+ * @property duration Duration of the video in seconds as defined by the sender
  * @property thumbnail <em>Optional</em>. Video thumbnail
- * @property fileName <em>Optional</em>. Original filename as defined by sender
- * @property mimeType <em>Optional</em>. MIME type of the file as defined by sender
+ * @property cover <em>Optional</em>. Available sizes of the cover of the video in the message
+ * @property startTimestamp <em>Optional</em>. Timestamp in seconds from which the video will play in the message
+ * @property fileName <em>Optional</em>. Original filename as defined by the sender
+ * @property mimeType <em>Optional</em>. MIME type of the file as defined by the sender
  * @property fileSize <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
  *
  * @constructor Creates a [Video].
@@ -776,6 +823,8 @@ data class Video(
     val height: Long,
     val duration: Long,
     val thumbnail: PhotoSize? = null,
+    val cover: List<PhotoSize>? = null,
+    val startTimestamp: Long? = null,
     val fileName: String? = null,
     val mimeType: String? = null,
     val fileSize: Long? = null,
@@ -786,8 +835,8 @@ data class Video(
  *
  * @property fileId Identifier for this file, which can be used to download or reuse the file
  * @property fileUniqueId Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property length Video width and height (diameter of the video message) as defined by sender
- * @property duration Duration of the video in seconds as defined by sender
+ * @property length Video width and height (diameter of the video message) as defined by the sender
+ * @property duration Duration of the video in seconds as defined by the sender
  * @property thumbnail <em>Optional</em>. Video thumbnail
  * @property fileSize <em>Optional</em>. File size in bytes
  *
@@ -807,8 +856,8 @@ data class VideoNote(
  *
  * @property fileId Identifier for this file, which can be used to download or reuse the file
  * @property fileUniqueId Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property duration Duration of the audio in seconds as defined by sender
- * @property mimeType <em>Optional</em>. MIME type of the file as defined by sender
+ * @property duration Duration of the audio in seconds as defined by the sender
+ * @property mimeType <em>Optional</em>. MIME type of the file as defined by the sender
  * @property fileSize <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
  *
  * @constructor Creates a [Voice].
@@ -820,6 +869,62 @@ data class Voice(
     val mimeType: String? = null,
     val fileSize: Long? = null,
 ) : TelegramModel()
+
+/**
+ * <p>Describes the paid media added to a message.</p>
+ *
+ * @property starCount The number of Telegram Stars that must be paid to buy access to the media
+ * @property paidMedia Information about the paid media
+ *
+ * @constructor Creates a [PaidMediaInfo].
+ * */
+data class PaidMediaInfo(
+    val starCount: Long,
+    val paidMedia: List<PaidMedia>,
+) : TelegramModel()
+
+/**
+ * <p>The paid media isn't available before the payment.</p>
+ *
+ * @property type Type of the paid media, always “preview”
+ * @property width <em>Optional</em>. Media width as defined by the sender
+ * @property height <em>Optional</em>. Media height as defined by the sender
+ * @property duration <em>Optional</em>. Duration of the media in seconds as defined by the sender
+ *
+ * @constructor Creates a [PaidMediaPreview].
+ * */
+data class PaidMediaPreview(
+    val type: String,
+    val width: Long? = null,
+    val height: Long? = null,
+    val duration: Long? = null,
+) : PaidMedia()
+
+/**
+ * <p>The paid media is a photo.</p>
+ *
+ * @property type Type of the paid media, always “photo”
+ * @property photo The photo
+ *
+ * @constructor Creates a [PaidMediaPhoto].
+ * */
+data class PaidMediaPhoto(
+    val type: String,
+    val photo: List<PhotoSize>,
+) : PaidMedia()
+
+/**
+ * <p>The paid media is a video.</p>
+ *
+ * @property type Type of the paid media, always “video”
+ * @property video The video
+ *
+ * @constructor Creates a [PaidMediaVideo].
+ * */
+data class PaidMediaVideo(
+    val type: String,
+    val video: Video,
+) : PaidMedia()
 
 /**
  * <p>This object represents a phone contact.</p>
@@ -869,7 +974,7 @@ data class PollOption(
 ) : TelegramModel()
 
 /**
- * <p>This object contains information about one answer option in a poll to send.</p>
+ * <p>This object contains information about one answer option in a poll to be sent.</p>
  *
  * @property text Option text, 1-100 characters
  * @property textParseMode <em>Optional</em>. Mode for parsing entities in the text. See <a href="#formatting-options">formatting options</a> for more details. Currently, only custom emoji entities are allowed
@@ -938,10 +1043,114 @@ data class Poll(
 ) : TelegramModel()
 
 /**
+ * <p>Describes a task in a checklist.</p>
+ *
+ * @property id Unique identifier of the task
+ * @property text Text of the task
+ * @property textEntities <em>Optional</em>. Special entities that appear in the task text
+ * @property completedByUser <em>Optional</em>. User that completed the task; omitted if the task wasn't completed
+ * @property completionDate <em>Optional</em>. Point in time (Unix timestamp) when the task was completed; 0 if the task wasn't completed
+ *
+ * @constructor Creates a [ChecklistTask].
+ * */
+data class ChecklistTask(
+    val id: Long,
+    val text: String,
+    val textEntities: List<MessageEntity>? = null,
+    val completedByUser: User? = null,
+    val completionDate: Long? = null,
+) : TelegramModel()
+
+/**
+ * <p>Describes a checklist.</p>
+ *
+ * @property title Title of the checklist
+ * @property titleEntities <em>Optional</em>. Special entities that appear in the checklist title
+ * @property tasks List of tasks in the checklist
+ * @property othersCanAddTasks <em>Optional</em>. <em>True</em>, if users other than the creator of the list can add tasks to the list
+ * @property othersCanMarkTasksAsDone <em>Optional</em>. <em>True</em>, if users other than the creator of the list can mark tasks as done or not done
+ *
+ * @constructor Creates a [Checklist].
+ * */
+data class Checklist(
+    val title: String,
+    val titleEntities: List<MessageEntity>? = null,
+    val tasks: List<ChecklistTask>,
+    val othersCanAddTasks: Boolean? = null,
+    val othersCanMarkTasksAsDone: Boolean? = null,
+) : TelegramModel()
+
+/**
+ * <p>Describes a task to add to a checklist.</p>
+ *
+ * @property id Unique identifier of the task; must be positive and unique among all task identifiers currently present in the checklist
+ * @property text Text of the task; 1-100 characters after entities parsing
+ * @property parseMode Optional. Mode for parsing entities in the text. See <a href="https://core.telegram.org/bots/api#formatting-options">formatting options</a> for more details.
+ * @property textEntities <em>Optional</em>. List of special entities that appear in the text, which can be specified instead of parse_mode. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities are allowed.
+ *
+ * @constructor Creates a [InputChecklistTask].
+ * */
+data class InputChecklistTask(
+    val id: Long,
+    val text: String,
+    val parseMode: ParseMode? = null,
+    val textEntities: List<MessageEntity>? = null,
+) : TelegramModel()
+
+/**
+ * <p>Describes a checklist to create.</p>
+ *
+ * @property title Title of the checklist; 1-255 characters after entities parsing
+ * @property parseMode Optional. Mode for parsing entities in the title. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property titleEntities <em>Optional</em>. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities are allowed.
+ * @property tasks List of 1-30 tasks in the checklist
+ * @property othersCanAddTasks <em>Optional</em>. Pass <em>True</em> if other users can add tasks to the checklist
+ * @property othersCanMarkTasksAsDone <em>Optional</em>. Pass <em>True</em> if other users can mark tasks as done or not done in the checklist
+ *
+ * @constructor Creates a [InputChecklist].
+ * */
+data class InputChecklist(
+    val title: String,
+    val parseMode: ParseMode? = null,
+    val titleEntities: List<MessageEntity>? = null,
+    val tasks: List<InputChecklistTask>,
+    val othersCanAddTasks: Boolean? = null,
+    val othersCanMarkTasksAsDone: Boolean? = null,
+) : TelegramModel()
+
+/**
+ * <p>Describes a service message about checklist tasks marked as done or not done.</p>
+ *
+ * @property checklistMessage <em>Optional</em>. Message containing the checklist whose tasks were marked as done or not done. Note that the Message object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply.
+ * @property markedAsDoneTaskIds <em>Optional</em>. Identifiers of the tasks that were marked as done
+ * @property markedAsNotDoneTaskIds <em>Optional</em>. Identifiers of the tasks that were marked as not done
+ *
+ * @constructor Creates a [ChecklistTasksDone].
+ * */
+data class ChecklistTasksDone(
+    val checklistMessage: Message? = null,
+    val markedAsDoneTaskIds: List<Long>? = null,
+    val markedAsNotDoneTaskIds: List<Long>? = null,
+) : TelegramModel()
+
+/**
+ * <p>Describes a service message about tasks added to a checklist.</p>
+ *
+ * @property checklistMessage <em>Optional</em>. Message containing the checklist to which the tasks were added. Note that the Message object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply.
+ * @property tasks List of tasks added to the checklist
+ *
+ * @constructor Creates a [ChecklistTasksAdded].
+ * */
+data class ChecklistTasksAdded(
+    val checklistMessage: Message? = null,
+    val tasks: List<ChecklistTask>,
+) : TelegramModel()
+
+/**
  * <p>This object represents a point on the map.</p>
  *
- * @property latitude Latitude as defined by sender
- * @property longitude Longitude as defined by sender
+ * @property latitude Latitude as defined by the sender
+ * @property longitude Longitude as defined by the sender
  * @property horizontalAccuracy <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500
  * @property livePeriod <em>Optional</em>. Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only.
  * @property heading <em>Optional</em>. The direction in which user is moving, in degrees; 1-360. For active live locations only.
@@ -1109,7 +1318,7 @@ data class BackgroundTypeWallpaper(
 ) : BackgroundType()
 
 /**
- * <p>The background is a PNG or TGV (gzipped subset of SVG with MIME type “application/x-tgwallpattern”) pattern to be combined with the background fill chosen by the user.</p>
+ * <p>The background is a .PNG or .TGV (gzipped subset of SVG with MIME type “application/x-tgwallpattern”) pattern to be combined with the background fill chosen by the user.</p>
  *
  * @property type Type of the background, always “pattern”
  * @property document Document with the pattern
@@ -1235,9 +1444,9 @@ data class ChatShared(
 /**
  * <p>This object represents a service message about a user allowing a bot to write messages after adding it to the attachment menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method <a href="/bots/webapps#initializing-mini-apps">requestWriteAccess</a>.</p>
  *
- * @property fromRequest <em>Optional</em>. True, if the access was granted after the user accepted an explicit request from a Web App sent by the method <a href="/bots/webapps#initializing-mini-apps">requestWriteAccess</a>
+ * @property fromRequest <em>Optional</em>. <em>True</em>, if the access was granted after the user accepted an explicit request from a Web App sent by the method <a href="/bots/webapps#initializing-mini-apps">requestWriteAccess</a>
  * @property webAppName <em>Optional</em>. Name of the Web App, if the access was granted when the Web App was launched from a link
- * @property fromAttachmentMenu <em>Optional</em>. True, if the access was granted when the bot was added to the attachment or side menu
+ * @property fromAttachmentMenu <em>Optional</em>. <em>True</em>, if the access was granted when the bot was added to the attachment or side menu
  *
  * @constructor Creates a [WriteAccessAllowed].
  * */
@@ -1281,6 +1490,41 @@ data class VideoChatParticipantsInvited(
 ) : TelegramModel()
 
 /**
+ * <p>Describes a service message about a change in the price of paid messages within a chat.</p>
+ *
+ * @property paidMessageStarCount The new number of Telegram Stars that must be paid by non-administrator users of the supergroup chat for each sent message
+ *
+ * @constructor Creates a [PaidMessagePriceChanged].
+ * */
+data class PaidMessagePriceChanged(
+    val paidMessageStarCount: Long,
+) : TelegramModel()
+
+/**
+ * <p>Describes a service message about a change in the price of direct messages sent to a channel chat.</p>
+ *
+ * @property areDirectMessagesEnabled <em>True</em>, if direct messages are enabled for the channel chat; false otherwise
+ * @property directMessageStarCount <em>Optional</em>. The new number of Telegram Stars that must be paid by users for each direct message sent to the channel. Does not apply to users who have been exempted by administrators. Defaults to 0.
+ *
+ * @constructor Creates a [DirectMessagePriceChanged].
+ * */
+data class DirectMessagePriceChanged(
+    val areDirectMessagesEnabled: Boolean,
+    val directMessageStarCount: Long? = null,
+) : TelegramModel()
+
+/**
+ * <p>This object represents a service message about the creation of a scheduled giveaway.</p>
+ *
+ * @property prizeStarCount <em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only
+ *
+ * @constructor Creates a [GiveawayCreated].
+ * */
+data class GiveawayCreated(
+    val prizeStarCount: Long? = null,
+) : TelegramModel()
+
+/**
  * <p>This object represents a message about a scheduled giveaway.</p>
  *
  * @property chats The list of chats which the user must join to participate in the giveaway
@@ -1290,7 +1534,8 @@ data class VideoChatParticipantsInvited(
  * @property hasPublicWinners <em>Optional</em>. <em>True</em>, if the list of giveaway winners will be visible to everyone
  * @property prizeDescription <em>Optional</em>. Description of additional giveaway prize
  * @property countryCodes <em>Optional</em>. A list of two-letter <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO 3166-1 alpha-2</a> country codes indicating the countries from which eligible users for the giveaway must come. If empty, then all users can participate in the giveaway. Users with a phone number that was bought on Fragment can always participate in giveaways.
- * @property premiumSubscriptionMonthCount <em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for
+ * @property prizeStarCount <em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only
+ * @property premiumSubscriptionMonthCount <em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only
  *
  * @constructor Creates a [Giveaway].
  * */
@@ -1302,6 +1547,7 @@ data class Giveaway(
     val hasPublicWinners: Boolean? = null,
     val prizeDescription: String? = null,
     val countryCodes: List<String>? = null,
+    val prizeStarCount: Long? = null,
     val premiumSubscriptionMonthCount: Long? = null,
 ) : TelegramModel()
 
@@ -1314,7 +1560,8 @@ data class Giveaway(
  * @property winnerCount Total number of winners in the giveaway
  * @property winners List of up to 100 winners of the giveaway
  * @property additionalChatCount <em>Optional</em>. The number of other chats the user had to join in order to be eligible for the giveaway
- * @property premiumSubscriptionMonthCount <em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for
+ * @property prizeStarCount <em>Optional</em>. The number of Telegram Stars that were split between giveaway winners; for Telegram Star giveaways only
+ * @property premiumSubscriptionMonthCount <em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only
  * @property unclaimedPrizeCount <em>Optional</em>. Number of undistributed prizes
  * @property onlyNewMembers <em>Optional</em>. <em>True</em>, if only users who had joined the chats after the giveaway started were eligible to win
  * @property wasRefunded <em>Optional</em>. <em>True</em>, if the giveaway was canceled because the payment for it was refunded
@@ -1329,6 +1576,7 @@ data class GiveawayWinners(
     val winnerCount: Long,
     val winners: List<User>,
     val additionalChatCount: Long? = null,
+    val prizeStarCount: Long? = null,
     val premiumSubscriptionMonthCount: Long? = null,
     val unclaimedPrizeCount: Long? = null,
     val onlyNewMembers: Boolean? = null,
@@ -1342,6 +1590,7 @@ data class GiveawayWinners(
  * @property winnerCount Number of winners in the giveaway
  * @property unclaimedPrizeCount <em>Optional</em>. Number of undistributed prizes
  * @property giveawayMessage <em>Optional</em>. Message with the giveaway that was completed, if it wasn't deleted
+ * @property isStarGiveaway <em>Optional</em>. <em>True</em>, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway.
  *
  * @constructor Creates a [GiveawayCompleted].
  * */
@@ -1349,6 +1598,7 @@ data class GiveawayCompleted(
     val winnerCount: Long,
     val unclaimedPrizeCount: Long? = null,
     val giveawayMessage: Message? = null,
+    val isStarGiveaway: Boolean? = null,
 ) : TelegramModel()
 
 /**
@@ -1551,12 +1801,13 @@ data class InlineKeyboardMarkup(
  *
  * @property text Label text on the button
  * @property url <em>Optional</em>. HTTP or tg:// URL to be opened when the button is pressed. Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.
- * @property callbackData <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when button is pressed, 1-64 bytes. Not supported for messages sent on behalf of a Telegram Business account.
+ * @property callbackData <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when the button is pressed, 1-64 bytes
  * @property webApp <em>Optional</em>. Description of the <a href="/bots/webapps">Web App</a> that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a Telegram Business account.
  * @property loginUrl <em>Optional</em>. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the <a href="/widgets/login">Telegram Login Widget</a>.
  * @property switchInlineQuery <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent on behalf of a Telegram Business account.
  * @property switchInlineQueryCurrentChat <em>Optional</em>. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted.<br><br>This offers a quick way for the user to open your bot in inline mode in the same chat - good for selecting something from multiple options. Not supported in channels and for messages sent on behalf of a Telegram Business account.
  * @property switchInlineQueryChosenChat <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent on behalf of a Telegram Business account.
+ * @property copyText <em>Optional</em>. Description of the button that copies the specified text to the clipboard.
  * @property callbackGame <em>Optional</em>. Description of the game that will be launched when the user presses the button.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row.
  * @property pay <em>Optional</em>. Specify <em>True</em>, to send a <a href="#payments">Pay button</a>. Substrings “<img class="emoji" src="//telegram.org/img/emoji/40/E2AD90.png" width="20" height="20" alt="⭐">” and “XTR” in the buttons's text will be replaced with a Telegram Star icon.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row and can only be used in invoice messages.
  *
@@ -1571,6 +1822,7 @@ data class InlineKeyboardButton(
     val switchInlineQuery: String? = null,
     val switchInlineQueryCurrentChat: String? = null,
     val switchInlineQueryChosenChat: SwitchInlineQueryChosenChat? = null,
+    val copyText: CopyTextButton? = null,
     val callbackGame: Any? = null,
     val pay: Boolean? = null,
 ) : TelegramModel()
@@ -1598,10 +1850,10 @@ data class LoginUrl(
  * <p>This object represents an inline button that switches the current user to inline mode in a chosen chat, with an optional default inline query.</p>
  *
  * @property query <em>Optional</em>. The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted
- * @property allowUserChats <em>Optional</em>. True, if private chats with users can be chosen
- * @property allowBotChats <em>Optional</em>. True, if private chats with bots can be chosen
- * @property allowGroupChats <em>Optional</em>. True, if group and supergroup chats can be chosen
- * @property allowChannelChats <em>Optional</em>. True, if channel chats can be chosen
+ * @property allowUserChats <em>Optional</em>. <em>True</em>, if private chats with users can be chosen
+ * @property allowBotChats <em>Optional</em>. <em>True</em>, if private chats with bots can be chosen
+ * @property allowGroupChats <em>Optional</em>. <em>True</em>, if group and supergroup chats can be chosen
+ * @property allowChannelChats <em>Optional</em>. <em>True</em>, if channel chats can be chosen
  *
  * @constructor Creates a [SwitchInlineQueryChosenChat].
  * */
@@ -1611,6 +1863,17 @@ data class SwitchInlineQueryChosenChat(
     val allowBotChats: Boolean? = null,
     val allowGroupChats: Boolean? = null,
     val allowChannelChats: Boolean? = null,
+) : TelegramModel()
+
+/**
+ * <p>This object represents an inline keyboard button that copies specified text to the clipboard.</p>
+ *
+ * @property text The text to be copied to the clipboard; 1-256 characters
+ *
+ * @constructor Creates a [CopyTextButton].
+ * */
+data class CopyTextButton(
+    val text: String,
 ) : TelegramModel()
 
 /**
@@ -1689,6 +1952,8 @@ data class ChatPhoto(
  * @property expireDate <em>Optional</em>. Point in time (Unix timestamp) when the link will expire or has been expired
  * @property memberLimit <em>Optional</em>. The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
  * @property pendingJoinRequestCount <em>Optional</em>. Number of pending join requests created using this link
+ * @property subscriptionPeriod <em>Optional</em>. The number of seconds the subscription will be active for before the next payment
+ * @property subscriptionPrice <em>Optional</em>. The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat using the link
  *
  * @constructor Creates a [ChatInviteLink].
  * */
@@ -1702,13 +1967,15 @@ data class ChatInviteLink(
     val expireDate: Long? = null,
     val memberLimit: Long? = null,
     val pendingJoinRequestCount: Long? = null,
+    val subscriptionPeriod: Long? = null,
+    val subscriptionPrice: Long? = null,
 ) : TelegramModel()
 
 /**
  * <p>Represents the rights of an administrator in a chat.</p>
  *
  * @property isAnonymous <em>True</em>, if the user's presence in the chat is hidden
- * @property canManageChat <em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.
+ * @property canManageChat <em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.
  * @property canDeleteMessages <em>True</em>, if the administrator can delete messages of other users
  * @property canManageVideoChats <em>True</em>, if the administrator can manage video chats
  * @property canRestrictMembers <em>True</em>, if the administrator can restrict, ban or unban chat members, or access supergroup statistics
@@ -1718,7 +1985,7 @@ data class ChatInviteLink(
  * @property canPostStories <em>True</em>, if the administrator can post stories to the chat
  * @property canEditStories <em>True</em>, if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive
  * @property canDeleteStories <em>True</em>, if the administrator can delete stories posted by other users
- * @property canPostMessages <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; for channels only
+ * @property canPostMessages <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only
  * @property canEditMessages <em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; for channels only
  * @property canPinMessages <em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; for groups and supergroups only
  * @property canManageTopics <em>Optional</em>. <em>True</em>, if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only
@@ -1752,8 +2019,8 @@ data class ChatAdministratorRights(
  * @property oldChatMember Previous information about the chat member
  * @property newChatMember New information about the chat member
  * @property inviteLink <em>Optional</em>. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.
- * @property viaJoinRequest <em>Optional</em>. True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator
- * @property viaChatFolderInviteLink <em>Optional</em>. True, if the user joined the chat via a chat folder invite link
+ * @property viaJoinRequest <em>Optional</em>. <em>True</em>, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator
+ * @property viaChatFolderInviteLink <em>Optional</em>. <em>True</em>, if the user joined the chat via a chat folder invite link
  *
  * @constructor Creates a [ChatMemberUpdated].
  * */
@@ -1792,7 +2059,7 @@ data class ChatMemberOwner(
  * @property user Information about the user
  * @property canBeEdited <em>True</em>, if the bot is allowed to edit administrator privileges of that user
  * @property isAnonymous <em>True</em>, if the user's presence in the chat is hidden
- * @property canManageChat <em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.
+ * @property canManageChat <em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.
  * @property canDeleteMessages <em>True</em>, if the administrator can delete messages of other users
  * @property canManageVideoChats <em>True</em>, if the administrator can manage video chats
  * @property canRestrictMembers <em>True</em>, if the administrator can restrict, ban or unban chat members, or access supergroup statistics
@@ -1802,7 +2069,7 @@ data class ChatMemberOwner(
  * @property canPostStories <em>True</em>, if the administrator can post stories to the chat
  * @property canEditStories <em>True</em>, if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive
  * @property canDeleteStories <em>True</em>, if the administrator can delete stories posted by other users
- * @property canPostMessages <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; for channels only
+ * @property canPostMessages <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only
  * @property canEditMessages <em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; for channels only
  * @property canPinMessages <em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; for groups and supergroups only
  * @property canManageTopics <em>Optional</em>. <em>True</em>, if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only
@@ -1837,12 +2104,14 @@ data class ChatMemberAdministrator(
  *
  * @property status The member's status in the chat, always “member”
  * @property user Information about the user
+ * @property untilDate <em>Optional</em>. Date when the user's subscription will expire; Unix time
  *
  * @constructor Creates a [ChatMemberMember].
  * */
 data class ChatMemberMember(
     val status: String,
     val user: User,
+    val untilDate: Long? = null,
 ) : ChatMember()
 
 /**
@@ -1858,7 +2127,7 @@ data class ChatMemberMember(
  * @property canSendVideos <em>True</em>, if the user is allowed to send videos
  * @property canSendVideoNotes <em>True</em>, if the user is allowed to send video notes
  * @property canSendVoiceNotes <em>True</em>, if the user is allowed to send voice notes
- * @property canSendPolls <em>True</em>, if the user is allowed to send polls
+ * @property canSendPolls <em>True</em>, if the user is allowed to send polls and checklists
  * @property canSendOtherMessages <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots
  * @property canAddWebPagePreviews <em>True</em>, if the user is allowed to add web page previews to their messages
  * @property canChangeInfo <em>True</em>, if the user is allowed to change the chat title, photo and other settings
@@ -1949,7 +2218,7 @@ data class ChatJoinRequest(
  * @property canSendVideos <em>Optional</em>. <em>True</em>, if the user is allowed to send videos
  * @property canSendVideoNotes <em>Optional</em>. <em>True</em>, if the user is allowed to send video notes
  * @property canSendVoiceNotes <em>Optional</em>. <em>True</em>, if the user is allowed to send voice notes
- * @property canSendPolls <em>Optional</em>. <em>True</em>, if the user is allowed to send polls
+ * @property canSendPolls <em>Optional</em>. <em>True</em>, if the user is allowed to send polls and checklists
  * @property canSendOtherMessages <em>Optional</em>. <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots
  * @property canAddWebPagePreviews <em>Optional</em>. <em>True</em>, if the user is allowed to add web page previews to their messages
  * @property canChangeInfo <em>Optional</em>. <em>True</em>, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups
@@ -2046,6 +2315,134 @@ data class BusinessOpeningHours(
 ) : TelegramModel()
 
 /**
+ * <p>Describes the position of a clickable area within a story.</p>
+ *
+ * @property xPercentage The abscissa of the area's center, as a percentage of the media width
+ * @property yPercentage The ordinate of the area's center, as a percentage of the media height
+ * @property widthPercentage The width of the area's rectangle, as a percentage of the media width
+ * @property heightPercentage The height of the area's rectangle, as a percentage of the media height
+ * @property rotationAngle The clockwise rotation angle of the rectangle, in degrees; 0-360
+ * @property cornerRadiusPercentage The radius of the rectangle corner rounding, as a percentage of the media width
+ *
+ * @constructor Creates a [StoryAreaPosition].
+ * */
+data class StoryAreaPosition(
+    val xPercentage: Float,
+    val yPercentage: Float,
+    val widthPercentage: Float,
+    val heightPercentage: Float,
+    val rotationAngle: Float,
+    val cornerRadiusPercentage: Float,
+) : TelegramModel()
+
+/**
+ * <p>Describes the physical address of a location.</p>
+ *
+ * @property countryCode The two-letter ISO 3166-1 alpha-2 country code of the country where the location is located
+ * @property state <em>Optional</em>. State of the location
+ * @property city <em>Optional</em>. City of the location
+ * @property street <em>Optional</em>. Street address of the location
+ *
+ * @constructor Creates a [LocationAddress].
+ * */
+data class LocationAddress(
+    val countryCode: String,
+    val state: String? = null,
+    val city: String? = null,
+    val street: String? = null,
+) : TelegramModel()
+
+/**
+ * <p>Describes a story area pointing to a location. Currently, a story can have up to 10 location areas.</p>
+ *
+ * @property type Type of the area, always “location”
+ * @property latitude Location latitude in degrees
+ * @property longitude Location longitude in degrees
+ * @property address <em>Optional</em>. Address of the location
+ *
+ * @constructor Creates a [StoryAreaTypeLocation].
+ * */
+data class StoryAreaTypeLocation(
+    val type: String,
+    val latitude: Float,
+    val longitude: Float,
+    val address: LocationAddress? = null,
+) : StoryAreaType()
+
+/**
+ * <p>Describes a story area pointing to a suggested reaction. Currently, a story can have up to 5 suggested reaction areas.</p>
+ *
+ * @property type Type of the area, always “suggested_reaction”
+ * @property reactionType Type of the reaction
+ * @property isDark <em>Optional</em>. Pass <em>True</em> if the reaction area has a dark background
+ * @property isFlipped <em>Optional</em>. Pass <em>True</em> if reaction area corner is flipped
+ *
+ * @constructor Creates a [StoryAreaTypeSuggestedReaction].
+ * */
+data class StoryAreaTypeSuggestedReaction(
+    val type: String,
+    val reactionType: ReactionType,
+    val isDark: Boolean? = null,
+    val isFlipped: Boolean? = null,
+) : StoryAreaType()
+
+/**
+ * <p>Describes a story area pointing to an HTTP or tg:// link. Currently, a story can have up to 3 link areas.</p>
+ *
+ * @property type Type of the area, always “link”
+ * @property url HTTP or tg:// URL to be opened when the area is clicked
+ *
+ * @constructor Creates a [StoryAreaTypeLink].
+ * */
+data class StoryAreaTypeLink(
+    val type: String,
+    val url: String,
+) : StoryAreaType()
+
+/**
+ * <p>Describes a story area containing weather information. Currently, a story can have up to 3 weather areas.</p>
+ *
+ * @property type Type of the area, always “weather”
+ * @property temperature Temperature, in degree Celsius
+ * @property emoji Emoji representing the weather
+ * @property backgroundColor A color of the area background in the ARGB format
+ *
+ * @constructor Creates a [StoryAreaTypeWeather].
+ * */
+data class StoryAreaTypeWeather(
+    val type: String,
+    val temperature: Float,
+    val emoji: String,
+    val backgroundColor: Long,
+) : StoryAreaType()
+
+/**
+ * <p>Describes a story area pointing to a unique gift. Currently, a story can have at most 1 unique gift area.</p>
+ *
+ * @property type Type of the area, always “unique_gift”
+ * @property name Unique name of the gift
+ *
+ * @constructor Creates a [StoryAreaTypeUniqueGift].
+ * */
+data class StoryAreaTypeUniqueGift(
+    val type: String,
+    val name: String,
+) : StoryAreaType()
+
+/**
+ * <p>Describes a clickable area on a story media.</p>
+ *
+ * @property position Position of the area
+ * @property type Type of the area
+ *
+ * @constructor Creates a [StoryArea].
+ * */
+data class StoryArea(
+    val position: StoryAreaPosition,
+    val type: StoryAreaType,
+) : TelegramModel()
+
+/**
  * <p>Represents a location to which a chat is connected.</p>
  *
  * @property location The location to which the supergroup is connected. Can't be a live location.
@@ -2062,7 +2459,7 @@ data class ChatLocation(
  * <p>The reaction is based on an emoji.</p>
  *
  * @property type Type of the reaction, always “emoji”
- * @property emoji Reaction emoji. Currently, it can be one of "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918D.png" width="20" height="20" alt="👍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918E.png" width="20" height="20" alt="👎">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29DA4.png" width="20" height="20" alt="❤">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F94A5.png" width="20" height="20" alt="🔥">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B0.png" width="20" height="20" alt="🥰">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918F.png" width="20" height="20" alt="👏">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9881.png" width="20" height="20" alt="😁">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA494.png" width="20" height="20" alt="🤔">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AF.png" width="20" height="20" alt="🤯">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98B1.png" width="20" height="20" alt="😱">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AC.png" width="20" height="20" alt="🤬">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A2.png" width="20" height="20" alt="😢">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E89.png" width="20" height="20" alt="🎉">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A9.png" width="20" height="20" alt="🤩">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AE.png" width="20" height="20" alt="🤮">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F92A9.png" width="20" height="20" alt="💩">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F998F.png" width="20" height="20" alt="🙏">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918C.png" width="20" height="20" alt="👌">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F958A.png" width="20" height="20" alt="🕊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A1.png" width="20" height="20" alt="🤡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B1.png" width="20" height="20" alt="🥱">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B4.png" width="20" height="20" alt="🥴">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F988D.png" width="20" height="20" alt="😍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F90B3.png" width="20" height="20" alt="🐳">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29DA4E2808DF09F94A5.png" width="20" height="20" alt="❤‍🔥">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8C9A.png" width="20" height="20" alt="🌚">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8CAD.png" width="20" height="20" alt="🌭">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F92AF.png" width="20" height="20" alt="💯">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A3.png" width="20" height="20" alt="🤣">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29AA1.png" width="20" height="20" alt="⚡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8D8C.png" width="20" height="20" alt="🍌">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F86.png" width="20" height="20" alt="🏆">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9294.png" width="20" height="20" alt="💔">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A8.png" width="20" height="20" alt="🤨">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9890.png" width="20" height="20" alt="😐">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8D93.png" width="20" height="20" alt="🍓">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8DBE.png" width="20" height="20" alt="🍾">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F928B.png" width="20" height="20" alt="💋">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9695.png" width="20" height="20" alt="🖕">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9888.png" width="20" height="20" alt="😈">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98B4.png" width="20" height="20" alt="😴">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98AD.png" width="20" height="20" alt="😭">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA493.png" width="20" height="20" alt="🤓">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91BB.png" width="20" height="20" alt="👻">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91A8E2808DF09F92BB.png" width="20" height="20" alt="👨‍💻">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9180.png" width="20" height="20" alt="👀">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E83.png" width="20" height="20" alt="🎃">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9988.png" width="20" height="20" alt="🙈">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9887.png" width="20" height="20" alt="😇">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A8.png" width="20" height="20" alt="😨">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA49D.png" width="20" height="20" alt="🤝">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29C8D.png" width="20" height="20" alt="✍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA497.png" width="20" height="20" alt="🤗">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FABA1.png" width="20" height="20" alt="🫡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E85.png" width="20" height="20" alt="🎅">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E84.png" width="20" height="20" alt="🎄">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29883.png" width="20" height="20" alt="☃">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9285.png" width="20" height="20" alt="💅">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AA.png" width="20" height="20" alt="🤪">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F97BF.png" width="20" height="20" alt="🗿">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8692.png" width="20" height="20" alt="🆒">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9298.png" width="20" height="20" alt="💘">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9989.png" width="20" height="20" alt="🙉">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA684.png" width="20" height="20" alt="🦄">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9898.png" width="20" height="20" alt="😘">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F928A.png" width="20" height="20" alt="💊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F998A.png" width="20" height="20" alt="🙊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F988E.png" width="20" height="20" alt="😎">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91BE.png" width="20" height="20" alt="👾">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7E2808DE29982.png" width="20" height="20" alt="🤷‍♂">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7.png" width="20" height="20" alt="🤷">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7E2808DE29980.png" width="20" height="20" alt="🤷‍♀">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A1.png" width="20" height="20" alt="😡">"
+ * @property emoji Reaction emoji. Currently, it can be one of "<img class="emoji" src="//telegram.org/img/emoji/40/E29DA4.png" width="20" height="20" alt="❤">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918D.png" width="20" height="20" alt="👍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918E.png" width="20" height="20" alt="👎">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F94A5.png" width="20" height="20" alt="🔥">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B0.png" width="20" height="20" alt="🥰">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918F.png" width="20" height="20" alt="👏">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9881.png" width="20" height="20" alt="😁">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA494.png" width="20" height="20" alt="🤔">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AF.png" width="20" height="20" alt="🤯">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98B1.png" width="20" height="20" alt="😱">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AC.png" width="20" height="20" alt="🤬">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A2.png" width="20" height="20" alt="😢">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E89.png" width="20" height="20" alt="🎉">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A9.png" width="20" height="20" alt="🤩">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AE.png" width="20" height="20" alt="🤮">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F92A9.png" width="20" height="20" alt="💩">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F998F.png" width="20" height="20" alt="🙏">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918C.png" width="20" height="20" alt="👌">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F958A.png" width="20" height="20" alt="🕊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A1.png" width="20" height="20" alt="🤡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B1.png" width="20" height="20" alt="🥱">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B4.png" width="20" height="20" alt="🥴">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F988D.png" width="20" height="20" alt="😍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F90B3.png" width="20" height="20" alt="🐳">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29DA4E2808DF09F94A5.png" width="20" height="20" alt="❤‍🔥">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8C9A.png" width="20" height="20" alt="🌚">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8CAD.png" width="20" height="20" alt="🌭">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F92AF.png" width="20" height="20" alt="💯">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A3.png" width="20" height="20" alt="🤣">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29AA1.png" width="20" height="20" alt="⚡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8D8C.png" width="20" height="20" alt="🍌">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F86.png" width="20" height="20" alt="🏆">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9294.png" width="20" height="20" alt="💔">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A8.png" width="20" height="20" alt="🤨">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9890.png" width="20" height="20" alt="😐">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8D93.png" width="20" height="20" alt="🍓">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8DBE.png" width="20" height="20" alt="🍾">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F928B.png" width="20" height="20" alt="💋">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9695.png" width="20" height="20" alt="🖕">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9888.png" width="20" height="20" alt="😈">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98B4.png" width="20" height="20" alt="😴">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98AD.png" width="20" height="20" alt="😭">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA493.png" width="20" height="20" alt="🤓">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91BB.png" width="20" height="20" alt="👻">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91A8E2808DF09F92BB.png" width="20" height="20" alt="👨‍💻">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9180.png" width="20" height="20" alt="👀">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E83.png" width="20" height="20" alt="🎃">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9988.png" width="20" height="20" alt="🙈">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9887.png" width="20" height="20" alt="😇">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A8.png" width="20" height="20" alt="😨">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA49D.png" width="20" height="20" alt="🤝">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29C8D.png" width="20" height="20" alt="✍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA497.png" width="20" height="20" alt="🤗">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FABA1.png" width="20" height="20" alt="🫡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E85.png" width="20" height="20" alt="🎅">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E84.png" width="20" height="20" alt="🎄">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29883.png" width="20" height="20" alt="☃">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9285.png" width="20" height="20" alt="💅">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AA.png" width="20" height="20" alt="🤪">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F97BF.png" width="20" height="20" alt="🗿">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8692.png" width="20" height="20" alt="🆒">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9298.png" width="20" height="20" alt="💘">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9989.png" width="20" height="20" alt="🙉">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA684.png" width="20" height="20" alt="🦄">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9898.png" width="20" height="20" alt="😘">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F928A.png" width="20" height="20" alt="💊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F998A.png" width="20" height="20" alt="🙊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F988E.png" width="20" height="20" alt="😎">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91BE.png" width="20" height="20" alt="👾">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7E2808DE29982.png" width="20" height="20" alt="🤷‍♂">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7.png" width="20" height="20" alt="🤷">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7E2808DE29980.png" width="20" height="20" alt="🤷‍♀">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A1.png" width="20" height="20" alt="😡">"
  *
  * @constructor Creates a [ReactionTypeEmoji].
  * */
@@ -2082,6 +2479,17 @@ data class ReactionTypeEmoji(
 data class ReactionTypeCustomEmoji(
     val type: String,
     val customEmojiId: String,
+) : ReactionType()
+
+/**
+ * <p>The reaction is paid.</p>
+ *
+ * @property type Type of the reaction, always “paid”
+ *
+ * @constructor Creates a [ReactionTypePaid].
+ * */
+data class ReactionTypePaid(
+    val type: String,
 ) : ReactionType()
 
 /**
@@ -2152,6 +2560,274 @@ data class ForumTopic(
     val name: String,
     val iconColor: Long,
     val iconCustomEmojiId: String? = null,
+) : TelegramModel()
+
+/**
+ * <p>This object represents a gift that can be sent by the bot.</p>
+ *
+ * @property id Unique identifier of the gift
+ * @property sticker The sticker that represents the gift
+ * @property starCount The number of Telegram Stars that must be paid to send the sticker
+ * @property upgradeStarCount <em>Optional</em>. The number of Telegram Stars that must be paid to upgrade the gift to a unique one
+ * @property totalCount <em>Optional</em>. The total number of the gifts of this type that can be sent; for limited gifts only
+ * @property remainingCount <em>Optional</em>. The number of remaining gifts of this type that can be sent; for limited gifts only
+ *
+ * @constructor Creates a [Gift].
+ * */
+data class Gift(
+    val id: String,
+    val sticker: Sticker,
+    val starCount: Long,
+    val upgradeStarCount: Long? = null,
+    val totalCount: Long? = null,
+    val remainingCount: Long? = null,
+) : TelegramModel()
+
+/**
+ * <p>This object represent a list of gifts.</p>
+ *
+ * @property gifts The list of gifts
+ *
+ * @constructor Creates a [Gifts].
+ * */
+data class Gifts(
+    val gifts: List<Gift>,
+) : TelegramModel()
+
+/**
+ * <p>This object describes the model of a unique gift.</p>
+ *
+ * @property name Name of the model
+ * @property sticker The sticker that represents the unique gift
+ * @property rarityPerMille The number of unique gifts that receive this model for every 1000 gifts upgraded
+ *
+ * @constructor Creates a [UniqueGiftModel].
+ * */
+data class UniqueGiftModel(
+    val name: String,
+    val sticker: Sticker,
+    val rarityPerMille: Long,
+) : TelegramModel()
+
+/**
+ * <p>This object describes the symbol shown on the pattern of a unique gift.</p>
+ *
+ * @property name Name of the symbol
+ * @property sticker The sticker that represents the unique gift
+ * @property rarityPerMille The number of unique gifts that receive this model for every 1000 gifts upgraded
+ *
+ * @constructor Creates a [UniqueGiftSymbol].
+ * */
+data class UniqueGiftSymbol(
+    val name: String,
+    val sticker: Sticker,
+    val rarityPerMille: Long,
+) : TelegramModel()
+
+/**
+ * <p>This object describes the colors of the backdrop of a unique gift.</p>
+ *
+ * @property centerColor The color in the center of the backdrop in RGB format
+ * @property edgeColor The color on the edges of the backdrop in RGB format
+ * @property symbolColor The color to be applied to the symbol in RGB format
+ * @property textColor The color for the text on the backdrop in RGB format
+ *
+ * @constructor Creates a [UniqueGiftBackdropColors].
+ * */
+data class UniqueGiftBackdropColors(
+    val centerColor: Long,
+    val edgeColor: Long,
+    val symbolColor: Long,
+    val textColor: Long,
+) : TelegramModel()
+
+/**
+ * <p>This object describes the backdrop of a unique gift.</p>
+ *
+ * @property name Name of the backdrop
+ * @property colors Colors of the backdrop
+ * @property rarityPerMille The number of unique gifts that receive this backdrop for every 1000 gifts upgraded
+ *
+ * @constructor Creates a [UniqueGiftBackdrop].
+ * */
+data class UniqueGiftBackdrop(
+    val name: String,
+    val colors: UniqueGiftBackdropColors,
+    val rarityPerMille: Long,
+) : TelegramModel()
+
+/**
+ * <p>This object describes a unique gift that was upgraded from a regular gift.</p>
+ *
+ * @property baseName Human-readable name of the regular gift from which this unique gift was upgraded
+ * @property name Unique name of the gift. This name can be used in <code>https://t.me/nft/...</code> links and story areas
+ * @property number Unique number of the upgraded gift among gifts upgraded from the same regular gift
+ * @property model Model of the gift
+ * @property symbol Symbol of the gift
+ * @property backdrop Backdrop of the gift
+ *
+ * @constructor Creates a [UniqueGift].
+ * */
+data class UniqueGift(
+    val baseName: String,
+    val name: String,
+    val number: Long,
+    val model: UniqueGiftModel,
+    val symbol: UniqueGiftSymbol,
+    val backdrop: UniqueGiftBackdrop,
+) : TelegramModel()
+
+/**
+ * <p>Describes a service message about a regular gift that was sent or received.</p>
+ *
+ * @property gift Information about the gift
+ * @property ownedGiftId <em>Optional</em>. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts
+ * @property convertStarCount <em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible
+ * @property prepaidUpgradeStarCount <em>Optional</em>. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift
+ * @property canBeUpgraded <em>Optional</em>. <em>True</em>, if the gift can be upgraded to a unique gift
+ * @property text <em>Optional</em>. Text of the message that was added to the gift
+ * @property entities <em>Optional</em>. Special entities that appear in the text
+ * @property isPrivate <em>Optional</em>. <em>True</em>, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them
+ *
+ * @constructor Creates a [GiftInfo].
+ * */
+data class GiftInfo(
+    val gift: Gift,
+    val ownedGiftId: String? = null,
+    val convertStarCount: Long? = null,
+    val prepaidUpgradeStarCount: Long? = null,
+    val canBeUpgraded: Boolean? = null,
+    val text: String? = null,
+    val entities: List<MessageEntity>? = null,
+    val isPrivate: Boolean? = null,
+) : TelegramModel()
+
+/**
+ * <p>Describes a service message about a unique gift that was sent or received.</p>
+ *
+ * @property gift Information about the gift
+ * @property origin Origin of the gift. Currently, either “upgrade” for gifts upgraded from regular gifts, “transfer” for gifts transferred from other users or channels, or “resale” for gifts bought from other users
+ * @property lastResaleStarCount <em>Optional</em>. For gifts bought from other users, the price paid for the gift
+ * @property ownedGiftId <em>Optional</em>. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts
+ * @property transferStarCount <em>Optional</em>. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift
+ * @property nextTransferDate <em>Optional</em>. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now
+ *
+ * @constructor Creates a [UniqueGiftInfo].
+ * */
+data class UniqueGiftInfo(
+    val gift: UniqueGift,
+    val origin: String,
+    val lastResaleStarCount: Long? = null,
+    val ownedGiftId: String? = null,
+    val transferStarCount: Long? = null,
+    val nextTransferDate: Long? = null,
+) : TelegramModel()
+
+/**
+ * <p>Describes a regular gift owned by a user or a chat.</p>
+ *
+ * @property type Type of the gift, always “regular”
+ * @property gift Information about the regular gift
+ * @property ownedGiftId <em>Optional</em>. Unique identifier of the gift for the bot; for gifts received on behalf of business accounts only
+ * @property senderUser <em>Optional</em>. Sender of the gift if it is a known user
+ * @property sendDate Date the gift was sent in Unix time
+ * @property text <em>Optional</em>. Text of the message that was added to the gift
+ * @property entities <em>Optional</em>. Special entities that appear in the text
+ * @property isPrivate <em>Optional</em>. <em>True</em>, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them
+ * @property isSaved <em>Optional</em>. <em>True</em>, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only
+ * @property canBeUpgraded <em>Optional</em>. <em>True</em>, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only
+ * @property wasRefunded <em>Optional</em>. <em>True</em>, if the gift was refunded and isn't available anymore
+ * @property convertStarCount <em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars
+ * @property prepaidUpgradeStarCount <em>Optional</em>. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift
+ *
+ * @constructor Creates a [OwnedGiftRegular].
+ * */
+data class OwnedGiftRegular(
+    val type: String,
+    val gift: Gift,
+    val ownedGiftId: String? = null,
+    val senderUser: User? = null,
+    val sendDate: Long,
+    val text: String? = null,
+    val entities: List<MessageEntity>? = null,
+    val isPrivate: Boolean? = null,
+    val isSaved: Boolean? = null,
+    val canBeUpgraded: Boolean? = null,
+    val wasRefunded: Boolean? = null,
+    val convertStarCount: Long? = null,
+    val prepaidUpgradeStarCount: Long? = null,
+) : OwnedGift()
+
+/**
+ * <p>Describes a unique gift received and owned by a user or a chat.</p>
+ *
+ * @property type Type of the gift, always “unique”
+ * @property gift Information about the unique gift
+ * @property ownedGiftId <em>Optional</em>. Unique identifier of the received gift for the bot; for gifts received on behalf of business accounts only
+ * @property senderUser <em>Optional</em>. Sender of the gift if it is a known user
+ * @property sendDate Date the gift was sent in Unix time
+ * @property isSaved <em>Optional</em>. <em>True</em>, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only
+ * @property canBeTransferred <em>Optional</em>. <em>True</em>, if the gift can be transferred to another owner; for gifts received on behalf of business accounts only
+ * @property transferStarCount <em>Optional</em>. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift
+ * @property nextTransferDate <em>Optional</em>. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now
+ *
+ * @constructor Creates a [OwnedGiftUnique].
+ * */
+data class OwnedGiftUnique(
+    val type: String,
+    val gift: UniqueGift,
+    val ownedGiftId: String? = null,
+    val senderUser: User? = null,
+    val sendDate: Long,
+    val isSaved: Boolean? = null,
+    val canBeTransferred: Boolean? = null,
+    val transferStarCount: Long? = null,
+    val nextTransferDate: Long? = null,
+) : OwnedGift()
+
+/**
+ * <p>Contains the list of gifts received and owned by a user or a chat.</p>
+ *
+ * @property totalCount The total number of gifts owned by the user or the chat
+ * @property gifts The list of gifts
+ * @property nextOffset <em>Optional</em>. Offset for the next request. If empty, then there are no more results
+ *
+ * @constructor Creates a [OwnedGifts].
+ * */
+data class OwnedGifts(
+    val totalCount: Long,
+    val gifts: List<OwnedGift>,
+    val nextOffset: String? = null,
+) : TelegramModel()
+
+/**
+ * <p>This object describes the types of gifts that can be gifted to a user or a chat.</p>
+ *
+ * @property unlimitedGifts <em>True</em>, if unlimited regular gifts are accepted
+ * @property limitedGifts <em>True</em>, if limited regular gifts are accepted
+ * @property uniqueGifts <em>True</em>, if unique gifts or gifts that can be upgraded to unique for free are accepted
+ * @property premiumSubscription <em>True</em>, if a Telegram Premium subscription is accepted
+ *
+ * @constructor Creates a [AcceptedGiftTypes].
+ * */
+data class AcceptedGiftTypes(
+    val unlimitedGifts: Boolean,
+    val limitedGifts: Boolean,
+    val uniqueGifts: Boolean,
+    val premiumSubscription: Boolean,
+) : TelegramModel()
+
+/**
+ * <p>Describes an amount of Telegram Stars.</p>
+ *
+ * @property amount Integer amount of Telegram Stars, rounded to 0; can be negative
+ * @property nanostarAmount <em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars; from -999999999 to 999999999; can be negative if and only if <em>amount</em> is non-positive
+ *
+ * @constructor Creates a [StarAmount].
+ * */
+data class StarAmount(
+    val amount: Long,
+    val nanostarAmount: Long? = null,
 ) : TelegramModel()
 
 /**
@@ -2301,7 +2977,7 @@ data class MenuButtonCommands(
  *
  * @property type Type of the button, must be <em>web_app</em>
  * @property text Text on the button
- * @property webApp Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>.
+ * @property webApp Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Alternatively, a <code>t.me</code> link to a Web App of the bot can be specified in the object instead of the Web App's URL, in which case the Web App will be opened as if the user pressed the link.
  *
  * @constructor Creates a [MenuButtonWebApp].
  * */
@@ -2349,12 +3025,13 @@ data class ChatBoostSourceGiftCode(
 ) : ChatBoostSource()
 
 /**
- * <p>The boost was obtained by the creation of a Telegram Premium giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.</p>
+ * <p>The boost was obtained by the creation of a Telegram Premium or a Telegram Star giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription for Telegram Premium giveaways and <em>prize_star_count</em> / 500 times for one year for Telegram Star giveaways.</p>
  *
  * @property source Source of the boost, always “giveaway”
  * @property giveawayMessageId Identifier of a message in the chat with the giveaway; the message could have been deleted already. May be 0 if the message isn't sent yet.
- * @property user <em>Optional</em>. User that won the prize in the giveaway if any
- * @property isUnclaimed <em>Optional</em>. True, if the giveaway was completed, but there was no user to win the prize
+ * @property user <em>Optional</em>. User that won the prize in the giveaway if any; for Telegram Premium giveaways only
+ * @property prizeStarCount <em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only
+ * @property isUnclaimed <em>Optional</em>. <em>True</em>, if the giveaway was completed, but there was no user to win the prize
  *
  * @constructor Creates a [ChatBoostSourceGiveaway].
  * */
@@ -2362,6 +3039,7 @@ data class ChatBoostSourceGiveaway(
     val source: String,
     val giveawayMessageId: Long,
     val user: User? = null,
+    val prizeStarCount: Long? = null,
     val isUnclaimed: Boolean? = null,
 ) : ChatBoostSource()
 
@@ -2424,14 +3102,51 @@ data class UserChatBoosts(
 ) : TelegramModel()
 
 /**
+ * <p>Represents the rights of a business bot.</p>
+ *
+ * @property canReply <em>Optional</em>. <em>True</em>, if the bot can send and edit messages in the private chats that had incoming messages in the last 24 hours
+ * @property canReadMessages <em>Optional</em>. <em>True</em>, if the bot can mark incoming private messages as read
+ * @property canDeleteSentMessages <em>Optional</em>. <em>True</em>, if the bot can delete messages sent by the bot
+ * @property canDeleteAllMessages <em>Optional</em>. <em>True</em>, if the bot can delete all private messages in managed chats
+ * @property canEditName <em>Optional</em>. <em>True</em>, if the bot can edit the first and last name of the business account
+ * @property canEditBio <em>Optional</em>. <em>True</em>, if the bot can edit the bio of the business account
+ * @property canEditProfilePhoto <em>Optional</em>. <em>True</em>, if the bot can edit the profile photo of the business account
+ * @property canEditUsername <em>Optional</em>. <em>True</em>, if the bot can edit the username of the business account
+ * @property canChangeGiftSettings <em>Optional</em>. <em>True</em>, if the bot can change the privacy settings pertaining to gifts for the business account
+ * @property canViewGiftsAndStars <em>Optional</em>. <em>True</em>, if the bot can view gifts and the amount of Telegram Stars owned by the business account
+ * @property canConvertGiftsToStars <em>Optional</em>. <em>True</em>, if the bot can convert regular gifts owned by the business account to Telegram Stars
+ * @property canTransferAndUpgradeGifts <em>Optional</em>. <em>True</em>, if the bot can transfer and upgrade gifts owned by the business account
+ * @property canTransferStars <em>Optional</em>. <em>True</em>, if the bot can transfer Telegram Stars received by the business account to its own account, or use them to upgrade and transfer gifts
+ * @property canManageStories <em>Optional</em>. <em>True</em>, if the bot can post, edit and delete stories on behalf of the business account
+ *
+ * @constructor Creates a [BusinessBotRights].
+ * */
+data class BusinessBotRights(
+    val canReply: Boolean? = null,
+    val canReadMessages: Boolean? = null,
+    val canDeleteSentMessages: Boolean? = null,
+    val canDeleteAllMessages: Boolean? = null,
+    val canEditName: Boolean? = null,
+    val canEditBio: Boolean? = null,
+    val canEditProfilePhoto: Boolean? = null,
+    val canEditUsername: Boolean? = null,
+    val canChangeGiftSettings: Boolean? = null,
+    val canViewGiftsAndStars: Boolean? = null,
+    val canConvertGiftsToStars: Boolean? = null,
+    val canTransferAndUpgradeGifts: Boolean? = null,
+    val canTransferStars: Boolean? = null,
+    val canManageStories: Boolean? = null,
+) : TelegramModel()
+
+/**
  * <p>Describes the connection of the bot with a business account.</p>
  *
  * @property id Unique identifier of the business connection
  * @property user Business account user that created the business connection
  * @property userChatId Identifier of a private chat with the user who created the business connection. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
  * @property date Date the connection was established in Unix time
- * @property canReply True, if the bot can act on behalf of the business account in chats that were active in the last 24 hours
- * @property isEnabled True, if the connection is active
+ * @property rights <em>Optional</em>. Rights of the business bot
+ * @property isEnabled <em>True</em>, if the connection is active
  *
  * @constructor Creates a [BusinessConnection].
  * */
@@ -2440,7 +3155,7 @@ data class BusinessConnection(
     val user: User,
     val userChatId: Long,
     val date: Long,
-    val canReply: Boolean,
+    val rights: BusinessBotRights? = null,
     val isEnabled: Boolean,
 ) : TelegramModel()
 
@@ -2501,6 +3216,8 @@ data class InputMediaPhoto(
  * @property type Type of the result, must be <em>video</em>
  * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
  * @property thumbnail <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+ * @property cover <em>Optional</em>. Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+ * @property startTimestamp <em>Optional</em>. Start timestamp for the video in the message
  * @property caption <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing
  * @property parseMode <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
  * @property captionEntities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
@@ -2517,6 +3234,8 @@ data class InputMediaVideo(
     val type: String,
     val media: String,
     val thumbnail: String? = null,
+    val cover: String? = null,
+    val startTimestamp: Long? = null,
     val caption: String? = null,
     val parseMode: ParseMode? = null,
     val captionEntities: List<MessageEntity>? = null,
@@ -2609,6 +3328,106 @@ data class InputMediaDocument(
     val disableContentTypeDetection: Boolean? = null,
 ) : InputMedia()
 
+/**
+ * <p>The paid media to send is a photo.</p>
+ *
+ * @property type Type of the media, must be <em>photo</em>
+ * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+ *
+ * @constructor Creates a [InputPaidMediaPhoto].
+ * */
+data class InputPaidMediaPhoto(
+    val type: String,
+    val media: String,
+) : InputPaidMedia()
+
+/**
+ * <p>The paid media to send is a video.</p>
+ *
+ * @property type Type of the media, must be <em>video</em>
+ * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+ * @property thumbnail <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+ * @property cover <em>Optional</em>. Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+ * @property startTimestamp <em>Optional</em>. Start timestamp for the video in the message
+ * @property width <em>Optional</em>. Video width
+ * @property height <em>Optional</em>. Video height
+ * @property duration <em>Optional</em>. Video duration in seconds
+ * @property supportsStreaming <em>Optional</em>. Pass <em>True</em> if the uploaded video is suitable for streaming
+ *
+ * @constructor Creates a [InputPaidMediaVideo].
+ * */
+data class InputPaidMediaVideo(
+    val type: String,
+    val media: String,
+    val thumbnail: String? = null,
+    val cover: String? = null,
+    val startTimestamp: Long? = null,
+    val width: Long? = null,
+    val height: Long? = null,
+    val duration: Long? = null,
+    val supportsStreaming: Boolean? = null,
+) : InputPaidMedia()
+
+/**
+ * <p>A static profile photo in the .JPG format.</p>
+ *
+ * @property type Type of the profile photo, must be <em>static</em>
+ * @property photo The static profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the photo was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+ *
+ * @constructor Creates a [InputProfilePhotoStatic].
+ * */
+data class InputProfilePhotoStatic(
+    val type: String,
+    val photo: String,
+) : InputProfilePhoto()
+
+/**
+ * <p>An animated profile photo in the MPEG4 format.</p>
+ *
+ * @property type Type of the profile photo, must be <em>animated</em>
+ * @property animation The animated profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the photo was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+ * @property mainFrameTimestamp <em>Optional</em>. Timestamp in seconds of the frame that will be used as the static profile photo. Defaults to 0.0.
+ *
+ * @constructor Creates a [InputProfilePhotoAnimated].
+ * */
+data class InputProfilePhotoAnimated(
+    val type: String,
+    val animation: String,
+    val mainFrameTimestamp: Float? = null,
+) : InputProfilePhoto()
+
+/**
+ * <p>Describes a photo to post as a story.</p>
+ *
+ * @property type Type of the content, must be <em>photo</em>
+ * @property photo The photo to post as a story. The photo must be of the size 1080x1920 and must not exceed 10 MB. The photo can't be reused and can only be uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the photo was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+ *
+ * @constructor Creates a [InputStoryContentPhoto].
+ * */
+data class InputStoryContentPhoto(
+    val type: String,
+    val photo: String,
+) : InputStoryContent()
+
+/**
+ * <p>Describes a video to post as a story.</p>
+ *
+ * @property type Type of the content, must be <em>video</em>
+ * @property video The video to post as a story. The video must be of the size 720x1280, streamable, encoded with H.265 codec, with key frames added each second in the MPEG4 format, and must not exceed 30 MB. The video can't be reused and can only be uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the video was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+ * @property duration <em>Optional</em>. Precise duration of the video in seconds; 0-60
+ * @property coverFrameTimestamp <em>Optional</em>. Timestamp in seconds of the frame that will be used as the static cover for the story. Defaults to 0.0.
+ * @property isAnimation <em>Optional</em>. Pass <em>True</em> if the video has no sound
+ *
+ * @constructor Creates a [InputStoryContentVideo].
+ * */
+data class InputStoryContentVideo(
+    val type: String,
+    val video: String,
+    val duration: Float? = null,
+    val coverFrameTimestamp: Float? = null,
+    val isAnimation: Boolean? = null,
+) : InputStoryContent()
+
 // Stickers
 
 /**
@@ -2689,8 +3508,8 @@ data class MaskPosition(
 /**
  * <p>This object describes a sticker to be added to a sticker set.</p>
  *
- * @property sticker The added sticker. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, upload a new one using multipart/form-data, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. Animated and video stickers can't be uploaded via HTTP URL. <a href="#sending-files">More information on Sending Files »</a>
- * @property format Format of the added sticker, must be one of “static” for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, “animated” for a <strong>.TGS</strong> animation, “video” for a <strong>WEBM</strong> video
+ * @property sticker The added sticker. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new file using multipart/form-data under &lt;file_attach_name&gt; name. Animated and video stickers can't be uploaded via HTTP URL. <a href="#sending-files">More information on Sending Files »</a>
+ * @property format Format of the added sticker, must be one of “static” for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, “animated” for a <strong>.TGS</strong> animation, “video” for a <strong>.WEBM</strong> video
  * @property emojiList List of 1-20 emoji associated with the sticker
  * @property maskPosition <em>Optional</em>. Position where the mask should be placed on faces. For “mask” stickers only.
  * @property keywords <em>Optional</em>. List of 0-20 search keywords for the sticker with total length of up to 64 characters. For “regular” and “custom_emoji” stickers only.
@@ -2752,7 +3571,6 @@ data class InlineQueryResultsButton(
  * @property inputMessageContent Content of the message to be sent
  * @property replyMarkup <em>Optional</em>. <a href="/bots/features#inline-keyboards">Inline keyboard</a> attached to the message
  * @property url <em>Optional</em>. URL of the result
- * @property hideUrl <em>Optional</em>. Pass <em>True</em> if you don't want the URL to be shown in the message
  * @property description <em>Optional</em>. Short description of the result
  * @property thumbnailUrl <em>Optional</em>. Url of the thumbnail for the result
  * @property thumbnailWidth <em>Optional</em>. Thumbnail width
@@ -2767,7 +3585,6 @@ data class InlineQueryResultArticle(
     val inputMessageContent: InputMessageContent,
     val replyMarkup: InlineKeyboardMarkup? = null,
     val url: String? = null,
-    val hideUrl: Boolean? = null,
     val description: String? = null,
     val thumbnailUrl: String? = null,
     val thumbnailWidth: Long? = null,
@@ -2816,7 +3633,7 @@ data class InlineQueryResultPhoto(
  *
  * @property type Type of the result, must be <em>gif</em>
  * @property id Unique identifier for this result, 1-64 bytes
- * @property gifUrl A valid URL for the GIF file. File size must not exceed 1MB
+ * @property gifUrl A valid URL for the GIF file
  * @property gifWidth <em>Optional</em>. Width of the GIF
  * @property gifHeight <em>Optional</em>. Height of the GIF
  * @property gifDuration <em>Optional</em>. Duration of the GIF in seconds
@@ -2855,7 +3672,7 @@ data class InlineQueryResultGif(
  *
  * @property type Type of the result, must be <em>mpeg4_gif</em>
  * @property id Unique identifier for this result, 1-64 bytes
- * @property mpeg4Url A valid URL for the MPEG4 file. File size must not exceed 1MB
+ * @property mpeg4Url A valid URL for the MPEG4 file
  * @property mpeg4Width <em>Optional</em>. Video width
  * @property mpeg4Height <em>Optional</em>. Video height
  * @property mpeg4Duration <em>Optional</em>. Video duration in seconds
@@ -3458,7 +4275,7 @@ data class InputContactMessageContent(
  *
  * @property title Product name, 1-32 characters
  * @property description Product description, 1-255 characters
- * @property payload Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+ * @property payload Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.
  * @property providerToken <em>Optional</em>. Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a>. Pass an empty string for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
  * @property currency Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>. Pass “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
  * @property prices Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
@@ -3530,6 +4347,19 @@ data class ChosenInlineResult(
  * */
 data class SentWebAppMessage(
     val inlineMessageId: String? = null,
+) : TelegramModel()
+
+/**
+ * <p>Describes an inline message to be sent by a user of a Mini App.</p>
+ *
+ * @property id Unique identifier of the prepared message
+ * @property expirationDate Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used
+ *
+ * @constructor Creates a [PreparedInlineMessage].
+ * */
+data class PreparedInlineMessage(
+    val id: String,
+    val expirationDate: Long,
 ) : TelegramModel()
 
 // Payments
@@ -3620,11 +4450,14 @@ data class ShippingOption(
 ) : TelegramModel()
 
 /**
- * <p>This object contains basic information about a successful payment.</p>
+ * <p>This object contains basic information about a successful payment. Note that if the buyer initiates a chargeback with the relevant payment provider following this transaction, the funds may be debited from your balance. This is outside of Telegram's control.</p>
  *
  * @property currency Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>
  * @property totalAmount Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
- * @property invoicePayload Bot specified invoice payload
+ * @property invoicePayload Bot-specified invoice payload
+ * @property subscriptionExpirationDate <em>Optional</em>. Expiration date of the subscription, in Unix time; for recurring payments only
+ * @property isRecurring <em>Optional</em>. <em>True</em>, if the payment is a recurring payment for a subscription
+ * @property isFirstRecurring <em>Optional</em>. <em>True</em>, if the payment is the first payment for a subscription
  * @property shippingOptionId <em>Optional</em>. Identifier of the shipping option chosen by the user
  * @property orderInfo <em>Optional</em>. Order information provided by the user
  * @property telegramPaymentChargeId Telegram payment identifier
@@ -3636,6 +4469,9 @@ data class SuccessfulPayment(
     val currency: String,
     val totalAmount: Long,
     val invoicePayload: String,
+    val subscriptionExpirationDate: Long? = null,
+    val isRecurring: Boolean? = null,
+    val isFirstRecurring: Boolean? = null,
     val shippingOptionId: String? = null,
     val orderInfo: OrderInfo? = null,
     val telegramPaymentChargeId: String,
@@ -3643,11 +4479,30 @@ data class SuccessfulPayment(
 ) : TelegramModel()
 
 /**
+ * <p>This object contains basic information about a refunded payment.</p>
+ *
+ * @property currency Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. Currently, always “XTR”
+ * @property totalAmount Total refunded price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code>, <code>total_amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
+ * @property invoicePayload Bot-specified invoice payload
+ * @property telegramPaymentChargeId Telegram payment identifier
+ * @property providerPaymentChargeId <em>Optional</em>. Provider payment identifier
+ *
+ * @constructor Creates a [RefundedPayment].
+ * */
+data class RefundedPayment(
+    val currency: String,
+    val totalAmount: Long,
+    val invoicePayload: String,
+    val telegramPaymentChargeId: String,
+    val providerPaymentChargeId: String? = null,
+) : TelegramModel()
+
+/**
  * <p>This object contains information about an incoming shipping query.</p>
  *
  * @property id Unique query identifier
  * @property from User who sent the query
- * @property invoicePayload Bot specified invoice payload
+ * @property invoicePayload Bot-specified invoice payload
  * @property shippingAddress User specified shipping address
  *
  * @constructor Creates a [ShippingQuery].
@@ -3666,7 +4521,7 @@ data class ShippingQuery(
  * @property from User who sent the query
  * @property currency Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>
  * @property totalAmount Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
- * @property invoicePayload Bot specified invoice payload
+ * @property invoicePayload Bot-specified invoice payload
  * @property shippingOptionId <em>Optional</em>. Identifier of the shipping option chosen by the user
  * @property orderInfo <em>Optional</em>. Order information provided by the user
  *
@@ -3680,6 +4535,214 @@ data class PreCheckoutQuery(
     val invoicePayload: String,
     val shippingOptionId: String? = null,
     val orderInfo: OrderInfo? = null,
+) : TelegramModel()
+
+/**
+ * <p>This object contains information about a paid media purchase.</p>
+ *
+ * @property from User who purchased the media
+ * @property paidMediaPayload Bot-specified paid media payload
+ *
+ * @constructor Creates a [PaidMediaPurchased].
+ * */
+data class PaidMediaPurchased(
+    val from: User,
+    val paidMediaPayload: String,
+) : TelegramModel()
+
+/**
+ * <p>The withdrawal is in progress.</p>
+ *
+ * @property type Type of the state, always “pending”
+ *
+ * @constructor Creates a [RevenueWithdrawalStatePending].
+ * */
+data class RevenueWithdrawalStatePending(
+    val type: String,
+) : RevenueWithdrawalState()
+
+/**
+ * <p>The withdrawal succeeded.</p>
+ *
+ * @property type Type of the state, always “succeeded”
+ * @property date Date the withdrawal was completed in Unix time
+ * @property url An HTTPS URL that can be used to see transaction details
+ *
+ * @constructor Creates a [RevenueWithdrawalStateSucceeded].
+ * */
+data class RevenueWithdrawalStateSucceeded(
+    val type: String,
+    val date: Long,
+    val url: String,
+) : RevenueWithdrawalState()
+
+/**
+ * <p>The withdrawal failed and the transaction was refunded.</p>
+ *
+ * @property type Type of the state, always “failed”
+ *
+ * @constructor Creates a [RevenueWithdrawalStateFailed].
+ * */
+data class RevenueWithdrawalStateFailed(
+    val type: String,
+) : RevenueWithdrawalState()
+
+/**
+ * <p>Contains information about the affiliate that received a commission via this transaction.</p>
+ *
+ * @property affiliateUser <em>Optional</em>. The bot or the user that received an affiliate commission if it was received by a bot or a user
+ * @property affiliateChat <em>Optional</em>. The chat that received an affiliate commission if it was received by a chat
+ * @property commissionPerMille The number of Telegram Stars received by the affiliate for each 1000 Telegram Stars received by the bot from referred users
+ * @property amount Integer amount of Telegram Stars received by the affiliate from the transaction, rounded to 0; can be negative for refunds
+ * @property nanostarAmount <em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars received by the affiliate; from -999999999 to 999999999; can be negative for refunds
+ *
+ * @constructor Creates a [AffiliateInfo].
+ * */
+data class AffiliateInfo(
+    val affiliateUser: User? = null,
+    val affiliateChat: Chat? = null,
+    val commissionPerMille: Long,
+    val amount: Long,
+    val nanostarAmount: Long? = null,
+) : TelegramModel()
+
+/**
+ * <p>Describes a transaction with a user.</p>
+ *
+ * @property type Type of the transaction partner, always “user”
+ * @property transactionType Type of the transaction, currently one of “invoice_payment” for payments via invoices, “paid_media_payment” for payments for paid media, “gift_purchase” for gifts sent by the bot, “premium_purchase” for Telegram Premium subscriptions gifted by the bot, “business_account_transfer” for direct transfers from managed business accounts
+ * @property user Information about the user
+ * @property affiliate <em>Optional</em>. Information about the affiliate that received a commission via this transaction. Can be available only for “invoice_payment” and “paid_media_payment” transactions.
+ * @property invoicePayload <em>Optional</em>. Bot-specified invoice payload. Can be available only for “invoice_payment” transactions.
+ * @property subscriptionPeriod <em>Optional</em>. The duration of the paid subscription. Can be available only for “invoice_payment” transactions.
+ * @property paidMedia <em>Optional</em>. Information about the paid media bought by the user; for “paid_media_payment” transactions only
+ * @property paidMediaPayload <em>Optional</em>. Bot-specified paid media payload. Can be available only for “paid_media_payment” transactions.
+ * @property gift <em>Optional</em>. The gift sent to the user by the bot; for “gift_purchase” transactions only
+ * @property premiumSubscriptionDuration <em>Optional</em>. Number of months the gifted Telegram Premium subscription will be active for; for “premium_purchase” transactions only
+ *
+ * @constructor Creates a [TransactionPartnerUser].
+ * */
+data class TransactionPartnerUser(
+    val type: String,
+    val transactionType: String,
+    val user: User,
+    val affiliate: AffiliateInfo? = null,
+    val invoicePayload: String? = null,
+    val subscriptionPeriod: Long? = null,
+    val paidMedia: List<PaidMedia>? = null,
+    val paidMediaPayload: String? = null,
+    val gift: Gift? = null,
+    val premiumSubscriptionDuration: Long? = null,
+) : TransactionPartner()
+
+/**
+ * <p>Describes a transaction with a chat.</p>
+ *
+ * @property type Type of the transaction partner, always “chat”
+ * @property chat Information about the chat
+ * @property gift <em>Optional</em>. The gift sent to the chat by the bot
+ *
+ * @constructor Creates a [TransactionPartnerChat].
+ * */
+data class TransactionPartnerChat(
+    val type: String,
+    val chat: Chat,
+    val gift: Gift? = null,
+) : TransactionPartner()
+
+/**
+ * <p>Describes the affiliate program that issued the affiliate commission received via this transaction.</p>
+ *
+ * @property type Type of the transaction partner, always “affiliate_program”
+ * @property sponsorUser <em>Optional</em>. Information about the bot that sponsored the affiliate program
+ * @property commissionPerMille The number of Telegram Stars received by the bot for each 1000 Telegram Stars received by the affiliate program sponsor from referred users
+ *
+ * @constructor Creates a [TransactionPartnerAffiliateProgram].
+ * */
+data class TransactionPartnerAffiliateProgram(
+    val type: String,
+    val sponsorUser: User? = null,
+    val commissionPerMille: Long,
+) : TransactionPartner()
+
+/**
+ * <p>Describes a withdrawal transaction with Fragment.</p>
+ *
+ * @property type Type of the transaction partner, always “fragment”
+ * @property withdrawalState <em>Optional</em>. State of the transaction if the transaction is outgoing
+ *
+ * @constructor Creates a [TransactionPartnerFragment].
+ * */
+data class TransactionPartnerFragment(
+    val type: String,
+    val withdrawalState: RevenueWithdrawalState? = null,
+) : TransactionPartner()
+
+/**
+ * <p>Describes a withdrawal transaction to the Telegram Ads platform.</p>
+ *
+ * @property type Type of the transaction partner, always “telegram_ads”
+ *
+ * @constructor Creates a [TransactionPartnerTelegramAds].
+ * */
+data class TransactionPartnerTelegramAds(
+    val type: String,
+) : TransactionPartner()
+
+/**
+ * <p>Describes a transaction with payment for <a href="#paid-broadcasts">paid broadcasting</a>.</p>
+ *
+ * @property type Type of the transaction partner, always “telegram_api”
+ * @property requestCount The number of successful requests that exceeded regular limits and were therefore billed
+ *
+ * @constructor Creates a [TransactionPartnerTelegramApi].
+ * */
+data class TransactionPartnerTelegramApi(
+    val type: String,
+    val requestCount: Long,
+) : TransactionPartner()
+
+/**
+ * <p>Describes a transaction with an unknown source or recipient.</p>
+ *
+ * @property type Type of the transaction partner, always “other”
+ *
+ * @constructor Creates a [TransactionPartnerOther].
+ * */
+data class TransactionPartnerOther(
+    val type: String,
+) : TransactionPartner()
+
+/**
+ * <p>Describes a Telegram Star transaction. Note that if the buyer initiates a chargeback with the payment provider from whom they acquired Stars (e.g., Apple, Google) following this transaction, the refunded Stars will be deducted from the bot's balance. This is outside of Telegram's control.</p>
+ *
+ * @property id Unique identifier of the transaction. Coincides with the identifier of the original transaction for refund transactions. Coincides with <em>SuccessfulPayment.telegram_payment_charge_id</em> for successful incoming payments from users.
+ * @property amount Integer amount of Telegram Stars transferred by the transaction
+ * @property nanostarAmount <em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars transferred by the transaction; from 0 to 999999999
+ * @property date Date the transaction was created in Unix time
+ * @property source <em>Optional</em>. Source of an incoming transaction (e.g., a user purchasing goods or services, Fragment refunding a failed withdrawal). Only for incoming transactions
+ * @property receiver <em>Optional</em>. Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions
+ *
+ * @constructor Creates a [StarTransaction].
+ * */
+data class StarTransaction(
+    val id: String,
+    val amount: Long,
+    val nanostarAmount: Long? = null,
+    val date: Long,
+    val source: TransactionPartner? = null,
+    val receiver: TransactionPartner? = null,
+) : TelegramModel()
+
+/**
+ * <p>Contains a list of Telegram Star transactions.</p>
+ *
+ * @property transactions The list of transactions
+ *
+ * @constructor Creates a [StarTransactions].
+ * */
+data class StarTransactions(
+    val transactions: List<StarTransaction>,
 ) : TelegramModel()
 
 // Telegram Passport
@@ -3965,7 +5028,7 @@ sealed class TelegramRequest {
      * @property offset Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as <a href="#getupdates">getUpdates</a> is called with an <em>offset</em> higher than its <em>update_id</em>. The negative offset can be specified to retrieve updates starting from <em>-offset</em> update from the end of the updates queue. All previous updates will be forgotten.
      * @property limit Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults to 100.
      * @property timeout Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only.
-     * @property allowedUpdates A JSON-serialized list of the update types you want your bot to receive. For example, specify <code>["message", "edited_channel_post", "callback_query"]</code> to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em>, <em>message_reaction</em>, and <em>message_reaction_count</em> (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.
+     * @property allowedUpdates A JSON-serialized list of the update types you want your bot to receive. For example, specify <code>["message", "edited_channel_post", "callback_query"]</code> to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em>, <em>message_reaction</em>, and <em>message_reaction_count</em> (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to getUpdates, so unwanted updates may be received for a short period of time.
      * */
     data class GetUpdatesRequest(
         val offset: Long? = null,
@@ -3975,7 +5038,7 @@ sealed class TelegramRequest {
     ) : TelegramRequest()
 
     /**
-     * <p>Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter <em>secret_token</em>. If specified, the request will contain a header “X-Telegram-Bot-Api-Secret-Token” with the secret token as content.</p><blockquote>
+     * <p>Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request (a request with response <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes">HTTP status code</a> different from <code>2XY</code>), we will repeat the request and give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter <em>secret_token</em>. If specified, the request will contain a header “X-Telegram-Bot-Api-Secret-Token” with the secret token as content.</p><blockquote>
      *  <p><strong>Notes</strong><br><strong>1.</strong> You will not be able to receive updates using <a href="#getupdates">getUpdates</a> for as long as an outgoing webhook is set up.<br><strong>2.</strong> To use a self-signed certificate, you need to upload your <a href="/bots/self-signed">public key certificate</a> using <em>certificate</em> parameter. Please upload as InputFile, sending a String will not work.<br><strong>3.</strong> Ports currently supported <em>for webhooks</em>: <strong>443, 80, 88, 8443</strong>.</p>
      *  <p>If you're having any trouble setting up webhooks, please check out this <a href="/bots/webhooks">amazing guide to webhooks</a>.</p>
      * </blockquote>
@@ -4023,6 +5086,7 @@ sealed class TelegramRequest {
      * @property linkPreviewOptions Link preview generation options for the message
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property messageEffectId Unique identifier of the message effect to be added to the message; for private chats only
      * @property replyParameters Description of the message to reply to
      * @property replyMarkup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -4037,6 +5101,7 @@ sealed class TelegramRequest {
         val linkPreviewOptions: LinkPreviewOptions? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val messageEffectId: String? = null,
         val replyParameters: ReplyParameters? = null,
         val replyMarkup: KeyboardOption? = null,
@@ -4049,6 +5114,7 @@ sealed class TelegramRequest {
      * @property fromChatId Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>)
      * @property messageId Message identifier in the chat specified in <em>from_chat_id</em>
      * @property messageThreadId Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+     * @property videoStartTimestamp New start timestamp for the forwarded video in the message
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the forwarded message from forwarding and saving
      * */
@@ -4057,6 +5123,7 @@ sealed class TelegramRequest {
         val fromChatId: String,
         val messageId: Long,
         val messageThreadId: Long? = null,
+        val videoStartTimestamp: Long? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
     ) : TelegramRequest()
@@ -4081,18 +5148,20 @@ sealed class TelegramRequest {
     ) : TelegramRequest()
 
     /**
-     * <p>Use this method to copy messages of any kind. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
+     * <p>Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
      *
      * @property chatId Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
      * @property fromChatId Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>)
      * @property messageId Message identifier in the chat specified in <em>from_chat_id</em>
      * @property messageThreadId Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+     * @property videoStartTimestamp New start timestamp for the copied video in the message
      * @property caption New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept
      * @property parseMode Mode for parsing entities in the new caption. See <a href="#formatting-options">formatting options</a> for more details.
      * @property captionEntities A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of <em>parse_mode</em>
      * @property showCaptionAboveMedia Pass <em>True</em>, if the caption must be shown above the message media. Ignored if a new caption isn't specified.
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property replyParameters Description of the message to reply to
      * @property replyMarkup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
      * */
@@ -4101,18 +5170,20 @@ sealed class TelegramRequest {
         val fromChatId: String,
         val messageId: Long,
         val messageThreadId: Long? = null,
+        val videoStartTimestamp: Long? = null,
         val caption: String? = null,
         val parseMode: ParseMode? = null,
         val captionEntities: List<MessageEntity>? = null,
         val showCaptionAboveMedia: Boolean? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val replyParameters: ReplyParameters? = null,
         val replyMarkup: KeyboardOption? = null,
     ) : TelegramRequest()
 
     /**
-     * <p>Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessages">forwardMessages</a>, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of <a href="#messageid">MessageId</a> of the sent messages is returned.</p>
+     * <p>Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessages">forwardMessages</a>, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of <a href="#messageid">MessageId</a> of the sent messages is returned.</p>
      *
      * @property chatId Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
      * @property fromChatId Unique identifier for the chat where the original messages were sent (or channel username in the format <code>@channelusername</code>)
@@ -4146,6 +5217,7 @@ sealed class TelegramRequest {
      * @property hasSpoiler Pass <em>True</em> if the photo needs to be covered with a spoiler animation
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property messageEffectId Unique identifier of the message effect to be added to the message; for private chats only
      * @property replyParameters Description of the message to reply to
      * @property replyMarkup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -4162,6 +5234,7 @@ sealed class TelegramRequest {
         val hasSpoiler: Boolean? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val messageEffectId: String? = null,
         val replyParameters: ReplyParameters? = null,
         val replyMarkup: KeyboardOption? = null,
@@ -4183,6 +5256,7 @@ sealed class TelegramRequest {
      * @property thumbnail Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property messageEffectId Unique identifier of the message effect to be added to the message; for private chats only
      * @property replyParameters Description of the message to reply to
      * @property replyMarkup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -4201,6 +5275,7 @@ sealed class TelegramRequest {
         val thumbnail: String? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val messageEffectId: String? = null,
         val replyParameters: ReplyParameters? = null,
         val replyMarkup: KeyboardOption? = null,
@@ -4220,6 +5295,7 @@ sealed class TelegramRequest {
      * @property disableContentTypeDetection Disables automatic server-side content type detection for files uploaded using multipart/form-data
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property messageEffectId Unique identifier of the message effect to be added to the message; for private chats only
      * @property replyParameters Description of the message to reply to
      * @property replyMarkup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -4236,6 +5312,7 @@ sealed class TelegramRequest {
         val disableContentTypeDetection: Boolean? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val messageEffectId: String? = null,
         val replyParameters: ReplyParameters? = null,
         val replyMarkup: KeyboardOption? = null,
@@ -4252,6 +5329,8 @@ sealed class TelegramRequest {
      * @property width Video width
      * @property height Video height
      * @property thumbnail Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+     * @property cover Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+     * @property startTimestamp Start timestamp for the video in the message
      * @property caption Video caption (may also be used when resending videos by <em>file_id</em>), 0-1024 characters after entities parsing
      * @property parseMode Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
      * @property captionEntities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
@@ -4260,6 +5339,7 @@ sealed class TelegramRequest {
      * @property supportsStreaming Pass <em>True</em> if the uploaded video is suitable for streaming
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property messageEffectId Unique identifier of the message effect to be added to the message; for private chats only
      * @property replyParameters Description of the message to reply to
      * @property replyMarkup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -4273,6 +5353,8 @@ sealed class TelegramRequest {
         val width: Long? = null,
         val height: Long? = null,
         val thumbnail: String? = null,
+        val cover: String? = null,
+        val startTimestamp: Long? = null,
         val caption: String? = null,
         val parseMode: ParseMode? = null,
         val captionEntities: List<MessageEntity>? = null,
@@ -4281,6 +5363,7 @@ sealed class TelegramRequest {
         val supportsStreaming: Boolean? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val messageEffectId: String? = null,
         val replyParameters: ReplyParameters? = null,
         val replyMarkup: KeyboardOption? = null,
@@ -4304,6 +5387,7 @@ sealed class TelegramRequest {
      * @property hasSpoiler Pass <em>True</em> if the animation needs to be covered with a spoiler animation
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property messageEffectId Unique identifier of the message effect to be added to the message; for private chats only
      * @property replyParameters Description of the message to reply to
      * @property replyMarkup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -4324,6 +5408,7 @@ sealed class TelegramRequest {
         val hasSpoiler: Boolean? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val messageEffectId: String? = null,
         val replyParameters: ReplyParameters? = null,
         val replyMarkup: KeyboardOption? = null,
@@ -4342,6 +5427,7 @@ sealed class TelegramRequest {
      * @property duration Duration of the voice message in seconds
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property messageEffectId Unique identifier of the message effect to be added to the message; for private chats only
      * @property replyParameters Description of the message to reply to
      * @property replyMarkup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -4357,6 +5443,7 @@ sealed class TelegramRequest {
         val duration: Long? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val messageEffectId: String? = null,
         val replyParameters: ReplyParameters? = null,
         val replyMarkup: KeyboardOption? = null,
@@ -4374,6 +5461,7 @@ sealed class TelegramRequest {
      * @property thumbnail Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property messageEffectId Unique identifier of the message effect to be added to the message; for private chats only
      * @property replyParameters Description of the message to reply to
      * @property replyMarkup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -4388,13 +5476,49 @@ sealed class TelegramRequest {
         val thumbnail: String? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val messageEffectId: String? = null,
         val replyParameters: ReplyParameters? = null,
         val replyMarkup: KeyboardOption? = null,
     ) : TelegramRequest()
 
     /**
-     * <p>Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of <a href="#message">Messages</a> that were sent is returned.</p>
+     * <p>Use this method to send paid media. On success, the sent <a href="#message">Message</a> is returned.</p>
+     *
+     * @property chatId Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.
+     * @property starCount The number of Telegram Stars that must be paid to buy access to the media; 1-10000
+     * @property media A JSON-serialized array describing the media to be sent; up to 10 items
+     * @property businessConnectionId Unique identifier of the business connection on behalf of which the message will be sent
+     * @property payload Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.
+     * @property caption Media caption, 0-1024 characters after entities parsing
+     * @property parseMode Mode for parsing entities in the media caption. See <a href="#formatting-options">formatting options</a> for more details.
+     * @property captionEntities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+     * @property showCaptionAboveMedia Pass <em>True</em>, if the caption must be shown above the message media
+     * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+     * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+     * @property replyParameters Description of the message to reply to
+     * @property replyMarkup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
+     * */
+    data class SendPaidMediaRequest(
+        val chatId: String,
+        val starCount: Long,
+        val media: List<InputPaidMedia>,
+        val businessConnectionId: String? = null,
+        val payload: String? = null,
+        val caption: String? = null,
+        val parseMode: ParseMode? = null,
+        val captionEntities: List<MessageEntity>? = null,
+        val showCaptionAboveMedia: Boolean? = null,
+        val disableNotification: Boolean? = null,
+        val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
+        val replyParameters: ReplyParameters? = null,
+        val replyMarkup: KeyboardOption? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of <a href="#message">Message</a> objects that were sent is returned.</p>
      *
      * @property chatId Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
      * @property media A JSON-serialized array describing messages to be sent, must include 2-10 items
@@ -4402,6 +5526,7 @@ sealed class TelegramRequest {
      * @property messageThreadId Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
      * @property disableNotification Sends messages <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent messages from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property messageEffectId Unique identifier of the message effect to be added to the message; for private chats only
      * @property replyParameters Description of the message to reply to
      * */
@@ -4412,6 +5537,7 @@ sealed class TelegramRequest {
         val messageThreadId: Long? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val messageEffectId: String? = null,
         val replyParameters: ReplyParameters? = null,
     ) : TelegramRequest()
@@ -4430,6 +5556,7 @@ sealed class TelegramRequest {
      * @property proximityAlertRadius For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property messageEffectId Unique identifier of the message effect to be added to the message; for private chats only
      * @property replyParameters Description of the message to reply to
      * @property replyMarkup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -4446,6 +5573,7 @@ sealed class TelegramRequest {
         val proximityAlertRadius: Long? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val messageEffectId: String? = null,
         val replyParameters: ReplyParameters? = null,
         val replyMarkup: KeyboardOption? = null,
@@ -4467,6 +5595,7 @@ sealed class TelegramRequest {
      * @property googlePlaceType Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.)
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property messageEffectId Unique identifier of the message effect to be added to the message; for private chats only
      * @property replyParameters Description of the message to reply to
      * @property replyMarkup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -4485,6 +5614,7 @@ sealed class TelegramRequest {
         val googlePlaceType: String? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val messageEffectId: String? = null,
         val replyParameters: ReplyParameters? = null,
         val replyMarkup: KeyboardOption? = null,
@@ -4502,6 +5632,7 @@ sealed class TelegramRequest {
      * @property vcard Additional data about the contact in the form of a <a href="https://en.wikipedia.org/wiki/VCard">vCard</a>, 0-2048 bytes
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property messageEffectId Unique identifier of the message effect to be added to the message; for private chats only
      * @property replyParameters Description of the message to reply to
      * @property replyMarkup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -4516,6 +5647,7 @@ sealed class TelegramRequest {
         val vcard: String? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val messageEffectId: String? = null,
         val replyParameters: ReplyParameters? = null,
         val replyMarkup: KeyboardOption? = null,
@@ -4526,7 +5658,7 @@ sealed class TelegramRequest {
      *
      * @property chatId Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
      * @property question Poll question, 1-300 characters
-     * @property options A JSON-serialized list of 2-10 answer options
+     * @property options A JSON-serialized list of 2-12 answer options
      * @property businessConnectionId Unique identifier of the business connection on behalf of which the message will be sent
      * @property messageThreadId Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
      * @property questionParseMode Mode for parsing entities in the question. See <a href="#formatting-options">formatting options</a> for more details. Currently, only custom emoji entities are allowed
@@ -4543,6 +5675,7 @@ sealed class TelegramRequest {
      * @property isClosed Pass <em>True</em> if the poll needs to be immediately closed. This can be useful for poll preview.
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property messageEffectId Unique identifier of the message effect to be added to the message; for private chats only
      * @property replyParameters Description of the message to reply to
      * @property replyMarkup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -4567,9 +5700,33 @@ sealed class TelegramRequest {
         val isClosed: Boolean? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val messageEffectId: String? = null,
         val replyParameters: ReplyParameters? = null,
         val replyMarkup: KeyboardOption? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Use this method to send a checklist on behalf of a connected business account. On success, the sent <a href="#message">Message</a> is returned.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection on behalf of which the message will be sent
+     * @property chatId Unique identifier for the target chat
+     * @property checklist A JSON-serialized object for the checklist to send
+     * @property disableNotification Sends the message silently. Users will receive a notification with no sound.
+     * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property messageEffectId Unique identifier of the message effect to be added to the message
+     * @property replyParameters A JSON-serialized object for description of the message to reply to
+     * @property replyMarkup A JSON-serialized object for an inline keyboard
+     * */
+    data class SendChecklistRequest(
+        val businessConnectionId: String,
+        val chatId: Long,
+        val checklist: InputChecklist,
+        val disableNotification: Boolean? = null,
+        val protectContent: Boolean? = null,
+        val messageEffectId: String? = null,
+        val replyParameters: ReplyParameters? = null,
+        val replyMarkup: InlineKeyboardMarkup? = null,
     ) : TelegramRequest()
 
     /**
@@ -4581,6 +5738,7 @@ sealed class TelegramRequest {
      * @property emoji Emoji on which the dice throw animation is based. Currently, must be one of “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”, “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, or “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Dice can have values 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, values 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” and “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, and values 1-64 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Defaults to “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent message from forwarding
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property messageEffectId Unique identifier of the message effect to be added to the message; for private chats only
      * @property replyParameters Description of the message to reply to
      * @property replyMarkup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -4592,6 +5750,7 @@ sealed class TelegramRequest {
         val emoji: String? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val messageEffectId: String? = null,
         val replyParameters: ReplyParameters? = null,
         val replyMarkup: KeyboardOption? = null,
@@ -4615,11 +5774,11 @@ sealed class TelegramRequest {
     ) : TelegramRequest()
 
     /**
-     * <p>Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Returns <em>True</em> on success.</p>
+     * <p>Use this method to change the chosen reactions on a message. Service messages of some types can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns <em>True</em> on success.</p>
      *
      * @property chatId Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
      * @property messageId Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead.
-     * @property reaction A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators.
+     * @property reaction A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. Paid reactions can't be used by bots.
      * @property isBig Pass <em>True</em> to set the reaction with a big animation
      * */
     data class SetMessageReactionRequest(
@@ -4640,6 +5799,19 @@ sealed class TelegramRequest {
         val userId: Long,
         val offset: Long? = null,
         val limit: Long? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Changes the emoji status for a given user that previously allowed the bot to manage their emoji status via the Mini App method <a href="/bots/webapps#initializing-mini-apps">requestEmojiStatusAccess</a>. Returns <em>True</em> on success.</p>
+     *
+     * @property userId Unique identifier of the target user
+     * @property emojiStatusCustomEmojiId Custom emoji identifier of the emoji status to set. Pass an empty string to remove the status.
+     * @property emojiStatusExpirationDate Expiration date of the emoji status, if any
+     * */
+    data class SetUserEmojiStatusRequest(
+        val userId: Long,
+        val emojiStatusCustomEmojiId: String? = null,
+        val emojiStatusExpirationDate: Long? = null,
     ) : TelegramRequest()
 
     /**
@@ -4702,7 +5874,7 @@ sealed class TelegramRequest {
      * @property chatId Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
      * @property userId Unique identifier of the target user
      * @property isAnonymous Pass <em>True</em> if the administrator's presence in the chat is hidden
-     * @property canManageChat Pass <em>True</em> if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.
+     * @property canManageChat Pass <em>True</em> if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.
      * @property canDeleteMessages Pass <em>True</em> if the administrator can delete messages of other users
      * @property canManageVideoChats Pass <em>True</em> if the administrator can manage video chats
      * @property canRestrictMembers Pass <em>True</em> if the administrator can restrict, ban or unban chat members, or access supergroup statistics
@@ -4712,7 +5884,7 @@ sealed class TelegramRequest {
      * @property canPostStories Pass <em>True</em> if the administrator can post stories to the chat
      * @property canEditStories Pass <em>True</em> if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive
      * @property canDeleteStories Pass <em>True</em> if the administrator can delete stories posted by other users
-     * @property canPostMessages Pass <em>True</em> if the administrator can post messages in the channel, or access channel statistics; for channels only
+     * @property canPostMessages Pass <em>True</em> if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only
      * @property canEditMessages Pass <em>True</em> if the administrator can edit messages of other users and can pin messages; for channels only
      * @property canPinMessages Pass <em>True</em> if the administrator can pin messages; for supergroups only
      * @property canManageTopics Pass <em>True</em> if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only
@@ -4833,6 +6005,34 @@ sealed class TelegramRequest {
     ) : TelegramRequest()
 
     /**
+     * <p>Use this method to create a <a href="https://telegram.org/blog/superchannels-star-reactions-subscriptions#star-subscriptions">subscription invite link</a> for a channel chat. The bot must have the <em>can_invite_users</em> administrator rights. The link can be edited using the method <a href="#editchatsubscriptioninvitelink">editChatSubscriptionInviteLink</a> or revoked using the method <a href="#revokechatinvitelink">revokeChatInviteLink</a>. Returns the new invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+     *
+     * @property chatId Unique identifier for the target channel chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property subscriptionPeriod The number of seconds the subscription will be active for before the next payment. Currently, it must always be 2592000 (30 days).
+     * @property subscriptionPrice The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat; 1-10000
+     * @property name Invite link name; 0-32 characters
+     * */
+    data class CreateChatSubscriptionInviteLinkRequest(
+        val chatId: String,
+        val subscriptionPeriod: Long,
+        val subscriptionPrice: Long,
+        val name: String? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Use this method to edit a subscription invite link created by the bot. The bot must have the <em>can_invite_users</em> administrator rights. Returns the edited invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+     *
+     * @property chatId Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property inviteLink The invite link to edit
+     * @property name Invite link name; 0-32 characters
+     * */
+    data class EditChatSubscriptionInviteLinkRequest(
+        val chatId: String,
+        val inviteLink: String,
+        val name: String? = null,
+    ) : TelegramRequest()
+
+    /**
      * <p>Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the revoked invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
      *
      * @property chatId Unique identifier of the target chat or username of the target channel (in the format <code>@channelusername</code>)
@@ -4912,11 +6112,13 @@ sealed class TelegramRequest {
      *
      * @property chatId Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
      * @property messageId Identifier of a message to pin
+     * @property businessConnectionId Unique identifier of the business connection on behalf of which the message will be pinned
      * @property disableNotification Pass <em>True</em> if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.
      * */
     data class PinChatMessageRequest(
         val chatId: String,
         val messageId: Long,
+        val businessConnectionId: String? = null,
         val disableNotification: Boolean? = null,
     ) : TelegramRequest()
 
@@ -4924,10 +6126,12 @@ sealed class TelegramRequest {
      * <p>Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>
      *
      * @property chatId Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
-     * @property messageId Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned.
+     * @property businessConnectionId Unique identifier of the business connection on behalf of which the message will be unpinned
+     * @property messageId Identifier of the message to unpin. Required if <em>business_connection_id</em> is specified. If not specified, the most recent pinned message (by sending date) will be unpinned.
      * */
     data class UnpinChatMessageRequest(
         val chatId: String,
+        val businessConnectionId: String? = null,
         val messageId: Long? = null,
     ) : TelegramRequest()
 
@@ -5023,7 +6227,7 @@ sealed class TelegramRequest {
     ) : TelegramRequest()
 
     /**
-     * <p>Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>
+     * <p>Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>
      *
      * @property chatId Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
      * @property messageThreadId Unique identifier for the target message thread of the forum topic
@@ -5082,7 +6286,7 @@ sealed class TelegramRequest {
     ) : TelegramRequest()
 
     /**
-     * <p>Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>
+     * <p>Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>
      *
      * @property chatId Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
      * @property name New topic name, 1-128 characters
@@ -5314,9 +6518,10 @@ sealed class TelegramRequest {
     // Updating messages
 
     /**
-     * <p>Use this method to edit text and <a href="#games">game</a> messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+     * <p>Use this method to edit text and <a href="#games">game</a> messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
      *
      * @property text New text of the message, 1-4096 characters after entities parsing
+     * @property businessConnectionId Unique identifier of the business connection on behalf of which the message to be edited was sent
      * @property chatId Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
      * @property messageId Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
      * @property inlineMessageId Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
@@ -5327,6 +6532,7 @@ sealed class TelegramRequest {
      * */
     data class EditMessageTextRequest(
         val text: String,
+        val businessConnectionId: String? = null,
         val chatId: String? = null,
         val messageId: Long? = null,
         val inlineMessageId: String? = null,
@@ -5337,8 +6543,9 @@ sealed class TelegramRequest {
     ) : TelegramRequest()
 
     /**
-     * <p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+     * <p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
      *
+     * @property businessConnectionId Unique identifier of the business connection on behalf of which the message to be edited was sent
      * @property chatId Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
      * @property messageId Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
      * @property inlineMessageId Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
@@ -5349,6 +6556,7 @@ sealed class TelegramRequest {
      * @property replyMarkup A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>.
      * */
     data class EditMessageCaptionRequest(
+        val businessConnectionId: String? = null,
         val chatId: String? = null,
         val messageId: Long? = null,
         val inlineMessageId: String? = null,
@@ -5360,9 +6568,10 @@ sealed class TelegramRequest {
     ) : TelegramRequest()
 
     /**
-     * <p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+     * <p>Use this method to edit animation, audio, document, photo, or video messages, or to add media to text messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
      *
      * @property media A JSON-serialized object for a new media content of the message
+     * @property businessConnectionId Unique identifier of the business connection on behalf of which the message to be edited was sent
      * @property chatId Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
      * @property messageId Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
      * @property inlineMessageId Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
@@ -5370,6 +6579,7 @@ sealed class TelegramRequest {
      * */
     data class EditMessageMediaRequest(
         val media: InputMedia,
+        val businessConnectionId: String? = null,
         val chatId: String? = null,
         val messageId: Long? = null,
         val inlineMessageId: String? = null,
@@ -5381,6 +6591,7 @@ sealed class TelegramRequest {
      *
      * @property latitude Latitude of new location
      * @property longitude Longitude of new location
+     * @property businessConnectionId Unique identifier of the business connection on behalf of which the message to be edited was sent
      * @property chatId Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
      * @property messageId Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
      * @property inlineMessageId Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
@@ -5393,6 +6604,7 @@ sealed class TelegramRequest {
     data class EditMessageLiveLocationRequest(
         val latitude: Float,
         val longitude: Float,
+        val businessConnectionId: String? = null,
         val chatId: String? = null,
         val messageId: Long? = null,
         val inlineMessageId: String? = null,
@@ -5406,12 +6618,14 @@ sealed class TelegramRequest {
     /**
      * <p>Use this method to stop updating a live location message before <em>live_period</em> expires. On success, if the message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
      *
+     * @property businessConnectionId Unique identifier of the business connection on behalf of which the message to be edited was sent
      * @property chatId Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
      * @property messageId Required if <em>inline_message_id</em> is not specified. Identifier of the message with live location to stop
      * @property inlineMessageId Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
      * @property replyMarkup A JSON-serialized object for a new <a href="/bots/features#inline-keyboards">inline keyboard</a>.
      * */
     data class StopMessageLiveLocationRequest(
+        val businessConnectionId: String? = null,
         val chatId: String? = null,
         val messageId: Long? = null,
         val inlineMessageId: String? = null,
@@ -5419,14 +6633,33 @@ sealed class TelegramRequest {
     ) : TelegramRequest()
 
     /**
-     * <p>Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+     * <p>Use this method to edit a checklist on behalf of a connected business account. On success, the edited <a href="#message">Message</a> is returned.</p>
      *
+     * @property businessConnectionId Unique identifier of the business connection on behalf of which the message will be sent
+     * @property chatId Unique identifier for the target chat
+     * @property messageId Unique identifier for the target message
+     * @property checklist A JSON-serialized object for the new checklist
+     * @property replyMarkup A JSON-serialized object for the new inline keyboard for the message
+     * */
+    data class EditMessageChecklistRequest(
+        val businessConnectionId: String,
+        val chatId: Long,
+        val messageId: Long,
+        val checklist: InputChecklist,
+        val replyMarkup: InlineKeyboardMarkup? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection on behalf of which the message to be edited was sent
      * @property chatId Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
      * @property messageId Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
      * @property inlineMessageId Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
      * @property replyMarkup A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>.
      * */
     data class EditMessageReplyMarkupRequest(
+        val businessConnectionId: String? = null,
         val chatId: String? = null,
         val messageId: Long? = null,
         val inlineMessageId: String? = null,
@@ -5438,11 +6671,13 @@ sealed class TelegramRequest {
      *
      * @property chatId Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
      * @property messageId Identifier of the original message with the poll
+     * @property businessConnectionId Unique identifier of the business connection on behalf of which the message to be edited was sent
      * @property replyMarkup A JSON-serialized object for a new message <a href="/bots/features#inline-keyboards">inline keyboard</a>.
      * */
     data class StopPollRequest(
         val chatId: String,
         val messageId: Long,
+        val businessConnectionId: String? = null,
         val replyMarkup: InlineKeyboardMarkup? = null,
     ) : TelegramRequest()
 
@@ -5468,6 +6703,325 @@ sealed class TelegramRequest {
         val messageIds: List<Long>,
     ) : TelegramRequest()
 
+    /**
+     * <p>Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns <em>True</em> on success.</p>
+     *
+     * @property giftId Identifier of the gift
+     * @property userId Required if <em>chat_id</em> is not specified. Unique identifier of the target user who will receive the gift.
+     * @property chatId Required if <em>user_id</em> is not specified. Unique identifier for the chat or username of the channel (in the format <code>@channelusername</code>) that will receive the gift.
+     * @property payForUpgrade Pass <em>True</em> to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver
+     * @property text Text that will be shown along with the gift; 0-128 characters
+     * @property textParseMode Mode for parsing entities in the text. See <a href="#formatting-options">formatting options</a> for more details. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+     * @property textEntities A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+     * */
+    data class SendGiftRequest(
+        val giftId: String,
+        val userId: Long? = null,
+        val chatId: String? = null,
+        val payForUpgrade: Boolean? = null,
+        val text: String? = null,
+        val textParseMode: String? = null,
+        val textEntities: List<MessageEntity>? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Gifts a Telegram Premium subscription to the given user. Returns <em>True</em> on success.</p>
+     *
+     * @property userId Unique identifier of the target user who will receive a Telegram Premium subscription
+     * @property monthCount Number of months the Telegram Premium subscription will be active for the user; must be one of 3, 6, or 12
+     * @property starCount Number of Telegram Stars to pay for the Telegram Premium subscription; must be 1000 for 3 months, 1500 for 6 months, and 2500 for 12 months
+     * @property text Text that will be shown along with the service message about the subscription; 0-128 characters
+     * @property textParseMode Mode for parsing entities in the text. See <a href="#formatting-options">formatting options</a> for more details. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+     * @property textEntities A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+     * */
+    data class GiftPremiumSubscriptionRequest(
+        val userId: Long,
+        val monthCount: Long,
+        val starCount: Long,
+        val text: String? = null,
+        val textParseMode: String? = null,
+        val textEntities: List<MessageEntity>? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Verifies a user <a href="https://telegram.org/verify#third-party-verification">on behalf of the organization</a> which is represented by the bot. Returns <em>True</em> on success.</p>
+     *
+     * @property userId Unique identifier of the target user
+     * @property customDescription Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.
+     * */
+    data class VerifyUserRequest(
+        val userId: Long,
+        val customDescription: String? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Verifies a chat <a href="https://telegram.org/verify#third-party-verification">on behalf of the organization</a> which is represented by the bot. Returns <em>True</em> on success.</p>
+     *
+     * @property chatId Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * @property customDescription Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.
+     * */
+    data class VerifyChatRequest(
+        val chatId: String,
+        val customDescription: String? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Removes verification from a user who is currently verified <a href="https://telegram.org/verify#third-party-verification">on behalf of the organization</a> represented by the bot. Returns <em>True</em> on success.</p>
+     *
+     * @property userId Unique identifier of the target user
+     * */
+    data class RemoveUserVerificationRequest(
+        val userId: Long,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Removes verification from a chat that is currently verified <a href="https://telegram.org/verify#third-party-verification">on behalf of the organization</a> represented by the bot. Returns <em>True</em> on success.</p>
+     *
+     * @property chatId Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+     * */
+    data class RemoveChatVerificationRequest(
+        val chatId: String,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Marks incoming message as read on behalf of a business account. Requires the <em>can_read_messages</em> business bot right. Returns <em>True</em> on success.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection on behalf of which to read the message
+     * @property chatId Unique identifier of the chat in which the message was received. The chat must have been active in the last 24 hours.
+     * @property messageId Unique identifier of the message to mark as read
+     * */
+    data class ReadBusinessMessageRequest(
+        val businessConnectionId: String,
+        val chatId: Long,
+        val messageId: Long,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Delete messages on behalf of a business account. Requires the <em>can_delete_sent_messages</em> business bot right to delete messages sent by the bot itself, or the <em>can_delete_all_messages</em> business bot right to delete any message. Returns <em>True</em> on success.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection on behalf of which to delete the messages
+     * @property messageIds A JSON-serialized list of 1-100 identifiers of messages to delete. All messages must be from the same chat. See <a href="#deletemessage">deleteMessage</a> for limitations on which messages can be deleted
+     * */
+    data class DeleteBusinessMessagesRequest(
+        val businessConnectionId: String,
+        val messageIds: List<Long>,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Changes the first and last name of a managed business account. Requires the <em>can_change_name</em> business bot right. Returns <em>True</em> on success.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection
+     * @property firstName The new value of the first name for the business account; 1-64 characters
+     * @property lastName The new value of the last name for the business account; 0-64 characters
+     * */
+    data class SetBusinessAccountNameRequest(
+        val businessConnectionId: String,
+        val firstName: String,
+        val lastName: String? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Changes the username of a managed business account. Requires the <em>can_change_username</em> business bot right. Returns <em>True</em> on success.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection
+     * @property username The new value of the username for the business account; 0-32 characters
+     * */
+    data class SetBusinessAccountUsernameRequest(
+        val businessConnectionId: String,
+        val username: String? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Changes the bio of a managed business account. Requires the <em>can_change_bio</em> business bot right. Returns <em>True</em> on success.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection
+     * @property bio The new value of the bio for the business account; 0-140 characters
+     * */
+    data class SetBusinessAccountBioRequest(
+        val businessConnectionId: String,
+        val bio: String? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Changes the profile photo of a managed business account. Requires the <em>can_edit_profile_photo</em> business bot right. Returns <em>True</em> on success.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection
+     * @property photo The new profile photo to set
+     * @property isPublic Pass <em>True</em> to set the public photo, which will be visible even if the main photo is hidden by the business account's privacy settings. An account can have only one public photo.
+     * */
+    data class SetBusinessAccountProfilePhotoRequest(
+        val businessConnectionId: String,
+        val photo: InputProfilePhoto,
+        val isPublic: Boolean? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Removes the current profile photo of a managed business account. Requires the <em>can_edit_profile_photo</em> business bot right. Returns <em>True</em> on success.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection
+     * @property isPublic Pass <em>True</em> to remove the public photo, which is visible even if the main photo is hidden by the business account's privacy settings. After the main photo is removed, the previous profile photo (if present) becomes the main photo.
+     * */
+    data class RemoveBusinessAccountProfilePhotoRequest(
+        val businessConnectionId: String,
+        val isPublic: Boolean? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Changes the privacy settings pertaining to incoming gifts in a managed business account. Requires the <em>can_change_gift_settings</em> business bot right. Returns <em>True</em> on success.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection
+     * @property showGiftButton Pass <em>True</em>, if a button for sending a gift to the user or by the business account must always be shown in the input field
+     * @property acceptedGiftTypes Types of gifts accepted by the business account
+     * */
+    data class SetBusinessAccountGiftSettingsRequest(
+        val businessConnectionId: String,
+        val showGiftButton: Boolean,
+        val acceptedGiftTypes: AcceptedGiftTypes,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Returns the amount of Telegram Stars owned by a managed business account. Requires the <em>can_view_gifts_and_stars</em> business bot right. Returns <a href="#staramount">StarAmount</a> on success.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection
+     * */
+    data class GetBusinessAccountStarBalanceRequest(
+        val businessConnectionId: String,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Transfers Telegram Stars from the business account balance to the bot's balance. Requires the <em>can_transfer_stars</em> business bot right. Returns <em>True</em> on success.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection
+     * @property starCount Number of Telegram Stars to transfer; 1-10000
+     * */
+    data class TransferBusinessAccountStarsRequest(
+        val businessConnectionId: String,
+        val starCount: Long,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Returns the gifts received and owned by a managed business account. Requires the <em>can_view_gifts_and_stars</em> business bot right. Returns <a href="#ownedgifts">OwnedGifts</a> on success.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection
+     * @property excludeUnsaved Pass <em>True</em> to exclude gifts that aren't saved to the account's profile page
+     * @property excludeSaved Pass <em>True</em> to exclude gifts that are saved to the account's profile page
+     * @property excludeUnlimited Pass <em>True</em> to exclude gifts that can be purchased an unlimited number of times
+     * @property excludeLimited Pass <em>True</em> to exclude gifts that can be purchased a limited number of times
+     * @property excludeUnique Pass <em>True</em> to exclude unique gifts
+     * @property sortByPrice Pass <em>True</em> to sort results by gift price instead of send date. Sorting is applied before pagination.
+     * @property offset Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
+     * @property limit The maximum number of gifts to be returned; 1-100. Defaults to 100
+     * */
+    data class GetBusinessAccountGiftsRequest(
+        val businessConnectionId: String,
+        val excludeUnsaved: Boolean? = null,
+        val excludeSaved: Boolean? = null,
+        val excludeUnlimited: Boolean? = null,
+        val excludeLimited: Boolean? = null,
+        val excludeUnique: Boolean? = null,
+        val sortByPrice: Boolean? = null,
+        val offset: String? = null,
+        val limit: Long? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Converts a given regular gift to Telegram Stars. Requires the <em>can_convert_gifts_to_stars</em> business bot right. Returns <em>True</em> on success.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection
+     * @property ownedGiftId Unique identifier of the regular gift that should be converted to Telegram Stars
+     * */
+    data class ConvertGiftToStarsRequest(
+        val businessConnectionId: String,
+        val ownedGiftId: String,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Upgrades a given regular gift to a unique gift. Requires the <em>can_transfer_and_upgrade_gifts</em> business bot right. Additionally requires the <em>can_transfer_stars</em> business bot right if the upgrade is paid. Returns <em>True</em> on success.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection
+     * @property ownedGiftId Unique identifier of the regular gift that should be upgraded to a unique one
+     * @property keepOriginalDetails Pass <em>True</em> to keep the original gift text, sender and receiver in the upgraded gift
+     * @property starCount The amount of Telegram Stars that will be paid for the upgrade from the business account balance. If <code>gift.prepaid_upgrade_star_count &gt; 0</code>, then pass 0, otherwise, the <em>can_transfer_stars</em> business bot right is required and <code>gift.upgrade_star_count</code> must be passed.
+     * */
+    data class UpgradeGiftRequest(
+        val businessConnectionId: String,
+        val ownedGiftId: String,
+        val keepOriginalDetails: Boolean? = null,
+        val starCount: Long? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Transfers an owned unique gift to another user. Requires the <em>can_transfer_and_upgrade_gifts</em> business bot right. Requires <em>can_transfer_stars</em> business bot right if the transfer is paid. Returns <em>True</em> on success.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection
+     * @property ownedGiftId Unique identifier of the regular gift that should be transferred
+     * @property newOwnerChatId Unique identifier of the chat which will own the gift. The chat must be active in the last 24 hours.
+     * @property starCount The amount of Telegram Stars that will be paid for the transfer from the business account balance. If positive, then the <em>can_transfer_stars</em> business bot right is required.
+     * */
+    data class TransferGiftRequest(
+        val businessConnectionId: String,
+        val ownedGiftId: String,
+        val newOwnerChatId: Long,
+        val starCount: Long? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Posts a story on behalf of a managed business account. Requires the <em>can_manage_stories</em> business bot right. Returns <a href="#story">Story</a> on success.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection
+     * @property content Content of the story
+     * @property activePeriod Period after which the story is moved to the archive, in seconds; must be one of <code>6 * 3600</code>, <code>12 * 3600</code>, <code>86400</code>, or <code>2 * 86400</code>
+     * @property caption Caption of the story, 0-2048 characters after entities parsing
+     * @property parseMode Mode for parsing entities in the story caption. See <a href="#formatting-options">formatting options</a> for more details.
+     * @property captionEntities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+     * @property areas A JSON-serialized list of clickable areas to be shown on the story
+     * @property postToChatPage Pass <em>True</em> to keep the story accessible after it expires
+     * @property protectContent Pass <em>True</em> if the content of the story must be protected from forwarding and screenshotting
+     * */
+    data class PostStoryRequest(
+        val businessConnectionId: String,
+        val content: InputStoryContent,
+        val activePeriod: Long,
+        val caption: String? = null,
+        val parseMode: ParseMode? = null,
+        val captionEntities: List<MessageEntity>? = null,
+        val areas: List<StoryArea>? = null,
+        val postToChatPage: Boolean? = null,
+        val protectContent: Boolean? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Edits a story previously posted by the bot on behalf of a managed business account. Requires the <em>can_manage_stories</em> business bot right. Returns <a href="#story">Story</a> on success.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection
+     * @property storyId Unique identifier of the story to edit
+     * @property content Content of the story
+     * @property caption Caption of the story, 0-2048 characters after entities parsing
+     * @property parseMode Mode for parsing entities in the story caption. See <a href="#formatting-options">formatting options</a> for more details.
+     * @property captionEntities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+     * @property areas A JSON-serialized list of clickable areas to be shown on the story
+     * */
+    data class EditStoryRequest(
+        val businessConnectionId: String,
+        val storyId: Long,
+        val content: InputStoryContent,
+        val caption: String? = null,
+        val parseMode: ParseMode? = null,
+        val captionEntities: List<MessageEntity>? = null,
+        val areas: List<StoryArea>? = null,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Deletes a story previously posted by the bot on behalf of a managed business account. Requires the <em>can_manage_stories</em> business bot right. Returns <em>True</em> on success.</p>
+     *
+     * @property businessConnectionId Unique identifier of the business connection
+     * @property storyId Unique identifier of the story to delete
+     * */
+    data class DeleteStoryRequest(
+        val businessConnectionId: String,
+        val storyId: Long,
+    ) : TelegramRequest()
+
     // Stickers
 
     /**
@@ -5480,6 +7034,7 @@ sealed class TelegramRequest {
      * @property emoji Emoji associated with the sticker; only for just uploaded stickers
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property messageEffectId Unique identifier of the message effect to be added to the message; for private chats only
      * @property replyParameters Description of the message to reply to
      * @property replyMarkup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -5492,6 +7047,7 @@ sealed class TelegramRequest {
         val emoji: String? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val messageEffectId: String? = null,
         val replyParameters: ReplyParameters? = null,
         val replyMarkup: KeyboardOption? = null,
@@ -5644,8 +7200,8 @@ sealed class TelegramRequest {
      *
      * @property name Sticker set name
      * @property userId User identifier of the sticker set owner
-     * @property format Format of the thumbnail, must be one of “static” for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, “animated” for a <strong>.TGS</strong> animation, or “video” for a <strong>WEBM</strong> video
-     * @property thumbnail A <strong>.WEBP</strong> or <strong>.PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a <strong>.TGS</strong> animation with a thumbnail up to 32 kilobytes in size (see <a href="/stickers#animated-sticker-requirements"></a><a href="https://core.telegram.org/stickers#animated-sticker-requirements">https://core.telegram.org/stickers#animated-sticker-requirements</a> for animated sticker technical requirements), or a <strong>WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href="/stickers#video-sticker-requirements"></a><a href="https://core.telegram.org/stickers#video-sticker-requirements">https://core.telegram.org/stickers#video-sticker-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a>. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.
+     * @property format Format of the thumbnail, must be one of “static” for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, “animated” for a <strong>.TGS</strong> animation, or “video” for a <strong>.WEBM</strong> video
+     * @property thumbnail A <strong>.WEBP</strong> or <strong>.PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a <strong>.TGS</strong> animation with a thumbnail up to 32 kilobytes in size (see <a href="/stickers#animation-requirements"></a><a href="https://core.telegram.org/stickers#animation-requirements">https://core.telegram.org/stickers#animation-requirements</a> for animated sticker technical requirements), or a <strong>.WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href="/stickers#video-requirements"></a><a href="https://core.telegram.org/stickers#video-requirements">https://core.telegram.org/stickers#video-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a>. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.
      * */
     data class SetStickerSetThumbnailRequest(
         val name: String,
@@ -5706,6 +7262,25 @@ sealed class TelegramRequest {
         val result: InlineQueryResult,
     ) : TelegramRequest()
 
+    /**
+     * <p>Stores a message that can be sent by a user of a Mini App. Returns a <a href="#preparedinlinemessage">PreparedInlineMessage</a> object.</p>
+     *
+     * @property userId Unique identifier of the target user that can use the prepared message
+     * @property result A JSON-serialized object describing the message to be sent
+     * @property allowUserChats Pass <em>True</em> if the message can be sent to private chats with users
+     * @property allowBotChats Pass <em>True</em> if the message can be sent to private chats with bots
+     * @property allowGroupChats Pass <em>True</em> if the message can be sent to group and supergroup chats
+     * @property allowChannelChats Pass <em>True</em> if the message can be sent to channel chats
+     * */
+    data class SavePreparedInlineMessageRequest(
+        val userId: Long,
+        val result: InlineQueryResult,
+        val allowUserChats: Boolean? = null,
+        val allowBotChats: Boolean? = null,
+        val allowGroupChats: Boolean? = null,
+        val allowChannelChats: Boolean? = null,
+    ) : TelegramRequest()
+
     // Payments
 
     /**
@@ -5714,7 +7289,7 @@ sealed class TelegramRequest {
      * @property chatId Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
      * @property title Product name, 1-32 characters
      * @property description Product description, 1-255 characters
-     * @property payload Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+     * @property payload Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.
      * @property currency Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>. Pass “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
      * @property prices Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
      * @property messageThreadId Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
@@ -5736,6 +7311,7 @@ sealed class TelegramRequest {
      * @property isFlexible Pass <em>True</em> if the final price depends on the shipping method. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property messageEffectId Unique identifier of the message effect to be added to the message; for private chats only
      * @property replyParameters Description of the message to reply to
      * @property replyMarkup A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>. If empty, one 'Pay <code>total price</code>' button will be shown. If not empty, the first button must be a Pay button.
@@ -5766,6 +7342,7 @@ sealed class TelegramRequest {
         val isFlexible: Boolean? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val messageEffectId: String? = null,
         val replyParameters: ReplyParameters? = null,
         val replyMarkup: InlineKeyboardMarkup? = null,
@@ -5776,10 +7353,12 @@ sealed class TelegramRequest {
      *
      * @property title Product name, 1-32 characters
      * @property description Product description, 1-255 characters
-     * @property payload Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+     * @property payload Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.
      * @property currency Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>. Pass “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
      * @property prices Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
+     * @property businessConnectionId Unique identifier of the business connection on behalf of which the link will be created. For payments in <a href="https://t.me/BotNews/90">Telegram Stars</a> only.
      * @property providerToken Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a>. Pass an empty string for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
+     * @property subscriptionPeriod The number of seconds the subscription will be active for before the next payment. The currency must be set to “XTR” (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 10000 Telegram Stars.
      * @property maxTipAmount The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
      * @property suggestedTipAmounts A JSON-serialized array of suggested amounts of tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>.
      * @property providerData JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
@@ -5801,7 +7380,9 @@ sealed class TelegramRequest {
         val payload: String,
         val currency: String,
         val prices: List<LabeledPrice>,
+        val businessConnectionId: String? = null,
         val providerToken: String? = null,
+        val subscriptionPeriod: Long? = null,
         val maxTipAmount: Long? = null,
         val suggestedTipAmounts: List<Long>? = null,
         val providerData: String? = null,
@@ -5824,7 +7405,7 @@ sealed class TelegramRequest {
      * @property shippingQueryId Unique identifier for the query to be answered
      * @property ok Pass <em>True</em> if delivery to the specified address is possible and <em>False</em> if there are any problems (for example, if delivery to the specified address is not possible)
      * @property shippingOptions Required if <em>ok</em> is <em>True</em>. A JSON-serialized array of available shipping options.
-     * @property errorMessage Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.
+     * @property errorMessage Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains why it is impossible to complete the order (e.g. “Sorry, delivery to your desired address is unavailable”). Telegram will display this message to the user.
      * */
     data class AnswerShippingQueryRequest(
         val shippingQueryId: String,
@@ -5847,6 +7428,17 @@ sealed class TelegramRequest {
     ) : TelegramRequest()
 
     /**
+     * <p>Returns the bot's Telegram Star transactions in chronological order. On success, returns a <a href="#startransactions">StarTransactions</a> object.</p>
+     *
+     * @property offset Number of transactions to skip in the response
+     * @property limit The maximum number of transactions to be retrieved. Values between 1-100 are accepted. Defaults to 100.
+     * */
+    data class GetStarTransactionsRequest(
+        val offset: Long? = null,
+        val limit: Long? = null,
+    ) : TelegramRequest()
+
+    /**
      * <p>Refunds a successful payment in <a href="https://t.me/BotNews/90">Telegram Stars</a>. Returns <em>True</em> on success.</p>
      *
      * @property userId Identifier of the user whose payment will be refunded
@@ -5855,6 +7447,19 @@ sealed class TelegramRequest {
     data class RefundStarPaymentRequest(
         val userId: Long,
         val telegramPaymentChargeId: String,
+    ) : TelegramRequest()
+
+    /**
+     * <p>Allows the bot to cancel or re-enable extension of a subscription paid in Telegram Stars. Returns <em>True</em> on success.</p>
+     *
+     * @property userId Identifier of the user whose subscription will be edited
+     * @property telegramPaymentChargeId Telegram payment identifier for the subscription
+     * @property isCanceled Pass <em>True</em> to cancel extension of the user subscription; the subscription must be active up to the end of the current subscription period. Pass <em>False</em> to allow the user to re-enable a subscription that was previously canceled by the bot.
+     * */
+    data class EditUserStarSubscriptionRequest(
+        val userId: Long,
+        val telegramPaymentChargeId: String,
+        val isCanceled: Boolean,
     ) : TelegramRequest()
 
     // Telegram Passport
@@ -5881,6 +7486,7 @@ sealed class TelegramRequest {
      * @property messageThreadId Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
      * @property disableNotification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
      * @property protectContent Protects the contents of the sent message from forwarding and saving
+     * @property allowPaidBroadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
      * @property messageEffectId Unique identifier of the message effect to be added to the message; for private chats only
      * @property replyParameters Description of the message to reply to
      * @property replyMarkup A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.
@@ -5892,6 +7498,7 @@ sealed class TelegramRequest {
         val messageThreadId: Long? = null,
         val disableNotification: Boolean? = null,
         val protectContent: Boolean? = null,
+        val allowPaidBroadcast: Boolean? = null,
         val messageEffectId: String? = null,
         val replyParameters: ReplyParameters? = null,
         val replyMarkup: InlineKeyboardMarkup? = null,

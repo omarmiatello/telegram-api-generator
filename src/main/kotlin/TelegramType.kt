@@ -128,6 +128,54 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             subclasses = { it.startsWith("BackgroundFill") },
             deserializer = ""
         )
+
+        object PaidMedia : Super(
+            name = "PaidMedia",
+            subclasses = { it in setOf("PaidMediaPreview", "PaidMediaPhoto", "PaidMediaVideo") },
+            deserializer = ""
+        )
+
+        object StoryAreaType : Super(
+            name = "StoryAreaType",
+            subclasses = { it.startsWith("StoryAreaType") },
+            deserializer = ""
+        )
+
+        object OwnedGift : Super(
+            name = "OwnedGift",
+            subclasses = { it in setOf("OwnedGiftRegular", "OwnedGiftUnique") },
+            deserializer = ""
+        )
+
+        object RevenueWithdrawalState : Super(
+            name = "RevenueWithdrawalState",
+            subclasses = { it.startsWith("RevenueWithdrawalState") },
+            deserializer = ""
+        )
+
+        object TransactionPartner : Super(
+            name = "TransactionPartner",
+            subclasses = { it.startsWith("TransactionPartner") },
+            deserializer = ""
+        )
+
+        object InputPaidMedia : Super(
+            name = "InputPaidMedia",
+            subclasses = { it.startsWith("InputPaidMedia") },
+            deserializer = ""
+        )
+
+        object InputProfilePhoto : Super(
+            name = "InputProfilePhoto",
+            subclasses = { it.startsWith("InputProfilePhoto") },
+            deserializer = ""
+        )
+
+        object InputStoryContent : Super(
+            name = "InputStoryContent",
+            subclasses = { it.startsWith("InputStoryContent") },
+            deserializer = ""
+        )
     }
 
     sealed class WithAlternative(name: String, val validTypes: List<TelegramType>, superType: TelegramType?) :
@@ -171,6 +219,14 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             Super.MaybeInaccessibleMessage,
             Super.BackgroundType,
             Super.BackgroundFill,
+            Super.PaidMedia,
+            Super.StoryAreaType,
+            Super.OwnedGift,
+            Super.RevenueWithdrawalState,
+            Super.TransactionPartner,
+            Super.InputPaidMedia,
+            Super.InputProfilePhoto,
+            Super.InputStoryContent,
             WithAlternative.InputFileOrString,
             WithAlternative.IntegerOrString,
         )
@@ -211,6 +267,14 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             "BackgroundFill" -> Super.BackgroundFill
             "InputFileOrString" -> WithAlternative.InputFileOrString
             "IntegerOrString" -> WithAlternative.IntegerOrString
+            "PaidMedia" -> Super.PaidMedia
+            "StoryAreaType" -> Super.StoryAreaType
+            "OwnedGift" -> Super.OwnedGift
+            "RevenueWithdrawalState" -> Super.RevenueWithdrawalState
+            "TransactionPartner" -> Super.TransactionPartner
+            "InputPaidMedia" -> Super.InputPaidMedia
+            "InputProfilePhoto" -> Super.InputProfilePhoto
+            "InputStoryContent" -> Super.InputStoryContent
             else -> {
                 if (type.startsWith("Array of ")) {
                     ListType(from(type.removePrefix("Array of ")))

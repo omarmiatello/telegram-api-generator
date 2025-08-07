@@ -23,6 +23,7 @@
  * @property callback_query <em>Optional</em>. New incoming callback query
  * @property shipping_query <em>Optional</em>. New incoming shipping query. Only for invoices with flexible price
  * @property pre_checkout_query <em>Optional</em>. New incoming pre-checkout query. Contains full information about checkout
+ * @property purchased_paid_media <em>Optional</em>. A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat
  * @property poll <em>Optional</em>. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot
  * @property poll_answer <em>Optional</em>. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.
  * @property my_chat_member <em>Optional</em>. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user.
@@ -82,6 +83,9 @@ pub struct Update {
     /// <em>Optional</em>. New incoming pre-checkout query. Contains full information about checkout
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pre_checkout_query: Option<PreCheckoutQuery>,
+    /// <em>Optional</em>. A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub purchased_paid_media: Option<PaidMediaPurchased>,
     /// <em>Optional</em>. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot
     #[serde(skip_serializing_if = "Option::is_none")]
     pub poll: Option<Poll>,
@@ -166,6 +170,7 @@ pub struct WebhookInfo {
  * @property can_read_all_group_messages <em>Optional</em>. <em>True</em>, if <a href="/bots/features#privacy-mode">privacy mode</a> is disabled for the bot. Returned only in <a href="#getme">getMe</a>.
  * @property supports_inline_queries <em>Optional</em>. <em>True</em>, if the bot supports inline queries. Returned only in <a href="#getme">getMe</a>.
  * @property can_connect_to_business <em>Optional</em>. <em>True</em>, if the bot can be connected to a Telegram Business account to receive its messages. Returned only in <a href="#getme">getMe</a>.
+ * @property has_main_web_app <em>Optional</em>. <em>True</em>, if the bot has a main Web App. Returned only in <a href="#getme">getMe</a>.
  *
  * @constructor Creates a [User].
  * */
@@ -203,7 +208,10 @@ pub struct User {
     pub supports_inline_queries: Option<bool>,
     /// <em>Optional</em>. <em>True</em>, if the bot can be connected to a Telegram Business account to receive its messages. Returned only in <a href="#getme">getMe</a>.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_connect_to_business: Option<bool>
+    pub can_connect_to_business: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the bot has a main Web App. Returned only in <a href="#getme">getMe</a>.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub has_main_web_app: Option<bool>
 }
 
 /**
@@ -277,6 +285,8 @@ pub struct Chat {
  * @property invite_link <em>Optional</em>. Primary invite link, for groups, supergroups and channel chats
  * @property pinned_message <em>Optional</em>. The most recent pinned message (by sending date)
  * @property permissions <em>Optional</em>. Default chat member permissions, for groups and supergroups
+ * @property accepted_gift_types Information about types of gifts that are accepted by the chat or by the corresponding user for private chats
+ * @property can_send_paid_media <em>Optional</em>. <em>True</em>, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.
  * @property slow_mode_delay <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds
  * @property unrestrict_boost_count <em>Optional</em>. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions
  * @property message_auto_delete_time <em>Optional</em>. The time after which all messages sent to the chat will be automatically deleted; in seconds
@@ -384,6 +394,11 @@ pub struct ChatFullInfo {
     /// <em>Optional</em>. Default chat member permissions, for groups and supergroups
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<ChatPermissions>,
+    /// Information about types of gifts that are accepted by the chat or by the corresponding user for private chats
+    pub accepted_gift_types: AcceptedGiftTypes,
+    /// <em>Optional</em>. <em>True</em>, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_send_paid_media: Option<bool>,
     /// <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub slow_mode_delay: Option<Integer>,
@@ -425,10 +440,10 @@ pub struct ChatFullInfo {
 /**
  * <p>This object represents a message.</p>
  *
- * @property message_id Unique message identifier inside this chat
+ * @property message_id Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent
  * @property message_thread_id <em>Optional</em>. Unique identifier of a message thread to which the message belongs; for supergroups only
- * @property from <em>Optional</em>. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
- * @property sender_chat <em>Optional</em>. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field <em>from</em> contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
+ * @property from <em>Optional</em>. Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats
+ * @property sender_chat <em>Optional</em>. Sender of the message when sent on behalf of a chat. For example, the supergroup itself for messages sent by its anonymous administrators or a linked channel for messages automatically forwarded to the channel's discussion group. For backward compatibility, if the message was sent on behalf of a chat, the field <em>from</em> contains a fake sender user in non-channel chats.
  * @property sender_boost_count <em>Optional</em>. If the sender of the message boosted the chat, the number of boosts added by the user
  * @property sender_business_bot <em>Optional</em>. The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
  * @property date Date the message was sent in Unix time. It is always a positive number, representing a valid date.
@@ -444,9 +459,10 @@ pub struct ChatFullInfo {
  * @property via_bot <em>Optional</em>. Bot through which the message was sent
  * @property edit_date <em>Optional</em>. Date the message was last edited in Unix time
  * @property has_protected_content <em>Optional</em>. <em>True</em>, if the message can't be forwarded
- * @property is_from_offline <em>Optional</em>. True, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+ * @property is_from_offline <em>Optional</em>. <em>True</em>, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
  * @property media_group_id <em>Optional</em>. The unique identifier of a media message group this message belongs to
  * @property author_signature <em>Optional</em>. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
+ * @property paid_star_count <em>Optional</em>. The number of Telegram Stars that were paid by the sender of the message to send it
  * @property text <em>Optional</em>. For text messages, the actual UTF-8 text of the message
  * @property entities <em>Optional</em>. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text
  * @property link_preview_options <em>Optional</em>. Options used for link preview generation for the message, if it is a text message and link preview options were changed
@@ -454,16 +470,18 @@ pub struct ChatFullInfo {
  * @property animation <em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set
  * @property audio <em>Optional</em>. Message is an audio file, information about the file
  * @property document <em>Optional</em>. Message is a general file, information about the file
+ * @property paid_media <em>Optional</em>. Message contains paid media; information about the paid media
  * @property photo <em>Optional</em>. Message is a photo, available sizes of the photo
  * @property sticker <em>Optional</em>. Message is a sticker, information about the sticker
  * @property story <em>Optional</em>. Message is a forwarded story
  * @property video <em>Optional</em>. Message is a video, information about the video
  * @property video_note <em>Optional</em>. Message is a <a href="https://telegram.org/blog/video-messages-and-telescope">video note</a>, information about the video message
  * @property voice <em>Optional</em>. Message is a voice message, information about the file
- * @property caption <em>Optional</em>. Caption for the animation, audio, document, photo, video or voice
+ * @property caption <em>Optional</em>. Caption for the animation, audio, document, paid media, photo, video or voice
  * @property caption_entities <em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption
- * @property show_caption_above_media <em>Optional</em>. True, if the caption must be shown above the message media
+ * @property show_caption_above_media <em>Optional</em>. <em>True</em>, if the caption must be shown above the message media
  * @property has_media_spoiler <em>Optional</em>. <em>True</em>, if the message media is covered by a spoiler animation
+ * @property checklist <em>Optional</em>. Message is a checklist
  * @property contact <em>Optional</em>. Message is a shared contact, information about the contact
  * @property dice <em>Optional</em>. Message is a dice with random value
  * @property game <em>Optional</em>. Message is a game, information about the game. <a href="#games">More about games »</a>
@@ -484,14 +502,20 @@ pub struct ChatFullInfo {
  * @property pinned_message <em>Optional</em>. Specified message was pinned. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply.
  * @property invoice <em>Optional</em>. Message is an invoice for a <a href="#payments">payment</a>, information about the invoice. <a href="#payments">More about payments »</a>
  * @property successful_payment <em>Optional</em>. Message is a service message about a successful payment, information about the payment. <a href="#payments">More about payments »</a>
+ * @property refunded_payment <em>Optional</em>. Message is a service message about a refunded payment, information about the payment. <a href="#payments">More about payments »</a>
  * @property users_shared <em>Optional</em>. Service message: users were shared with the bot
  * @property chat_shared <em>Optional</em>. Service message: a chat was shared with the bot
+ * @property gift <em>Optional</em>. Service message: a regular gift was sent or received
+ * @property unique_gift <em>Optional</em>. Service message: a unique gift was sent or received
  * @property connected_website <em>Optional</em>. The domain name of the website on which the user has logged in. <a href="/widgets/login">More about Telegram Login »</a>
  * @property write_access_allowed <em>Optional</em>. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method <a href="/bots/webapps#initializing-mini-apps">requestWriteAccess</a>
  * @property passport_data <em>Optional</em>. Telegram Passport data
  * @property proximity_alert_triggered <em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.
  * @property boost_added <em>Optional</em>. Service message: user boosted the chat
  * @property chat_background_set <em>Optional</em>. Service message: chat background set
+ * @property checklist_tasks_done <em>Optional</em>. Service message: some tasks in a checklist were marked as done or not done
+ * @property checklist_tasks_added <em>Optional</em>. Service message: tasks were added to a checklist
+ * @property direct_message_price_changed <em>Optional</em>. Service message: the price for paid messages in the corresponding direct messages chat of a channel has changed
  * @property forum_topic_created <em>Optional</em>. Service message: forum topic created
  * @property forum_topic_edited <em>Optional</em>. Service message: forum topic edited
  * @property forum_topic_closed <em>Optional</em>. Service message: forum topic closed
@@ -502,6 +526,7 @@ pub struct ChatFullInfo {
  * @property giveaway <em>Optional</em>. The message is a scheduled giveaway message
  * @property giveaway_winners <em>Optional</em>. A giveaway with public winners was completed
  * @property giveaway_completed <em>Optional</em>. Service message: a giveaway without public winners was completed
+ * @property paid_message_price_changed <em>Optional</em>. Service message: the price for paid messages has changed in the chat
  * @property video_chat_scheduled <em>Optional</em>. Service message: video chat scheduled
  * @property video_chat_started <em>Optional</em>. Service message: video chat started
  * @property video_chat_ended <em>Optional</em>. Service message: video chat ended
@@ -513,15 +538,15 @@ pub struct ChatFullInfo {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct Message {
-    /// Unique message identifier inside this chat
+    /// Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent
     pub message_id: Integer,
     /// <em>Optional</em>. Unique identifier of a message thread to which the message belongs; for supergroups only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_thread_id: Option<Integer>,
-    /// <em>Optional</em>. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
+    /// <em>Optional</em>. Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats
     #[serde(skip_serializing_if = "Option::is_none")]
     pub from: Option<User>,
-    /// <em>Optional</em>. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field <em>from</em> contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
+    /// <em>Optional</em>. Sender of the message when sent on behalf of a chat. For example, the supergroup itself for messages sent by its anonymous administrators or a linked channel for messages automatically forwarded to the channel's discussion group. For backward compatibility, if the message was sent on behalf of a chat, the field <em>from</em> contains a fake sender user in non-channel chats.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sender_chat: Option<Chat>,
     /// <em>Optional</em>. If the sender of the message boosted the chat, the number of boosts added by the user
@@ -567,7 +592,7 @@ pub struct Message {
     /// <em>Optional</em>. <em>True</em>, if the message can't be forwarded
     #[serde(skip_serializing_if = "Option::is_none")]
     pub has_protected_content: Option<bool>,
-    /// <em>Optional</em>. True, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    /// <em>Optional</em>. <em>True</em>, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_from_offline: Option<bool>,
     /// <em>Optional</em>. The unique identifier of a media message group this message belongs to
@@ -576,6 +601,9 @@ pub struct Message {
     /// <em>Optional</em>. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     #[serde(skip_serializing_if = "Option::is_none")]
     pub author_signature: Option<String>,
+    /// <em>Optional</em>. The number of Telegram Stars that were paid by the sender of the message to send it
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid_star_count: Option<Integer>,
     /// <em>Optional</em>. For text messages, the actual UTF-8 text of the message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub text: Option<String>,
@@ -597,6 +625,9 @@ pub struct Message {
     /// <em>Optional</em>. Message is a general file, information about the file
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<Document>,
+    /// <em>Optional</em>. Message contains paid media; information about the paid media
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid_media: Option<PaidMediaInfo>,
     /// <em>Optional</em>. Message is a photo, available sizes of the photo
     #[serde(skip_serializing_if = "Option::is_none")]
     pub photo: Option<Vec<PhotoSize>>,
@@ -615,18 +646,21 @@ pub struct Message {
     /// <em>Optional</em>. Message is a voice message, information about the file
     #[serde(skip_serializing_if = "Option::is_none")]
     pub voice: Option<Voice>,
-    /// <em>Optional</em>. Caption for the animation, audio, document, photo, video or voice
+    /// <em>Optional</em>. Caption for the animation, audio, document, paid media, photo, video or voice
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
     /// <em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption_entities: Option<Vec<MessageEntity>>,
-    /// <em>Optional</em>. True, if the caption must be shown above the message media
+    /// <em>Optional</em>. <em>True</em>, if the caption must be shown above the message media
     #[serde(skip_serializing_if = "Option::is_none")]
     pub show_caption_above_media: Option<bool>,
     /// <em>Optional</em>. <em>True</em>, if the message media is covered by a spoiler animation
     #[serde(skip_serializing_if = "Option::is_none")]
     pub has_media_spoiler: Option<bool>,
+    /// <em>Optional</em>. Message is a checklist
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub checklist: Option<Checklist>,
     /// <em>Optional</em>. Message is a shared contact, information about the contact
     #[serde(skip_serializing_if = "Option::is_none")]
     pub contact: Option<Contact>,
@@ -687,12 +721,21 @@ pub struct Message {
     /// <em>Optional</em>. Message is a service message about a successful payment, information about the payment. <a href="#payments">More about payments »</a>
     #[serde(skip_serializing_if = "Option::is_none")]
     pub successful_payment: Option<SuccessfulPayment>,
+    /// <em>Optional</em>. Message is a service message about a refunded payment, information about the payment. <a href="#payments">More about payments »</a>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refunded_payment: Option<RefundedPayment>,
     /// <em>Optional</em>. Service message: users were shared with the bot
     #[serde(skip_serializing_if = "Option::is_none")]
     pub users_shared: Option<UsersShared>,
     /// <em>Optional</em>. Service message: a chat was shared with the bot
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_shared: Option<ChatShared>,
+    /// <em>Optional</em>. Service message: a regular gift was sent or received
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gift: Option<GiftInfo>,
+    /// <em>Optional</em>. Service message: a unique gift was sent or received
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unique_gift: Option<UniqueGiftInfo>,
     /// <em>Optional</em>. The domain name of the website on which the user has logged in. <a href="/widgets/login">More about Telegram Login »</a>
     #[serde(skip_serializing_if = "Option::is_none")]
     pub connected_website: Option<String>,
@@ -711,6 +754,15 @@ pub struct Message {
     /// <em>Optional</em>. Service message: chat background set
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_background_set: Option<ChatBackground>,
+    /// <em>Optional</em>. Service message: some tasks in a checklist were marked as done or not done
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub checklist_tasks_done: Option<ChecklistTasksDone>,
+    /// <em>Optional</em>. Service message: tasks were added to a checklist
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub checklist_tasks_added: Option<ChecklistTasksAdded>,
+    /// <em>Optional</em>. Service message: the price for paid messages in the corresponding direct messages chat of a channel has changed
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub direct_message_price_changed: Option<DirectMessagePriceChanged>,
     /// <em>Optional</em>. Service message: forum topic created
     #[serde(skip_serializing_if = "Option::is_none")]
     pub forum_topic_created: Option<ForumTopicCreated>,
@@ -741,6 +793,9 @@ pub struct Message {
     /// <em>Optional</em>. Service message: a giveaway without public winners was completed
     #[serde(skip_serializing_if = "Option::is_none")]
     pub giveaway_completed: Option<GiveawayCompleted>,
+    /// <em>Optional</em>. Service message: the price for paid messages has changed in the chat
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid_message_price_changed: Option<PaidMessagePriceChanged>,
     /// <em>Optional</em>. Service message: video chat scheduled
     #[serde(skip_serializing_if = "Option::is_none")]
     pub video_chat_scheduled: Option<VideoChatScheduled>,
@@ -764,13 +819,13 @@ pub struct Message {
 /**
  * <p>This object represents a unique message identifier.</p>
  *
- * @property message_id Unique message identifier
+ * @property message_id Unique message identifier. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent
  *
  * @constructor Creates a [MessageId].
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct MessageId {
-    /// Unique message identifier
+    /// Unique message identifier. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent
     pub message_id: Integer
 }
 
@@ -796,7 +851,7 @@ pub struct InaccessibleMessage {
 /**
  * <p>This object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc.</p>
  *
- * @property type Type of the entity. Currently, can be “mention” (<code>@username</code>), “hashtag” (<code>#hashtag</code>), “cashtag” (<code>$USD</code>), “bot_command” (<code>/start@jobs_bot</code>), “url” (<code>https://telegram.org</code>), “email” (<code>do-not-reply@telegram.org</code>), “phone_number” (<code>+1-212-555-0123</code>), “bold” (<strong>bold text</strong>), “italic” (<em>italic text</em>), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler” (spoiler message), “blockquote” (block quotation), “expandable_blockquote” (collapsed-by-default block quotation), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users <a href="https://telegram.org/blog/edit#new-mentions">without usernames</a>), “custom_emoji” (for inline custom emoji stickers)
+ * @property type Type of the entity. Currently, can be “mention” (<code>@username</code>), “hashtag” (<code>#hashtag</code> or <code>#hashtag@chatusername</code>), “cashtag” (<code>$USD</code> or <code>$USD@chatusername</code>), “bot_command” (<code>/start@jobs_bot</code>), “url” (<code>https://telegram.org</code>), “email” (<code>do-not-reply@telegram.org</code>), “phone_number” (<code>+1-212-555-0123</code>), “bold” (<strong>bold text</strong>), “italic” (<em>italic text</em>), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler” (spoiler message), “blockquote” (block quotation), “expandable_blockquote” (collapsed-by-default block quotation), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users <a href="https://telegram.org/blog/edit#new-mentions">without usernames</a>), “custom_emoji” (for inline custom emoji stickers)
  * @property offset Offset in <a href="/api/entities#entity-length">UTF-16 code units</a> to the start of the entity
  * @property length Length of the entity in <a href="/api/entities#entity-length">UTF-16 code units</a>
  * @property url <em>Optional</em>. For “text_link” only, URL that will be opened after user taps on the text
@@ -808,7 +863,7 @@ pub struct InaccessibleMessage {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct MessageEntity {
-    /// Type of the entity. Currently, can be “mention” (<code>@username</code>), “hashtag” (<code>#hashtag</code>), “cashtag” (<code>$USD</code>), “bot_command” (<code>/start@jobs_bot</code>), “url” (<code>https://telegram.org</code>), “email” (<code>do-not-reply@telegram.org</code>), “phone_number” (<code>+1-212-555-0123</code>), “bold” (<strong>bold text</strong>), “italic” (<em>italic text</em>), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler” (spoiler message), “blockquote” (block quotation), “expandable_blockquote” (collapsed-by-default block quotation), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users <a href="https://telegram.org/blog/edit#new-mentions">without usernames</a>), “custom_emoji” (for inline custom emoji stickers)
+    /// Type of the entity. Currently, can be “mention” (<code>@username</code>), “hashtag” (<code>#hashtag</code> or <code>#hashtag@chatusername</code>), “cashtag” (<code>$USD</code> or <code>$USD@chatusername</code>), “bot_command” (<code>/start@jobs_bot</code>), “url” (<code>https://telegram.org</code>), “email” (<code>do-not-reply@telegram.org</code>), “phone_number” (<code>+1-212-555-0123</code>), “bold” (<strong>bold text</strong>), “italic” (<em>italic text</em>), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler” (spoiler message), “blockquote” (block quotation), “expandable_blockquote” (collapsed-by-default block quotation), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users <a href="https://telegram.org/blog/edit#new-mentions">without usernames</a>), “custom_emoji” (for inline custom emoji stickers)
     #[serde(rename = "type")]
     pub type_: String,
     /// Offset in <a href="/api/entities#entity-length">UTF-16 code units</a> to the start of the entity
@@ -835,7 +890,7 @@ pub struct MessageEntity {
  * @property text Text of the quoted part of a message that is replied to by the given message
  * @property entities <em>Optional</em>. Special entities that appear in the quote. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities are kept in quotes.
  * @property position Approximate quote position in the original message in UTF-16 code units as specified by the sender
- * @property is_manual <em>Optional</em>. True, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.
+ * @property is_manual <em>Optional</em>. <em>True</em>, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.
  *
  * @constructor Creates a [TextQuote].
  * */
@@ -848,7 +903,7 @@ pub struct TextQuote {
     pub entities: Option<Vec<MessageEntity>>,
     /// Approximate quote position in the original message in UTF-16 code units as specified by the sender
     pub position: Integer,
-    /// <em>Optional</em>. True, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.
+    /// <em>Optional</em>. <em>True</em>, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_manual: Option<bool>
 }
@@ -863,6 +918,7 @@ pub struct TextQuote {
  * @property animation <em>Optional</em>. Message is an animation, information about the animation
  * @property audio <em>Optional</em>. Message is an audio file, information about the file
  * @property document <em>Optional</em>. Message is a general file, information about the file
+ * @property paid_media <em>Optional</em>. Message contains paid media; information about the paid media
  * @property photo <em>Optional</em>. Message is a photo, available sizes of the photo
  * @property sticker <em>Optional</em>. Message is a sticker, information about the sticker
  * @property story <em>Optional</em>. Message is a forwarded story
@@ -870,6 +926,7 @@ pub struct TextQuote {
  * @property video_note <em>Optional</em>. Message is a <a href="https://telegram.org/blog/video-messages-and-telescope">video note</a>, information about the video message
  * @property voice <em>Optional</em>. Message is a voice message, information about the file
  * @property has_media_spoiler <em>Optional</em>. <em>True</em>, if the message media is covered by a spoiler animation
+ * @property checklist <em>Optional</em>. Message is a checklist
  * @property contact <em>Optional</em>. Message is a shared contact, information about the contact
  * @property dice <em>Optional</em>. Message is a dice with random value
  * @property game <em>Optional</em>. Message is a game, information about the game. <a href="#games">More about games »</a>
@@ -904,6 +961,9 @@ pub struct ExternalReplyInfo {
     /// <em>Optional</em>. Message is a general file, information about the file
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<Document>,
+    /// <em>Optional</em>. Message contains paid media; information about the paid media
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid_media: Option<PaidMediaInfo>,
     /// <em>Optional</em>. Message is a photo, available sizes of the photo
     #[serde(skip_serializing_if = "Option::is_none")]
     pub photo: Option<Vec<PhotoSize>>,
@@ -925,6 +985,9 @@ pub struct ExternalReplyInfo {
     /// <em>Optional</em>. <em>True</em>, if the message media is covered by a spoiler animation
     #[serde(skip_serializing_if = "Option::is_none")]
     pub has_media_spoiler: Option<bool>,
+    /// <em>Optional</em>. Message is a checklist
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub checklist: Option<Checklist>,
     /// <em>Optional</em>. Message is a shared contact, information about the contact
     #[serde(skip_serializing_if = "Option::is_none")]
     pub contact: Option<Contact>,
@@ -1113,12 +1176,12 @@ pub struct PhotoSize {
  *
  * @property file_id Identifier for this file, which can be used to download or reuse the file
  * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property width Video width as defined by sender
- * @property height Video height as defined by sender
- * @property duration Duration of the video in seconds as defined by sender
- * @property thumbnail <em>Optional</em>. Animation thumbnail as defined by sender
- * @property file_name <em>Optional</em>. Original animation filename as defined by sender
- * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
+ * @property width Video width as defined by the sender
+ * @property height Video height as defined by the sender
+ * @property duration Duration of the video in seconds as defined by the sender
+ * @property thumbnail <em>Optional</em>. Animation thumbnail as defined by the sender
+ * @property file_name <em>Optional</em>. Original animation filename as defined by the sender
+ * @property mime_type <em>Optional</em>. MIME type of the file as defined by the sender
  * @property file_size <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
  *
  * @constructor Creates a [Animation].
@@ -1129,19 +1192,19 @@ pub struct Animation {
     pub file_id: String,
     /// Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// Video width as defined by sender
+    /// Video width as defined by the sender
     pub width: Integer,
-    /// Video height as defined by sender
+    /// Video height as defined by the sender
     pub height: Integer,
-    /// Duration of the video in seconds as defined by sender
+    /// Duration of the video in seconds as defined by the sender
     pub duration: Integer,
-    /// <em>Optional</em>. Animation thumbnail as defined by sender
+    /// <em>Optional</em>. Animation thumbnail as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<PhotoSize>,
-    /// <em>Optional</em>. Original animation filename as defined by sender
+    /// <em>Optional</em>. Original animation filename as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
-    /// <em>Optional</em>. MIME type of the file as defined by sender
+    /// <em>Optional</em>. MIME type of the file as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
     /// <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
@@ -1154,11 +1217,11 @@ pub struct Animation {
  *
  * @property file_id Identifier for this file, which can be used to download or reuse the file
  * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property duration Duration of the audio in seconds as defined by sender
- * @property performer <em>Optional</em>. Performer of the audio as defined by sender or by audio tags
- * @property title <em>Optional</em>. Title of the audio as defined by sender or by audio tags
- * @property file_name <em>Optional</em>. Original filename as defined by sender
- * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
+ * @property duration Duration of the audio in seconds as defined by the sender
+ * @property performer <em>Optional</em>. Performer of the audio as defined by the sender or by audio tags
+ * @property title <em>Optional</em>. Title of the audio as defined by the sender or by audio tags
+ * @property file_name <em>Optional</em>. Original filename as defined by the sender
+ * @property mime_type <em>Optional</em>. MIME type of the file as defined by the sender
  * @property file_size <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
  * @property thumbnail <em>Optional</em>. Thumbnail of the album cover to which the music file belongs
  *
@@ -1170,18 +1233,18 @@ pub struct Audio {
     pub file_id: String,
     /// Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// Duration of the audio in seconds as defined by sender
+    /// Duration of the audio in seconds as defined by the sender
     pub duration: Integer,
-    /// <em>Optional</em>. Performer of the audio as defined by sender or by audio tags
+    /// <em>Optional</em>. Performer of the audio as defined by the sender or by audio tags
     #[serde(skip_serializing_if = "Option::is_none")]
     pub performer: Option<String>,
-    /// <em>Optional</em>. Title of the audio as defined by sender or by audio tags
+    /// <em>Optional</em>. Title of the audio as defined by the sender or by audio tags
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
-    /// <em>Optional</em>. Original filename as defined by sender
+    /// <em>Optional</em>. Original filename as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
-    /// <em>Optional</em>. MIME type of the file as defined by sender
+    /// <em>Optional</em>. MIME type of the file as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
     /// <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
@@ -1197,9 +1260,9 @@ pub struct Audio {
  *
  * @property file_id Identifier for this file, which can be used to download or reuse the file
  * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property thumbnail <em>Optional</em>. Document thumbnail as defined by sender
- * @property file_name <em>Optional</em>. Original filename as defined by sender
- * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
+ * @property thumbnail <em>Optional</em>. Document thumbnail as defined by the sender
+ * @property file_name <em>Optional</em>. Original filename as defined by the sender
+ * @property mime_type <em>Optional</em>. MIME type of the file as defined by the sender
  * @property file_size <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
  *
  * @constructor Creates a [Document].
@@ -1210,13 +1273,13 @@ pub struct Document {
     pub file_id: String,
     /// Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// <em>Optional</em>. Document thumbnail as defined by sender
+    /// <em>Optional</em>. Document thumbnail as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<PhotoSize>,
-    /// <em>Optional</em>. Original filename as defined by sender
+    /// <em>Optional</em>. Original filename as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
-    /// <em>Optional</em>. MIME type of the file as defined by sender
+    /// <em>Optional</em>. MIME type of the file as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
     /// <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
@@ -1245,12 +1308,14 @@ pub struct Story {
  *
  * @property file_id Identifier for this file, which can be used to download or reuse the file
  * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property width Video width as defined by sender
- * @property height Video height as defined by sender
- * @property duration Duration of the video in seconds as defined by sender
+ * @property width Video width as defined by the sender
+ * @property height Video height as defined by the sender
+ * @property duration Duration of the video in seconds as defined by the sender
  * @property thumbnail <em>Optional</em>. Video thumbnail
- * @property file_name <em>Optional</em>. Original filename as defined by sender
- * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
+ * @property cover <em>Optional</em>. Available sizes of the cover of the video in the message
+ * @property start_timestamp <em>Optional</em>. Timestamp in seconds from which the video will play in the message
+ * @property file_name <em>Optional</em>. Original filename as defined by the sender
+ * @property mime_type <em>Optional</em>. MIME type of the file as defined by the sender
  * @property file_size <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
  *
  * @constructor Creates a [Video].
@@ -1261,19 +1326,25 @@ pub struct Video {
     pub file_id: String,
     /// Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// Video width as defined by sender
+    /// Video width as defined by the sender
     pub width: Integer,
-    /// Video height as defined by sender
+    /// Video height as defined by the sender
     pub height: Integer,
-    /// Duration of the video in seconds as defined by sender
+    /// Duration of the video in seconds as defined by the sender
     pub duration: Integer,
     /// <em>Optional</em>. Video thumbnail
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<PhotoSize>,
-    /// <em>Optional</em>. Original filename as defined by sender
+    /// <em>Optional</em>. Available sizes of the cover of the video in the message
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cover: Option<Vec<PhotoSize>>,
+    /// <em>Optional</em>. Timestamp in seconds from which the video will play in the message
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub start_timestamp: Option<Integer>,
+    /// <em>Optional</em>. Original filename as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
-    /// <em>Optional</em>. MIME type of the file as defined by sender
+    /// <em>Optional</em>. MIME type of the file as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
     /// <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
@@ -1286,8 +1357,8 @@ pub struct Video {
  *
  * @property file_id Identifier for this file, which can be used to download or reuse the file
  * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property length Video width and height (diameter of the video message) as defined by sender
- * @property duration Duration of the video in seconds as defined by sender
+ * @property length Video width and height (diameter of the video message) as defined by the sender
+ * @property duration Duration of the video in seconds as defined by the sender
  * @property thumbnail <em>Optional</em>. Video thumbnail
  * @property file_size <em>Optional</em>. File size in bytes
  *
@@ -1299,9 +1370,9 @@ pub struct VideoNote {
     pub file_id: String,
     /// Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// Video width and height (diameter of the video message) as defined by sender
+    /// Video width and height (diameter of the video message) as defined by the sender
     pub length: Integer,
-    /// Duration of the video in seconds as defined by sender
+    /// Duration of the video in seconds as defined by the sender
     pub duration: Integer,
     /// <em>Optional</em>. Video thumbnail
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1316,8 +1387,8 @@ pub struct VideoNote {
  *
  * @property file_id Identifier for this file, which can be used to download or reuse the file
  * @property file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
- * @property duration Duration of the audio in seconds as defined by sender
- * @property mime_type <em>Optional</em>. MIME type of the file as defined by sender
+ * @property duration Duration of the audio in seconds as defined by the sender
+ * @property mime_type <em>Optional</em>. MIME type of the file as defined by the sender
  * @property file_size <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
  *
  * @constructor Creates a [Voice].
@@ -1328,14 +1399,90 @@ pub struct Voice {
     pub file_id: String,
     /// Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// Duration of the audio in seconds as defined by sender
+    /// Duration of the audio in seconds as defined by the sender
     pub duration: Integer,
-    /// <em>Optional</em>. MIME type of the file as defined by sender
+    /// <em>Optional</em>. MIME type of the file as defined by the sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
     /// <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>
+}
+
+/**
+ * <p>Describes the paid media added to a message.</p>
+ *
+ * @property star_count The number of Telegram Stars that must be paid to buy access to the media
+ * @property paid_media Information about the paid media
+ *
+ * @constructor Creates a [PaidMediaInfo].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct PaidMediaInfo {
+    /// The number of Telegram Stars that must be paid to buy access to the media
+    pub star_count: Integer,
+    /// Information about the paid media
+    pub paid_media: Vec<PaidMedia>
+}
+
+/**
+ * <p>The paid media isn't available before the payment.</p>
+ *
+ * @property type Type of the paid media, always “preview”
+ * @property width <em>Optional</em>. Media width as defined by the sender
+ * @property height <em>Optional</em>. Media height as defined by the sender
+ * @property duration <em>Optional</em>. Duration of the media in seconds as defined by the sender
+ *
+ * @constructor Creates a [PaidMediaPreview].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct PaidMediaPreview {
+    /// Type of the paid media, always “preview”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// <em>Optional</em>. Media width as defined by the sender
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub width: Option<Integer>,
+    /// <em>Optional</em>. Media height as defined by the sender
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub height: Option<Integer>,
+    /// <em>Optional</em>. Duration of the media in seconds as defined by the sender
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<Integer>
+}
+
+/**
+ * <p>The paid media is a photo.</p>
+ *
+ * @property type Type of the paid media, always “photo”
+ * @property photo The photo
+ *
+ * @constructor Creates a [PaidMediaPhoto].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct PaidMediaPhoto {
+    /// Type of the paid media, always “photo”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// The photo
+    pub photo: Vec<PhotoSize>
+}
+
+/**
+ * <p>The paid media is a video.</p>
+ *
+ * @property type Type of the paid media, always “video”
+ * @property video The video
+ *
+ * @constructor Creates a [PaidMediaVideo].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct PaidMediaVideo {
+    /// Type of the paid media, always “video”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// The video
+    pub video: Video
 }
 
 /**
@@ -1403,7 +1550,7 @@ pub struct PollOption {
 }
 
 /**
- * <p>This object contains information about one answer option in a poll to send.</p>
+ * <p>This object contains information about one answer option in a poll to be sent.</p>
  *
  * @property text Option text, 1-100 characters
  * @property text_parse_mode <em>Optional</em>. Mode for parsing entities in the text. See <a href="#formatting-options">formatting options</a> for more details. Currently, only custom emoji entities are allowed
@@ -1507,10 +1654,161 @@ pub struct Poll {
 }
 
 /**
+ * <p>Describes a task in a checklist.</p>
+ *
+ * @property id Unique identifier of the task
+ * @property text Text of the task
+ * @property text_entities <em>Optional</em>. Special entities that appear in the task text
+ * @property completed_by_user <em>Optional</em>. User that completed the task; omitted if the task wasn't completed
+ * @property completion_date <em>Optional</em>. Point in time (Unix timestamp) when the task was completed; 0 if the task wasn't completed
+ *
+ * @constructor Creates a [ChecklistTask].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ChecklistTask {
+    /// Unique identifier of the task
+    pub id: Integer,
+    /// Text of the task
+    pub text: String,
+    /// <em>Optional</em>. Special entities that appear in the task text
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text_entities: Option<Vec<MessageEntity>>,
+    /// <em>Optional</em>. User that completed the task; omitted if the task wasn't completed
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub completed_by_user: Option<User>,
+    /// <em>Optional</em>. Point in time (Unix timestamp) when the task was completed; 0 if the task wasn't completed
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub completion_date: Option<Integer>
+}
+
+/**
+ * <p>Describes a checklist.</p>
+ *
+ * @property title Title of the checklist
+ * @property title_entities <em>Optional</em>. Special entities that appear in the checklist title
+ * @property tasks List of tasks in the checklist
+ * @property others_can_add_tasks <em>Optional</em>. <em>True</em>, if users other than the creator of the list can add tasks to the list
+ * @property others_can_mark_tasks_as_done <em>Optional</em>. <em>True</em>, if users other than the creator of the list can mark tasks as done or not done
+ *
+ * @constructor Creates a [Checklist].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct Checklist {
+    /// Title of the checklist
+    pub title: String,
+    /// <em>Optional</em>. Special entities that appear in the checklist title
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title_entities: Option<Vec<MessageEntity>>,
+    /// List of tasks in the checklist
+    pub tasks: Vec<ChecklistTask>,
+    /// <em>Optional</em>. <em>True</em>, if users other than the creator of the list can add tasks to the list
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub others_can_add_tasks: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if users other than the creator of the list can mark tasks as done or not done
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub others_can_mark_tasks_as_done: Option<bool>
+}
+
+/**
+ * <p>Describes a task to add to a checklist.</p>
+ *
+ * @property id Unique identifier of the task; must be positive and unique among all task identifiers currently present in the checklist
+ * @property text Text of the task; 1-100 characters after entities parsing
+ * @property parse_mode Optional. Mode for parsing entities in the text. See <a href="https://core.telegram.org/bots/api#formatting-options">formatting options</a> for more details.
+ * @property text_entities <em>Optional</em>. List of special entities that appear in the text, which can be specified instead of parse_mode. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities are allowed.
+ *
+ * @constructor Creates a [InputChecklistTask].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct InputChecklistTask {
+    /// Unique identifier of the task; must be positive and unique among all task identifiers currently present in the checklist
+    pub id: Integer,
+    /// Text of the task; 1-100 characters after entities parsing
+    pub text: String,
+    /// Optional. Mode for parsing entities in the text. See <a href="https://core.telegram.org/bots/api#formatting-options">formatting options</a> for more details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the text, which can be specified instead of parse_mode. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities are allowed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text_entities: Option<Vec<MessageEntity>>
+}
+
+/**
+ * <p>Describes a checklist to create.</p>
+ *
+ * @property title Title of the checklist; 1-255 characters after entities parsing
+ * @property parse_mode Optional. Mode for parsing entities in the title. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property title_entities <em>Optional</em>. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities are allowed.
+ * @property tasks List of 1-30 tasks in the checklist
+ * @property others_can_add_tasks <em>Optional</em>. Pass <em>True</em> if other users can add tasks to the checklist
+ * @property others_can_mark_tasks_as_done <em>Optional</em>. Pass <em>True</em> if other users can mark tasks as done or not done in the checklist
+ *
+ * @constructor Creates a [InputChecklist].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct InputChecklist {
+    /// Title of the checklist; 1-255 characters after entities parsing
+    pub title: String,
+    /// Optional. Mode for parsing entities in the title. See <a href="#formatting-options">formatting options</a> for more details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parse_mode: Option<ParseMode>,
+    /// <em>Optional</em>. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities are allowed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title_entities: Option<Vec<MessageEntity>>,
+    /// List of 1-30 tasks in the checklist
+    pub tasks: Vec<InputChecklistTask>,
+    /// <em>Optional</em>. Pass <em>True</em> if other users can add tasks to the checklist
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub others_can_add_tasks: Option<bool>,
+    /// <em>Optional</em>. Pass <em>True</em> if other users can mark tasks as done or not done in the checklist
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub others_can_mark_tasks_as_done: Option<bool>
+}
+
+/**
+ * <p>Describes a service message about checklist tasks marked as done or not done.</p>
+ *
+ * @property checklist_message <em>Optional</em>. Message containing the checklist whose tasks were marked as done or not done. Note that the Message object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply.
+ * @property marked_as_done_task_ids <em>Optional</em>. Identifiers of the tasks that were marked as done
+ * @property marked_as_not_done_task_ids <em>Optional</em>. Identifiers of the tasks that were marked as not done
+ *
+ * @constructor Creates a [ChecklistTasksDone].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ChecklistTasksDone {
+    /// <em>Optional</em>. Message containing the checklist whose tasks were marked as done or not done. Note that the Message object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub checklist_message: Option<Message>,
+    /// <em>Optional</em>. Identifiers of the tasks that were marked as done
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub marked_as_done_task_ids: Option<Vec<Integer>>,
+    /// <em>Optional</em>. Identifiers of the tasks that were marked as not done
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub marked_as_not_done_task_ids: Option<Vec<Integer>>
+}
+
+/**
+ * <p>Describes a service message about tasks added to a checklist.</p>
+ *
+ * @property checklist_message <em>Optional</em>. Message containing the checklist to which the tasks were added. Note that the Message object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply.
+ * @property tasks List of tasks added to the checklist
+ *
+ * @constructor Creates a [ChecklistTasksAdded].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ChecklistTasksAdded {
+    /// <em>Optional</em>. Message containing the checklist to which the tasks were added. Note that the Message object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub checklist_message: Option<Message>,
+    /// List of tasks added to the checklist
+    pub tasks: Vec<ChecklistTask>
+}
+
+/**
  * <p>This object represents a point on the map.</p>
  *
- * @property latitude Latitude as defined by sender
- * @property longitude Longitude as defined by sender
+ * @property latitude Latitude as defined by the sender
+ * @property longitude Longitude as defined by the sender
  * @property horizontal_accuracy <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500
  * @property live_period <em>Optional</em>. Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only.
  * @property heading <em>Optional</em>. The direction in which user is moving, in degrees; 1-360. For active live locations only.
@@ -1520,9 +1818,9 @@ pub struct Poll {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct Location {
-    /// Latitude as defined by sender
+    /// Latitude as defined by the sender
     pub latitude: Float,
-    /// Longitude as defined by sender
+    /// Longitude as defined by the sender
     pub longitude: Float,
     /// <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1740,7 +2038,7 @@ pub struct BackgroundTypeWallpaper {
 }
 
 /**
- * <p>The background is a PNG or TGV (gzipped subset of SVG with MIME type “application/x-tgwallpattern”) pattern to be combined with the background fill chosen by the user.</p>
+ * <p>The background is a .PNG or .TGV (gzipped subset of SVG with MIME type “application/x-tgwallpattern”) pattern to be combined with the background fill chosen by the user.</p>
  *
  * @property type Type of the background, always “pattern”
  * @property document Document with the pattern
@@ -1915,21 +2213,21 @@ pub struct ChatShared {
 /**
  * <p>This object represents a service message about a user allowing a bot to write messages after adding it to the attachment menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method <a href="/bots/webapps#initializing-mini-apps">requestWriteAccess</a>.</p>
  *
- * @property from_request <em>Optional</em>. True, if the access was granted after the user accepted an explicit request from a Web App sent by the method <a href="/bots/webapps#initializing-mini-apps">requestWriteAccess</a>
+ * @property from_request <em>Optional</em>. <em>True</em>, if the access was granted after the user accepted an explicit request from a Web App sent by the method <a href="/bots/webapps#initializing-mini-apps">requestWriteAccess</a>
  * @property web_app_name <em>Optional</em>. Name of the Web App, if the access was granted when the Web App was launched from a link
- * @property from_attachment_menu <em>Optional</em>. True, if the access was granted when the bot was added to the attachment or side menu
+ * @property from_attachment_menu <em>Optional</em>. <em>True</em>, if the access was granted when the bot was added to the attachment or side menu
  *
  * @constructor Creates a [WriteAccessAllowed].
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct WriteAccessAllowed {
-    /// <em>Optional</em>. True, if the access was granted after the user accepted an explicit request from a Web App sent by the method <a href="/bots/webapps#initializing-mini-apps">requestWriteAccess</a>
+    /// <em>Optional</em>. <em>True</em>, if the access was granted after the user accepted an explicit request from a Web App sent by the method <a href="/bots/webapps#initializing-mini-apps">requestWriteAccess</a>
     #[serde(skip_serializing_if = "Option::is_none")]
     pub from_request: Option<bool>,
     /// <em>Optional</em>. Name of the Web App, if the access was granted when the Web App was launched from a link
     #[serde(skip_serializing_if = "Option::is_none")]
     pub web_app_name: Option<String>,
-    /// <em>Optional</em>. True, if the access was granted when the bot was added to the attachment or side menu
+    /// <em>Optional</em>. <em>True</em>, if the access was granted when the bot was added to the attachment or side menu
     #[serde(skip_serializing_if = "Option::is_none")]
     pub from_attachment_menu: Option<bool>
 }
@@ -1974,6 +2272,50 @@ pub struct VideoChatParticipantsInvited {
 }
 
 /**
+ * <p>Describes a service message about a change in the price of paid messages within a chat.</p>
+ *
+ * @property paid_message_star_count The new number of Telegram Stars that must be paid by non-administrator users of the supergroup chat for each sent message
+ *
+ * @constructor Creates a [PaidMessagePriceChanged].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct PaidMessagePriceChanged {
+    /// The new number of Telegram Stars that must be paid by non-administrator users of the supergroup chat for each sent message
+    pub paid_message_star_count: Integer
+}
+
+/**
+ * <p>Describes a service message about a change in the price of direct messages sent to a channel chat.</p>
+ *
+ * @property are_direct_messages_enabled <em>True</em>, if direct messages are enabled for the channel chat; false otherwise
+ * @property direct_message_star_count <em>Optional</em>. The new number of Telegram Stars that must be paid by users for each direct message sent to the channel. Does not apply to users who have been exempted by administrators. Defaults to 0.
+ *
+ * @constructor Creates a [DirectMessagePriceChanged].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct DirectMessagePriceChanged {
+    /// <em>True</em>, if direct messages are enabled for the channel chat; false otherwise
+    pub are_direct_messages_enabled: bool,
+    /// <em>Optional</em>. The new number of Telegram Stars that must be paid by users for each direct message sent to the channel. Does not apply to users who have been exempted by administrators. Defaults to 0.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub direct_message_star_count: Option<Integer>
+}
+
+/**
+ * <p>This object represents a service message about the creation of a scheduled giveaway.</p>
+ *
+ * @property prize_star_count <em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only
+ *
+ * @constructor Creates a [GiveawayCreated].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct GiveawayCreated {
+    /// <em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prize_star_count: Option<Integer>
+}
+
+/**
  * <p>This object represents a message about a scheduled giveaway.</p>
  *
  * @property chats The list of chats which the user must join to participate in the giveaway
@@ -1983,7 +2325,8 @@ pub struct VideoChatParticipantsInvited {
  * @property has_public_winners <em>Optional</em>. <em>True</em>, if the list of giveaway winners will be visible to everyone
  * @property prize_description <em>Optional</em>. Description of additional giveaway prize
  * @property country_codes <em>Optional</em>. A list of two-letter <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO 3166-1 alpha-2</a> country codes indicating the countries from which eligible users for the giveaway must come. If empty, then all users can participate in the giveaway. Users with a phone number that was bought on Fragment can always participate in giveaways.
- * @property premium_subscription_month_count <em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for
+ * @property prize_star_count <em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only
+ * @property premium_subscription_month_count <em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only
  *
  * @constructor Creates a [Giveaway].
  * */
@@ -2007,7 +2350,10 @@ pub struct Giveaway {
     /// <em>Optional</em>. A list of two-letter <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO 3166-1 alpha-2</a> country codes indicating the countries from which eligible users for the giveaway must come. If empty, then all users can participate in the giveaway. Users with a phone number that was bought on Fragment can always participate in giveaways.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country_codes: Option<Vec<String>>,
-    /// <em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for
+    /// <em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prize_star_count: Option<Integer>,
+    /// <em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub premium_subscription_month_count: Option<Integer>
 }
@@ -2021,7 +2367,8 @@ pub struct Giveaway {
  * @property winner_count Total number of winners in the giveaway
  * @property winners List of up to 100 winners of the giveaway
  * @property additional_chat_count <em>Optional</em>. The number of other chats the user had to join in order to be eligible for the giveaway
- * @property premium_subscription_month_count <em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for
+ * @property prize_star_count <em>Optional</em>. The number of Telegram Stars that were split between giveaway winners; for Telegram Star giveaways only
+ * @property premium_subscription_month_count <em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only
  * @property unclaimed_prize_count <em>Optional</em>. Number of undistributed prizes
  * @property only_new_members <em>Optional</em>. <em>True</em>, if only users who had joined the chats after the giveaway started were eligible to win
  * @property was_refunded <em>Optional</em>. <em>True</em>, if the giveaway was canceled because the payment for it was refunded
@@ -2044,7 +2391,10 @@ pub struct GiveawayWinners {
     /// <em>Optional</em>. The number of other chats the user had to join in order to be eligible for the giveaway
     #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_chat_count: Option<Integer>,
-    /// <em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for
+    /// <em>Optional</em>. The number of Telegram Stars that were split between giveaway winners; for Telegram Star giveaways only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prize_star_count: Option<Integer>,
+    /// <em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub premium_subscription_month_count: Option<Integer>,
     /// <em>Optional</em>. Number of undistributed prizes
@@ -2067,6 +2417,7 @@ pub struct GiveawayWinners {
  * @property winner_count Number of winners in the giveaway
  * @property unclaimed_prize_count <em>Optional</em>. Number of undistributed prizes
  * @property giveaway_message <em>Optional</em>. Message with the giveaway that was completed, if it wasn't deleted
+ * @property is_star_giveaway <em>Optional</em>. <em>True</em>, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway.
  *
  * @constructor Creates a [GiveawayCompleted].
  * */
@@ -2079,7 +2430,10 @@ pub struct GiveawayCompleted {
     pub unclaimed_prize_count: Option<Integer>,
     /// <em>Optional</em>. Message with the giveaway that was completed, if it wasn't deleted
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub giveaway_message: Option<Message>
+    pub giveaway_message: Option<Message>,
+    /// <em>Optional</em>. <em>True</em>, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_star_giveaway: Option<bool>
 }
 
 /**
@@ -2376,12 +2730,13 @@ pub struct InlineKeyboardMarkup {
  *
  * @property text Label text on the button
  * @property url <em>Optional</em>. HTTP or tg:// URL to be opened when the button is pressed. Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.
- * @property callback_data <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when button is pressed, 1-64 bytes. Not supported for messages sent on behalf of a Telegram Business account.
+ * @property callback_data <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when the button is pressed, 1-64 bytes
  * @property web_app <em>Optional</em>. Description of the <a href="/bots/webapps">Web App</a> that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a Telegram Business account.
  * @property login_url <em>Optional</em>. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the <a href="/widgets/login">Telegram Login Widget</a>.
  * @property switch_inline_query <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent on behalf of a Telegram Business account.
  * @property switch_inline_query_current_chat <em>Optional</em>. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted.<br><br>This offers a quick way for the user to open your bot in inline mode in the same chat - good for selecting something from multiple options. Not supported in channels and for messages sent on behalf of a Telegram Business account.
  * @property switch_inline_query_chosen_chat <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent on behalf of a Telegram Business account.
+ * @property copy_text <em>Optional</em>. Description of the button that copies the specified text to the clipboard.
  * @property callback_game <em>Optional</em>. Description of the game that will be launched when the user presses the button.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row.
  * @property pay <em>Optional</em>. Specify <em>True</em>, to send a <a href="#payments">Pay button</a>. Substrings “<img class="emoji" src="//telegram.org/img/emoji/40/E2AD90.png" width="20" height="20" alt="⭐">” and “XTR” in the buttons's text will be replaced with a Telegram Star icon.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row and can only be used in invoice messages.
  *
@@ -2394,7 +2749,7 @@ pub struct InlineKeyboardButton {
     /// <em>Optional</em>. HTTP or tg:// URL to be opened when the button is pressed. Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
-    /// <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when button is pressed, 1-64 bytes. Not supported for messages sent on behalf of a Telegram Business account.
+    /// <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when the button is pressed, 1-64 bytes
     #[serde(skip_serializing_if = "Option::is_none")]
     pub callback_data: Option<String>,
     /// <em>Optional</em>. Description of the <a href="/bots/webapps">Web App</a> that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a Telegram Business account.
@@ -2412,6 +2767,9 @@ pub struct InlineKeyboardButton {
     /// <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent on behalf of a Telegram Business account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub switch_inline_query_chosen_chat: Option<SwitchInlineQueryChosenChat>,
+    /// <em>Optional</em>. Description of the button that copies the specified text to the clipboard.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub copy_text: Option<CopyTextButton>,
     /// <em>Optional</em>. Description of the game that will be launched when the user presses the button.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub callback_game: Option<CallbackGame>,
@@ -2451,10 +2809,10 @@ pub struct LoginUrl {
  * <p>This object represents an inline button that switches the current user to inline mode in a chosen chat, with an optional default inline query.</p>
  *
  * @property query <em>Optional</em>. The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted
- * @property allow_user_chats <em>Optional</em>. True, if private chats with users can be chosen
- * @property allow_bot_chats <em>Optional</em>. True, if private chats with bots can be chosen
- * @property allow_group_chats <em>Optional</em>. True, if group and supergroup chats can be chosen
- * @property allow_channel_chats <em>Optional</em>. True, if channel chats can be chosen
+ * @property allow_user_chats <em>Optional</em>. <em>True</em>, if private chats with users can be chosen
+ * @property allow_bot_chats <em>Optional</em>. <em>True</em>, if private chats with bots can be chosen
+ * @property allow_group_chats <em>Optional</em>. <em>True</em>, if group and supergroup chats can be chosen
+ * @property allow_channel_chats <em>Optional</em>. <em>True</em>, if channel chats can be chosen
  *
  * @constructor Creates a [SwitchInlineQueryChosenChat].
  * */
@@ -2463,18 +2821,31 @@ pub struct SwitchInlineQueryChosenChat {
     /// <em>Optional</em>. The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted
     #[serde(skip_serializing_if = "Option::is_none")]
     pub query: Option<String>,
-    /// <em>Optional</em>. True, if private chats with users can be chosen
+    /// <em>Optional</em>. <em>True</em>, if private chats with users can be chosen
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_user_chats: Option<bool>,
-    /// <em>Optional</em>. True, if private chats with bots can be chosen
+    /// <em>Optional</em>. <em>True</em>, if private chats with bots can be chosen
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_bot_chats: Option<bool>,
-    /// <em>Optional</em>. True, if group and supergroup chats can be chosen
+    /// <em>Optional</em>. <em>True</em>, if group and supergroup chats can be chosen
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_group_chats: Option<bool>,
-    /// <em>Optional</em>. True, if channel chats can be chosen
+    /// <em>Optional</em>. <em>True</em>, if channel chats can be chosen
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_channel_chats: Option<bool>
+}
+
+/**
+ * <p>This object represents an inline keyboard button that copies specified text to the clipboard.</p>
+ *
+ * @property text The text to be copied to the clipboard; 1-256 characters
+ *
+ * @constructor Creates a [CopyTextButton].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct CopyTextButton {
+    /// The text to be copied to the clipboard; 1-256 characters
+    pub text: String
 }
 
 /**
@@ -2576,6 +2947,8 @@ pub struct ChatPhoto {
  * @property expire_date <em>Optional</em>. Point in time (Unix timestamp) when the link will expire or has been expired
  * @property member_limit <em>Optional</em>. The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
  * @property pending_join_request_count <em>Optional</em>. Number of pending join requests created using this link
+ * @property subscription_period <em>Optional</em>. The number of seconds the subscription will be active for before the next payment
+ * @property subscription_price <em>Optional</em>. The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat using the link
  *
  * @constructor Creates a [ChatInviteLink].
  * */
@@ -2602,14 +2975,20 @@ pub struct ChatInviteLink {
     pub member_limit: Option<Integer>,
     /// <em>Optional</em>. Number of pending join requests created using this link
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pending_join_request_count: Option<Integer>
+    pub pending_join_request_count: Option<Integer>,
+    /// <em>Optional</em>. The number of seconds the subscription will be active for before the next payment
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_period: Option<Integer>,
+    /// <em>Optional</em>. The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat using the link
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_price: Option<Integer>
 }
 
 /**
  * <p>Represents the rights of an administrator in a chat.</p>
  *
  * @property is_anonymous <em>True</em>, if the user's presence in the chat is hidden
- * @property can_manage_chat <em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.
+ * @property can_manage_chat <em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.
  * @property can_delete_messages <em>True</em>, if the administrator can delete messages of other users
  * @property can_manage_video_chats <em>True</em>, if the administrator can manage video chats
  * @property can_restrict_members <em>True</em>, if the administrator can restrict, ban or unban chat members, or access supergroup statistics
@@ -2619,7 +2998,7 @@ pub struct ChatInviteLink {
  * @property can_post_stories <em>True</em>, if the administrator can post stories to the chat
  * @property can_edit_stories <em>True</em>, if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive
  * @property can_delete_stories <em>True</em>, if the administrator can delete stories posted by other users
- * @property can_post_messages <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; for channels only
+ * @property can_post_messages <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only
  * @property can_edit_messages <em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; for channels only
  * @property can_pin_messages <em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; for groups and supergroups only
  * @property can_manage_topics <em>Optional</em>. <em>True</em>, if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only
@@ -2630,7 +3009,7 @@ pub struct ChatInviteLink {
 pub struct ChatAdministratorRights {
     /// <em>True</em>, if the user's presence in the chat is hidden
     pub is_anonymous: bool,
-    /// <em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.
+    /// <em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.
     pub can_manage_chat: bool,
     /// <em>True</em>, if the administrator can delete messages of other users
     pub can_delete_messages: bool,
@@ -2650,7 +3029,7 @@ pub struct ChatAdministratorRights {
     pub can_edit_stories: bool,
     /// <em>True</em>, if the administrator can delete stories posted by other users
     pub can_delete_stories: bool,
-    /// <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; for channels only
+    /// <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_post_messages: Option<bool>,
     /// <em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; for channels only
@@ -2673,8 +3052,8 @@ pub struct ChatAdministratorRights {
  * @property old_chat_member Previous information about the chat member
  * @property new_chat_member New information about the chat member
  * @property invite_link <em>Optional</em>. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.
- * @property via_join_request <em>Optional</em>. True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator
- * @property via_chat_folder_invite_link <em>Optional</em>. True, if the user joined the chat via a chat folder invite link
+ * @property via_join_request <em>Optional</em>. <em>True</em>, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator
+ * @property via_chat_folder_invite_link <em>Optional</em>. <em>True</em>, if the user joined the chat via a chat folder invite link
  *
  * @constructor Creates a [ChatMemberUpdated].
  * */
@@ -2693,10 +3072,10 @@ pub struct ChatMemberUpdated {
     /// <em>Optional</em>. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invite_link: Option<ChatInviteLink>,
-    /// <em>Optional</em>. True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator
+    /// <em>Optional</em>. <em>True</em>, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator
     #[serde(skip_serializing_if = "Option::is_none")]
     pub via_join_request: Option<bool>,
-    /// <em>Optional</em>. True, if the user joined the chat via a chat folder invite link
+    /// <em>Optional</em>. <em>True</em>, if the user joined the chat via a chat folder invite link
     #[serde(skip_serializing_if = "Option::is_none")]
     pub via_chat_folder_invite_link: Option<bool>
 }
@@ -2731,7 +3110,7 @@ pub struct ChatMemberOwner {
  * @property user Information about the user
  * @property can_be_edited <em>True</em>, if the bot is allowed to edit administrator privileges of that user
  * @property is_anonymous <em>True</em>, if the user's presence in the chat is hidden
- * @property can_manage_chat <em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.
+ * @property can_manage_chat <em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.
  * @property can_delete_messages <em>True</em>, if the administrator can delete messages of other users
  * @property can_manage_video_chats <em>True</em>, if the administrator can manage video chats
  * @property can_restrict_members <em>True</em>, if the administrator can restrict, ban or unban chat members, or access supergroup statistics
@@ -2741,7 +3120,7 @@ pub struct ChatMemberOwner {
  * @property can_post_stories <em>True</em>, if the administrator can post stories to the chat
  * @property can_edit_stories <em>True</em>, if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive
  * @property can_delete_stories <em>True</em>, if the administrator can delete stories posted by other users
- * @property can_post_messages <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; for channels only
+ * @property can_post_messages <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only
  * @property can_edit_messages <em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; for channels only
  * @property can_pin_messages <em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; for groups and supergroups only
  * @property can_manage_topics <em>Optional</em>. <em>True</em>, if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only
@@ -2759,7 +3138,7 @@ pub struct ChatMemberAdministrator {
     pub can_be_edited: bool,
     /// <em>True</em>, if the user's presence in the chat is hidden
     pub is_anonymous: bool,
-    /// <em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.
+    /// <em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.
     pub can_manage_chat: bool,
     /// <em>True</em>, if the administrator can delete messages of other users
     pub can_delete_messages: bool,
@@ -2779,7 +3158,7 @@ pub struct ChatMemberAdministrator {
     pub can_edit_stories: bool,
     /// <em>True</em>, if the administrator can delete stories posted by other users
     pub can_delete_stories: bool,
-    /// <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; for channels only
+    /// <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_post_messages: Option<bool>,
     /// <em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; for channels only
@@ -2801,6 +3180,7 @@ pub struct ChatMemberAdministrator {
  *
  * @property status The member's status in the chat, always “member”
  * @property user Information about the user
+ * @property until_date <em>Optional</em>. Date when the user's subscription will expire; Unix time
  *
  * @constructor Creates a [ChatMemberMember].
  * */
@@ -2809,7 +3189,10 @@ pub struct ChatMemberMember {
     /// The member's status in the chat, always “member”
     pub status: String,
     /// Information about the user
-    pub user: User
+    pub user: User,
+    /// <em>Optional</em>. Date when the user's subscription will expire; Unix time
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub until_date: Option<Integer>
 }
 
 /**
@@ -2825,7 +3208,7 @@ pub struct ChatMemberMember {
  * @property can_send_videos <em>True</em>, if the user is allowed to send videos
  * @property can_send_video_notes <em>True</em>, if the user is allowed to send video notes
  * @property can_send_voice_notes <em>True</em>, if the user is allowed to send voice notes
- * @property can_send_polls <em>True</em>, if the user is allowed to send polls
+ * @property can_send_polls <em>True</em>, if the user is allowed to send polls and checklists
  * @property can_send_other_messages <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots
  * @property can_add_web_page_previews <em>True</em>, if the user is allowed to add web page previews to their messages
  * @property can_change_info <em>True</em>, if the user is allowed to change the chat title, photo and other settings
@@ -2858,7 +3241,7 @@ pub struct ChatMemberRestricted {
     pub can_send_video_notes: bool,
     /// <em>True</em>, if the user is allowed to send voice notes
     pub can_send_voice_notes: bool,
-    /// <em>True</em>, if the user is allowed to send polls
+    /// <em>True</em>, if the user is allowed to send polls and checklists
     pub can_send_polls: bool,
     /// <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots
     pub can_send_other_messages: bool,
@@ -2951,7 +3334,7 @@ pub struct ChatJoinRequest {
  * @property can_send_videos <em>Optional</em>. <em>True</em>, if the user is allowed to send videos
  * @property can_send_video_notes <em>Optional</em>. <em>True</em>, if the user is allowed to send video notes
  * @property can_send_voice_notes <em>Optional</em>. <em>True</em>, if the user is allowed to send voice notes
- * @property can_send_polls <em>Optional</em>. <em>True</em>, if the user is allowed to send polls
+ * @property can_send_polls <em>Optional</em>. <em>True</em>, if the user is allowed to send polls and checklists
  * @property can_send_other_messages <em>Optional</em>. <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots
  * @property can_add_web_page_previews <em>Optional</em>. <em>True</em>, if the user is allowed to add web page previews to their messages
  * @property can_change_info <em>Optional</em>. <em>True</em>, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups
@@ -2984,7 +3367,7 @@ pub struct ChatPermissions {
     /// <em>Optional</em>. <em>True</em>, if the user is allowed to send voice notes
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_voice_notes: Option<bool>,
-    /// <em>Optional</em>. <em>True</em>, if the user is allowed to send polls
+    /// <em>Optional</em>. <em>True</em>, if the user is allowed to send polls and checklists
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_polls: Option<bool>,
     /// <em>Optional</em>. <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots
@@ -3099,6 +3482,182 @@ pub struct BusinessOpeningHours {
 }
 
 /**
+ * <p>Describes the position of a clickable area within a story.</p>
+ *
+ * @property x_percentage The abscissa of the area's center, as a percentage of the media width
+ * @property y_percentage The ordinate of the area's center, as a percentage of the media height
+ * @property width_percentage The width of the area's rectangle, as a percentage of the media width
+ * @property height_percentage The height of the area's rectangle, as a percentage of the media height
+ * @property rotation_angle The clockwise rotation angle of the rectangle, in degrees; 0-360
+ * @property corner_radius_percentage The radius of the rectangle corner rounding, as a percentage of the media width
+ *
+ * @constructor Creates a [StoryAreaPosition].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct StoryAreaPosition {
+    /// The abscissa of the area's center, as a percentage of the media width
+    pub x_percentage: Float,
+    /// The ordinate of the area's center, as a percentage of the media height
+    pub y_percentage: Float,
+    /// The width of the area's rectangle, as a percentage of the media width
+    pub width_percentage: Float,
+    /// The height of the area's rectangle, as a percentage of the media height
+    pub height_percentage: Float,
+    /// The clockwise rotation angle of the rectangle, in degrees; 0-360
+    pub rotation_angle: Float,
+    /// The radius of the rectangle corner rounding, as a percentage of the media width
+    pub corner_radius_percentage: Float
+}
+
+/**
+ * <p>Describes the physical address of a location.</p>
+ *
+ * @property country_code The two-letter ISO 3166-1 alpha-2 country code of the country where the location is located
+ * @property state <em>Optional</em>. State of the location
+ * @property city <em>Optional</em>. City of the location
+ * @property street <em>Optional</em>. Street address of the location
+ *
+ * @constructor Creates a [LocationAddress].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct LocationAddress {
+    /// The two-letter ISO 3166-1 alpha-2 country code of the country where the location is located
+    pub country_code: String,
+    /// <em>Optional</em>. State of the location
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+    /// <em>Optional</em>. City of the location
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    /// <em>Optional</em>. Street address of the location
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub street: Option<String>
+}
+
+/**
+ * <p>Describes a story area pointing to a location. Currently, a story can have up to 10 location areas.</p>
+ *
+ * @property type Type of the area, always “location”
+ * @property latitude Location latitude in degrees
+ * @property longitude Location longitude in degrees
+ * @property address <em>Optional</em>. Address of the location
+ *
+ * @constructor Creates a [StoryAreaTypeLocation].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct StoryAreaTypeLocation {
+    /// Type of the area, always “location”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// Location latitude in degrees
+    pub latitude: Float,
+    /// Location longitude in degrees
+    pub longitude: Float,
+    /// <em>Optional</em>. Address of the location
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<LocationAddress>
+}
+
+/**
+ * <p>Describes a story area pointing to a suggested reaction. Currently, a story can have up to 5 suggested reaction areas.</p>
+ *
+ * @property type Type of the area, always “suggested_reaction”
+ * @property reaction_type Type of the reaction
+ * @property is_dark <em>Optional</em>. Pass <em>True</em> if the reaction area has a dark background
+ * @property is_flipped <em>Optional</em>. Pass <em>True</em> if reaction area corner is flipped
+ *
+ * @constructor Creates a [StoryAreaTypeSuggestedReaction].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct StoryAreaTypeSuggestedReaction {
+    /// Type of the area, always “suggested_reaction”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// Type of the reaction
+    pub reaction_type: ReactionType,
+    /// <em>Optional</em>. Pass <em>True</em> if the reaction area has a dark background
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_dark: Option<bool>,
+    /// <em>Optional</em>. Pass <em>True</em> if reaction area corner is flipped
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_flipped: Option<bool>
+}
+
+/**
+ * <p>Describes a story area pointing to an HTTP or tg:// link. Currently, a story can have up to 3 link areas.</p>
+ *
+ * @property type Type of the area, always “link”
+ * @property url HTTP or tg:// URL to be opened when the area is clicked
+ *
+ * @constructor Creates a [StoryAreaTypeLink].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct StoryAreaTypeLink {
+    /// Type of the area, always “link”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// HTTP or tg:// URL to be opened when the area is clicked
+    pub url: String
+}
+
+/**
+ * <p>Describes a story area containing weather information. Currently, a story can have up to 3 weather areas.</p>
+ *
+ * @property type Type of the area, always “weather”
+ * @property temperature Temperature, in degree Celsius
+ * @property emoji Emoji representing the weather
+ * @property background_color A color of the area background in the ARGB format
+ *
+ * @constructor Creates a [StoryAreaTypeWeather].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct StoryAreaTypeWeather {
+    /// Type of the area, always “weather”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// Temperature, in degree Celsius
+    pub temperature: Float,
+    /// Emoji representing the weather
+    pub emoji: String,
+    /// A color of the area background in the ARGB format
+    pub background_color: Integer
+}
+
+/**
+ * <p>Describes a story area pointing to a unique gift. Currently, a story can have at most 1 unique gift area.</p>
+ *
+ * @property type Type of the area, always “unique_gift”
+ * @property name Unique name of the gift
+ *
+ * @constructor Creates a [StoryAreaTypeUniqueGift].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct StoryAreaTypeUniqueGift {
+    /// Type of the area, always “unique_gift”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// Unique name of the gift
+    pub name: String
+}
+
+/**
+ * <p>Describes a clickable area on a story media.</p>
+ *
+ * @property position Position of the area
+ * @property type Type of the area
+ *
+ * @constructor Creates a [StoryArea].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct StoryArea {
+    /// Position of the area
+    pub position: StoryAreaPosition,
+    /// Type of the area
+    #[serde(rename = "type")]
+    pub type_: StoryAreaType
+}
+
+/**
  * <p>Represents a location to which a chat is connected.</p>
  *
  * @property location The location to which the supergroup is connected. Can't be a live location.
@@ -3118,7 +3677,7 @@ pub struct ChatLocation {
  * <p>The reaction is based on an emoji.</p>
  *
  * @property type Type of the reaction, always “emoji”
- * @property emoji Reaction emoji. Currently, it can be one of "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918D.png" width="20" height="20" alt="👍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918E.png" width="20" height="20" alt="👎">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29DA4.png" width="20" height="20" alt="❤">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F94A5.png" width="20" height="20" alt="🔥">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B0.png" width="20" height="20" alt="🥰">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918F.png" width="20" height="20" alt="👏">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9881.png" width="20" height="20" alt="😁">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA494.png" width="20" height="20" alt="🤔">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AF.png" width="20" height="20" alt="🤯">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98B1.png" width="20" height="20" alt="😱">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AC.png" width="20" height="20" alt="🤬">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A2.png" width="20" height="20" alt="😢">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E89.png" width="20" height="20" alt="🎉">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A9.png" width="20" height="20" alt="🤩">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AE.png" width="20" height="20" alt="🤮">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F92A9.png" width="20" height="20" alt="💩">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F998F.png" width="20" height="20" alt="🙏">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918C.png" width="20" height="20" alt="👌">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F958A.png" width="20" height="20" alt="🕊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A1.png" width="20" height="20" alt="🤡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B1.png" width="20" height="20" alt="🥱">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B4.png" width="20" height="20" alt="🥴">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F988D.png" width="20" height="20" alt="😍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F90B3.png" width="20" height="20" alt="🐳">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29DA4E2808DF09F94A5.png" width="20" height="20" alt="❤‍🔥">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8C9A.png" width="20" height="20" alt="🌚">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8CAD.png" width="20" height="20" alt="🌭">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F92AF.png" width="20" height="20" alt="💯">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A3.png" width="20" height="20" alt="🤣">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29AA1.png" width="20" height="20" alt="⚡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8D8C.png" width="20" height="20" alt="🍌">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F86.png" width="20" height="20" alt="🏆">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9294.png" width="20" height="20" alt="💔">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A8.png" width="20" height="20" alt="🤨">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9890.png" width="20" height="20" alt="😐">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8D93.png" width="20" height="20" alt="🍓">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8DBE.png" width="20" height="20" alt="🍾">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F928B.png" width="20" height="20" alt="💋">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9695.png" width="20" height="20" alt="🖕">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9888.png" width="20" height="20" alt="😈">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98B4.png" width="20" height="20" alt="😴">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98AD.png" width="20" height="20" alt="😭">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA493.png" width="20" height="20" alt="🤓">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91BB.png" width="20" height="20" alt="👻">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91A8E2808DF09F92BB.png" width="20" height="20" alt="👨‍💻">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9180.png" width="20" height="20" alt="👀">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E83.png" width="20" height="20" alt="🎃">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9988.png" width="20" height="20" alt="🙈">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9887.png" width="20" height="20" alt="😇">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A8.png" width="20" height="20" alt="😨">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA49D.png" width="20" height="20" alt="🤝">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29C8D.png" width="20" height="20" alt="✍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA497.png" width="20" height="20" alt="🤗">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FABA1.png" width="20" height="20" alt="🫡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E85.png" width="20" height="20" alt="🎅">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E84.png" width="20" height="20" alt="🎄">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29883.png" width="20" height="20" alt="☃">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9285.png" width="20" height="20" alt="💅">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AA.png" width="20" height="20" alt="🤪">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F97BF.png" width="20" height="20" alt="🗿">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8692.png" width="20" height="20" alt="🆒">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9298.png" width="20" height="20" alt="💘">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9989.png" width="20" height="20" alt="🙉">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA684.png" width="20" height="20" alt="🦄">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9898.png" width="20" height="20" alt="😘">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F928A.png" width="20" height="20" alt="💊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F998A.png" width="20" height="20" alt="🙊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F988E.png" width="20" height="20" alt="😎">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91BE.png" width="20" height="20" alt="👾">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7E2808DE29982.png" width="20" height="20" alt="🤷‍♂">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7.png" width="20" height="20" alt="🤷">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7E2808DE29980.png" width="20" height="20" alt="🤷‍♀">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A1.png" width="20" height="20" alt="😡">"
+ * @property emoji Reaction emoji. Currently, it can be one of "<img class="emoji" src="//telegram.org/img/emoji/40/E29DA4.png" width="20" height="20" alt="❤">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918D.png" width="20" height="20" alt="👍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918E.png" width="20" height="20" alt="👎">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F94A5.png" width="20" height="20" alt="🔥">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B0.png" width="20" height="20" alt="🥰">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918F.png" width="20" height="20" alt="👏">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9881.png" width="20" height="20" alt="😁">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA494.png" width="20" height="20" alt="🤔">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AF.png" width="20" height="20" alt="🤯">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98B1.png" width="20" height="20" alt="😱">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AC.png" width="20" height="20" alt="🤬">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A2.png" width="20" height="20" alt="😢">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E89.png" width="20" height="20" alt="🎉">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A9.png" width="20" height="20" alt="🤩">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AE.png" width="20" height="20" alt="🤮">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F92A9.png" width="20" height="20" alt="💩">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F998F.png" width="20" height="20" alt="🙏">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918C.png" width="20" height="20" alt="👌">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F958A.png" width="20" height="20" alt="🕊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A1.png" width="20" height="20" alt="🤡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B1.png" width="20" height="20" alt="🥱">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B4.png" width="20" height="20" alt="🥴">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F988D.png" width="20" height="20" alt="😍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F90B3.png" width="20" height="20" alt="🐳">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29DA4E2808DF09F94A5.png" width="20" height="20" alt="❤‍🔥">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8C9A.png" width="20" height="20" alt="🌚">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8CAD.png" width="20" height="20" alt="🌭">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F92AF.png" width="20" height="20" alt="💯">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A3.png" width="20" height="20" alt="🤣">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29AA1.png" width="20" height="20" alt="⚡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8D8C.png" width="20" height="20" alt="🍌">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F86.png" width="20" height="20" alt="🏆">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9294.png" width="20" height="20" alt="💔">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A8.png" width="20" height="20" alt="🤨">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9890.png" width="20" height="20" alt="😐">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8D93.png" width="20" height="20" alt="🍓">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8DBE.png" width="20" height="20" alt="🍾">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F928B.png" width="20" height="20" alt="💋">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9695.png" width="20" height="20" alt="🖕">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9888.png" width="20" height="20" alt="😈">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98B4.png" width="20" height="20" alt="😴">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98AD.png" width="20" height="20" alt="😭">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA493.png" width="20" height="20" alt="🤓">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91BB.png" width="20" height="20" alt="👻">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91A8E2808DF09F92BB.png" width="20" height="20" alt="👨‍💻">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9180.png" width="20" height="20" alt="👀">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E83.png" width="20" height="20" alt="🎃">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9988.png" width="20" height="20" alt="🙈">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9887.png" width="20" height="20" alt="😇">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A8.png" width="20" height="20" alt="😨">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA49D.png" width="20" height="20" alt="🤝">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29C8D.png" width="20" height="20" alt="✍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA497.png" width="20" height="20" alt="🤗">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FABA1.png" width="20" height="20" alt="🫡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E85.png" width="20" height="20" alt="🎅">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E84.png" width="20" height="20" alt="🎄">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29883.png" width="20" height="20" alt="☃">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9285.png" width="20" height="20" alt="💅">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AA.png" width="20" height="20" alt="🤪">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F97BF.png" width="20" height="20" alt="🗿">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8692.png" width="20" height="20" alt="🆒">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9298.png" width="20" height="20" alt="💘">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9989.png" width="20" height="20" alt="🙉">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA684.png" width="20" height="20" alt="🦄">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9898.png" width="20" height="20" alt="😘">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F928A.png" width="20" height="20" alt="💊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F998A.png" width="20" height="20" alt="🙊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F988E.png" width="20" height="20" alt="😎">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91BE.png" width="20" height="20" alt="👾">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7E2808DE29982.png" width="20" height="20" alt="🤷‍♂">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7.png" width="20" height="20" alt="🤷">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7E2808DE29980.png" width="20" height="20" alt="🤷‍♀">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A1.png" width="20" height="20" alt="😡">"
  *
  * @constructor Creates a [ReactionTypeEmoji].
  * */
@@ -3127,7 +3686,7 @@ pub struct ReactionTypeEmoji {
     /// Type of the reaction, always “emoji”
     #[serde(rename = "type")]
     pub type_: String,
-    /// Reaction emoji. Currently, it can be one of "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918D.png" width="20" height="20" alt="👍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918E.png" width="20" height="20" alt="👎">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29DA4.png" width="20" height="20" alt="❤">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F94A5.png" width="20" height="20" alt="🔥">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B0.png" width="20" height="20" alt="🥰">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918F.png" width="20" height="20" alt="👏">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9881.png" width="20" height="20" alt="😁">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA494.png" width="20" height="20" alt="🤔">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AF.png" width="20" height="20" alt="🤯">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98B1.png" width="20" height="20" alt="😱">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AC.png" width="20" height="20" alt="🤬">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A2.png" width="20" height="20" alt="😢">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E89.png" width="20" height="20" alt="🎉">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A9.png" width="20" height="20" alt="🤩">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AE.png" width="20" height="20" alt="🤮">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F92A9.png" width="20" height="20" alt="💩">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F998F.png" width="20" height="20" alt="🙏">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918C.png" width="20" height="20" alt="👌">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F958A.png" width="20" height="20" alt="🕊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A1.png" width="20" height="20" alt="🤡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B1.png" width="20" height="20" alt="🥱">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B4.png" width="20" height="20" alt="🥴">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F988D.png" width="20" height="20" alt="😍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F90B3.png" width="20" height="20" alt="🐳">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29DA4E2808DF09F94A5.png" width="20" height="20" alt="❤‍🔥">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8C9A.png" width="20" height="20" alt="🌚">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8CAD.png" width="20" height="20" alt="🌭">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F92AF.png" width="20" height="20" alt="💯">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A3.png" width="20" height="20" alt="🤣">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29AA1.png" width="20" height="20" alt="⚡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8D8C.png" width="20" height="20" alt="🍌">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F86.png" width="20" height="20" alt="🏆">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9294.png" width="20" height="20" alt="💔">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A8.png" width="20" height="20" alt="🤨">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9890.png" width="20" height="20" alt="😐">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8D93.png" width="20" height="20" alt="🍓">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8DBE.png" width="20" height="20" alt="🍾">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F928B.png" width="20" height="20" alt="💋">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9695.png" width="20" height="20" alt="🖕">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9888.png" width="20" height="20" alt="😈">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98B4.png" width="20" height="20" alt="😴">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98AD.png" width="20" height="20" alt="😭">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA493.png" width="20" height="20" alt="🤓">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91BB.png" width="20" height="20" alt="👻">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91A8E2808DF09F92BB.png" width="20" height="20" alt="👨‍💻">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9180.png" width="20" height="20" alt="👀">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E83.png" width="20" height="20" alt="🎃">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9988.png" width="20" height="20" alt="🙈">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9887.png" width="20" height="20" alt="😇">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A8.png" width="20" height="20" alt="😨">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA49D.png" width="20" height="20" alt="🤝">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29C8D.png" width="20" height="20" alt="✍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA497.png" width="20" height="20" alt="🤗">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FABA1.png" width="20" height="20" alt="🫡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E85.png" width="20" height="20" alt="🎅">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E84.png" width="20" height="20" alt="🎄">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29883.png" width="20" height="20" alt="☃">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9285.png" width="20" height="20" alt="💅">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AA.png" width="20" height="20" alt="🤪">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F97BF.png" width="20" height="20" alt="🗿">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8692.png" width="20" height="20" alt="🆒">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9298.png" width="20" height="20" alt="💘">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9989.png" width="20" height="20" alt="🙉">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA684.png" width="20" height="20" alt="🦄">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9898.png" width="20" height="20" alt="😘">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F928A.png" width="20" height="20" alt="💊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F998A.png" width="20" height="20" alt="🙊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F988E.png" width="20" height="20" alt="😎">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91BE.png" width="20" height="20" alt="👾">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7E2808DE29982.png" width="20" height="20" alt="🤷‍♂">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7.png" width="20" height="20" alt="🤷">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7E2808DE29980.png" width="20" height="20" alt="🤷‍♀">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A1.png" width="20" height="20" alt="😡">"
+    /// Reaction emoji. Currently, it can be one of "<img class="emoji" src="//telegram.org/img/emoji/40/E29DA4.png" width="20" height="20" alt="❤">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918D.png" width="20" height="20" alt="👍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918E.png" width="20" height="20" alt="👎">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F94A5.png" width="20" height="20" alt="🔥">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B0.png" width="20" height="20" alt="🥰">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918F.png" width="20" height="20" alt="👏">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9881.png" width="20" height="20" alt="😁">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA494.png" width="20" height="20" alt="🤔">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AF.png" width="20" height="20" alt="🤯">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98B1.png" width="20" height="20" alt="😱">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AC.png" width="20" height="20" alt="🤬">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A2.png" width="20" height="20" alt="😢">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E89.png" width="20" height="20" alt="🎉">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A9.png" width="20" height="20" alt="🤩">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AE.png" width="20" height="20" alt="🤮">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F92A9.png" width="20" height="20" alt="💩">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F998F.png" width="20" height="20" alt="🙏">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918C.png" width="20" height="20" alt="👌">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F958A.png" width="20" height="20" alt="🕊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A1.png" width="20" height="20" alt="🤡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B1.png" width="20" height="20" alt="🥱">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B4.png" width="20" height="20" alt="🥴">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F988D.png" width="20" height="20" alt="😍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F90B3.png" width="20" height="20" alt="🐳">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29DA4E2808DF09F94A5.png" width="20" height="20" alt="❤‍🔥">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8C9A.png" width="20" height="20" alt="🌚">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8CAD.png" width="20" height="20" alt="🌭">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F92AF.png" width="20" height="20" alt="💯">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A3.png" width="20" height="20" alt="🤣">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29AA1.png" width="20" height="20" alt="⚡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8D8C.png" width="20" height="20" alt="🍌">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F86.png" width="20" height="20" alt="🏆">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9294.png" width="20" height="20" alt="💔">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A8.png" width="20" height="20" alt="🤨">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9890.png" width="20" height="20" alt="😐">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8D93.png" width="20" height="20" alt="🍓">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8DBE.png" width="20" height="20" alt="🍾">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F928B.png" width="20" height="20" alt="💋">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9695.png" width="20" height="20" alt="🖕">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9888.png" width="20" height="20" alt="😈">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98B4.png" width="20" height="20" alt="😴">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98AD.png" width="20" height="20" alt="😭">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA493.png" width="20" height="20" alt="🤓">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91BB.png" width="20" height="20" alt="👻">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91A8E2808DF09F92BB.png" width="20" height="20" alt="👨‍💻">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9180.png" width="20" height="20" alt="👀">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E83.png" width="20" height="20" alt="🎃">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9988.png" width="20" height="20" alt="🙈">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9887.png" width="20" height="20" alt="😇">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A8.png" width="20" height="20" alt="😨">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA49D.png" width="20" height="20" alt="🤝">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29C8D.png" width="20" height="20" alt="✍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA497.png" width="20" height="20" alt="🤗">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FABA1.png" width="20" height="20" alt="🫡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E85.png" width="20" height="20" alt="🎅">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E84.png" width="20" height="20" alt="🎄">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29883.png" width="20" height="20" alt="☃">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9285.png" width="20" height="20" alt="💅">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AA.png" width="20" height="20" alt="🤪">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F97BF.png" width="20" height="20" alt="🗿">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8692.png" width="20" height="20" alt="🆒">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9298.png" width="20" height="20" alt="💘">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9989.png" width="20" height="20" alt="🙉">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA684.png" width="20" height="20" alt="🦄">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9898.png" width="20" height="20" alt="😘">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F928A.png" width="20" height="20" alt="💊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F998A.png" width="20" height="20" alt="🙊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F988E.png" width="20" height="20" alt="😎">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91BE.png" width="20" height="20" alt="👾">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7E2808DE29982.png" width="20" height="20" alt="🤷‍♂">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7.png" width="20" height="20" alt="🤷">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7E2808DE29980.png" width="20" height="20" alt="🤷‍♀">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A1.png" width="20" height="20" alt="😡">"
     pub emoji: String
 }
 
@@ -3146,6 +3705,20 @@ pub struct ReactionTypeCustomEmoji {
     pub type_: String,
     /// Custom emoji identifier
     pub custom_emoji_id: String
+}
+
+/**
+ * <p>The reaction is paid.</p>
+ *
+ * @property type Type of the reaction, always “paid”
+ *
+ * @constructor Creates a [ReactionTypePaid].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ReactionTypePaid {
+    /// Type of the reaction, always “paid”
+    #[serde(rename = "type")]
+    pub type_: String
 }
 
 /**
@@ -3241,6 +3814,393 @@ pub struct ForumTopic {
     /// <em>Optional</em>. Unique identifier of the custom emoji shown as the topic icon
     #[serde(skip_serializing_if = "Option::is_none")]
     pub icon_custom_emoji_id: Option<String>
+}
+
+/**
+ * <p>This object represents a gift that can be sent by the bot.</p>
+ *
+ * @property id Unique identifier of the gift
+ * @property sticker The sticker that represents the gift
+ * @property star_count The number of Telegram Stars that must be paid to send the sticker
+ * @property upgrade_star_count <em>Optional</em>. The number of Telegram Stars that must be paid to upgrade the gift to a unique one
+ * @property total_count <em>Optional</em>. The total number of the gifts of this type that can be sent; for limited gifts only
+ * @property remaining_count <em>Optional</em>. The number of remaining gifts of this type that can be sent; for limited gifts only
+ *
+ * @constructor Creates a [Gift].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct Gift {
+    /// Unique identifier of the gift
+    pub id: String,
+    /// The sticker that represents the gift
+    pub sticker: Sticker,
+    /// The number of Telegram Stars that must be paid to send the sticker
+    pub star_count: Integer,
+    /// <em>Optional</em>. The number of Telegram Stars that must be paid to upgrade the gift to a unique one
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub upgrade_star_count: Option<Integer>,
+    /// <em>Optional</em>. The total number of the gifts of this type that can be sent; for limited gifts only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub total_count: Option<Integer>,
+    /// <em>Optional</em>. The number of remaining gifts of this type that can be sent; for limited gifts only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub remaining_count: Option<Integer>
+}
+
+/**
+ * <p>This object represent a list of gifts.</p>
+ *
+ * @property gifts The list of gifts
+ *
+ * @constructor Creates a [Gifts].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct Gifts {
+    /// The list of gifts
+    pub gifts: Vec<Gift>
+}
+
+/**
+ * <p>This object describes the model of a unique gift.</p>
+ *
+ * @property name Name of the model
+ * @property sticker The sticker that represents the unique gift
+ * @property rarity_per_mille The number of unique gifts that receive this model for every 1000 gifts upgraded
+ *
+ * @constructor Creates a [UniqueGiftModel].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct UniqueGiftModel {
+    /// Name of the model
+    pub name: String,
+    /// The sticker that represents the unique gift
+    pub sticker: Sticker,
+    /// The number of unique gifts that receive this model for every 1000 gifts upgraded
+    pub rarity_per_mille: Integer
+}
+
+/**
+ * <p>This object describes the symbol shown on the pattern of a unique gift.</p>
+ *
+ * @property name Name of the symbol
+ * @property sticker The sticker that represents the unique gift
+ * @property rarity_per_mille The number of unique gifts that receive this model for every 1000 gifts upgraded
+ *
+ * @constructor Creates a [UniqueGiftSymbol].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct UniqueGiftSymbol {
+    /// Name of the symbol
+    pub name: String,
+    /// The sticker that represents the unique gift
+    pub sticker: Sticker,
+    /// The number of unique gifts that receive this model for every 1000 gifts upgraded
+    pub rarity_per_mille: Integer
+}
+
+/**
+ * <p>This object describes the colors of the backdrop of a unique gift.</p>
+ *
+ * @property center_color The color in the center of the backdrop in RGB format
+ * @property edge_color The color on the edges of the backdrop in RGB format
+ * @property symbol_color The color to be applied to the symbol in RGB format
+ * @property text_color The color for the text on the backdrop in RGB format
+ *
+ * @constructor Creates a [UniqueGiftBackdropColors].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct UniqueGiftBackdropColors {
+    /// The color in the center of the backdrop in RGB format
+    pub center_color: Integer,
+    /// The color on the edges of the backdrop in RGB format
+    pub edge_color: Integer,
+    /// The color to be applied to the symbol in RGB format
+    pub symbol_color: Integer,
+    /// The color for the text on the backdrop in RGB format
+    pub text_color: Integer
+}
+
+/**
+ * <p>This object describes the backdrop of a unique gift.</p>
+ *
+ * @property name Name of the backdrop
+ * @property colors Colors of the backdrop
+ * @property rarity_per_mille The number of unique gifts that receive this backdrop for every 1000 gifts upgraded
+ *
+ * @constructor Creates a [UniqueGiftBackdrop].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct UniqueGiftBackdrop {
+    /// Name of the backdrop
+    pub name: String,
+    /// Colors of the backdrop
+    pub colors: UniqueGiftBackdropColors,
+    /// The number of unique gifts that receive this backdrop for every 1000 gifts upgraded
+    pub rarity_per_mille: Integer
+}
+
+/**
+ * <p>This object describes a unique gift that was upgraded from a regular gift.</p>
+ *
+ * @property base_name Human-readable name of the regular gift from which this unique gift was upgraded
+ * @property name Unique name of the gift. This name can be used in <code>https://t.me/nft/...</code> links and story areas
+ * @property number Unique number of the upgraded gift among gifts upgraded from the same regular gift
+ * @property model Model of the gift
+ * @property symbol Symbol of the gift
+ * @property backdrop Backdrop of the gift
+ *
+ * @constructor Creates a [UniqueGift].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct UniqueGift {
+    /// Human-readable name of the regular gift from which this unique gift was upgraded
+    pub base_name: String,
+    /// Unique name of the gift. This name can be used in <code>https://t.me/nft/...</code> links and story areas
+    pub name: String,
+    /// Unique number of the upgraded gift among gifts upgraded from the same regular gift
+    pub number: Integer,
+    /// Model of the gift
+    pub model: UniqueGiftModel,
+    /// Symbol of the gift
+    pub symbol: UniqueGiftSymbol,
+    /// Backdrop of the gift
+    pub backdrop: UniqueGiftBackdrop
+}
+
+/**
+ * <p>Describes a service message about a regular gift that was sent or received.</p>
+ *
+ * @property gift Information about the gift
+ * @property owned_gift_id <em>Optional</em>. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts
+ * @property convert_star_count <em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible
+ * @property prepaid_upgrade_star_count <em>Optional</em>. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift
+ * @property can_be_upgraded <em>Optional</em>. <em>True</em>, if the gift can be upgraded to a unique gift
+ * @property text <em>Optional</em>. Text of the message that was added to the gift
+ * @property entities <em>Optional</em>. Special entities that appear in the text
+ * @property is_private <em>Optional</em>. <em>True</em>, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them
+ *
+ * @constructor Creates a [GiftInfo].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct GiftInfo {
+    /// Information about the gift
+    pub gift: Gift,
+    /// <em>Optional</em>. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owned_gift_id: Option<String>,
+    /// <em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub convert_star_count: Option<Integer>,
+    /// <em>Optional</em>. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prepaid_upgrade_star_count: Option<Integer>,
+    /// <em>Optional</em>. <em>True</em>, if the gift can be upgraded to a unique gift
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_be_upgraded: Option<bool>,
+    /// <em>Optional</em>. Text of the message that was added to the gift
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text: Option<String>,
+    /// <em>Optional</em>. Special entities that appear in the text
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub entities: Option<Vec<MessageEntity>>,
+    /// <em>Optional</em>. <em>True</em>, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_private: Option<bool>
+}
+
+/**
+ * <p>Describes a service message about a unique gift that was sent or received.</p>
+ *
+ * @property gift Information about the gift
+ * @property origin Origin of the gift. Currently, either “upgrade” for gifts upgraded from regular gifts, “transfer” for gifts transferred from other users or channels, or “resale” for gifts bought from other users
+ * @property last_resale_star_count <em>Optional</em>. For gifts bought from other users, the price paid for the gift
+ * @property owned_gift_id <em>Optional</em>. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts
+ * @property transfer_star_count <em>Optional</em>. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift
+ * @property next_transfer_date <em>Optional</em>. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now
+ *
+ * @constructor Creates a [UniqueGiftInfo].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct UniqueGiftInfo {
+    /// Information about the gift
+    pub gift: UniqueGift,
+    /// Origin of the gift. Currently, either “upgrade” for gifts upgraded from regular gifts, “transfer” for gifts transferred from other users or channels, or “resale” for gifts bought from other users
+    pub origin: String,
+    /// <em>Optional</em>. For gifts bought from other users, the price paid for the gift
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_resale_star_count: Option<Integer>,
+    /// <em>Optional</em>. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owned_gift_id: Option<String>,
+    /// <em>Optional</em>. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfer_star_count: Option<Integer>,
+    /// <em>Optional</em>. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub next_transfer_date: Option<Integer>
+}
+
+/**
+ * <p>Describes a regular gift owned by a user or a chat.</p>
+ *
+ * @property type Type of the gift, always “regular”
+ * @property gift Information about the regular gift
+ * @property owned_gift_id <em>Optional</em>. Unique identifier of the gift for the bot; for gifts received on behalf of business accounts only
+ * @property sender_user <em>Optional</em>. Sender of the gift if it is a known user
+ * @property send_date Date the gift was sent in Unix time
+ * @property text <em>Optional</em>. Text of the message that was added to the gift
+ * @property entities <em>Optional</em>. Special entities that appear in the text
+ * @property is_private <em>Optional</em>. <em>True</em>, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them
+ * @property is_saved <em>Optional</em>. <em>True</em>, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only
+ * @property can_be_upgraded <em>Optional</em>. <em>True</em>, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only
+ * @property was_refunded <em>Optional</em>. <em>True</em>, if the gift was refunded and isn't available anymore
+ * @property convert_star_count <em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars
+ * @property prepaid_upgrade_star_count <em>Optional</em>. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift
+ *
+ * @constructor Creates a [OwnedGiftRegular].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct OwnedGiftRegular {
+    /// Type of the gift, always “regular”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// Information about the regular gift
+    pub gift: Gift,
+    /// <em>Optional</em>. Unique identifier of the gift for the bot; for gifts received on behalf of business accounts only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owned_gift_id: Option<String>,
+    /// <em>Optional</em>. Sender of the gift if it is a known user
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sender_user: Option<User>,
+    /// Date the gift was sent in Unix time
+    pub send_date: Integer,
+    /// <em>Optional</em>. Text of the message that was added to the gift
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text: Option<String>,
+    /// <em>Optional</em>. Special entities that appear in the text
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub entities: Option<Vec<MessageEntity>>,
+    /// <em>Optional</em>. <em>True</em>, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_private: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_saved: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_be_upgraded: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the gift was refunded and isn't available anymore
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub was_refunded: Option<bool>,
+    /// <em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub convert_star_count: Option<Integer>,
+    /// <em>Optional</em>. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prepaid_upgrade_star_count: Option<Integer>
+}
+
+/**
+ * <p>Describes a unique gift received and owned by a user or a chat.</p>
+ *
+ * @property type Type of the gift, always “unique”
+ * @property gift Information about the unique gift
+ * @property owned_gift_id <em>Optional</em>. Unique identifier of the received gift for the bot; for gifts received on behalf of business accounts only
+ * @property sender_user <em>Optional</em>. Sender of the gift if it is a known user
+ * @property send_date Date the gift was sent in Unix time
+ * @property is_saved <em>Optional</em>. <em>True</em>, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only
+ * @property can_be_transferred <em>Optional</em>. <em>True</em>, if the gift can be transferred to another owner; for gifts received on behalf of business accounts only
+ * @property transfer_star_count <em>Optional</em>. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift
+ * @property next_transfer_date <em>Optional</em>. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now
+ *
+ * @constructor Creates a [OwnedGiftUnique].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct OwnedGiftUnique {
+    /// Type of the gift, always “unique”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// Information about the unique gift
+    pub gift: UniqueGift,
+    /// <em>Optional</em>. Unique identifier of the received gift for the bot; for gifts received on behalf of business accounts only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owned_gift_id: Option<String>,
+    /// <em>Optional</em>. Sender of the gift if it is a known user
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sender_user: Option<User>,
+    /// Date the gift was sent in Unix time
+    pub send_date: Integer,
+    /// <em>Optional</em>. <em>True</em>, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_saved: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the gift can be transferred to another owner; for gifts received on behalf of business accounts only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_be_transferred: Option<bool>,
+    /// <em>Optional</em>. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfer_star_count: Option<Integer>,
+    /// <em>Optional</em>. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub next_transfer_date: Option<Integer>
+}
+
+/**
+ * <p>Contains the list of gifts received and owned by a user or a chat.</p>
+ *
+ * @property total_count The total number of gifts owned by the user or the chat
+ * @property gifts The list of gifts
+ * @property next_offset <em>Optional</em>. Offset for the next request. If empty, then there are no more results
+ *
+ * @constructor Creates a [OwnedGifts].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct OwnedGifts {
+    /// The total number of gifts owned by the user or the chat
+    pub total_count: Integer,
+    /// The list of gifts
+    pub gifts: Vec<OwnedGift>,
+    /// <em>Optional</em>. Offset for the next request. If empty, then there are no more results
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub next_offset: Option<String>
+}
+
+/**
+ * <p>This object describes the types of gifts that can be gifted to a user or a chat.</p>
+ *
+ * @property unlimited_gifts <em>True</em>, if unlimited regular gifts are accepted
+ * @property limited_gifts <em>True</em>, if limited regular gifts are accepted
+ * @property unique_gifts <em>True</em>, if unique gifts or gifts that can be upgraded to unique for free are accepted
+ * @property premium_subscription <em>True</em>, if a Telegram Premium subscription is accepted
+ *
+ * @constructor Creates a [AcceptedGiftTypes].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct AcceptedGiftTypes {
+    /// <em>True</em>, if unlimited regular gifts are accepted
+    pub unlimited_gifts: bool,
+    /// <em>True</em>, if limited regular gifts are accepted
+    pub limited_gifts: bool,
+    /// <em>True</em>, if unique gifts or gifts that can be upgraded to unique for free are accepted
+    pub unique_gifts: bool,
+    /// <em>True</em>, if a Telegram Premium subscription is accepted
+    pub premium_subscription: bool
+}
+
+/**
+ * <p>Describes an amount of Telegram Stars.</p>
+ *
+ * @property amount Integer amount of Telegram Stars, rounded to 0; can be negative
+ * @property nanostar_amount <em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars; from -999999999 to 999999999; can be negative if and only if <em>amount</em> is non-positive
+ *
+ * @constructor Creates a [StarAmount].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct StarAmount {
+    /// Integer amount of Telegram Stars, rounded to 0; can be negative
+    pub amount: Integer,
+    /// <em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars; from -999999999 to 999999999; can be negative if and only if <em>amount</em> is non-positive
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nanostar_amount: Option<Integer>
 }
 
 /**
@@ -3427,7 +4387,7 @@ pub struct MenuButtonCommands {
  *
  * @property type Type of the button, must be <em>web_app</em>
  * @property text Text on the button
- * @property web_app Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>.
+ * @property web_app Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Alternatively, a <code>t.me</code> link to a Web App of the bot can be specified in the object instead of the Web App's URL, in which case the Web App will be opened as if the user pressed the link.
  *
  * @constructor Creates a [MenuButtonWebApp].
  * */
@@ -3438,7 +4398,7 @@ pub struct MenuButtonWebApp {
     pub type_: String,
     /// Text on the button
     pub text: String,
-    /// Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>.
+    /// Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Alternatively, a <code>t.me</code> link to a Web App of the bot can be specified in the object instead of the Web App's URL, in which case the Web App will be opened as if the user pressed the link.
     pub web_app: WebAppInfo
 }
 
@@ -3489,12 +4449,13 @@ pub struct ChatBoostSourceGiftCode {
 }
 
 /**
- * <p>The boost was obtained by the creation of a Telegram Premium giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.</p>
+ * <p>The boost was obtained by the creation of a Telegram Premium or a Telegram Star giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription for Telegram Premium giveaways and <em>prize_star_count</em> / 500 times for one year for Telegram Star giveaways.</p>
  *
  * @property source Source of the boost, always “giveaway”
  * @property giveaway_message_id Identifier of a message in the chat with the giveaway; the message could have been deleted already. May be 0 if the message isn't sent yet.
- * @property user <em>Optional</em>. User that won the prize in the giveaway if any
- * @property is_unclaimed <em>Optional</em>. True, if the giveaway was completed, but there was no user to win the prize
+ * @property user <em>Optional</em>. User that won the prize in the giveaway if any; for Telegram Premium giveaways only
+ * @property prize_star_count <em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only
+ * @property is_unclaimed <em>Optional</em>. <em>True</em>, if the giveaway was completed, but there was no user to win the prize
  *
  * @constructor Creates a [ChatBoostSourceGiveaway].
  * */
@@ -3504,10 +4465,13 @@ pub struct ChatBoostSourceGiveaway {
     pub source: String,
     /// Identifier of a message in the chat with the giveaway; the message could have been deleted already. May be 0 if the message isn't sent yet.
     pub giveaway_message_id: Integer,
-    /// <em>Optional</em>. User that won the prize in the giveaway if any
+    /// <em>Optional</em>. User that won the prize in the giveaway if any; for Telegram Premium giveaways only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user: Option<User>,
-    /// <em>Optional</em>. True, if the giveaway was completed, but there was no user to win the prize
+    /// <em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prize_star_count: Option<Integer>,
+    /// <em>Optional</em>. <em>True</em>, if the giveaway was completed, but there was no user to win the prize
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_unclaimed: Option<bool>
 }
@@ -3586,14 +4550,80 @@ pub struct UserChatBoosts {
 }
 
 /**
+ * <p>Represents the rights of a business bot.</p>
+ *
+ * @property can_reply <em>Optional</em>. <em>True</em>, if the bot can send and edit messages in the private chats that had incoming messages in the last 24 hours
+ * @property can_read_messages <em>Optional</em>. <em>True</em>, if the bot can mark incoming private messages as read
+ * @property can_delete_sent_messages <em>Optional</em>. <em>True</em>, if the bot can delete messages sent by the bot
+ * @property can_delete_all_messages <em>Optional</em>. <em>True</em>, if the bot can delete all private messages in managed chats
+ * @property can_edit_name <em>Optional</em>. <em>True</em>, if the bot can edit the first and last name of the business account
+ * @property can_edit_bio <em>Optional</em>. <em>True</em>, if the bot can edit the bio of the business account
+ * @property can_edit_profile_photo <em>Optional</em>. <em>True</em>, if the bot can edit the profile photo of the business account
+ * @property can_edit_username <em>Optional</em>. <em>True</em>, if the bot can edit the username of the business account
+ * @property can_change_gift_settings <em>Optional</em>. <em>True</em>, if the bot can change the privacy settings pertaining to gifts for the business account
+ * @property can_view_gifts_and_stars <em>Optional</em>. <em>True</em>, if the bot can view gifts and the amount of Telegram Stars owned by the business account
+ * @property can_convert_gifts_to_stars <em>Optional</em>. <em>True</em>, if the bot can convert regular gifts owned by the business account to Telegram Stars
+ * @property can_transfer_and_upgrade_gifts <em>Optional</em>. <em>True</em>, if the bot can transfer and upgrade gifts owned by the business account
+ * @property can_transfer_stars <em>Optional</em>. <em>True</em>, if the bot can transfer Telegram Stars received by the business account to its own account, or use them to upgrade and transfer gifts
+ * @property can_manage_stories <em>Optional</em>. <em>True</em>, if the bot can post, edit and delete stories on behalf of the business account
+ *
+ * @constructor Creates a [BusinessBotRights].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct BusinessBotRights {
+    /// <em>Optional</em>. <em>True</em>, if the bot can send and edit messages in the private chats that had incoming messages in the last 24 hours
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_reply: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the bot can mark incoming private messages as read
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_read_messages: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the bot can delete messages sent by the bot
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_delete_sent_messages: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the bot can delete all private messages in managed chats
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_delete_all_messages: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the bot can edit the first and last name of the business account
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_edit_name: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the bot can edit the bio of the business account
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_edit_bio: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the bot can edit the profile photo of the business account
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_edit_profile_photo: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the bot can edit the username of the business account
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_edit_username: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the bot can change the privacy settings pertaining to gifts for the business account
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_change_gift_settings: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the bot can view gifts and the amount of Telegram Stars owned by the business account
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_view_gifts_and_stars: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the bot can convert regular gifts owned by the business account to Telegram Stars
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_convert_gifts_to_stars: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the bot can transfer and upgrade gifts owned by the business account
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_transfer_and_upgrade_gifts: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the bot can transfer Telegram Stars received by the business account to its own account, or use them to upgrade and transfer gifts
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_transfer_stars: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the bot can post, edit and delete stories on behalf of the business account
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_manage_stories: Option<bool>
+}
+
+/**
  * <p>Describes the connection of the bot with a business account.</p>
  *
  * @property id Unique identifier of the business connection
  * @property user Business account user that created the business connection
  * @property user_chat_id Identifier of a private chat with the user who created the business connection. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
  * @property date Date the connection was established in Unix time
- * @property can_reply True, if the bot can act on behalf of the business account in chats that were active in the last 24 hours
- * @property is_enabled True, if the connection is active
+ * @property rights <em>Optional</em>. Rights of the business bot
+ * @property is_enabled <em>True</em>, if the connection is active
  *
  * @constructor Creates a [BusinessConnection].
  * */
@@ -3607,9 +4637,10 @@ pub struct BusinessConnection {
     pub user_chat_id: Integer,
     /// Date the connection was established in Unix time
     pub date: Integer,
-    /// True, if the bot can act on behalf of the business account in chats that were active in the last 24 hours
-    pub can_reply: bool,
-    /// True, if the connection is active
+    /// <em>Optional</em>. Rights of the business bot
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rights: Option<BusinessBotRights>,
+    /// <em>True</em>, if the connection is active
     pub is_enabled: bool
 }
 
@@ -3693,6 +4724,8 @@ pub struct InputMediaPhoto {
  * @property type Type of the result, must be <em>video</em>
  * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
  * @property thumbnail <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+ * @property cover <em>Optional</em>. Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+ * @property start_timestamp <em>Optional</em>. Start timestamp for the video in the message
  * @property caption <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing
  * @property parse_mode <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
  * @property caption_entities <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
@@ -3715,6 +4748,12 @@ pub struct InputMediaVideo {
     /// <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<String>,
+    /// <em>Optional</em>. Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cover: Option<String>,
+    /// <em>Optional</em>. Start timestamp for the video in the message
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub start_timestamp: Option<Integer>,
     /// <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
@@ -3879,6 +4918,152 @@ pub struct InputMediaDocument {
     pub disable_content_type_detection: Option<bool>
 }
 
+/**
+ * <p>The paid media to send is a photo.</p>
+ *
+ * @property type Type of the media, must be <em>photo</em>
+ * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+ *
+ * @constructor Creates a [InputPaidMediaPhoto].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct InputPaidMediaPhoto {
+    /// Type of the media, must be <em>photo</em>
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+    pub media: String
+}
+
+/**
+ * <p>The paid media to send is a video.</p>
+ *
+ * @property type Type of the media, must be <em>video</em>
+ * @property media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+ * @property thumbnail <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+ * @property cover <em>Optional</em>. Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+ * @property start_timestamp <em>Optional</em>. Start timestamp for the video in the message
+ * @property width <em>Optional</em>. Video width
+ * @property height <em>Optional</em>. Video height
+ * @property duration <em>Optional</em>. Video duration in seconds
+ * @property supports_streaming <em>Optional</em>. Pass <em>True</em> if the uploaded video is suitable for streaming
+ *
+ * @constructor Creates a [InputPaidMediaVideo].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct InputPaidMediaVideo {
+    /// Type of the media, must be <em>video</em>
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+    pub media: String,
+    /// <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub thumbnail: Option<String>,
+    /// <em>Optional</em>. Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cover: Option<String>,
+    /// <em>Optional</em>. Start timestamp for the video in the message
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub start_timestamp: Option<Integer>,
+    /// <em>Optional</em>. Video width
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub width: Option<Integer>,
+    /// <em>Optional</em>. Video height
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub height: Option<Integer>,
+    /// <em>Optional</em>. Video duration in seconds
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<Integer>,
+    /// <em>Optional</em>. Pass <em>True</em> if the uploaded video is suitable for streaming
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub supports_streaming: Option<bool>
+}
+
+/**
+ * <p>A static profile photo in the .JPG format.</p>
+ *
+ * @property type Type of the profile photo, must be <em>static</em>
+ * @property photo The static profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the photo was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+ *
+ * @constructor Creates a [InputProfilePhotoStatic].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct InputProfilePhotoStatic {
+    /// Type of the profile photo, must be <em>static</em>
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// The static profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the photo was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+    pub photo: String
+}
+
+/**
+ * <p>An animated profile photo in the MPEG4 format.</p>
+ *
+ * @property type Type of the profile photo, must be <em>animated</em>
+ * @property animation The animated profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the photo was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+ * @property main_frame_timestamp <em>Optional</em>. Timestamp in seconds of the frame that will be used as the static profile photo. Defaults to 0.0.
+ *
+ * @constructor Creates a [InputProfilePhotoAnimated].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct InputProfilePhotoAnimated {
+    /// Type of the profile photo, must be <em>animated</em>
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// The animated profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the photo was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+    pub animation: String,
+    /// <em>Optional</em>. Timestamp in seconds of the frame that will be used as the static profile photo. Defaults to 0.0.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub main_frame_timestamp: Option<Float>
+}
+
+/**
+ * <p>Describes a photo to post as a story.</p>
+ *
+ * @property type Type of the content, must be <em>photo</em>
+ * @property photo The photo to post as a story. The photo must be of the size 1080x1920 and must not exceed 10 MB. The photo can't be reused and can only be uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the photo was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+ *
+ * @constructor Creates a [InputStoryContentPhoto].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct InputStoryContentPhoto {
+    /// Type of the content, must be <em>photo</em>
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// The photo to post as a story. The photo must be of the size 1080x1920 and must not exceed 10 MB. The photo can't be reused and can only be uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the photo was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+    pub photo: String
+}
+
+/**
+ * <p>Describes a video to post as a story.</p>
+ *
+ * @property type Type of the content, must be <em>video</em>
+ * @property video The video to post as a story. The video must be of the size 720x1280, streamable, encoded with H.265 codec, with key frames added each second in the MPEG4 format, and must not exceed 30 MB. The video can't be reused and can only be uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the video was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+ * @property duration <em>Optional</em>. Precise duration of the video in seconds; 0-60
+ * @property cover_frame_timestamp <em>Optional</em>. Timestamp in seconds of the frame that will be used as the static cover for the story. Defaults to 0.0.
+ * @property is_animation <em>Optional</em>. Pass <em>True</em> if the video has no sound
+ *
+ * @constructor Creates a [InputStoryContentVideo].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct InputStoryContentVideo {
+    /// Type of the content, must be <em>video</em>
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// The video to post as a story. The video must be of the size 720x1280, streamable, encoded with H.265 codec, with key frames added each second in the MPEG4 format, and must not exceed 30 MB. The video can't be reused and can only be uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the video was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+    pub video: String,
+    /// <em>Optional</em>. Precise duration of the video in seconds; 0-60
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<Float>,
+    /// <em>Optional</em>. Timestamp in seconds of the frame that will be used as the static cover for the story. Defaults to 0.0.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cover_frame_timestamp: Option<Float>,
+    /// <em>Optional</em>. Pass <em>True</em> if the video has no sound
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_animation: Option<bool>
+}
+
 
 /// Stickers
 
@@ -3997,8 +5182,8 @@ pub struct MaskPosition {
 /**
  * <p>This object describes a sticker to be added to a sticker set.</p>
  *
- * @property sticker The added sticker. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, upload a new one using multipart/form-data, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. Animated and video stickers can't be uploaded via HTTP URL. <a href="#sending-files">More information on Sending Files »</a>
- * @property format Format of the added sticker, must be one of “static” for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, “animated” for a <strong>.TGS</strong> animation, “video” for a <strong>WEBM</strong> video
+ * @property sticker The added sticker. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new file using multipart/form-data under &lt;file_attach_name&gt; name. Animated and video stickers can't be uploaded via HTTP URL. <a href="#sending-files">More information on Sending Files »</a>
+ * @property format Format of the added sticker, must be one of “static” for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, “animated” for a <strong>.TGS</strong> animation, “video” for a <strong>.WEBM</strong> video
  * @property emoji_list List of 1-20 emoji associated with the sticker
  * @property mask_position <em>Optional</em>. Position where the mask should be placed on faces. For “mask” stickers only.
  * @property keywords <em>Optional</em>. List of 0-20 search keywords for the sticker with total length of up to 64 characters. For “regular” and “custom_emoji” stickers only.
@@ -4007,9 +5192,9 @@ pub struct MaskPosition {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct InputSticker {
-    /// The added sticker. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, upload a new one using multipart/form-data, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. Animated and video stickers can't be uploaded via HTTP URL. <a href="#sending-files">More information on Sending Files »</a>
+    /// The added sticker. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new file using multipart/form-data under &lt;file_attach_name&gt; name. Animated and video stickers can't be uploaded via HTTP URL. <a href="#sending-files">More information on Sending Files »</a>
     pub sticker: String,
-    /// Format of the added sticker, must be one of “static” for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, “animated” for a <strong>.TGS</strong> animation, “video” for a <strong>WEBM</strong> video
+    /// Format of the added sticker, must be one of “static” for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, “animated” for a <strong>.TGS</strong> animation, “video” for a <strong>.WEBM</strong> video
     pub format: String,
     /// List of 1-20 emoji associated with the sticker
     pub emoji_list: Vec<String>,
@@ -4084,7 +5269,6 @@ pub struct InlineQueryResultsButton {
  * @property input_message_content Content of the message to be sent
  * @property reply_markup <em>Optional</em>. <a href="/bots/features#inline-keyboards">Inline keyboard</a> attached to the message
  * @property url <em>Optional</em>. URL of the result
- * @property hide_url <em>Optional</em>. Pass <em>True</em> if you don't want the URL to be shown in the message
  * @property description <em>Optional</em>. Short description of the result
  * @property thumbnail_url <em>Optional</em>. Url of the thumbnail for the result
  * @property thumbnail_width <em>Optional</em>. Thumbnail width
@@ -4109,9 +5293,6 @@ pub struct InlineQueryResultArticle {
     /// <em>Optional</em>. URL of the result
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
-    /// <em>Optional</em>. Pass <em>True</em> if you don't want the URL to be shown in the message
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hide_url: Option<bool>,
     /// <em>Optional</em>. Short description of the result
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -4194,7 +5375,7 @@ pub struct InlineQueryResultPhoto {
  *
  * @property type Type of the result, must be <em>gif</em>
  * @property id Unique identifier for this result, 1-64 bytes
- * @property gif_url A valid URL for the GIF file. File size must not exceed 1MB
+ * @property gif_url A valid URL for the GIF file
  * @property gif_width <em>Optional</em>. Width of the GIF
  * @property gif_height <em>Optional</em>. Height of the GIF
  * @property gif_duration <em>Optional</em>. Duration of the GIF in seconds
@@ -4217,7 +5398,7 @@ pub struct InlineQueryResultGif {
     pub type_: String,
     /// Unique identifier for this result, 1-64 bytes
     pub id: String,
-    /// A valid URL for the GIF file. File size must not exceed 1MB
+    /// A valid URL for the GIF file
     pub gif_url: String,
     /// <em>Optional</em>. Width of the GIF
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4261,7 +5442,7 @@ pub struct InlineQueryResultGif {
  *
  * @property type Type of the result, must be <em>mpeg4_gif</em>
  * @property id Unique identifier for this result, 1-64 bytes
- * @property mpeg4_url A valid URL for the MPEG4 file. File size must not exceed 1MB
+ * @property mpeg4_url A valid URL for the MPEG4 file
  * @property mpeg4_width <em>Optional</em>. Video width
  * @property mpeg4_height <em>Optional</em>. Video height
  * @property mpeg4_duration <em>Optional</em>. Video duration in seconds
@@ -4284,7 +5465,7 @@ pub struct InlineQueryResultMpeg4Gif {
     pub type_: String,
     /// Unique identifier for this result, 1-64 bytes
     pub id: String,
-    /// A valid URL for the MPEG4 file. File size must not exceed 1MB
+    /// A valid URL for the MPEG4 file
     pub mpeg4_url: String,
     /// <em>Optional</em>. Video width
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5237,7 +6418,7 @@ pub struct InputContactMessageContent {
  *
  * @property title Product name, 1-32 characters
  * @property description Product description, 1-255 characters
- * @property payload Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+ * @property payload Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.
  * @property provider_token <em>Optional</em>. Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a>. Pass an empty string for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
  * @property currency Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>. Pass “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
  * @property prices Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
@@ -5264,7 +6445,7 @@ pub struct InputInvoiceMessageContent {
     pub title: String,
     /// Product description, 1-255 characters
     pub description: String,
-    /// Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+    /// Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.
     pub payload: String,
     /// <em>Optional</em>. Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a>. Pass an empty string for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5356,6 +6537,22 @@ pub struct SentWebAppMessage {
     /// <em>Optional</em>. Identifier of the sent inline message. Available only if there is an <a href="#inlinekeyboardmarkup">inline keyboard</a> attached to the message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<String>
+}
+
+/**
+ * <p>Describes an inline message to be sent by a user of a Mini App.</p>
+ *
+ * @property id Unique identifier of the prepared message
+ * @property expiration_date Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used
+ *
+ * @constructor Creates a [PreparedInlineMessage].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct PreparedInlineMessage {
+    /// Unique identifier of the prepared message
+    pub id: String,
+    /// Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used
+    pub expiration_date: Integer
 }
 
 
@@ -5476,11 +6673,14 @@ pub struct ShippingOption {
 }
 
 /**
- * <p>This object contains basic information about a successful payment.</p>
+ * <p>This object contains basic information about a successful payment. Note that if the buyer initiates a chargeback with the relevant payment provider following this transaction, the funds may be debited from your balance. This is outside of Telegram's control.</p>
  *
  * @property currency Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>
  * @property total_amount Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
- * @property invoice_payload Bot specified invoice payload
+ * @property invoice_payload Bot-specified invoice payload
+ * @property subscription_expiration_date <em>Optional</em>. Expiration date of the subscription, in Unix time; for recurring payments only
+ * @property is_recurring <em>Optional</em>. <em>True</em>, if the payment is a recurring payment for a subscription
+ * @property is_first_recurring <em>Optional</em>. <em>True</em>, if the payment is the first payment for a subscription
  * @property shipping_option_id <em>Optional</em>. Identifier of the shipping option chosen by the user
  * @property order_info <em>Optional</em>. Order information provided by the user
  * @property telegram_payment_charge_id Telegram payment identifier
@@ -5494,8 +6694,17 @@ pub struct SuccessfulPayment {
     pub currency: String,
     /// Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
     pub total_amount: Integer,
-    /// Bot specified invoice payload
+    /// Bot-specified invoice payload
     pub invoice_payload: String,
+    /// <em>Optional</em>. Expiration date of the subscription, in Unix time; for recurring payments only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_expiration_date: Option<Integer>,
+    /// <em>Optional</em>. <em>True</em>, if the payment is a recurring payment for a subscription
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_recurring: Option<bool>,
+    /// <em>Optional</em>. <em>True</em>, if the payment is the first payment for a subscription
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_first_recurring: Option<bool>,
     /// <em>Optional</em>. Identifier of the shipping option chosen by the user
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_option_id: Option<String>,
@@ -5509,11 +6718,37 @@ pub struct SuccessfulPayment {
 }
 
 /**
+ * <p>This object contains basic information about a refunded payment.</p>
+ *
+ * @property currency Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. Currently, always “XTR”
+ * @property total_amount Total refunded price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code>, <code>total_amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
+ * @property invoice_payload Bot-specified invoice payload
+ * @property telegram_payment_charge_id Telegram payment identifier
+ * @property provider_payment_charge_id <em>Optional</em>. Provider payment identifier
+ *
+ * @constructor Creates a [RefundedPayment].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct RefundedPayment {
+    /// Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. Currently, always “XTR”
+    pub currency: String,
+    /// Total refunded price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code>, <code>total_amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
+    pub total_amount: Integer,
+    /// Bot-specified invoice payload
+    pub invoice_payload: String,
+    /// Telegram payment identifier
+    pub telegram_payment_charge_id: String,
+    /// <em>Optional</em>. Provider payment identifier
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub provider_payment_charge_id: Option<String>
+}
+
+/**
  * <p>This object contains information about an incoming shipping query.</p>
  *
  * @property id Unique query identifier
  * @property from User who sent the query
- * @property invoice_payload Bot specified invoice payload
+ * @property invoice_payload Bot-specified invoice payload
  * @property shipping_address User specified shipping address
  *
  * @constructor Creates a [ShippingQuery].
@@ -5524,7 +6759,7 @@ pub struct ShippingQuery {
     pub id: String,
     /// User who sent the query
     pub from: User,
-    /// Bot specified invoice payload
+    /// Bot-specified invoice payload
     pub invoice_payload: String,
     /// User specified shipping address
     pub shipping_address: ShippingAddress
@@ -5537,7 +6772,7 @@ pub struct ShippingQuery {
  * @property from User who sent the query
  * @property currency Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>
  * @property total_amount Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
- * @property invoice_payload Bot specified invoice payload
+ * @property invoice_payload Bot-specified invoice payload
  * @property shipping_option_id <em>Optional</em>. Identifier of the shipping option chosen by the user
  * @property order_info <em>Optional</em>. Order information provided by the user
  *
@@ -5553,7 +6788,7 @@ pub struct PreCheckoutQuery {
     pub currency: String,
     /// Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
     pub total_amount: Integer,
-    /// Bot specified invoice payload
+    /// Bot-specified invoice payload
     pub invoice_payload: String,
     /// <em>Optional</em>. Identifier of the shipping option chosen by the user
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5561,6 +6796,295 @@ pub struct PreCheckoutQuery {
     /// <em>Optional</em>. Order information provided by the user
     #[serde(skip_serializing_if = "Option::is_none")]
     pub order_info: Option<OrderInfo>
+}
+
+/**
+ * <p>This object contains information about a paid media purchase.</p>
+ *
+ * @property from User who purchased the media
+ * @property paid_media_payload Bot-specified paid media payload
+ *
+ * @constructor Creates a [PaidMediaPurchased].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct PaidMediaPurchased {
+    /// User who purchased the media
+    pub from: User,
+    /// Bot-specified paid media payload
+    pub paid_media_payload: String
+}
+
+/**
+ * <p>The withdrawal is in progress.</p>
+ *
+ * @property type Type of the state, always “pending”
+ *
+ * @constructor Creates a [RevenueWithdrawalStatePending].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct RevenueWithdrawalStatePending {
+    /// Type of the state, always “pending”
+    #[serde(rename = "type")]
+    pub type_: String
+}
+
+/**
+ * <p>The withdrawal succeeded.</p>
+ *
+ * @property type Type of the state, always “succeeded”
+ * @property date Date the withdrawal was completed in Unix time
+ * @property url An HTTPS URL that can be used to see transaction details
+ *
+ * @constructor Creates a [RevenueWithdrawalStateSucceeded].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct RevenueWithdrawalStateSucceeded {
+    /// Type of the state, always “succeeded”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// Date the withdrawal was completed in Unix time
+    pub date: Integer,
+    /// An HTTPS URL that can be used to see transaction details
+    pub url: String
+}
+
+/**
+ * <p>The withdrawal failed and the transaction was refunded.</p>
+ *
+ * @property type Type of the state, always “failed”
+ *
+ * @constructor Creates a [RevenueWithdrawalStateFailed].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct RevenueWithdrawalStateFailed {
+    /// Type of the state, always “failed”
+    #[serde(rename = "type")]
+    pub type_: String
+}
+
+/**
+ * <p>Contains information about the affiliate that received a commission via this transaction.</p>
+ *
+ * @property affiliate_user <em>Optional</em>. The bot or the user that received an affiliate commission if it was received by a bot or a user
+ * @property affiliate_chat <em>Optional</em>. The chat that received an affiliate commission if it was received by a chat
+ * @property commission_per_mille The number of Telegram Stars received by the affiliate for each 1000 Telegram Stars received by the bot from referred users
+ * @property amount Integer amount of Telegram Stars received by the affiliate from the transaction, rounded to 0; can be negative for refunds
+ * @property nanostar_amount <em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars received by the affiliate; from -999999999 to 999999999; can be negative for refunds
+ *
+ * @constructor Creates a [AffiliateInfo].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct AffiliateInfo {
+    /// <em>Optional</em>. The bot or the user that received an affiliate commission if it was received by a bot or a user
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affiliate_user: Option<User>,
+    /// <em>Optional</em>. The chat that received an affiliate commission if it was received by a chat
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affiliate_chat: Option<Chat>,
+    /// The number of Telegram Stars received by the affiliate for each 1000 Telegram Stars received by the bot from referred users
+    pub commission_per_mille: Integer,
+    /// Integer amount of Telegram Stars received by the affiliate from the transaction, rounded to 0; can be negative for refunds
+    pub amount: Integer,
+    /// <em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars received by the affiliate; from -999999999 to 999999999; can be negative for refunds
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nanostar_amount: Option<Integer>
+}
+
+/**
+ * <p>Describes a transaction with a user.</p>
+ *
+ * @property type Type of the transaction partner, always “user”
+ * @property transaction_type Type of the transaction, currently one of “invoice_payment” for payments via invoices, “paid_media_payment” for payments for paid media, “gift_purchase” for gifts sent by the bot, “premium_purchase” for Telegram Premium subscriptions gifted by the bot, “business_account_transfer” for direct transfers from managed business accounts
+ * @property user Information about the user
+ * @property affiliate <em>Optional</em>. Information about the affiliate that received a commission via this transaction. Can be available only for “invoice_payment” and “paid_media_payment” transactions.
+ * @property invoice_payload <em>Optional</em>. Bot-specified invoice payload. Can be available only for “invoice_payment” transactions.
+ * @property subscription_period <em>Optional</em>. The duration of the paid subscription. Can be available only for “invoice_payment” transactions.
+ * @property paid_media <em>Optional</em>. Information about the paid media bought by the user; for “paid_media_payment” transactions only
+ * @property paid_media_payload <em>Optional</em>. Bot-specified paid media payload. Can be available only for “paid_media_payment” transactions.
+ * @property gift <em>Optional</em>. The gift sent to the user by the bot; for “gift_purchase” transactions only
+ * @property premium_subscription_duration <em>Optional</em>. Number of months the gifted Telegram Premium subscription will be active for; for “premium_purchase” transactions only
+ *
+ * @constructor Creates a [TransactionPartnerUser].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct TransactionPartnerUser {
+    /// Type of the transaction partner, always “user”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// Type of the transaction, currently one of “invoice_payment” for payments via invoices, “paid_media_payment” for payments for paid media, “gift_purchase” for gifts sent by the bot, “premium_purchase” for Telegram Premium subscriptions gifted by the bot, “business_account_transfer” for direct transfers from managed business accounts
+    pub transaction_type: String,
+    /// Information about the user
+    pub user: User,
+    /// <em>Optional</em>. Information about the affiliate that received a commission via this transaction. Can be available only for “invoice_payment” and “paid_media_payment” transactions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affiliate: Option<AffiliateInfo>,
+    /// <em>Optional</em>. Bot-specified invoice payload. Can be available only for “invoice_payment” transactions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_payload: Option<String>,
+    /// <em>Optional</em>. The duration of the paid subscription. Can be available only for “invoice_payment” transactions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_period: Option<Integer>,
+    /// <em>Optional</em>. Information about the paid media bought by the user; for “paid_media_payment” transactions only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid_media: Option<Vec<PaidMedia>>,
+    /// <em>Optional</em>. Bot-specified paid media payload. Can be available only for “paid_media_payment” transactions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid_media_payload: Option<String>,
+    /// <em>Optional</em>. The gift sent to the user by the bot; for “gift_purchase” transactions only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gift: Option<Gift>,
+    /// <em>Optional</em>. Number of months the gifted Telegram Premium subscription will be active for; for “premium_purchase” transactions only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub premium_subscription_duration: Option<Integer>
+}
+
+/**
+ * <p>Describes a transaction with a chat.</p>
+ *
+ * @property type Type of the transaction partner, always “chat”
+ * @property chat Information about the chat
+ * @property gift <em>Optional</em>. The gift sent to the chat by the bot
+ *
+ * @constructor Creates a [TransactionPartnerChat].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct TransactionPartnerChat {
+    /// Type of the transaction partner, always “chat”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// Information about the chat
+    pub chat: Chat,
+    /// <em>Optional</em>. The gift sent to the chat by the bot
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gift: Option<Gift>
+}
+
+/**
+ * <p>Describes the affiliate program that issued the affiliate commission received via this transaction.</p>
+ *
+ * @property type Type of the transaction partner, always “affiliate_program”
+ * @property sponsor_user <em>Optional</em>. Information about the bot that sponsored the affiliate program
+ * @property commission_per_mille The number of Telegram Stars received by the bot for each 1000 Telegram Stars received by the affiliate program sponsor from referred users
+ *
+ * @constructor Creates a [TransactionPartnerAffiliateProgram].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct TransactionPartnerAffiliateProgram {
+    /// Type of the transaction partner, always “affiliate_program”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// <em>Optional</em>. Information about the bot that sponsored the affiliate program
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sponsor_user: Option<User>,
+    /// The number of Telegram Stars received by the bot for each 1000 Telegram Stars received by the affiliate program sponsor from referred users
+    pub commission_per_mille: Integer
+}
+
+/**
+ * <p>Describes a withdrawal transaction with Fragment.</p>
+ *
+ * @property type Type of the transaction partner, always “fragment”
+ * @property withdrawal_state <em>Optional</em>. State of the transaction if the transaction is outgoing
+ *
+ * @constructor Creates a [TransactionPartnerFragment].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct TransactionPartnerFragment {
+    /// Type of the transaction partner, always “fragment”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// <em>Optional</em>. State of the transaction if the transaction is outgoing
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub withdrawal_state: Option<RevenueWithdrawalState>
+}
+
+/**
+ * <p>Describes a withdrawal transaction to the Telegram Ads platform.</p>
+ *
+ * @property type Type of the transaction partner, always “telegram_ads”
+ *
+ * @constructor Creates a [TransactionPartnerTelegramAds].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct TransactionPartnerTelegramAds {
+    /// Type of the transaction partner, always “telegram_ads”
+    #[serde(rename = "type")]
+    pub type_: String
+}
+
+/**
+ * <p>Describes a transaction with payment for <a href="#paid-broadcasts">paid broadcasting</a>.</p>
+ *
+ * @property type Type of the transaction partner, always “telegram_api”
+ * @property request_count The number of successful requests that exceeded regular limits and were therefore billed
+ *
+ * @constructor Creates a [TransactionPartnerTelegramApi].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct TransactionPartnerTelegramApi {
+    /// Type of the transaction partner, always “telegram_api”
+    #[serde(rename = "type")]
+    pub type_: String,
+    /// The number of successful requests that exceeded regular limits and were therefore billed
+    pub request_count: Integer
+}
+
+/**
+ * <p>Describes a transaction with an unknown source or recipient.</p>
+ *
+ * @property type Type of the transaction partner, always “other”
+ *
+ * @constructor Creates a [TransactionPartnerOther].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct TransactionPartnerOther {
+    /// Type of the transaction partner, always “other”
+    #[serde(rename = "type")]
+    pub type_: String
+}
+
+/**
+ * <p>Describes a Telegram Star transaction. Note that if the buyer initiates a chargeback with the payment provider from whom they acquired Stars (e.g., Apple, Google) following this transaction, the refunded Stars will be deducted from the bot's balance. This is outside of Telegram's control.</p>
+ *
+ * @property id Unique identifier of the transaction. Coincides with the identifier of the original transaction for refund transactions. Coincides with <em>SuccessfulPayment.telegram_payment_charge_id</em> for successful incoming payments from users.
+ * @property amount Integer amount of Telegram Stars transferred by the transaction
+ * @property nanostar_amount <em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars transferred by the transaction; from 0 to 999999999
+ * @property date Date the transaction was created in Unix time
+ * @property source <em>Optional</em>. Source of an incoming transaction (e.g., a user purchasing goods or services, Fragment refunding a failed withdrawal). Only for incoming transactions
+ * @property receiver <em>Optional</em>. Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions
+ *
+ * @constructor Creates a [StarTransaction].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct StarTransaction {
+    /// Unique identifier of the transaction. Coincides with the identifier of the original transaction for refund transactions. Coincides with <em>SuccessfulPayment.telegram_payment_charge_id</em> for successful incoming payments from users.
+    pub id: String,
+    /// Integer amount of Telegram Stars transferred by the transaction
+    pub amount: Integer,
+    /// <em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars transferred by the transaction; from 0 to 999999999
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nanostar_amount: Option<Integer>,
+    /// Date the transaction was created in Unix time
+    pub date: Integer,
+    /// <em>Optional</em>. Source of an incoming transaction (e.g., a user purchasing goods or services, Fragment refunding a failed withdrawal). Only for incoming transactions
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source: Option<TransactionPartner>,
+    /// <em>Optional</em>. Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub receiver: Option<TransactionPartner>
+}
+
+/**
+ * <p>Contains a list of Telegram Star transactions.</p>
+ *
+ * @property transactions The list of transactions
+ *
+ * @constructor Creates a [StarTransactions].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct StarTransactions {
+    /// The list of transactions
+    pub transactions: Vec<StarTransaction>
 }
 
 
@@ -5949,7 +7473,7 @@ pub struct GameHighScore {
  * @property offset Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as <a href="#getupdates">getUpdates</a> is called with an <em>offset</em> higher than its <em>update_id</em>. The negative offset can be specified to retrieve updates starting from <em>-offset</em> update from the end of the updates queue. All previous updates will be forgotten.
  * @property limit Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults to 100.
  * @property timeout Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only.
- * @property allowed_updates A JSON-serialized list of the update types you want your bot to receive. For example, specify <code>["message", "edited_channel_post", "callback_query"]</code> to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em>, <em>message_reaction</em>, and <em>message_reaction_count</em> (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.
+ * @property allowed_updates A JSON-serialized list of the update types you want your bot to receive. For example, specify <code>["message", "edited_channel_post", "callback_query"]</code> to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em>, <em>message_reaction</em>, and <em>message_reaction_count</em> (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to getUpdates, so unwanted updates may be received for a short period of time.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct GetUpdatesRequest {
@@ -5959,12 +7483,12 @@ pub struct GetUpdatesRequest {
     pub limit: Option<Integer>,
     /// Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only.
     pub timeout: Option<Integer>,
-    /// A JSON-serialized list of the update types you want your bot to receive. For example, specify <code>["message", "edited_channel_post", "callback_query"]</code> to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em>, <em>message_reaction</em>, and <em>message_reaction_count</em> (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.
+    /// A JSON-serialized list of the update types you want your bot to receive. For example, specify <code>["message", "edited_channel_post", "callback_query"]</code> to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em>, <em>message_reaction</em>, and <em>message_reaction_count</em> (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to getUpdates, so unwanted updates may be received for a short period of time.
     pub allowed_updates: Option<Vec<String>>
 }
 
 /**
- * <p>Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter <em>secret_token</em>. If specified, the request will contain a header “X-Telegram-Bot-Api-Secret-Token” with the secret token as content.</p><blockquote>
+ * <p>Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request (a request with response <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes">HTTP status code</a> different from <code>2XY</code>), we will repeat the request and give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter <em>secret_token</em>. If specified, the request will contain a header “X-Telegram-Bot-Api-Secret-Token” with the secret token as content.</p><blockquote>
  *  <p><strong>Notes</strong><br><strong>1.</strong> You will not be able to receive updates using <a href="#getupdates">getUpdates</a> for as long as an outgoing webhook is set up.<br><strong>2.</strong> To use a self-signed certificate, you need to upload your <a href="/bots/self-signed">public key certificate</a> using <em>certificate</em> parameter. Please upload as InputFile, sending a String will not work.<br><strong>3.</strong> Ports currently supported <em>for webhooks</em>: <strong>443, 80, 88, 8443</strong>.</p>
  *  <p>If you're having any trouble setting up webhooks, please check out this <a href="/bots/webhooks">amazing guide to webhooks</a>.</p>
  * </blockquote>
@@ -6024,6 +7548,7 @@ pub struct DeleteWebhookRequest {
  * @property link_preview_options Link preview generation options for the message
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property message_effect_id Unique identifier of the message effect to be added to the message; for private chats only
  * @property reply_parameters Description of the message to reply to
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -6048,6 +7573,8 @@ pub struct SendMessageRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
     /// Description of the message to reply to
@@ -6062,6 +7589,7 @@ pub struct SendMessageRequest {
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_thread_id Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
  * @property from_chat_id Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>)
+ * @property video_start_timestamp New start timestamp for the forwarded video in the message
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the forwarded message from forwarding and saving
  * @property message_id Message identifier in the chat specified in <em>from_chat_id</em>
@@ -6074,6 +7602,8 @@ pub struct ForwardMessageRequest {
     pub message_thread_id: Option<Integer>,
     /// Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>)
     pub from_chat_id: String,
+    /// New start timestamp for the forwarded video in the message
+    pub video_start_timestamp: Option<Integer>,
     /// Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
     pub disable_notification: Option<bool>,
     /// Protects the contents of the forwarded message from forwarding and saving
@@ -6109,18 +7639,20 @@ pub struct ForwardMessagesRequest {
 }
 
 /**
- * <p>Use this method to copy messages of any kind. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
+ * <p>Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_thread_id Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
  * @property from_chat_id Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>)
  * @property message_id Message identifier in the chat specified in <em>from_chat_id</em>
+ * @property video_start_timestamp New start timestamp for the copied video in the message
  * @property caption New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept
  * @property parse_mode Mode for parsing entities in the new caption. See <a href="#formatting-options">formatting options</a> for more details.
  * @property caption_entities A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of <em>parse_mode</em>
  * @property show_caption_above_media Pass <em>True</em>, if the caption must be shown above the message media. Ignored if a new caption isn't specified.
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property reply_parameters Description of the message to reply to
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
  * */
@@ -6134,6 +7666,8 @@ pub struct CopyMessageRequest {
     pub from_chat_id: String,
     /// Message identifier in the chat specified in <em>from_chat_id</em>
     pub message_id: Integer,
+    /// New start timestamp for the copied video in the message
+    pub video_start_timestamp: Option<Integer>,
     /// New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept
     pub caption: Option<String>,
     /// Mode for parsing entities in the new caption. See <a href="#formatting-options">formatting options</a> for more details.
@@ -6146,6 +7680,8 @@ pub struct CopyMessageRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
     /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -6153,7 +7689,7 @@ pub struct CopyMessageRequest {
 }
 
 /**
- * <p>Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessages">forwardMessages</a>, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of <a href="#messageid">MessageId</a> of the sent messages is returned.</p>
+ * <p>Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessages">forwardMessages</a>, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of <a href="#messageid">MessageId</a> of the sent messages is returned.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_thread_id Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
@@ -6195,6 +7731,7 @@ pub struct CopyMessagesRequest {
  * @property has_spoiler Pass <em>True</em> if the photo needs to be covered with a spoiler animation
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property message_effect_id Unique identifier of the message effect to be added to the message; for private chats only
  * @property reply_parameters Description of the message to reply to
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -6223,6 +7760,8 @@ pub struct SendPhotoRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
     /// Description of the message to reply to
@@ -6247,6 +7786,7 @@ pub struct SendPhotoRequest {
  * @property thumbnail Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property message_effect_id Unique identifier of the message effect to be added to the message; for private chats only
  * @property reply_parameters Description of the message to reply to
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -6279,6 +7819,8 @@ pub struct SendAudioRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
     /// Description of the message to reply to
@@ -6301,6 +7843,7 @@ pub struct SendAudioRequest {
  * @property disable_content_type_detection Disables automatic server-side content type detection for files uploaded using multipart/form-data
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property message_effect_id Unique identifier of the message effect to be added to the message; for private chats only
  * @property reply_parameters Description of the message to reply to
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -6329,6 +7872,8 @@ pub struct SendDocumentRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
     /// Description of the message to reply to
@@ -6348,6 +7893,8 @@ pub struct SendDocumentRequest {
  * @property width Video width
  * @property height Video height
  * @property thumbnail Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
+ * @property cover Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+ * @property start_timestamp Start timestamp for the video in the message
  * @property caption Video caption (may also be used when resending videos by <em>file_id</em>), 0-1024 characters after entities parsing
  * @property parse_mode Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
  * @property caption_entities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
@@ -6356,6 +7903,7 @@ pub struct SendDocumentRequest {
  * @property supports_streaming Pass <em>True</em> if the uploaded video is suitable for streaming
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property message_effect_id Unique identifier of the message effect to be added to the message; for private chats only
  * @property reply_parameters Description of the message to reply to
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -6378,6 +7926,10 @@ pub struct SendVideoRequest {
     pub height: Option<Integer>,
     /// Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
     pub thumbnail: Option<String>,
+    /// Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a>
+    pub cover: Option<String>,
+    /// Start timestamp for the video in the message
+    pub start_timestamp: Option<Integer>,
     /// Video caption (may also be used when resending videos by <em>file_id</em>), 0-1024 characters after entities parsing
     pub caption: Option<String>,
     /// Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details.
@@ -6394,6 +7946,8 @@ pub struct SendVideoRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
     /// Description of the message to reply to
@@ -6420,6 +7974,7 @@ pub struct SendVideoRequest {
  * @property has_spoiler Pass <em>True</em> if the animation needs to be covered with a spoiler animation
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property message_effect_id Unique identifier of the message effect to be added to the message; for private chats only
  * @property reply_parameters Description of the message to reply to
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -6456,6 +8011,8 @@ pub struct SendAnimationRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
     /// Description of the message to reply to
@@ -6477,6 +8034,7 @@ pub struct SendAnimationRequest {
  * @property duration Duration of the voice message in seconds
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property message_effect_id Unique identifier of the message effect to be added to the message; for private chats only
  * @property reply_parameters Description of the message to reply to
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -6503,6 +8061,8 @@ pub struct SendVoiceRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
     /// Description of the message to reply to
@@ -6523,6 +8083,7 @@ pub struct SendVoiceRequest {
  * @property thumbnail Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a>
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property message_effect_id Unique identifier of the message effect to be added to the message; for private chats only
  * @property reply_parameters Description of the message to reply to
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -6547,6 +8108,8 @@ pub struct SendVideoNoteRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
     /// Description of the message to reply to
@@ -6556,7 +8119,57 @@ pub struct SendVideoNoteRequest {
 }
 
 /**
- * <p>Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of <a href="#message">Messages</a> that were sent is returned.</p>
+ * <p>Use this method to send paid media. On success, the sent <a href="#message">Message</a> is returned.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message will be sent
+ * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.
+ * @property star_count The number of Telegram Stars that must be paid to buy access to the media; 1-10000
+ * @property media A JSON-serialized array describing the media to be sent; up to 10 items
+ * @property payload Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.
+ * @property caption Media caption, 0-1024 characters after entities parsing
+ * @property parse_mode Mode for parsing entities in the media caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+ * @property show_caption_above_media Pass <em>True</em>, if the caption must be shown above the message media
+ * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+ * @property reply_parameters Description of the message to reply to
+ * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct SendPaidMediaRequest {
+    /// Unique identifier of the business connection on behalf of which the message will be sent
+    pub business_connection_id: Option<String>,
+    /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.
+    pub chat_id: String,
+    /// The number of Telegram Stars that must be paid to buy access to the media; 1-10000
+    pub star_count: Integer,
+    /// A JSON-serialized array describing the media to be sent; up to 10 items
+    pub media: Vec<InputPaidMedia>,
+    /// Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.
+    pub payload: Option<String>,
+    /// Media caption, 0-1024 characters after entities parsing
+    pub caption: Option<String>,
+    /// Mode for parsing entities in the media caption. See <a href="#formatting-options">formatting options</a> for more details.
+    pub parse_mode: Option<ParseMode>,
+    /// A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    pub caption_entities: Option<Vec<MessageEntity>>,
+    /// Pass <em>True</em>, if the caption must be shown above the message media
+    pub show_caption_above_media: Option<bool>,
+    /// Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
+    pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
+    /// Description of the message to reply to
+    pub reply_parameters: Option<ReplyParameters>,
+    /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
+    pub reply_markup: Option<KeyboardOption>
+}
+
+/**
+ * <p>Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of <a href="#message">Message</a> objects that were sent is returned.</p>
  *
  * @property business_connection_id Unique identifier of the business connection on behalf of which the message will be sent
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
@@ -6564,6 +8177,7 @@ pub struct SendVideoNoteRequest {
  * @property media A JSON-serialized array describing messages to be sent, must include 2-10 items
  * @property disable_notification Sends messages <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent messages from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property message_effect_id Unique identifier of the message effect to be added to the message; for private chats only
  * @property reply_parameters Description of the message to reply to
  * */
@@ -6581,6 +8195,8 @@ pub struct SendMediaGroupRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent messages from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
     /// Description of the message to reply to
@@ -6601,6 +8217,7 @@ pub struct SendMediaGroupRequest {
  * @property proximity_alert_radius For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property message_effect_id Unique identifier of the message effect to be added to the message; for private chats only
  * @property reply_parameters Description of the message to reply to
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -6629,6 +8246,8 @@ pub struct SendLocationRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
     /// Description of the message to reply to
@@ -6653,6 +8272,7 @@ pub struct SendLocationRequest {
  * @property google_place_type Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.)
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property message_effect_id Unique identifier of the message effect to be added to the message; for private chats only
  * @property reply_parameters Description of the message to reply to
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -6685,6 +8305,8 @@ pub struct SendVenueRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
     /// Description of the message to reply to
@@ -6705,6 +8327,7 @@ pub struct SendVenueRequest {
  * @property vcard Additional data about the contact in the form of a <a href="https://en.wikipedia.org/wiki/VCard">vCard</a>, 0-2048 bytes
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property message_effect_id Unique identifier of the message effect to be added to the message; for private chats only
  * @property reply_parameters Description of the message to reply to
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -6729,6 +8352,8 @@ pub struct SendContactRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
     /// Description of the message to reply to
@@ -6746,7 +8371,7 @@ pub struct SendContactRequest {
  * @property question Poll question, 1-300 characters
  * @property question_parse_mode Mode for parsing entities in the question. See <a href="#formatting-options">formatting options</a> for more details. Currently, only custom emoji entities are allowed
  * @property question_entities A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of <em>question_parse_mode</em>
- * @property options A JSON-serialized list of 2-10 answer options
+ * @property options A JSON-serialized list of 2-12 answer options
  * @property is_anonymous <em>True</em>, if the poll needs to be anonymous, defaults to <em>True</em>
  * @property type Poll type, “quiz” or “regular”, defaults to “regular”
  * @property allows_multiple_answers <em>True</em>, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to <em>False</em>
@@ -6759,6 +8384,7 @@ pub struct SendContactRequest {
  * @property is_closed Pass <em>True</em> if the poll needs to be immediately closed. This can be useful for poll preview.
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property message_effect_id Unique identifier of the message effect to be added to the message; for private chats only
  * @property reply_parameters Description of the message to reply to
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -6777,7 +8403,7 @@ pub struct SendPollRequest {
     pub question_parse_mode: Option<String>,
     /// A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of <em>question_parse_mode</em>
     pub question_entities: Option<Vec<MessageEntity>>,
-    /// A JSON-serialized list of 2-10 answer options
+    /// A JSON-serialized list of 2-12 answer options
     pub options: Vec<InputPollOption>,
     /// <em>True</em>, if the poll needs to be anonymous, defaults to <em>True</em>
     pub is_anonymous: Option<bool>,
@@ -6804,12 +8430,46 @@ pub struct SendPollRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
     /// Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
     pub reply_markup: Option<KeyboardOption>
+}
+
+/**
+ * <p>Use this method to send a checklist on behalf of a connected business account. On success, the sent <a href="#message">Message</a> is returned.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message will be sent
+ * @property chat_id Unique identifier for the target chat
+ * @property checklist A JSON-serialized object for the checklist to send
+ * @property disable_notification Sends the message silently. Users will receive a notification with no sound.
+ * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property message_effect_id Unique identifier of the message effect to be added to the message
+ * @property reply_parameters A JSON-serialized object for description of the message to reply to
+ * @property reply_markup A JSON-serialized object for an inline keyboard
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct SendChecklistRequest {
+    /// Unique identifier of the business connection on behalf of which the message will be sent
+    pub business_connection_id: String,
+    /// Unique identifier for the target chat
+    pub chat_id: Integer,
+    /// A JSON-serialized object for the checklist to send
+    pub checklist: InputChecklist,
+    /// Sends the message silently. Users will receive a notification with no sound.
+    pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    pub protect_content: Option<bool>,
+    /// Unique identifier of the message effect to be added to the message
+    pub message_effect_id: Option<String>,
+    /// A JSON-serialized object for description of the message to reply to
+    pub reply_parameters: Option<ReplyParameters>,
+    /// A JSON-serialized object for an inline keyboard
+    pub reply_markup: Option<InlineKeyboardMarkup>
 }
 
 /**
@@ -6821,6 +8481,7 @@ pub struct SendPollRequest {
  * @property emoji Emoji on which the dice throw animation is based. Currently, must be one of “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”, “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, or “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Dice can have values 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, values 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” and “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, and values 1-64 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Defaults to “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property message_effect_id Unique identifier of the message effect to be added to the message; for private chats only
  * @property reply_parameters Description of the message to reply to
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -6839,6 +8500,8 @@ pub struct SendDiceRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
     /// Description of the message to reply to
@@ -6870,11 +8533,11 @@ pub struct SendChatActionRequest {
 }
 
 /**
- * <p>Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Returns <em>True</em> on success.</p>
+ * <p>Use this method to change the chosen reactions on a message. Service messages of some types can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead.
- * @property reaction A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators.
+ * @property reaction A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. Paid reactions can't be used by bots.
  * @property is_big Pass <em>True</em> to set the reaction with a big animation
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -6883,7 +8546,7 @@ pub struct SetMessageReactionRequest {
     pub chat_id: String,
     /// Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead.
     pub message_id: Integer,
-    /// A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators.
+    /// A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. Paid reactions can't be used by bots.
     pub reaction: Option<Vec<ReactionType>>,
     /// Pass <em>True</em> to set the reaction with a big animation
     pub is_big: Option<bool>
@@ -6904,6 +8567,23 @@ pub struct GetUserProfilePhotosRequest {
     pub offset: Option<Integer>,
     /// Limits the number of photos to be retrieved. Values between 1-100 are accepted. Defaults to 100.
     pub limit: Option<Integer>
+}
+
+/**
+ * <p>Changes the emoji status for a given user that previously allowed the bot to manage their emoji status via the Mini App method <a href="/bots/webapps#initializing-mini-apps">requestEmojiStatusAccess</a>. Returns <em>True</em> on success.</p>
+ *
+ * @property user_id Unique identifier of the target user
+ * @property emoji_status_custom_emoji_id Custom emoji identifier of the emoji status to set. Pass an empty string to remove the status.
+ * @property emoji_status_expiration_date Expiration date of the emoji status, if any
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct SetUserEmojiStatusRequest {
+    /// Unique identifier of the target user
+    pub user_id: Integer,
+    /// Custom emoji identifier of the emoji status to set. Pass an empty string to remove the status.
+    pub emoji_status_custom_emoji_id: Option<String>,
+    /// Expiration date of the emoji status, if any
+    pub emoji_status_expiration_date: Option<Integer>
 }
 
 /**
@@ -6983,7 +8663,7 @@ pub struct RestrictChatMemberRequest {
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property user_id Unique identifier of the target user
  * @property is_anonymous Pass <em>True</em> if the administrator's presence in the chat is hidden
- * @property can_manage_chat Pass <em>True</em> if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.
+ * @property can_manage_chat Pass <em>True</em> if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.
  * @property can_delete_messages Pass <em>True</em> if the administrator can delete messages of other users
  * @property can_manage_video_chats Pass <em>True</em> if the administrator can manage video chats
  * @property can_restrict_members Pass <em>True</em> if the administrator can restrict, ban or unban chat members, or access supergroup statistics
@@ -6993,7 +8673,7 @@ pub struct RestrictChatMemberRequest {
  * @property can_post_stories Pass <em>True</em> if the administrator can post stories to the chat
  * @property can_edit_stories Pass <em>True</em> if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive
  * @property can_delete_stories Pass <em>True</em> if the administrator can delete stories posted by other users
- * @property can_post_messages Pass <em>True</em> if the administrator can post messages in the channel, or access channel statistics; for channels only
+ * @property can_post_messages Pass <em>True</em> if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only
  * @property can_edit_messages Pass <em>True</em> if the administrator can edit messages of other users and can pin messages; for channels only
  * @property can_pin_messages Pass <em>True</em> if the administrator can pin messages; for supergroups only
  * @property can_manage_topics Pass <em>True</em> if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only
@@ -7006,7 +8686,7 @@ pub struct PromoteChatMemberRequest {
     pub user_id: Integer,
     /// Pass <em>True</em> if the administrator's presence in the chat is hidden
     pub is_anonymous: Option<bool>,
-    /// Pass <em>True</em> if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.
+    /// Pass <em>True</em> if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.
     pub can_manage_chat: Option<bool>,
     /// Pass <em>True</em> if the administrator can delete messages of other users
     pub can_delete_messages: Option<bool>,
@@ -7026,7 +8706,7 @@ pub struct PromoteChatMemberRequest {
     pub can_edit_stories: Option<bool>,
     /// Pass <em>True</em> if the administrator can delete stories posted by other users
     pub can_delete_stories: Option<bool>,
-    /// Pass <em>True</em> if the administrator can post messages in the channel, or access channel statistics; for channels only
+    /// Pass <em>True</em> if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only
     pub can_post_messages: Option<bool>,
     /// Pass <em>True</em> if the administrator can edit messages of other users and can pin messages; for channels only
     pub can_edit_messages: Option<bool>,
@@ -7161,6 +8841,43 @@ pub struct EditChatInviteLinkRequest {
 }
 
 /**
+ * <p>Use this method to create a <a href="https://telegram.org/blog/superchannels-star-reactions-subscriptions#star-subscriptions">subscription invite link</a> for a channel chat. The bot must have the <em>can_invite_users</em> administrator rights. The link can be edited using the method <a href="#editchatsubscriptioninvitelink">editChatSubscriptionInviteLink</a> or revoked using the method <a href="#revokechatinvitelink">revokeChatInviteLink</a>. Returns the new invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+ *
+ * @property chat_id Unique identifier for the target channel chat or username of the target channel (in the format <code>@channelusername</code>)
+ * @property name Invite link name; 0-32 characters
+ * @property subscription_period The number of seconds the subscription will be active for before the next payment. Currently, it must always be 2592000 (30 days).
+ * @property subscription_price The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat; 1-10000
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct CreateChatSubscriptionInviteLinkRequest {
+    /// Unique identifier for the target channel chat or username of the target channel (in the format <code>@channelusername</code>)
+    pub chat_id: String,
+    /// Invite link name; 0-32 characters
+    pub name: Option<String>,
+    /// The number of seconds the subscription will be active for before the next payment. Currently, it must always be 2592000 (30 days).
+    pub subscription_period: Integer,
+    /// The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat; 1-10000
+    pub subscription_price: Integer
+}
+
+/**
+ * <p>Use this method to edit a subscription invite link created by the bot. The bot must have the <em>can_invite_users</em> administrator rights. Returns the edited invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+ *
+ * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+ * @property invite_link The invite link to edit
+ * @property name Invite link name; 0-32 characters
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct EditChatSubscriptionInviteLinkRequest {
+    /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+    pub chat_id: String,
+    /// The invite link to edit
+    pub invite_link: String,
+    /// Invite link name; 0-32 characters
+    pub name: Option<String>
+}
+
+/**
  * <p>Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the revoked invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
  *
  * @property chat_id Unique identifier of the target chat or username of the target channel (in the format <code>@channelusername</code>)
@@ -7258,12 +8975,15 @@ pub struct SetChatDescriptionRequest {
 /**
  * <p>Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>
  *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message will be pinned
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Identifier of a message to pin
  * @property disable_notification Pass <em>True</em> if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct PinChatMessageRequest {
+    /// Unique identifier of the business connection on behalf of which the message will be pinned
+    pub business_connection_id: Option<String>,
     /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: String,
     /// Identifier of a message to pin
@@ -7275,14 +8995,17 @@ pub struct PinChatMessageRequest {
 /**
  * <p>Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>
  *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message will be unpinned
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
- * @property message_id Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned.
+ * @property message_id Identifier of the message to unpin. Required if <em>business_connection_id</em> is specified. If not specified, the most recent pinned message (by sending date) will be unpinned.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct UnpinChatMessageRequest {
+    /// Unique identifier of the business connection on behalf of which the message will be unpinned
+    pub business_connection_id: Option<String>,
     /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: String,
-    /// Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned.
+    /// Identifier of the message to unpin. Required if <em>business_connection_id</em> is specified. If not specified, the most recent pinned message (by sending date) will be unpinned.
     pub message_id: Option<Integer>
 }
 
@@ -7401,7 +9124,7 @@ pub struct CreateForumTopicRequest {
 }
 
 /**
- * <p>Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>
+ * <p>Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
  * @property message_thread_id Unique identifier for the target message thread of the forum topic
@@ -7477,7 +9200,7 @@ pub struct UnpinAllForumTopicMessagesRequest {
 }
 
 /**
- * <p>Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>
+ * <p>Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
  * @property name New topic name, 1-128 characters
@@ -7769,8 +9492,9 @@ pub struct GetMyDefaultAdministratorRightsRequest {
 /// Updating messages
 
 /**
- * <p>Use this method to edit text and <a href="#games">game</a> messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+ * <p>Use this method to edit text and <a href="#games">game</a> messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
  *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message to be edited was sent
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
@@ -7782,6 +9506,8 @@ pub struct GetMyDefaultAdministratorRightsRequest {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct EditMessageTextRequest {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
@@ -7801,8 +9527,9 @@ pub struct EditMessageTextRequest {
 }
 
 /**
- * <p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+ * <p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
  *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message to be edited was sent
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
@@ -7814,6 +9541,8 @@ pub struct EditMessageTextRequest {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct EditMessageCaptionRequest {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
@@ -7833,8 +9562,9 @@ pub struct EditMessageCaptionRequest {
 }
 
 /**
- * <p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+ * <p>Use this method to edit animation, audio, document, photo, or video messages, or to add media to text messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
  *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message to be edited was sent
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
@@ -7843,6 +9573,8 @@ pub struct EditMessageCaptionRequest {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct EditMessageMediaRequest {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
@@ -7858,6 +9590,7 @@ pub struct EditMessageMediaRequest {
 /**
  * <p>Use this method to edit live location messages. A location can be edited until its <em>live_period</em> expires or editing is explicitly disabled by a call to <a href="#stopmessagelivelocation">stopMessageLiveLocation</a>. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
  *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message to be edited was sent
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
@@ -7871,6 +9604,8 @@ pub struct EditMessageMediaRequest {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct EditMessageLiveLocationRequest {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
@@ -7896,6 +9631,7 @@ pub struct EditMessageLiveLocationRequest {
 /**
  * <p>Use this method to stop updating a live location message before <em>live_period</em> expires. On success, if the message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
  *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message to be edited was sent
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message with live location to stop
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
@@ -7903,6 +9639,8 @@ pub struct EditMessageLiveLocationRequest {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct StopMessageLiveLocationRequest {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Identifier of the message with live location to stop
@@ -7914,8 +9652,32 @@ pub struct StopMessageLiveLocationRequest {
 }
 
 /**
- * <p>Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+ * <p>Use this method to edit a checklist on behalf of a connected business account. On success, the edited <a href="#message">Message</a> is returned.</p>
  *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message will be sent
+ * @property chat_id Unique identifier for the target chat
+ * @property message_id Unique identifier for the target message
+ * @property checklist A JSON-serialized object for the new checklist
+ * @property reply_markup A JSON-serialized object for the new inline keyboard for the message
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct EditMessageChecklistRequest {
+    /// Unique identifier of the business connection on behalf of which the message will be sent
+    pub business_connection_id: String,
+    /// Unique identifier for the target chat
+    pub chat_id: Integer,
+    /// Unique identifier for the target message
+    pub message_id: Integer,
+    /// A JSON-serialized object for the new checklist
+    pub checklist: InputChecklist,
+    /// A JSON-serialized object for the new inline keyboard for the message
+    pub reply_markup: Option<InlineKeyboardMarkup>
+}
+
+/**
+ * <p>Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message to be edited was sent
  * @property chat_id Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
  * @property inline_message_id Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message
@@ -7923,6 +9685,8 @@ pub struct StopMessageLiveLocationRequest {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct EditMessageReplyMarkupRequest {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: Option<String>,
     /// Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit
@@ -7936,12 +9700,15 @@ pub struct EditMessageReplyMarkupRequest {
 /**
  * <p>Use this method to stop a poll which was sent by the bot. On success, the stopped <a href="#poll">Poll</a> is returned.</p>
  *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message to be edited was sent
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Identifier of the original message with the poll
  * @property reply_markup A JSON-serialized object for a new message <a href="/bots/features#inline-keyboards">inline keyboard</a>.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct StopPollRequest {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
     pub chat_id: String,
     /// Identifier of the original message with the poll
@@ -7978,6 +9745,427 @@ pub struct DeleteMessagesRequest {
     pub message_ids: Vec<Integer>
 }
 
+/**
+ * <p>Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns <em>True</em> on success.</p>
+ *
+ * @property user_id Required if <em>chat_id</em> is not specified. Unique identifier of the target user who will receive the gift.
+ * @property chat_id Required if <em>user_id</em> is not specified. Unique identifier for the chat or username of the channel (in the format <code>@channelusername</code>) that will receive the gift.
+ * @property gift_id Identifier of the gift
+ * @property pay_for_upgrade Pass <em>True</em> to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver
+ * @property text Text that will be shown along with the gift; 0-128 characters
+ * @property text_parse_mode Mode for parsing entities in the text. See <a href="#formatting-options">formatting options</a> for more details. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+ * @property text_entities A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct SendGiftRequest {
+    /// Required if <em>chat_id</em> is not specified. Unique identifier of the target user who will receive the gift.
+    pub user_id: Option<Integer>,
+    /// Required if <em>user_id</em> is not specified. Unique identifier for the chat or username of the channel (in the format <code>@channelusername</code>) that will receive the gift.
+    pub chat_id: Option<String>,
+    /// Identifier of the gift
+    pub gift_id: String,
+    /// Pass <em>True</em> to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver
+    pub pay_for_upgrade: Option<bool>,
+    /// Text that will be shown along with the gift; 0-128 characters
+    pub text: Option<String>,
+    /// Mode for parsing entities in the text. See <a href="#formatting-options">formatting options</a> for more details. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+    pub text_parse_mode: Option<String>,
+    /// A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+    pub text_entities: Option<Vec<MessageEntity>>
+}
+
+/**
+ * <p>Gifts a Telegram Premium subscription to the given user. Returns <em>True</em> on success.</p>
+ *
+ * @property user_id Unique identifier of the target user who will receive a Telegram Premium subscription
+ * @property month_count Number of months the Telegram Premium subscription will be active for the user; must be one of 3, 6, or 12
+ * @property star_count Number of Telegram Stars to pay for the Telegram Premium subscription; must be 1000 for 3 months, 1500 for 6 months, and 2500 for 12 months
+ * @property text Text that will be shown along with the service message about the subscription; 0-128 characters
+ * @property text_parse_mode Mode for parsing entities in the text. See <a href="#formatting-options">formatting options</a> for more details. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+ * @property text_entities A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct GiftPremiumSubscriptionRequest {
+    /// Unique identifier of the target user who will receive a Telegram Premium subscription
+    pub user_id: Integer,
+    /// Number of months the Telegram Premium subscription will be active for the user; must be one of 3, 6, or 12
+    pub month_count: Integer,
+    /// Number of Telegram Stars to pay for the Telegram Premium subscription; must be 1000 for 3 months, 1500 for 6 months, and 2500 for 12 months
+    pub star_count: Integer,
+    /// Text that will be shown along with the service message about the subscription; 0-128 characters
+    pub text: Option<String>,
+    /// Mode for parsing entities in the text. See <a href="#formatting-options">formatting options</a> for more details. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+    pub text_parse_mode: Option<String>,
+    /// A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+    pub text_entities: Option<Vec<MessageEntity>>
+}
+
+/**
+ * <p>Verifies a user <a href="https://telegram.org/verify#third-party-verification">on behalf of the organization</a> which is represented by the bot. Returns <em>True</em> on success.</p>
+ *
+ * @property user_id Unique identifier of the target user
+ * @property custom_description Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct VerifyUserRequest {
+    /// Unique identifier of the target user
+    pub user_id: Integer,
+    /// Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.
+    pub custom_description: Option<String>
+}
+
+/**
+ * <p>Verifies a chat <a href="https://telegram.org/verify#third-party-verification">on behalf of the organization</a> which is represented by the bot. Returns <em>True</em> on success.</p>
+ *
+ * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+ * @property custom_description Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct VerifyChatRequest {
+    /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+    pub chat_id: String,
+    /// Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.
+    pub custom_description: Option<String>
+}
+
+/**
+ * <p>Removes verification from a user who is currently verified <a href="https://telegram.org/verify#third-party-verification">on behalf of the organization</a> represented by the bot. Returns <em>True</em> on success.</p>
+ *
+ * @property user_id Unique identifier of the target user
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct RemoveUserVerificationRequest {
+    /// Unique identifier of the target user
+    pub user_id: Integer
+}
+
+/**
+ * <p>Removes verification from a chat that is currently verified <a href="https://telegram.org/verify#third-party-verification">on behalf of the organization</a> represented by the bot. Returns <em>True</em> on success.</p>
+ *
+ * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct RemoveChatVerificationRequest {
+    /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+    pub chat_id: String
+}
+
+/**
+ * <p>Marks incoming message as read on behalf of a business account. Requires the <em>can_read_messages</em> business bot right. Returns <em>True</em> on success.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which to read the message
+ * @property chat_id Unique identifier of the chat in which the message was received. The chat must have been active in the last 24 hours.
+ * @property message_id Unique identifier of the message to mark as read
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ReadBusinessMessageRequest {
+    /// Unique identifier of the business connection on behalf of which to read the message
+    pub business_connection_id: String,
+    /// Unique identifier of the chat in which the message was received. The chat must have been active in the last 24 hours.
+    pub chat_id: Integer,
+    /// Unique identifier of the message to mark as read
+    pub message_id: Integer
+}
+
+/**
+ * <p>Delete messages on behalf of a business account. Requires the <em>can_delete_sent_messages</em> business bot right to delete messages sent by the bot itself, or the <em>can_delete_all_messages</em> business bot right to delete any message. Returns <em>True</em> on success.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which to delete the messages
+ * @property message_ids A JSON-serialized list of 1-100 identifiers of messages to delete. All messages must be from the same chat. See <a href="#deletemessage">deleteMessage</a> for limitations on which messages can be deleted
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct DeleteBusinessMessagesRequest {
+    /// Unique identifier of the business connection on behalf of which to delete the messages
+    pub business_connection_id: String,
+    /// A JSON-serialized list of 1-100 identifiers of messages to delete. All messages must be from the same chat. See <a href="#deletemessage">deleteMessage</a> for limitations on which messages can be deleted
+    pub message_ids: Vec<Integer>
+}
+
+/**
+ * <p>Changes the first and last name of a managed business account. Requires the <em>can_change_name</em> business bot right. Returns <em>True</em> on success.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection
+ * @property first_name The new value of the first name for the business account; 1-64 characters
+ * @property last_name The new value of the last name for the business account; 0-64 characters
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct SetBusinessAccountNameRequest {
+    /// Unique identifier of the business connection
+    pub business_connection_id: String,
+    /// The new value of the first name for the business account; 1-64 characters
+    pub first_name: String,
+    /// The new value of the last name for the business account; 0-64 characters
+    pub last_name: Option<String>
+}
+
+/**
+ * <p>Changes the username of a managed business account. Requires the <em>can_change_username</em> business bot right. Returns <em>True</em> on success.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection
+ * @property username The new value of the username for the business account; 0-32 characters
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct SetBusinessAccountUsernameRequest {
+    /// Unique identifier of the business connection
+    pub business_connection_id: String,
+    /// The new value of the username for the business account; 0-32 characters
+    pub username: Option<String>
+}
+
+/**
+ * <p>Changes the bio of a managed business account. Requires the <em>can_change_bio</em> business bot right. Returns <em>True</em> on success.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection
+ * @property bio The new value of the bio for the business account; 0-140 characters
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct SetBusinessAccountBioRequest {
+    /// Unique identifier of the business connection
+    pub business_connection_id: String,
+    /// The new value of the bio for the business account; 0-140 characters
+    pub bio: Option<String>
+}
+
+/**
+ * <p>Changes the profile photo of a managed business account. Requires the <em>can_edit_profile_photo</em> business bot right. Returns <em>True</em> on success.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection
+ * @property photo The new profile photo to set
+ * @property is_public Pass <em>True</em> to set the public photo, which will be visible even if the main photo is hidden by the business account's privacy settings. An account can have only one public photo.
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct SetBusinessAccountProfilePhotoRequest {
+    /// Unique identifier of the business connection
+    pub business_connection_id: String,
+    /// The new profile photo to set
+    pub photo: InputProfilePhoto,
+    /// Pass <em>True</em> to set the public photo, which will be visible even if the main photo is hidden by the business account's privacy settings. An account can have only one public photo.
+    pub is_public: Option<bool>
+}
+
+/**
+ * <p>Removes the current profile photo of a managed business account. Requires the <em>can_edit_profile_photo</em> business bot right. Returns <em>True</em> on success.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection
+ * @property is_public Pass <em>True</em> to remove the public photo, which is visible even if the main photo is hidden by the business account's privacy settings. After the main photo is removed, the previous profile photo (if present) becomes the main photo.
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct RemoveBusinessAccountProfilePhotoRequest {
+    /// Unique identifier of the business connection
+    pub business_connection_id: String,
+    /// Pass <em>True</em> to remove the public photo, which is visible even if the main photo is hidden by the business account's privacy settings. After the main photo is removed, the previous profile photo (if present) becomes the main photo.
+    pub is_public: Option<bool>
+}
+
+/**
+ * <p>Changes the privacy settings pertaining to incoming gifts in a managed business account. Requires the <em>can_change_gift_settings</em> business bot right. Returns <em>True</em> on success.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection
+ * @property show_gift_button Pass <em>True</em>, if a button for sending a gift to the user or by the business account must always be shown in the input field
+ * @property accepted_gift_types Types of gifts accepted by the business account
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct SetBusinessAccountGiftSettingsRequest {
+    /// Unique identifier of the business connection
+    pub business_connection_id: String,
+    /// Pass <em>True</em>, if a button for sending a gift to the user or by the business account must always be shown in the input field
+    pub show_gift_button: bool,
+    /// Types of gifts accepted by the business account
+    pub accepted_gift_types: AcceptedGiftTypes
+}
+
+/**
+ * <p>Returns the amount of Telegram Stars owned by a managed business account. Requires the <em>can_view_gifts_and_stars</em> business bot right. Returns <a href="#staramount">StarAmount</a> on success.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct GetBusinessAccountStarBalanceRequest {
+    /// Unique identifier of the business connection
+    pub business_connection_id: String
+}
+
+/**
+ * <p>Transfers Telegram Stars from the business account balance to the bot's balance. Requires the <em>can_transfer_stars</em> business bot right. Returns <em>True</em> on success.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection
+ * @property star_count Number of Telegram Stars to transfer; 1-10000
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct TransferBusinessAccountStarsRequest {
+    /// Unique identifier of the business connection
+    pub business_connection_id: String,
+    /// Number of Telegram Stars to transfer; 1-10000
+    pub star_count: Integer
+}
+
+/**
+ * <p>Returns the gifts received and owned by a managed business account. Requires the <em>can_view_gifts_and_stars</em> business bot right. Returns <a href="#ownedgifts">OwnedGifts</a> on success.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection
+ * @property exclude_unsaved Pass <em>True</em> to exclude gifts that aren't saved to the account's profile page
+ * @property exclude_saved Pass <em>True</em> to exclude gifts that are saved to the account's profile page
+ * @property exclude_unlimited Pass <em>True</em> to exclude gifts that can be purchased an unlimited number of times
+ * @property exclude_limited Pass <em>True</em> to exclude gifts that can be purchased a limited number of times
+ * @property exclude_unique Pass <em>True</em> to exclude unique gifts
+ * @property sort_by_price Pass <em>True</em> to sort results by gift price instead of send date. Sorting is applied before pagination.
+ * @property offset Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
+ * @property limit The maximum number of gifts to be returned; 1-100. Defaults to 100
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct GetBusinessAccountGiftsRequest {
+    /// Unique identifier of the business connection
+    pub business_connection_id: String,
+    /// Pass <em>True</em> to exclude gifts that aren't saved to the account's profile page
+    pub exclude_unsaved: Option<bool>,
+    /// Pass <em>True</em> to exclude gifts that are saved to the account's profile page
+    pub exclude_saved: Option<bool>,
+    /// Pass <em>True</em> to exclude gifts that can be purchased an unlimited number of times
+    pub exclude_unlimited: Option<bool>,
+    /// Pass <em>True</em> to exclude gifts that can be purchased a limited number of times
+    pub exclude_limited: Option<bool>,
+    /// Pass <em>True</em> to exclude unique gifts
+    pub exclude_unique: Option<bool>,
+    /// Pass <em>True</em> to sort results by gift price instead of send date. Sorting is applied before pagination.
+    pub sort_by_price: Option<bool>,
+    /// Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
+    pub offset: Option<String>,
+    /// The maximum number of gifts to be returned; 1-100. Defaults to 100
+    pub limit: Option<Integer>
+}
+
+/**
+ * <p>Converts a given regular gift to Telegram Stars. Requires the <em>can_convert_gifts_to_stars</em> business bot right. Returns <em>True</em> on success.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection
+ * @property owned_gift_id Unique identifier of the regular gift that should be converted to Telegram Stars
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ConvertGiftToStarsRequest {
+    /// Unique identifier of the business connection
+    pub business_connection_id: String,
+    /// Unique identifier of the regular gift that should be converted to Telegram Stars
+    pub owned_gift_id: String
+}
+
+/**
+ * <p>Upgrades a given regular gift to a unique gift. Requires the <em>can_transfer_and_upgrade_gifts</em> business bot right. Additionally requires the <em>can_transfer_stars</em> business bot right if the upgrade is paid. Returns <em>True</em> on success.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection
+ * @property owned_gift_id Unique identifier of the regular gift that should be upgraded to a unique one
+ * @property keep_original_details Pass <em>True</em> to keep the original gift text, sender and receiver in the upgraded gift
+ * @property star_count The amount of Telegram Stars that will be paid for the upgrade from the business account balance. If <code>gift.prepaid_upgrade_star_count &gt; 0</code>, then pass 0, otherwise, the <em>can_transfer_stars</em> business bot right is required and <code>gift.upgrade_star_count</code> must be passed.
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct UpgradeGiftRequest {
+    /// Unique identifier of the business connection
+    pub business_connection_id: String,
+    /// Unique identifier of the regular gift that should be upgraded to a unique one
+    pub owned_gift_id: String,
+    /// Pass <em>True</em> to keep the original gift text, sender and receiver in the upgraded gift
+    pub keep_original_details: Option<bool>,
+    /// The amount of Telegram Stars that will be paid for the upgrade from the business account balance. If <code>gift.prepaid_upgrade_star_count &gt; 0</code>, then pass 0, otherwise, the <em>can_transfer_stars</em> business bot right is required and <code>gift.upgrade_star_count</code> must be passed.
+    pub star_count: Option<Integer>
+}
+
+/**
+ * <p>Transfers an owned unique gift to another user. Requires the <em>can_transfer_and_upgrade_gifts</em> business bot right. Requires <em>can_transfer_stars</em> business bot right if the transfer is paid. Returns <em>True</em> on success.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection
+ * @property owned_gift_id Unique identifier of the regular gift that should be transferred
+ * @property new_owner_chat_id Unique identifier of the chat which will own the gift. The chat must be active in the last 24 hours.
+ * @property star_count The amount of Telegram Stars that will be paid for the transfer from the business account balance. If positive, then the <em>can_transfer_stars</em> business bot right is required.
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct TransferGiftRequest {
+    /// Unique identifier of the business connection
+    pub business_connection_id: String,
+    /// Unique identifier of the regular gift that should be transferred
+    pub owned_gift_id: String,
+    /// Unique identifier of the chat which will own the gift. The chat must be active in the last 24 hours.
+    pub new_owner_chat_id: Integer,
+    /// The amount of Telegram Stars that will be paid for the transfer from the business account balance. If positive, then the <em>can_transfer_stars</em> business bot right is required.
+    pub star_count: Option<Integer>
+}
+
+/**
+ * <p>Posts a story on behalf of a managed business account. Requires the <em>can_manage_stories</em> business bot right. Returns <a href="#story">Story</a> on success.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection
+ * @property content Content of the story
+ * @property active_period Period after which the story is moved to the archive, in seconds; must be one of <code>6 * 3600</code>, <code>12 * 3600</code>, <code>86400</code>, or <code>2 * 86400</code>
+ * @property caption Caption of the story, 0-2048 characters after entities parsing
+ * @property parse_mode Mode for parsing entities in the story caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+ * @property areas A JSON-serialized list of clickable areas to be shown on the story
+ * @property post_to_chat_page Pass <em>True</em> to keep the story accessible after it expires
+ * @property protect_content Pass <em>True</em> if the content of the story must be protected from forwarding and screenshotting
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct PostStoryRequest {
+    /// Unique identifier of the business connection
+    pub business_connection_id: String,
+    /// Content of the story
+    pub content: InputStoryContent,
+    /// Period after which the story is moved to the archive, in seconds; must be one of <code>6 * 3600</code>, <code>12 * 3600</code>, <code>86400</code>, or <code>2 * 86400</code>
+    pub active_period: Integer,
+    /// Caption of the story, 0-2048 characters after entities parsing
+    pub caption: Option<String>,
+    /// Mode for parsing entities in the story caption. See <a href="#formatting-options">formatting options</a> for more details.
+    pub parse_mode: Option<ParseMode>,
+    /// A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    pub caption_entities: Option<Vec<MessageEntity>>,
+    /// A JSON-serialized list of clickable areas to be shown on the story
+    pub areas: Option<Vec<StoryArea>>,
+    /// Pass <em>True</em> to keep the story accessible after it expires
+    pub post_to_chat_page: Option<bool>,
+    /// Pass <em>True</em> if the content of the story must be protected from forwarding and screenshotting
+    pub protect_content: Option<bool>
+}
+
+/**
+ * <p>Edits a story previously posted by the bot on behalf of a managed business account. Requires the <em>can_manage_stories</em> business bot right. Returns <a href="#story">Story</a> on success.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection
+ * @property story_id Unique identifier of the story to edit
+ * @property content Content of the story
+ * @property caption Caption of the story, 0-2048 characters after entities parsing
+ * @property parse_mode Mode for parsing entities in the story caption. See <a href="#formatting-options">formatting options</a> for more details.
+ * @property caption_entities A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+ * @property areas A JSON-serialized list of clickable areas to be shown on the story
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct EditStoryRequest {
+    /// Unique identifier of the business connection
+    pub business_connection_id: String,
+    /// Unique identifier of the story to edit
+    pub story_id: Integer,
+    /// Content of the story
+    pub content: InputStoryContent,
+    /// Caption of the story, 0-2048 characters after entities parsing
+    pub caption: Option<String>,
+    /// Mode for parsing entities in the story caption. See <a href="#formatting-options">formatting options</a> for more details.
+    pub parse_mode: Option<ParseMode>,
+    /// A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em>
+    pub caption_entities: Option<Vec<MessageEntity>>,
+    /// A JSON-serialized list of clickable areas to be shown on the story
+    pub areas: Option<Vec<StoryArea>>
+}
+
+/**
+ * <p>Deletes a story previously posted by the bot on behalf of a managed business account. Requires the <em>can_manage_stories</em> business bot right. Returns <em>True</em> on success.</p>
+ *
+ * @property business_connection_id Unique identifier of the business connection
+ * @property story_id Unique identifier of the story to delete
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct DeleteStoryRequest {
+    /// Unique identifier of the business connection
+    pub business_connection_id: String,
+    /// Unique identifier of the story to delete
+    pub story_id: Integer
+}
+
 
 /// Stickers
 
@@ -7991,6 +10179,7 @@ pub struct DeleteMessagesRequest {
  * @property emoji Emoji associated with the sticker; only for just uploaded stickers
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property message_effect_id Unique identifier of the message effect to be added to the message; for private chats only
  * @property reply_parameters Description of the message to reply to
  * @property reply_markup Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user
@@ -8011,6 +10200,8 @@ pub struct SendStickerRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
     /// Description of the message to reply to
@@ -8207,8 +10398,8 @@ pub struct SetStickerSetTitleRequest {
  *
  * @property name Sticker set name
  * @property user_id User identifier of the sticker set owner
- * @property thumbnail A <strong>.WEBP</strong> or <strong>.PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a <strong>.TGS</strong> animation with a thumbnail up to 32 kilobytes in size (see <a href="/stickers#animated-sticker-requirements"></a><a href="https://core.telegram.org/stickers#animated-sticker-requirements">https://core.telegram.org/stickers#animated-sticker-requirements</a> for animated sticker technical requirements), or a <strong>WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href="/stickers#video-sticker-requirements"></a><a href="https://core.telegram.org/stickers#video-sticker-requirements">https://core.telegram.org/stickers#video-sticker-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a>. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.
- * @property format Format of the thumbnail, must be one of “static” for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, “animated” for a <strong>.TGS</strong> animation, or “video” for a <strong>WEBM</strong> video
+ * @property thumbnail A <strong>.WEBP</strong> or <strong>.PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a <strong>.TGS</strong> animation with a thumbnail up to 32 kilobytes in size (see <a href="/stickers#animation-requirements"></a><a href="https://core.telegram.org/stickers#animation-requirements">https://core.telegram.org/stickers#animation-requirements</a> for animated sticker technical requirements), or a <strong>.WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href="/stickers#video-requirements"></a><a href="https://core.telegram.org/stickers#video-requirements">https://core.telegram.org/stickers#video-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a>. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.
+ * @property format Format of the thumbnail, must be one of “static” for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, “animated” for a <strong>.TGS</strong> animation, or “video” for a <strong>.WEBM</strong> video
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SetStickerSetThumbnailRequest {
@@ -8216,9 +10407,9 @@ pub struct SetStickerSetThumbnailRequest {
     pub name: String,
     /// User identifier of the sticker set owner
     pub user_id: Integer,
-    /// A <strong>.WEBP</strong> or <strong>.PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a <strong>.TGS</strong> animation with a thumbnail up to 32 kilobytes in size (see <a href="/stickers#animated-sticker-requirements"></a><a href="https://core.telegram.org/stickers#animated-sticker-requirements">https://core.telegram.org/stickers#animated-sticker-requirements</a> for animated sticker technical requirements), or a <strong>WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href="/stickers#video-sticker-requirements"></a><a href="https://core.telegram.org/stickers#video-sticker-requirements">https://core.telegram.org/stickers#video-sticker-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a>. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.
+    /// A <strong>.WEBP</strong> or <strong>.PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a <strong>.TGS</strong> animation with a thumbnail up to 32 kilobytes in size (see <a href="/stickers#animation-requirements"></a><a href="https://core.telegram.org/stickers#animation-requirements">https://core.telegram.org/stickers#animation-requirements</a> for animated sticker technical requirements), or a <strong>.WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href="/stickers#video-requirements"></a><a href="https://core.telegram.org/stickers#video-requirements">https://core.telegram.org/stickers#video-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a>. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.
     pub thumbnail: Option<String>,
-    /// Format of the thumbnail, must be one of “static” for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, “animated” for a <strong>.TGS</strong> animation, or “video” for a <strong>WEBM</strong> video
+    /// Format of the thumbnail, must be one of “static” for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, “animated” for a <strong>.TGS</strong> animation, or “video” for a <strong>.WEBM</strong> video
     pub format: String
 }
 
@@ -8290,6 +10481,32 @@ pub struct AnswerWebAppQueryRequest {
     pub result: InlineQueryResult
 }
 
+/**
+ * <p>Stores a message that can be sent by a user of a Mini App. Returns a <a href="#preparedinlinemessage">PreparedInlineMessage</a> object.</p>
+ *
+ * @property user_id Unique identifier of the target user that can use the prepared message
+ * @property result A JSON-serialized object describing the message to be sent
+ * @property allow_user_chats Pass <em>True</em> if the message can be sent to private chats with users
+ * @property allow_bot_chats Pass <em>True</em> if the message can be sent to private chats with bots
+ * @property allow_group_chats Pass <em>True</em> if the message can be sent to group and supergroup chats
+ * @property allow_channel_chats Pass <em>True</em> if the message can be sent to channel chats
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct SavePreparedInlineMessageRequest {
+    /// Unique identifier of the target user that can use the prepared message
+    pub user_id: Integer,
+    /// A JSON-serialized object describing the message to be sent
+    pub result: InlineQueryResult,
+    /// Pass <em>True</em> if the message can be sent to private chats with users
+    pub allow_user_chats: Option<bool>,
+    /// Pass <em>True</em> if the message can be sent to private chats with bots
+    pub allow_bot_chats: Option<bool>,
+    /// Pass <em>True</em> if the message can be sent to group and supergroup chats
+    pub allow_group_chats: Option<bool>,
+    /// Pass <em>True</em> if the message can be sent to channel chats
+    pub allow_channel_chats: Option<bool>
+}
+
 
 /// Payments
 
@@ -8300,7 +10517,7 @@ pub struct AnswerWebAppQueryRequest {
  * @property message_thread_id Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
  * @property title Product name, 1-32 characters
  * @property description Product description, 1-255 characters
- * @property payload Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+ * @property payload Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.
  * @property provider_token Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a>. Pass an empty string for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
  * @property currency Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>. Pass “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
  * @property prices Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
@@ -8321,6 +10538,7 @@ pub struct AnswerWebAppQueryRequest {
  * @property is_flexible Pass <em>True</em> if the final price depends on the shipping method. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property message_effect_id Unique identifier of the message effect to be added to the message; for private chats only
  * @property reply_parameters Description of the message to reply to
  * @property reply_markup A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>. If empty, one 'Pay <code>total price</code>' button will be shown. If not empty, the first button must be a Pay button.
@@ -8335,7 +10553,7 @@ pub struct SendInvoiceRequest {
     pub title: String,
     /// Product description, 1-255 characters
     pub description: String,
-    /// Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+    /// Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.
     pub payload: String,
     /// Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a>. Pass an empty string for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
     pub provider_token: Option<String>,
@@ -8377,6 +10595,8 @@ pub struct SendInvoiceRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
     /// Description of the message to reply to
@@ -8388,12 +10608,14 @@ pub struct SendInvoiceRequest {
 /**
  * <p>Use this method to create a link for an invoice. Returns the created invoice link as <em>String</em> on success.</p>
  *
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the link will be created. For payments in <a href="https://t.me/BotNews/90">Telegram Stars</a> only.
  * @property title Product name, 1-32 characters
  * @property description Product description, 1-255 characters
- * @property payload Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+ * @property payload Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.
  * @property provider_token Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a>. Pass an empty string for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
  * @property currency Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>. Pass “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
  * @property prices Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
+ * @property subscription_period The number of seconds the subscription will be active for before the next payment. The currency must be set to “XTR” (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 10000 Telegram Stars.
  * @property max_tip_amount The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
  * @property suggested_tip_amounts A JSON-serialized array of suggested amounts of tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>.
  * @property provider_data JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
@@ -8411,11 +10633,13 @@ pub struct SendInvoiceRequest {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct CreateInvoiceLinkRequest {
+    /// Unique identifier of the business connection on behalf of which the link will be created. For payments in <a href="https://t.me/BotNews/90">Telegram Stars</a> only.
+    pub business_connection_id: Option<String>,
     /// Product name, 1-32 characters
     pub title: String,
     /// Product description, 1-255 characters
     pub description: String,
-    /// Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+    /// Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.
     pub payload: String,
     /// Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a>. Pass an empty string for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
     pub provider_token: Option<String>,
@@ -8423,6 +10647,8 @@ pub struct CreateInvoiceLinkRequest {
     pub currency: String,
     /// Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
     pub prices: Vec<LabeledPrice>,
+    /// The number of seconds the subscription will be active for before the next payment. The currency must be set to “XTR” (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 10000 Telegram Stars.
+    pub subscription_period: Option<Integer>,
     /// The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>.
     pub max_tip_amount: Option<Integer>,
     /// A JSON-serialized array of suggested amounts of tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>.
@@ -8459,7 +10685,7 @@ pub struct CreateInvoiceLinkRequest {
  * @property shipping_query_id Unique identifier for the query to be answered
  * @property ok Pass <em>True</em> if delivery to the specified address is possible and <em>False</em> if there are any problems (for example, if delivery to the specified address is not possible)
  * @property shipping_options Required if <em>ok</em> is <em>True</em>. A JSON-serialized array of available shipping options.
- * @property error_message Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.
+ * @property error_message Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains why it is impossible to complete the order (e.g. “Sorry, delivery to your desired address is unavailable”). Telegram will display this message to the user.
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct AnswerShippingQueryRequest {
@@ -8469,7 +10695,7 @@ pub struct AnswerShippingQueryRequest {
     pub ok: bool,
     /// Required if <em>ok</em> is <em>True</em>. A JSON-serialized array of available shipping options.
     pub shipping_options: Option<Vec<ShippingOption>>,
-    /// Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.
+    /// Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains why it is impossible to complete the order (e.g. “Sorry, delivery to your desired address is unavailable”). Telegram will display this message to the user.
     pub error_message: Option<String>
 }
 
@@ -8491,6 +10717,20 @@ pub struct AnswerPreCheckoutQueryRequest {
 }
 
 /**
+ * <p>Returns the bot's Telegram Star transactions in chronological order. On success, returns a <a href="#startransactions">StarTransactions</a> object.</p>
+ *
+ * @property offset Number of transactions to skip in the response
+ * @property limit The maximum number of transactions to be retrieved. Values between 1-100 are accepted. Defaults to 100.
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct GetStarTransactionsRequest {
+    /// Number of transactions to skip in the response
+    pub offset: Option<Integer>,
+    /// The maximum number of transactions to be retrieved. Values between 1-100 are accepted. Defaults to 100.
+    pub limit: Option<Integer>
+}
+
+/**
  * <p>Refunds a successful payment in <a href="https://t.me/BotNews/90">Telegram Stars</a>. Returns <em>True</em> on success.</p>
  *
  * @property user_id Identifier of the user whose payment will be refunded
@@ -8502,6 +10742,23 @@ pub struct RefundStarPaymentRequest {
     pub user_id: Integer,
     /// Telegram payment identifier
     pub telegram_payment_charge_id: String
+}
+
+/**
+ * <p>Allows the bot to cancel or re-enable extension of a subscription paid in Telegram Stars. Returns <em>True</em> on success.</p>
+ *
+ * @property user_id Identifier of the user whose subscription will be edited
+ * @property telegram_payment_charge_id Telegram payment identifier for the subscription
+ * @property is_canceled Pass <em>True</em> to cancel extension of the user subscription; the subscription must be active up to the end of the current subscription period. Pass <em>False</em> to allow the user to re-enable a subscription that was previously canceled by the bot.
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct EditUserStarSubscriptionRequest {
+    /// Identifier of the user whose subscription will be edited
+    pub user_id: Integer,
+    /// Telegram payment identifier for the subscription
+    pub telegram_payment_charge_id: String,
+    /// Pass <em>True</em> to cancel extension of the user subscription; the subscription must be active up to the end of the current subscription period. Pass <em>False</em> to allow the user to re-enable a subscription that was previously canceled by the bot.
+    pub is_canceled: bool
 }
 
 
@@ -8533,6 +10790,7 @@ pub struct SetPassportDataErrorsRequest {
  * @property game_short_name Short name of the game, serves as the unique identifier for the game. Set up your games via <a href="https://t.me/botfather">@BotFather</a>.
  * @property disable_notification Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.
  * @property protect_content Protects the contents of the sent message from forwarding and saving
+ * @property allow_paid_broadcast Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
  * @property message_effect_id Unique identifier of the message effect to be added to the message; for private chats only
  * @property reply_parameters Description of the message to reply to
  * @property reply_markup A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.
@@ -8551,6 +10809,8 @@ pub struct SendGameRequest {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+    pub allow_paid_broadcast: Option<bool>,
     /// Unique identifier of the message effect to be added to the message; for private chats only
     pub message_effect_id: Option<String>,
     /// Description of the message to reply to

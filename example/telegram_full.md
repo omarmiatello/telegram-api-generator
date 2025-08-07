@@ -5,7 +5,7 @@
 ### Data Types
 #### Update
 
-    Update(update_id: Integer, message: Message, edited_message: Message, channel_post: Message, edited_channel_post: Message, business_connection: BusinessConnection, business_message: Message, edited_business_message: Message, deleted_business_messages: BusinessMessagesDeleted, message_reaction: MessageReactionUpdated, message_reaction_count: MessageReactionCountUpdated, inline_query: InlineQuery, chosen_inline_result: ChosenInlineResult, callback_query: CallbackQuery, shipping_query: ShippingQuery, pre_checkout_query: PreCheckoutQuery, poll: Poll, poll_answer: PollAnswer, my_chat_member: ChatMemberUpdated, chat_member: ChatMemberUpdated, chat_join_request: ChatJoinRequest, chat_boost: ChatBoostUpdated, removed_chat_boost: ChatBoostRemoved)
+    Update(update_id: Integer, message: Message, edited_message: Message, channel_post: Message, edited_channel_post: Message, business_connection: BusinessConnection, business_message: Message, edited_business_message: Message, deleted_business_messages: BusinessMessagesDeleted, message_reaction: MessageReactionUpdated, message_reaction_count: MessageReactionCountUpdated, inline_query: InlineQuery, chosen_inline_result: ChosenInlineResult, callback_query: CallbackQuery, shipping_query: ShippingQuery, pre_checkout_query: PreCheckoutQuery, purchased_paid_media: PaidMediaPurchased, poll: Poll, poll_answer: PollAnswer, my_chat_member: ChatMemberUpdated, chat_member: ChatMemberUpdated, chat_join_request: ChatJoinRequest, chat_boost: ChatBoostUpdated, removed_chat_boost: ChatBoostRemoved)
 
 <p>This <a href="#available-types">object</a> represents an incoming update.<br>At most <strong>one</strong> of the optional parameters can be present in any given update.</p>
 
@@ -27,6 +27,7 @@
 | callback_query | CallbackQuery | false | <em>Optional</em>. New incoming callback query |
 | shipping_query | ShippingQuery | false | <em>Optional</em>. New incoming shipping query. Only for invoices with flexible price |
 | pre_checkout_query | PreCheckoutQuery | false | <em>Optional</em>. New incoming pre-checkout query. Contains full information about checkout |
+| purchased_paid_media | PaidMediaPurchased | false | <em>Optional</em>. A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat |
 | poll | Poll | false | <em>Optional</em>. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot |
 | poll_answer | PollAnswer | false | <em>Optional</em>. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself. |
 | my_chat_member | ChatMemberUpdated | false | <em>Optional</em>. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user. |
@@ -68,13 +69,13 @@
 | offset | Integer | false | Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as <a href="#getupdates">getUpdates</a> is called with an <em>offset</em> higher than its <em>update_id</em>. The negative offset can be specified to retrieve updates starting from <em>-offset</em> update from the end of the updates queue. All previous updates will be forgotten. |
 | limit | Integer | false | Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults to 100. |
 | timeout | Integer | false | Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only. |
-| allowed_updates | List<String> | false | A JSON-serialized list of the update types you want your bot to receive. For example, specify <code>["message", "edited_channel_post", "callback_query"]</code> to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em>, <em>message_reaction</em>, and <em>message_reaction_count</em> (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time. |
+| allowed_updates | List<String> | false | A JSON-serialized list of the update types you want your bot to receive. For example, specify <code>["message", "edited_channel_post", "callback_query"]</code> to only receive updates of these types. See <a href="#update">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em>, <em>message_reaction</em>, and <em>message_reaction_count</em> (default). If not specified, the previous setting will be used.<br><br>Please note that this parameter doesn't affect updates created before the call to getUpdates, so unwanted updates may be received for a short period of time. |
 
 #### setWebhook
 
     setWebhook(url: String, certificate: InputFile, ip_address: String, max_connections: Integer, allowed_updates: List<String>, drop_pending_updates: Boolean, secret_token: String, invalid_user_url: String)
 
-<p>Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter <em>secret_token</em>. If specified, the request will contain a header “X-Telegram-Bot-Api-Secret-Token” with the secret token as content.</p><blockquote>
+<p>Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized <a href="#update">Update</a>. In case of an unsuccessful request (a request with response <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes">HTTP status code</a> different from <code>2XY</code>), we will repeat the request and give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter <em>secret_token</em>. If specified, the request will contain a header “X-Telegram-Bot-Api-Secret-Token” with the secret token as content.</p><blockquote>
  <p><strong>Notes</strong><br><strong>1.</strong> You will not be able to receive updates using <a href="#getupdates">getUpdates</a> for as long as an outgoing webhook is set up.<br><strong>2.</strong> To use a self-signed certificate, you need to upload your <a href="/bots/self-signed">public key certificate</a> using <em>certificate</em> parameter. Please upload as InputFile, sending a String will not work.<br><strong>3.</strong> Ports currently supported <em>for webhooks</em>: <strong>443, 80, 88, 8443</strong>.</p>
  <p>If you're having any trouble setting up webhooks, please check out this <a href="/bots/webhooks">amazing guide to webhooks</a>.</p>
 </blockquote>
@@ -113,7 +114,7 @@
 ### Data Types
 #### User
 
-    User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String, is_premium: Boolean, added_to_attachment_menu: Boolean, can_join_groups: Boolean, can_read_all_group_messages: Boolean, supports_inline_queries: Boolean, can_connect_to_business: Boolean)
+    User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String, is_premium: Boolean, added_to_attachment_menu: Boolean, can_join_groups: Boolean, can_read_all_group_messages: Boolean, supports_inline_queries: Boolean, can_connect_to_business: Boolean, has_main_web_app: Boolean)
 
 <p>This object represents a Telegram user or bot.</p>
 
@@ -131,6 +132,7 @@
 | can_read_all_group_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if <a href="/bots/features#privacy-mode">privacy mode</a> is disabled for the bot. Returned only in <a href="#getme">getMe</a>. |
 | supports_inline_queries | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot supports inline queries. Returned only in <a href="#getme">getMe</a>. |
 | can_connect_to_business | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can be connected to a Telegram Business account to receive its messages. Returned only in <a href="#getme">getMe</a>. |
+| has_main_web_app | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot has a main Web App. Returned only in <a href="#getme">getMe</a>. |
 
 #### Chat
 
@@ -150,7 +152,7 @@
 
 #### ChatFullInfo
 
-    ChatFullInfo(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, is_forum: Boolean, accent_color_id: Integer, max_reaction_count: Integer, photo: ChatPhoto, active_usernames: List<String>, birthdate: Birthdate, business_intro: BusinessIntro, business_location: BusinessLocation, business_opening_hours: BusinessOpeningHours, personal_chat: Chat, available_reactions: List<ReactionType>, background_custom_emoji_id: String, profile_accent_color_id: Integer, profile_background_custom_emoji_id: String, emoji_status_custom_emoji_id: String, emoji_status_expiration_date: Integer, bio: String, has_private_forwards: Boolean, has_restricted_voice_and_video_messages: Boolean, join_to_send_messages: Boolean, join_by_request: Boolean, description: String, invite_link: String, pinned_message: Message, permissions: ChatPermissions, slow_mode_delay: Integer, unrestrict_boost_count: Integer, message_auto_delete_time: Integer, has_aggressive_anti_spam_enabled: Boolean, has_hidden_members: Boolean, has_protected_content: Boolean, has_visible_history: Boolean, sticker_set_name: String, can_set_sticker_set: Boolean, custom_emoji_sticker_set_name: String, linked_chat_id: Integer, location: ChatLocation)
+    ChatFullInfo(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, is_forum: Boolean, accent_color_id: Integer, max_reaction_count: Integer, photo: ChatPhoto, active_usernames: List<String>, birthdate: Birthdate, business_intro: BusinessIntro, business_location: BusinessLocation, business_opening_hours: BusinessOpeningHours, personal_chat: Chat, available_reactions: List<ReactionType>, background_custom_emoji_id: String, profile_accent_color_id: Integer, profile_background_custom_emoji_id: String, emoji_status_custom_emoji_id: String, emoji_status_expiration_date: Integer, bio: String, has_private_forwards: Boolean, has_restricted_voice_and_video_messages: Boolean, join_to_send_messages: Boolean, join_by_request: Boolean, description: String, invite_link: String, pinned_message: Message, permissions: ChatPermissions, accepted_gift_types: AcceptedGiftTypes, can_send_paid_media: Boolean, slow_mode_delay: Integer, unrestrict_boost_count: Integer, message_auto_delete_time: Integer, has_aggressive_anti_spam_enabled: Boolean, has_hidden_members: Boolean, has_protected_content: Boolean, has_visible_history: Boolean, sticker_set_name: String, can_set_sticker_set: Boolean, custom_emoji_sticker_set_name: String, linked_chat_id: Integer, location: ChatLocation)
 
 <p>This object contains full information about a chat.</p>
 
@@ -187,6 +189,8 @@
 | invite_link | String | false | <em>Optional</em>. Primary invite link, for groups, supergroups and channel chats |
 | pinned_message | Message | false | <em>Optional</em>. The most recent pinned message (by sending date) |
 | permissions | ChatPermissions | false | <em>Optional</em>. Default chat member permissions, for groups and supergroups |
+| accepted_gift_types | AcceptedGiftTypes | true | Information about types of gifts that are accepted by the chat or by the corresponding user for private chats |
+| can_send_paid_media | Boolean | false | <em>Optional</em>. <em>True</em>, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats. |
 | slow_mode_delay | Integer | false | <em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds |
 | unrestrict_boost_count | Integer | false | <em>Optional</em>. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions |
 | message_auto_delete_time | Integer | false | <em>Optional</em>. The time after which all messages sent to the chat will be automatically deleted; in seconds |
@@ -202,16 +206,16 @@
 
 #### Message
 
-    Message(message_id: Integer, message_thread_id: Integer, from: User, sender_chat: Chat, sender_boost_count: Integer, sender_business_bot: User, date: Integer, business_connection_id: String, chat: Chat, forward_origin: MessageOrigin, is_topic_message: Boolean, is_automatic_forward: Boolean, reply_to_message: Message, external_reply: ExternalReplyInfo, quote: TextQuote, reply_to_story: Story, via_bot: User, edit_date: Integer, has_protected_content: Boolean, is_from_offline: Boolean, media_group_id: String, author_signature: String, text: String, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, effect_id: String, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, story: Story, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_media_spoiler: Boolean, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: MaybeInaccessibleMessage, invoice: Invoice, successful_payment: SuccessfulPayment, users_shared: UsersShared, chat_shared: ChatShared, connected_website: String, write_access_allowed: WriteAccessAllowed, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, boost_added: ChatBoostAdded, chat_background_set: ChatBackground, forum_topic_created: ForumTopicCreated, forum_topic_edited: ForumTopicEdited, forum_topic_closed: ForumTopicClosed, forum_topic_reopened: ForumTopicReopened, general_forum_topic_hidden: GeneralForumTopicHidden, general_forum_topic_unhidden: GeneralForumTopicUnhidden, giveaway_created: GiveawayCreated, giveaway: Giveaway, giveaway_winners: GiveawayWinners, giveaway_completed: GiveawayCompleted, video_chat_scheduled: VideoChatScheduled, video_chat_started: VideoChatStarted, video_chat_ended: VideoChatEnded, video_chat_participants_invited: VideoChatParticipantsInvited, web_app_data: WebAppData, reply_markup: InlineKeyboardMarkup)
+    Message(message_id: Integer, message_thread_id: Integer, from: User, sender_chat: Chat, sender_boost_count: Integer, sender_business_bot: User, date: Integer, business_connection_id: String, chat: Chat, forward_origin: MessageOrigin, is_topic_message: Boolean, is_automatic_forward: Boolean, reply_to_message: Message, external_reply: ExternalReplyInfo, quote: TextQuote, reply_to_story: Story, via_bot: User, edit_date: Integer, has_protected_content: Boolean, is_from_offline: Boolean, media_group_id: String, author_signature: String, paid_star_count: Integer, text: String, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, effect_id: String, animation: Animation, audio: Audio, document: Document, paid_media: PaidMediaInfo, photo: List<PhotoSize>, sticker: Sticker, story: Story, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_media_spoiler: Boolean, checklist: Checklist, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: MaybeInaccessibleMessage, invoice: Invoice, successful_payment: SuccessfulPayment, refunded_payment: RefundedPayment, users_shared: UsersShared, chat_shared: ChatShared, gift: GiftInfo, unique_gift: UniqueGiftInfo, connected_website: String, write_access_allowed: WriteAccessAllowed, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, boost_added: ChatBoostAdded, chat_background_set: ChatBackground, checklist_tasks_done: ChecklistTasksDone, checklist_tasks_added: ChecklistTasksAdded, direct_message_price_changed: DirectMessagePriceChanged, forum_topic_created: ForumTopicCreated, forum_topic_edited: ForumTopicEdited, forum_topic_closed: ForumTopicClosed, forum_topic_reopened: ForumTopicReopened, general_forum_topic_hidden: GeneralForumTopicHidden, general_forum_topic_unhidden: GeneralForumTopicUnhidden, giveaway_created: GiveawayCreated, giveaway: Giveaway, giveaway_winners: GiveawayWinners, giveaway_completed: GiveawayCompleted, paid_message_price_changed: PaidMessagePriceChanged, video_chat_scheduled: VideoChatScheduled, video_chat_started: VideoChatStarted, video_chat_ended: VideoChatEnded, video_chat_participants_invited: VideoChatParticipantsInvited, web_app_data: WebAppData, reply_markup: InlineKeyboardMarkup)
 
 <p>This object represents a message.</p>
 
 | name | type | required | description |
 |---|---|---|---|
-| message_id | Integer | true | Unique message identifier inside this chat |
+| message_id | Integer | true | Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent |
 | message_thread_id | Integer | false | <em>Optional</em>. Unique identifier of a message thread to which the message belongs; for supergroups only |
-| from | User | false | <em>Optional</em>. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat. |
-| sender_chat | Chat | false | <em>Optional</em>. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field <em>from</em> contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat. |
+| from | User | false | <em>Optional</em>. Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats |
+| sender_chat | Chat | false | <em>Optional</em>. Sender of the message when sent on behalf of a chat. For example, the supergroup itself for messages sent by its anonymous administrators or a linked channel for messages automatically forwarded to the channel's discussion group. For backward compatibility, if the message was sent on behalf of a chat, the field <em>from</em> contains a fake sender user in non-channel chats. |
 | sender_boost_count | Integer | false | <em>Optional</em>. If the sender of the message boosted the chat, the number of boosts added by the user |
 | sender_business_bot | User | false | <em>Optional</em>. The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account. |
 | date | Integer | true | Date the message was sent in Unix time. It is always a positive number, representing a valid date. |
@@ -227,9 +231,10 @@
 | via_bot | User | false | <em>Optional</em>. Bot through which the message was sent |
 | edit_date | Integer | false | <em>Optional</em>. Date the message was last edited in Unix time |
 | has_protected_content | Boolean | false | <em>Optional</em>. <em>True</em>, if the message can't be forwarded |
-| is_from_offline | Boolean | false | <em>Optional</em>. True, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message |
+| is_from_offline | Boolean | false | <em>Optional</em>. <em>True</em>, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message |
 | media_group_id | String | false | <em>Optional</em>. The unique identifier of a media message group this message belongs to |
 | author_signature | String | false | <em>Optional</em>. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator |
+| paid_star_count | Integer | false | <em>Optional</em>. The number of Telegram Stars that were paid by the sender of the message to send it |
 | text | String | false | <em>Optional</em>. For text messages, the actual UTF-8 text of the message |
 | entities | List<MessageEntity> | false | <em>Optional</em>. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text |
 | link_preview_options | LinkPreviewOptions | false | <em>Optional</em>. Options used for link preview generation for the message, if it is a text message and link preview options were changed |
@@ -237,16 +242,18 @@
 | animation | Animation | false | <em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set |
 | audio | Audio | false | <em>Optional</em>. Message is an audio file, information about the file |
 | document | Document | false | <em>Optional</em>. Message is a general file, information about the file |
+| paid_media | PaidMediaInfo | false | <em>Optional</em>. Message contains paid media; information about the paid media |
 | photo | List<PhotoSize> | false | <em>Optional</em>. Message is a photo, available sizes of the photo |
 | sticker | Sticker | false | <em>Optional</em>. Message is a sticker, information about the sticker |
 | story | Story | false | <em>Optional</em>. Message is a forwarded story |
 | video | Video | false | <em>Optional</em>. Message is a video, information about the video |
 | video_note | VideoNote | false | <em>Optional</em>. Message is a <a href="https://telegram.org/blog/video-messages-and-telescope">video note</a>, information about the video message |
 | voice | Voice | false | <em>Optional</em>. Message is a voice message, information about the file |
-| caption | String | false | <em>Optional</em>. Caption for the animation, audio, document, photo, video or voice |
+| caption | String | false | <em>Optional</em>. Caption for the animation, audio, document, paid media, photo, video or voice |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption |
-| show_caption_above_media | Boolean | false | <em>Optional</em>. True, if the caption must be shown above the message media |
+| show_caption_above_media | Boolean | false | <em>Optional</em>. <em>True</em>, if the caption must be shown above the message media |
 | has_media_spoiler | Boolean | false | <em>Optional</em>. <em>True</em>, if the message media is covered by a spoiler animation |
+| checklist | Checklist | false | <em>Optional</em>. Message is a checklist |
 | contact | Contact | false | <em>Optional</em>. Message is a shared contact, information about the contact |
 | dice | Dice | false | <em>Optional</em>. Message is a dice with random value |
 | game | Game | false | <em>Optional</em>. Message is a game, information about the game. <a href="#games">More about games »</a> |
@@ -267,14 +274,20 @@
 | pinned_message | MaybeInaccessibleMessage | false | <em>Optional</em>. Specified message was pinned. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply. |
 | invoice | Invoice | false | <em>Optional</em>. Message is an invoice for a <a href="#payments">payment</a>, information about the invoice. <a href="#payments">More about payments »</a> |
 | successful_payment | SuccessfulPayment | false | <em>Optional</em>. Message is a service message about a successful payment, information about the payment. <a href="#payments">More about payments »</a> |
+| refunded_payment | RefundedPayment | false | <em>Optional</em>. Message is a service message about a refunded payment, information about the payment. <a href="#payments">More about payments »</a> |
 | users_shared | UsersShared | false | <em>Optional</em>. Service message: users were shared with the bot |
 | chat_shared | ChatShared | false | <em>Optional</em>. Service message: a chat was shared with the bot |
+| gift | GiftInfo | false | <em>Optional</em>. Service message: a regular gift was sent or received |
+| unique_gift | UniqueGiftInfo | false | <em>Optional</em>. Service message: a unique gift was sent or received |
 | connected_website | String | false | <em>Optional</em>. The domain name of the website on which the user has logged in. <a href="/widgets/login">More about Telegram Login »</a> |
 | write_access_allowed | WriteAccessAllowed | false | <em>Optional</em>. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method <a href="/bots/webapps#initializing-mini-apps">requestWriteAccess</a> |
 | passport_data | PassportData | false | <em>Optional</em>. Telegram Passport data |
 | proximity_alert_triggered | ProximityAlertTriggered | false | <em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location. |
 | boost_added | ChatBoostAdded | false | <em>Optional</em>. Service message: user boosted the chat |
 | chat_background_set | ChatBackground | false | <em>Optional</em>. Service message: chat background set |
+| checklist_tasks_done | ChecklistTasksDone | false | <em>Optional</em>. Service message: some tasks in a checklist were marked as done or not done |
+| checklist_tasks_added | ChecklistTasksAdded | false | <em>Optional</em>. Service message: tasks were added to a checklist |
+| direct_message_price_changed | DirectMessagePriceChanged | false | <em>Optional</em>. Service message: the price for paid messages in the corresponding direct messages chat of a channel has changed |
 | forum_topic_created | ForumTopicCreated | false | <em>Optional</em>. Service message: forum topic created |
 | forum_topic_edited | ForumTopicEdited | false | <em>Optional</em>. Service message: forum topic edited |
 | forum_topic_closed | ForumTopicClosed | false | <em>Optional</em>. Service message: forum topic closed |
@@ -285,6 +298,7 @@
 | giveaway | Giveaway | false | <em>Optional</em>. The message is a scheduled giveaway message |
 | giveaway_winners | GiveawayWinners | false | <em>Optional</em>. A giveaway with public winners was completed |
 | giveaway_completed | GiveawayCompleted | false | <em>Optional</em>. Service message: a giveaway without public winners was completed |
+| paid_message_price_changed | PaidMessagePriceChanged | false | <em>Optional</em>. Service message: the price for paid messages has changed in the chat |
 | video_chat_scheduled | VideoChatScheduled | false | <em>Optional</em>. Service message: video chat scheduled |
 | video_chat_started | VideoChatStarted | false | <em>Optional</em>. Service message: video chat started |
 | video_chat_ended | VideoChatEnded | false | <em>Optional</em>. Service message: video chat ended |
@@ -300,7 +314,7 @@
 
 | name | type | required | description |
 |---|---|---|---|
-| message_id | Integer | true | Unique message identifier |
+| message_id | Integer | true | Unique message identifier. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent |
 
 #### InaccessibleMessage
 
@@ -322,7 +336,7 @@
 
 | name | type | required | description |
 |---|---|---|---|
-| type | String | true | Type of the entity. Currently, can be “mention” (<code>@username</code>), “hashtag” (<code>#hashtag</code>), “cashtag” (<code>$USD</code>), “bot_command” (<code>/start@jobs_bot</code>), “url” (<code>https://telegram.org</code>), “email” (<code>do-not-reply@telegram.org</code>), “phone_number” (<code>+1-212-555-0123</code>), “bold” (<strong>bold text</strong>), “italic” (<em>italic text</em>), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler” (spoiler message), “blockquote” (block quotation), “expandable_blockquote” (collapsed-by-default block quotation), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users <a href="https://telegram.org/blog/edit#new-mentions">without usernames</a>), “custom_emoji” (for inline custom emoji stickers) |
+| type | String | true | Type of the entity. Currently, can be “mention” (<code>@username</code>), “hashtag” (<code>#hashtag</code> or <code>#hashtag@chatusername</code>), “cashtag” (<code>$USD</code> or <code>$USD@chatusername</code>), “bot_command” (<code>/start@jobs_bot</code>), “url” (<code>https://telegram.org</code>), “email” (<code>do-not-reply@telegram.org</code>), “phone_number” (<code>+1-212-555-0123</code>), “bold” (<strong>bold text</strong>), “italic” (<em>italic text</em>), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler” (spoiler message), “blockquote” (block quotation), “expandable_blockquote” (collapsed-by-default block quotation), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users <a href="https://telegram.org/blog/edit#new-mentions">without usernames</a>), “custom_emoji” (for inline custom emoji stickers) |
 | offset | Integer | true | Offset in <a href="/api/entities#entity-length">UTF-16 code units</a> to the start of the entity |
 | length | Integer | true | Length of the entity in <a href="/api/entities#entity-length">UTF-16 code units</a> |
 | url | String | false | <em>Optional</em>. For “text_link” only, URL that will be opened after user taps on the text |
@@ -341,11 +355,11 @@
 | text | String | true | Text of the quoted part of a message that is replied to by the given message |
 | entities | List<MessageEntity> | false | <em>Optional</em>. Special entities that appear in the quote. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities are kept in quotes. |
 | position | Integer | true | Approximate quote position in the original message in UTF-16 code units as specified by the sender |
-| is_manual | Boolean | false | <em>Optional</em>. True, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server. |
+| is_manual | Boolean | false | <em>Optional</em>. <em>True</em>, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server. |
 
 #### ExternalReplyInfo
 
-    ExternalReplyInfo(origin: MessageOrigin, chat: Chat, message_id: Integer, link_preview_options: LinkPreviewOptions, animation: Animation, audio: Audio, document: Document, photo: List<PhotoSize>, sticker: Sticker, story: Story, video: Video, video_note: VideoNote, voice: Voice, has_media_spoiler: Boolean, contact: Contact, dice: Dice, game: Game, giveaway: Giveaway, giveaway_winners: GiveawayWinners, invoice: Invoice, location: Location, poll: Poll, venue: Venue)
+    ExternalReplyInfo(origin: MessageOrigin, chat: Chat, message_id: Integer, link_preview_options: LinkPreviewOptions, animation: Animation, audio: Audio, document: Document, paid_media: PaidMediaInfo, photo: List<PhotoSize>, sticker: Sticker, story: Story, video: Video, video_note: VideoNote, voice: Voice, has_media_spoiler: Boolean, checklist: Checklist, contact: Contact, dice: Dice, game: Game, giveaway: Giveaway, giveaway_winners: GiveawayWinners, invoice: Invoice, location: Location, poll: Poll, venue: Venue)
 
 <p>This object contains information about a message that is being replied to, which may come from another chat or forum topic.</p>
 
@@ -358,6 +372,7 @@
 | animation | Animation | false | <em>Optional</em>. Message is an animation, information about the animation |
 | audio | Audio | false | <em>Optional</em>. Message is an audio file, information about the file |
 | document | Document | false | <em>Optional</em>. Message is a general file, information about the file |
+| paid_media | PaidMediaInfo | false | <em>Optional</em>. Message contains paid media; information about the paid media |
 | photo | List<PhotoSize> | false | <em>Optional</em>. Message is a photo, available sizes of the photo |
 | sticker | Sticker | false | <em>Optional</em>. Message is a sticker, information about the sticker |
 | story | Story | false | <em>Optional</em>. Message is a forwarded story |
@@ -365,6 +380,7 @@
 | video_note | VideoNote | false | <em>Optional</em>. Message is a <a href="https://telegram.org/blog/video-messages-and-telescope">video note</a>, information about the video message |
 | voice | Voice | false | <em>Optional</em>. Message is a voice message, information about the file |
 | has_media_spoiler | Boolean | false | <em>Optional</em>. <em>True</em>, if the message media is covered by a spoiler animation |
+| checklist | Checklist | false | <em>Optional</em>. Message is a checklist |
 | contact | Contact | false | <em>Optional</em>. Message is a shared contact, information about the contact |
 | dice | Dice | false | <em>Optional</em>. Message is a dice with random value |
 | game | Game | false | <em>Optional</em>. Message is a game, information about the game. <a href="#games">More about games »</a> |
@@ -466,12 +482,12 @@
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| width | Integer | true | Video width as defined by sender |
-| height | Integer | true | Video height as defined by sender |
-| duration | Integer | true | Duration of the video in seconds as defined by sender |
-| thumbnail | PhotoSize | false | <em>Optional</em>. Animation thumbnail as defined by sender |
-| file_name | String | false | <em>Optional</em>. Original animation filename as defined by sender |
-| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
+| width | Integer | true | Video width as defined by the sender |
+| height | Integer | true | Video height as defined by the sender |
+| duration | Integer | true | Duration of the video in seconds as defined by the sender |
+| thumbnail | PhotoSize | false | <em>Optional</em>. Animation thumbnail as defined by the sender |
+| file_name | String | false | <em>Optional</em>. Original animation filename as defined by the sender |
+| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by the sender |
 | file_size | Integer | false | <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value. |
 
 #### Audio
@@ -484,11 +500,11 @@
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| duration | Integer | true | Duration of the audio in seconds as defined by sender |
-| performer | String | false | <em>Optional</em>. Performer of the audio as defined by sender or by audio tags |
-| title | String | false | <em>Optional</em>. Title of the audio as defined by sender or by audio tags |
-| file_name | String | false | <em>Optional</em>. Original filename as defined by sender |
-| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
+| duration | Integer | true | Duration of the audio in seconds as defined by the sender |
+| performer | String | false | <em>Optional</em>. Performer of the audio as defined by the sender or by audio tags |
+| title | String | false | <em>Optional</em>. Title of the audio as defined by the sender or by audio tags |
+| file_name | String | false | <em>Optional</em>. Original filename as defined by the sender |
+| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by the sender |
 | file_size | Integer | false | <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value. |
 | thumbnail | PhotoSize | false | <em>Optional</em>. Thumbnail of the album cover to which the music file belongs |
 
@@ -502,9 +518,9 @@
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| thumbnail | PhotoSize | false | <em>Optional</em>. Document thumbnail as defined by sender |
-| file_name | String | false | <em>Optional</em>. Original filename as defined by sender |
-| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
+| thumbnail | PhotoSize | false | <em>Optional</em>. Document thumbnail as defined by the sender |
+| file_name | String | false | <em>Optional</em>. Original filename as defined by the sender |
+| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by the sender |
 | file_size | Integer | false | <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value. |
 
 #### Story
@@ -520,7 +536,7 @@
 
 #### Video
 
-    Video(file_id: String, file_unique_id: String, width: Integer, height: Integer, duration: Integer, thumbnail: PhotoSize, file_name: String, mime_type: String, file_size: Integer)
+    Video(file_id: String, file_unique_id: String, width: Integer, height: Integer, duration: Integer, thumbnail: PhotoSize, cover: List<PhotoSize>, start_timestamp: Integer, file_name: String, mime_type: String, file_size: Integer)
 
 <p>This object represents a video file.</p>
 
@@ -528,12 +544,14 @@
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| width | Integer | true | Video width as defined by sender |
-| height | Integer | true | Video height as defined by sender |
-| duration | Integer | true | Duration of the video in seconds as defined by sender |
+| width | Integer | true | Video width as defined by the sender |
+| height | Integer | true | Video height as defined by the sender |
+| duration | Integer | true | Duration of the video in seconds as defined by the sender |
 | thumbnail | PhotoSize | false | <em>Optional</em>. Video thumbnail |
-| file_name | String | false | <em>Optional</em>. Original filename as defined by sender |
-| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
+| cover | List<PhotoSize> | false | <em>Optional</em>. Available sizes of the cover of the video in the message |
+| start_timestamp | Integer | false | <em>Optional</em>. Timestamp in seconds from which the video will play in the message |
+| file_name | String | false | <em>Optional</em>. Original filename as defined by the sender |
+| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by the sender |
 | file_size | Integer | false | <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value. |
 
 #### VideoNote
@@ -546,8 +564,8 @@
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| length | Integer | true | Video width and height (diameter of the video message) as defined by sender |
-| duration | Integer | true | Duration of the video in seconds as defined by sender |
+| length | Integer | true | Video width and height (diameter of the video message) as defined by the sender |
+| duration | Integer | true | Duration of the video in seconds as defined by the sender |
 | thumbnail | PhotoSize | false | <em>Optional</em>. Video thumbnail |
 | file_size | Integer | false | <em>Optional</em>. File size in bytes |
 
@@ -561,9 +579,55 @@
 |---|---|---|---|
 | file_id | String | true | Identifier for this file, which can be used to download or reuse the file |
 | file_unique_id | String | true | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
-| duration | Integer | true | Duration of the audio in seconds as defined by sender |
-| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by sender |
+| duration | Integer | true | Duration of the audio in seconds as defined by the sender |
+| mime_type | String | false | <em>Optional</em>. MIME type of the file as defined by the sender |
 | file_size | Integer | false | <em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value. |
+
+#### PaidMediaInfo
+
+    PaidMediaInfo(star_count: Integer, paid_media: List<PaidMedia>)
+
+<p>Describes the paid media added to a message.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| star_count | Integer | true | The number of Telegram Stars that must be paid to buy access to the media |
+| paid_media | List<PaidMedia> | true | Information about the paid media |
+
+#### PaidMediaPreview
+
+    PaidMediaPreview(type: String, width: Integer, height: Integer, duration: Integer)
+
+<p>The paid media isn't available before the payment.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the paid media, always “preview” |
+| width | Integer | false | <em>Optional</em>. Media width as defined by the sender |
+| height | Integer | false | <em>Optional</em>. Media height as defined by the sender |
+| duration | Integer | false | <em>Optional</em>. Duration of the media in seconds as defined by the sender |
+
+#### PaidMediaPhoto
+
+    PaidMediaPhoto(type: String, photo: List<PhotoSize>)
+
+<p>The paid media is a photo.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the paid media, always “photo” |
+| photo | List<PhotoSize> | true | The photo |
+
+#### PaidMediaVideo
+
+    PaidMediaVideo(type: String, video: Video)
+
+<p>The paid media is a video.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the paid media, always “video” |
+| video | Video | true | The video |
 
 #### Contact
 
@@ -606,7 +670,7 @@
 
     InputPollOption(text: String, text_parse_mode: String, text_entities: List<MessageEntity>)
 
-<p>This object contains information about one answer option in a poll to send.</p>
+<p>This object contains information about one answer option in a poll to be sent.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -650,6 +714,85 @@
 | open_period | Integer | false | <em>Optional</em>. Amount of time in seconds the poll will be active after creation |
 | close_date | Integer | false | <em>Optional</em>. Point in time (Unix timestamp) when the poll will be automatically closed |
 
+#### ChecklistTask
+
+    ChecklistTask(id: Integer, text: String, text_entities: List<MessageEntity>, completed_by_user: User, completion_date: Integer)
+
+<p>Describes a task in a checklist.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| id | Integer | true | Unique identifier of the task |
+| text | String | true | Text of the task |
+| text_entities | List<MessageEntity> | false | <em>Optional</em>. Special entities that appear in the task text |
+| completed_by_user | User | false | <em>Optional</em>. User that completed the task; omitted if the task wasn't completed |
+| completion_date | Integer | false | <em>Optional</em>. Point in time (Unix timestamp) when the task was completed; 0 if the task wasn't completed |
+
+#### Checklist
+
+    Checklist(title: String, title_entities: List<MessageEntity>, tasks: List<ChecklistTask>, others_can_add_tasks: Boolean, others_can_mark_tasks_as_done: Boolean)
+
+<p>Describes a checklist.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| title | String | true | Title of the checklist |
+| title_entities | List<MessageEntity> | false | <em>Optional</em>. Special entities that appear in the checklist title |
+| tasks | List<ChecklistTask> | true | List of tasks in the checklist |
+| others_can_add_tasks | Boolean | false | <em>Optional</em>. <em>True</em>, if users other than the creator of the list can add tasks to the list |
+| others_can_mark_tasks_as_done | Boolean | false | <em>Optional</em>. <em>True</em>, if users other than the creator of the list can mark tasks as done or not done |
+
+#### InputChecklistTask
+
+    InputChecklistTask(id: Integer, text: String, parse_mode: ParseMode, text_entities: List<MessageEntity>)
+
+<p>Describes a task to add to a checklist.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| id | Integer | true | Unique identifier of the task; must be positive and unique among all task identifiers currently present in the checklist |
+| text | String | true | Text of the task; 1-100 characters after entities parsing |
+| parse_mode | ParseMode | false | Optional. Mode for parsing entities in the text. See <a href="https://core.telegram.org/bots/api#formatting-options">formatting options</a> for more details. |
+| text_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the text, which can be specified instead of parse_mode. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities are allowed. |
+
+#### InputChecklist
+
+    InputChecklist(title: String, parse_mode: ParseMode, title_entities: List<MessageEntity>, tasks: List<InputChecklistTask>, others_can_add_tasks: Boolean, others_can_mark_tasks_as_done: Boolean)
+
+<p>Describes a checklist to create.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| title | String | true | Title of the checklist; 1-255 characters after entities parsing |
+| parse_mode | ParseMode | false | Optional. Mode for parsing entities in the title. See <a href="#formatting-options">formatting options</a> for more details. |
+| title_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities are allowed. |
+| tasks | List<InputChecklistTask> | true | List of 1-30 tasks in the checklist |
+| others_can_add_tasks | Boolean | false | <em>Optional</em>. Pass <em>True</em> if other users can add tasks to the checklist |
+| others_can_mark_tasks_as_done | Boolean | false | <em>Optional</em>. Pass <em>True</em> if other users can mark tasks as done or not done in the checklist |
+
+#### ChecklistTasksDone
+
+    ChecklistTasksDone(checklist_message: Message, marked_as_done_task_ids: List<Integer>, marked_as_not_done_task_ids: List<Integer>)
+
+<p>Describes a service message about checklist tasks marked as done or not done.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| checklist_message | Message | false | <em>Optional</em>. Message containing the checklist whose tasks were marked as done or not done. Note that the Message object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply. |
+| marked_as_done_task_ids | List<Integer> | false | <em>Optional</em>. Identifiers of the tasks that were marked as done |
+| marked_as_not_done_task_ids | List<Integer> | false | <em>Optional</em>. Identifiers of the tasks that were marked as not done |
+
+#### ChecklistTasksAdded
+
+    ChecklistTasksAdded(checklist_message: Message, tasks: List<ChecklistTask>)
+
+<p>Describes a service message about tasks added to a checklist.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| checklist_message | Message | false | <em>Optional</em>. Message containing the checklist to which the tasks were added. Note that the Message object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply. |
+| tasks | List<ChecklistTask> | true | List of tasks added to the checklist |
+
 #### Location
 
     Location(latitude: Float, longitude: Float, horizontal_accuracy: Float, live_period: Integer, heading: Integer, proximity_alert_radius: Integer)
@@ -658,8 +801,8 @@
 
 | name | type | required | description |
 |---|---|---|---|
-| latitude | Float | true | Latitude as defined by sender |
-| longitude | Float | true | Longitude as defined by sender |
+| latitude | Float | true | Latitude as defined by the sender |
+| longitude | Float | true | Longitude as defined by the sender |
 | horizontal_accuracy | Float | false | <em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500 |
 | live_period | Integer | false | <em>Optional</em>. Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only. |
 | heading | Integer | false | <em>Optional</em>. The direction in which user is moving, in degrees; 1-360. For active live locations only. |
@@ -789,7 +932,7 @@
 
     BackgroundTypePattern(type: String, document: Document, fill: BackgroundFill, intensity: Integer, is_inverted: Boolean, is_moving: Boolean)
 
-<p>The background is a PNG or TGV (gzipped subset of SVG with MIME type “application/x-tgwallpattern”) pattern to be combined with the background fill chosen by the user.</p>
+<p>The background is a .PNG or .TGV (gzipped subset of SVG with MIME type “application/x-tgwallpattern”) pattern to be combined with the background fill chosen by the user.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -891,9 +1034,9 @@
 
 | name | type | required | description |
 |---|---|---|---|
-| from_request | Boolean | false | <em>Optional</em>. True, if the access was granted after the user accepted an explicit request from a Web App sent by the method <a href="/bots/webapps#initializing-mini-apps">requestWriteAccess</a> |
+| from_request | Boolean | false | <em>Optional</em>. <em>True</em>, if the access was granted after the user accepted an explicit request from a Web App sent by the method <a href="/bots/webapps#initializing-mini-apps">requestWriteAccess</a> |
 | web_app_name | String | false | <em>Optional</em>. Name of the Web App, if the access was granted when the Web App was launched from a link |
-| from_attachment_menu | Boolean | false | <em>Optional</em>. True, if the access was granted when the bot was added to the attachment or side menu |
+| from_attachment_menu | Boolean | false | <em>Optional</em>. <em>True</em>, if the access was granted when the bot was added to the attachment or side menu |
 
 #### VideoChatScheduled
 
@@ -925,9 +1068,40 @@
 |---|---|---|---|
 | users | List<User> | true | New members that were invited to the video chat |
 
+#### PaidMessagePriceChanged
+
+    PaidMessagePriceChanged(paid_message_star_count: Integer)
+
+<p>Describes a service message about a change in the price of paid messages within a chat.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| paid_message_star_count | Integer | true | The new number of Telegram Stars that must be paid by non-administrator users of the supergroup chat for each sent message |
+
+#### DirectMessagePriceChanged
+
+    DirectMessagePriceChanged(are_direct_messages_enabled: Boolean, direct_message_star_count: Integer)
+
+<p>Describes a service message about a change in the price of direct messages sent to a channel chat.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| are_direct_messages_enabled | Boolean | true | <em>True</em>, if direct messages are enabled for the channel chat; false otherwise |
+| direct_message_star_count | Integer | false | <em>Optional</em>. The new number of Telegram Stars that must be paid by users for each direct message sent to the channel. Does not apply to users who have been exempted by administrators. Defaults to 0. |
+
+#### GiveawayCreated
+
+    GiveawayCreated(prize_star_count: Integer)
+
+<p>This object represents a service message about the creation of a scheduled giveaway.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| prize_star_count | Integer | false | <em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only |
+
 #### Giveaway
 
-    Giveaway(chats: List<Chat>, winners_selection_date: Integer, winner_count: Integer, only_new_members: Boolean, has_public_winners: Boolean, prize_description: String, country_codes: List<String>, premium_subscription_month_count: Integer)
+    Giveaway(chats: List<Chat>, winners_selection_date: Integer, winner_count: Integer, only_new_members: Boolean, has_public_winners: Boolean, prize_description: String, country_codes: List<String>, prize_star_count: Integer, premium_subscription_month_count: Integer)
 
 <p>This object represents a message about a scheduled giveaway.</p>
 
@@ -940,11 +1114,12 @@
 | has_public_winners | Boolean | false | <em>Optional</em>. <em>True</em>, if the list of giveaway winners will be visible to everyone |
 | prize_description | String | false | <em>Optional</em>. Description of additional giveaway prize |
 | country_codes | List<String> | false | <em>Optional</em>. A list of two-letter <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO 3166-1 alpha-2</a> country codes indicating the countries from which eligible users for the giveaway must come. If empty, then all users can participate in the giveaway. Users with a phone number that was bought on Fragment can always participate in giveaways. |
-| premium_subscription_month_count | Integer | false | <em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for |
+| prize_star_count | Integer | false | <em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only |
+| premium_subscription_month_count | Integer | false | <em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only |
 
 #### GiveawayWinners
 
-    GiveawayWinners(chat: Chat, giveaway_message_id: Integer, winners_selection_date: Integer, winner_count: Integer, winners: List<User>, additional_chat_count: Integer, premium_subscription_month_count: Integer, unclaimed_prize_count: Integer, only_new_members: Boolean, was_refunded: Boolean, prize_description: String)
+    GiveawayWinners(chat: Chat, giveaway_message_id: Integer, winners_selection_date: Integer, winner_count: Integer, winners: List<User>, additional_chat_count: Integer, prize_star_count: Integer, premium_subscription_month_count: Integer, unclaimed_prize_count: Integer, only_new_members: Boolean, was_refunded: Boolean, prize_description: String)
 
 <p>This object represents a message about the completion of a giveaway with public winners.</p>
 
@@ -956,7 +1131,8 @@
 | winner_count | Integer | true | Total number of winners in the giveaway |
 | winners | List<User> | true | List of up to 100 winners of the giveaway |
 | additional_chat_count | Integer | false | <em>Optional</em>. The number of other chats the user had to join in order to be eligible for the giveaway |
-| premium_subscription_month_count | Integer | false | <em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for |
+| prize_star_count | Integer | false | <em>Optional</em>. The number of Telegram Stars that were split between giveaway winners; for Telegram Star giveaways only |
+| premium_subscription_month_count | Integer | false | <em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only |
 | unclaimed_prize_count | Integer | false | <em>Optional</em>. Number of undistributed prizes |
 | only_new_members | Boolean | false | <em>Optional</em>. <em>True</em>, if only users who had joined the chats after the giveaway started were eligible to win |
 | was_refunded | Boolean | false | <em>Optional</em>. <em>True</em>, if the giveaway was canceled because the payment for it was refunded |
@@ -964,7 +1140,7 @@
 
 #### GiveawayCompleted
 
-    GiveawayCompleted(winner_count: Integer, unclaimed_prize_count: Integer, giveaway_message: Message)
+    GiveawayCompleted(winner_count: Integer, unclaimed_prize_count: Integer, giveaway_message: Message, is_star_giveaway: Boolean)
 
 <p>This object represents a service message about the completion of a giveaway without public winners.</p>
 
@@ -973,6 +1149,7 @@
 | winner_count | Integer | true | Number of winners in the giveaway |
 | unclaimed_prize_count | Integer | false | <em>Optional</em>. Number of undistributed prizes |
 | giveaway_message | Message | false | <em>Optional</em>. Message with the giveaway that was completed, if it wasn't deleted |
+| is_star_giveaway | Boolean | false | <em>Optional</em>. <em>True</em>, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway. |
 
 #### LinkPreviewOptions
 
@@ -1124,7 +1301,7 @@
 
 #### InlineKeyboardButton
 
-    InlineKeyboardButton(text: String, url: String, callback_data: String, web_app: WebAppInfo, login_url: LoginUrl, switch_inline_query: String, switch_inline_query_current_chat: String, switch_inline_query_chosen_chat: SwitchInlineQueryChosenChat, callback_game: CallbackGame, pay: Boolean)
+    InlineKeyboardButton(text: String, url: String, callback_data: String, web_app: WebAppInfo, login_url: LoginUrl, switch_inline_query: String, switch_inline_query_current_chat: String, switch_inline_query_chosen_chat: SwitchInlineQueryChosenChat, copy_text: CopyTextButton, callback_game: CallbackGame, pay: Boolean)
 
 <p>This object represents one button of an inline keyboard. Exactly one of the optional fields must be used to specify type of the button.</p>
 
@@ -1132,12 +1309,13 @@
 |---|---|---|---|
 | text | String | true | Label text on the button |
 | url | String | false | <em>Optional</em>. HTTP or tg:// URL to be opened when the button is pressed. Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings. |
-| callback_data | String | false | <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when button is pressed, 1-64 bytes. Not supported for messages sent on behalf of a Telegram Business account. |
+| callback_data | String | false | <em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when the button is pressed, 1-64 bytes |
 | web_app | WebAppInfo | false | <em>Optional</em>. Description of the <a href="/bots/webapps">Web App</a> that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a Telegram Business account. |
 | login_url | LoginUrl | false | <em>Optional</em>. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the <a href="/widgets/login">Telegram Login Widget</a>. |
 | switch_inline_query | String | false | <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent on behalf of a Telegram Business account. |
 | switch_inline_query_current_chat | String | false | <em>Optional</em>. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted.<br><br>This offers a quick way for the user to open your bot in inline mode in the same chat - good for selecting something from multiple options. Not supported in channels and for messages sent on behalf of a Telegram Business account. |
 | switch_inline_query_chosen_chat | SwitchInlineQueryChosenChat | false | <em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent on behalf of a Telegram Business account. |
+| copy_text | CopyTextButton | false | <em>Optional</em>. Description of the button that copies the specified text to the clipboard. |
 | callback_game | CallbackGame | false | <em>Optional</em>. Description of the game that will be launched when the user presses the button.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row. |
 | pay | Boolean | false | <em>Optional</em>. Specify <em>True</em>, to send a <a href="#payments">Pay button</a>. Substrings “<img class="emoji" src="//telegram.org/img/emoji/40/E2AD90.png" width="20" height="20" alt="⭐">” and “XTR” in the buttons's text will be replaced with a Telegram Star icon.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row and can only be used in invoice messages. |
 
@@ -1165,10 +1343,20 @@
 | name | type | required | description |
 |---|---|---|---|
 | query | String | false | <em>Optional</em>. The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted |
-| allow_user_chats | Boolean | false | <em>Optional</em>. True, if private chats with users can be chosen |
-| allow_bot_chats | Boolean | false | <em>Optional</em>. True, if private chats with bots can be chosen |
-| allow_group_chats | Boolean | false | <em>Optional</em>. True, if group and supergroup chats can be chosen |
-| allow_channel_chats | Boolean | false | <em>Optional</em>. True, if channel chats can be chosen |
+| allow_user_chats | Boolean | false | <em>Optional</em>. <em>True</em>, if private chats with users can be chosen |
+| allow_bot_chats | Boolean | false | <em>Optional</em>. <em>True</em>, if private chats with bots can be chosen |
+| allow_group_chats | Boolean | false | <em>Optional</em>. <em>True</em>, if group and supergroup chats can be chosen |
+| allow_channel_chats | Boolean | false | <em>Optional</em>. <em>True</em>, if channel chats can be chosen |
+
+#### CopyTextButton
+
+    CopyTextButton(text: String)
+
+<p>This object represents an inline keyboard button that copies specified text to the clipboard.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| text | String | true | The text to be copied to the clipboard; 1-256 characters |
 
 #### CallbackQuery
 
@@ -1222,7 +1410,7 @@
 
 #### ChatInviteLink
 
-    ChatInviteLink(invite_link: String, creator: User, creates_join_request: Boolean, is_primary: Boolean, is_revoked: Boolean, name: String, expire_date: Integer, member_limit: Integer, pending_join_request_count: Integer)
+    ChatInviteLink(invite_link: String, creator: User, creates_join_request: Boolean, is_primary: Boolean, is_revoked: Boolean, name: String, expire_date: Integer, member_limit: Integer, pending_join_request_count: Integer, subscription_period: Integer, subscription_price: Integer)
 
 <p>Represents an invite link for a chat.</p>
 
@@ -1237,6 +1425,8 @@
 | expire_date | Integer | false | <em>Optional</em>. Point in time (Unix timestamp) when the link will expire or has been expired |
 | member_limit | Integer | false | <em>Optional</em>. The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999 |
 | pending_join_request_count | Integer | false | <em>Optional</em>. Number of pending join requests created using this link |
+| subscription_period | Integer | false | <em>Optional</em>. The number of seconds the subscription will be active for before the next payment |
+| subscription_price | Integer | false | <em>Optional</em>. The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat using the link |
 
 #### ChatAdministratorRights
 
@@ -1247,7 +1437,7 @@
 | name | type | required | description |
 |---|---|---|---|
 | is_anonymous | Boolean | true | <em>True</em>, if the user's presence in the chat is hidden |
-| can_manage_chat | Boolean | true | <em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege. |
+| can_manage_chat | Boolean | true | <em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege. |
 | can_delete_messages | Boolean | true | <em>True</em>, if the administrator can delete messages of other users |
 | can_manage_video_chats | Boolean | true | <em>True</em>, if the administrator can manage video chats |
 | can_restrict_members | Boolean | true | <em>True</em>, if the administrator can restrict, ban or unban chat members, or access supergroup statistics |
@@ -1257,7 +1447,7 @@
 | can_post_stories | Boolean | true | <em>True</em>, if the administrator can post stories to the chat |
 | can_edit_stories | Boolean | true | <em>True</em>, if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive |
 | can_delete_stories | Boolean | true | <em>True</em>, if the administrator can delete stories posted by other users |
-| can_post_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; for channels only |
+| can_post_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only |
 | can_edit_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; for channels only |
 | can_pin_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; for groups and supergroups only |
 | can_manage_topics | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only |
@@ -1276,8 +1466,8 @@
 | old_chat_member | ChatMember | true | Previous information about the chat member |
 | new_chat_member | ChatMember | true | New information about the chat member |
 | invite_link | ChatInviteLink | false | <em>Optional</em>. Chat invite link, which was used by the user to join the chat; for joining by invite link events only. |
-| via_join_request | Boolean | false | <em>Optional</em>. True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator |
-| via_chat_folder_invite_link | Boolean | false | <em>Optional</em>. True, if the user joined the chat via a chat folder invite link |
+| via_join_request | Boolean | false | <em>Optional</em>. <em>True</em>, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator |
+| via_chat_folder_invite_link | Boolean | false | <em>Optional</em>. <em>True</em>, if the user joined the chat via a chat folder invite link |
 
 #### ChatMemberOwner
 
@@ -1304,7 +1494,7 @@
 | user | User | true | Information about the user |
 | can_be_edited | Boolean | true | <em>True</em>, if the bot is allowed to edit administrator privileges of that user |
 | is_anonymous | Boolean | true | <em>True</em>, if the user's presence in the chat is hidden |
-| can_manage_chat | Boolean | true | <em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege. |
+| can_manage_chat | Boolean | true | <em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege. |
 | can_delete_messages | Boolean | true | <em>True</em>, if the administrator can delete messages of other users |
 | can_manage_video_chats | Boolean | true | <em>True</em>, if the administrator can manage video chats |
 | can_restrict_members | Boolean | true | <em>True</em>, if the administrator can restrict, ban or unban chat members, or access supergroup statistics |
@@ -1314,7 +1504,7 @@
 | can_post_stories | Boolean | true | <em>True</em>, if the administrator can post stories to the chat |
 | can_edit_stories | Boolean | true | <em>True</em>, if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive |
 | can_delete_stories | Boolean | true | <em>True</em>, if the administrator can delete stories posted by other users |
-| can_post_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; for channels only |
+| can_post_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only |
 | can_edit_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; for channels only |
 | can_pin_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; for groups and supergroups only |
 | can_manage_topics | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only |
@@ -1322,7 +1512,7 @@
 
 #### ChatMemberMember
 
-    ChatMemberMember(status: String, user: User)
+    ChatMemberMember(status: String, user: User, until_date: Integer)
 
 <p>Represents a <a href="#chatmember">chat member</a> that has no additional privileges or restrictions.</p>
 
@@ -1330,6 +1520,7 @@
 |---|---|---|---|
 | status | String | true | The member's status in the chat, always “member” |
 | user | User | true | Information about the user |
+| until_date | Integer | false | <em>Optional</em>. Date when the user's subscription will expire; Unix time |
 
 #### ChatMemberRestricted
 
@@ -1349,7 +1540,7 @@
 | can_send_videos | Boolean | true | <em>True</em>, if the user is allowed to send videos |
 | can_send_video_notes | Boolean | true | <em>True</em>, if the user is allowed to send video notes |
 | can_send_voice_notes | Boolean | true | <em>True</em>, if the user is allowed to send voice notes |
-| can_send_polls | Boolean | true | <em>True</em>, if the user is allowed to send polls |
+| can_send_polls | Boolean | true | <em>True</em>, if the user is allowed to send polls and checklists |
 | can_send_other_messages | Boolean | true | <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots |
 | can_add_web_page_previews | Boolean | true | <em>True</em>, if the user is allowed to add web page previews to their messages |
 | can_change_info | Boolean | true | <em>True</em>, if the user is allowed to change the chat title, photo and other settings |
@@ -1411,7 +1602,7 @@
 | can_send_videos | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to send videos |
 | can_send_video_notes | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to send video notes |
 | can_send_voice_notes | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to send voice notes |
-| can_send_polls | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to send polls |
+| can_send_polls | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to send polls and checklists |
 | can_send_other_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots |
 | can_add_web_page_previews | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to add web page previews to their messages |
 | can_change_info | Boolean | false | <em>Optional</em>. <em>True</em>, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups |
@@ -1476,6 +1667,106 @@
 | time_zone_name | String | true | Unique name of the time zone for which the opening hours are defined |
 | opening_hours | List<BusinessOpeningHoursInterval> | true | List of time intervals describing business opening hours |
 
+#### StoryAreaPosition
+
+    StoryAreaPosition(x_percentage: Float, y_percentage: Float, width_percentage: Float, height_percentage: Float, rotation_angle: Float, corner_radius_percentage: Float)
+
+<p>Describes the position of a clickable area within a story.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| x_percentage | Float | true | The abscissa of the area's center, as a percentage of the media width |
+| y_percentage | Float | true | The ordinate of the area's center, as a percentage of the media height |
+| width_percentage | Float | true | The width of the area's rectangle, as a percentage of the media width |
+| height_percentage | Float | true | The height of the area's rectangle, as a percentage of the media height |
+| rotation_angle | Float | true | The clockwise rotation angle of the rectangle, in degrees; 0-360 |
+| corner_radius_percentage | Float | true | The radius of the rectangle corner rounding, as a percentage of the media width |
+
+#### LocationAddress
+
+    LocationAddress(country_code: String, state: String, city: String, street: String)
+
+<p>Describes the physical address of a location.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| country_code | String | true | The two-letter ISO 3166-1 alpha-2 country code of the country where the location is located |
+| state | String | false | <em>Optional</em>. State of the location |
+| city | String | false | <em>Optional</em>. City of the location |
+| street | String | false | <em>Optional</em>. Street address of the location |
+
+#### StoryAreaTypeLocation
+
+    StoryAreaTypeLocation(type: String, latitude: Float, longitude: Float, address: LocationAddress)
+
+<p>Describes a story area pointing to a location. Currently, a story can have up to 10 location areas.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the area, always “location” |
+| latitude | Float | true | Location latitude in degrees |
+| longitude | Float | true | Location longitude in degrees |
+| address | LocationAddress | false | <em>Optional</em>. Address of the location |
+
+#### StoryAreaTypeSuggestedReaction
+
+    StoryAreaTypeSuggestedReaction(type: String, reaction_type: ReactionType, is_dark: Boolean, is_flipped: Boolean)
+
+<p>Describes a story area pointing to a suggested reaction. Currently, a story can have up to 5 suggested reaction areas.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the area, always “suggested_reaction” |
+| reaction_type | ReactionType | true | Type of the reaction |
+| is_dark | Boolean | false | <em>Optional</em>. Pass <em>True</em> if the reaction area has a dark background |
+| is_flipped | Boolean | false | <em>Optional</em>. Pass <em>True</em> if reaction area corner is flipped |
+
+#### StoryAreaTypeLink
+
+    StoryAreaTypeLink(type: String, url: String)
+
+<p>Describes a story area pointing to an HTTP or tg:// link. Currently, a story can have up to 3 link areas.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the area, always “link” |
+| url | String | true | HTTP or tg:// URL to be opened when the area is clicked |
+
+#### StoryAreaTypeWeather
+
+    StoryAreaTypeWeather(type: String, temperature: Float, emoji: String, background_color: Integer)
+
+<p>Describes a story area containing weather information. Currently, a story can have up to 3 weather areas.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the area, always “weather” |
+| temperature | Float | true | Temperature, in degree Celsius |
+| emoji | String | true | Emoji representing the weather |
+| background_color | Integer | true | A color of the area background in the ARGB format |
+
+#### StoryAreaTypeUniqueGift
+
+    StoryAreaTypeUniqueGift(type: String, name: String)
+
+<p>Describes a story area pointing to a unique gift. Currently, a story can have at most 1 unique gift area.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the area, always “unique_gift” |
+| name | String | true | Unique name of the gift |
+
+#### StoryArea
+
+    StoryArea(position: StoryAreaPosition, type: StoryAreaType)
+
+<p>Describes a clickable area on a story media.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| position | StoryAreaPosition | true | Position of the area |
+| type | StoryAreaType | true | Type of the area |
+
 #### ChatLocation
 
     ChatLocation(location: Location, address: String)
@@ -1496,7 +1787,7 @@
 | name | type | required | description |
 |---|---|---|---|
 | type | String | true | Type of the reaction, always “emoji” |
-| emoji | String | true | Reaction emoji. Currently, it can be one of "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918D.png" width="20" height="20" alt="👍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918E.png" width="20" height="20" alt="👎">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29DA4.png" width="20" height="20" alt="❤">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F94A5.png" width="20" height="20" alt="🔥">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B0.png" width="20" height="20" alt="🥰">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918F.png" width="20" height="20" alt="👏">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9881.png" width="20" height="20" alt="😁">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA494.png" width="20" height="20" alt="🤔">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AF.png" width="20" height="20" alt="🤯">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98B1.png" width="20" height="20" alt="😱">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AC.png" width="20" height="20" alt="🤬">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A2.png" width="20" height="20" alt="😢">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E89.png" width="20" height="20" alt="🎉">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A9.png" width="20" height="20" alt="🤩">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AE.png" width="20" height="20" alt="🤮">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F92A9.png" width="20" height="20" alt="💩">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F998F.png" width="20" height="20" alt="🙏">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918C.png" width="20" height="20" alt="👌">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F958A.png" width="20" height="20" alt="🕊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A1.png" width="20" height="20" alt="🤡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B1.png" width="20" height="20" alt="🥱">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B4.png" width="20" height="20" alt="🥴">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F988D.png" width="20" height="20" alt="😍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F90B3.png" width="20" height="20" alt="🐳">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29DA4E2808DF09F94A5.png" width="20" height="20" alt="❤‍🔥">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8C9A.png" width="20" height="20" alt="🌚">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8CAD.png" width="20" height="20" alt="🌭">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F92AF.png" width="20" height="20" alt="💯">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A3.png" width="20" height="20" alt="🤣">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29AA1.png" width="20" height="20" alt="⚡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8D8C.png" width="20" height="20" alt="🍌">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F86.png" width="20" height="20" alt="🏆">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9294.png" width="20" height="20" alt="💔">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A8.png" width="20" height="20" alt="🤨">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9890.png" width="20" height="20" alt="😐">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8D93.png" width="20" height="20" alt="🍓">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8DBE.png" width="20" height="20" alt="🍾">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F928B.png" width="20" height="20" alt="💋">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9695.png" width="20" height="20" alt="🖕">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9888.png" width="20" height="20" alt="😈">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98B4.png" width="20" height="20" alt="😴">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98AD.png" width="20" height="20" alt="😭">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA493.png" width="20" height="20" alt="🤓">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91BB.png" width="20" height="20" alt="👻">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91A8E2808DF09F92BB.png" width="20" height="20" alt="👨‍💻">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9180.png" width="20" height="20" alt="👀">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E83.png" width="20" height="20" alt="🎃">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9988.png" width="20" height="20" alt="🙈">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9887.png" width="20" height="20" alt="😇">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A8.png" width="20" height="20" alt="😨">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA49D.png" width="20" height="20" alt="🤝">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29C8D.png" width="20" height="20" alt="✍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA497.png" width="20" height="20" alt="🤗">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FABA1.png" width="20" height="20" alt="🫡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E85.png" width="20" height="20" alt="🎅">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E84.png" width="20" height="20" alt="🎄">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29883.png" width="20" height="20" alt="☃">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9285.png" width="20" height="20" alt="💅">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AA.png" width="20" height="20" alt="🤪">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F97BF.png" width="20" height="20" alt="🗿">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8692.png" width="20" height="20" alt="🆒">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9298.png" width="20" height="20" alt="💘">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9989.png" width="20" height="20" alt="🙉">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA684.png" width="20" height="20" alt="🦄">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9898.png" width="20" height="20" alt="😘">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F928A.png" width="20" height="20" alt="💊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F998A.png" width="20" height="20" alt="🙊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F988E.png" width="20" height="20" alt="😎">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91BE.png" width="20" height="20" alt="👾">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7E2808DE29982.png" width="20" height="20" alt="🤷‍♂">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7.png" width="20" height="20" alt="🤷">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7E2808DE29980.png" width="20" height="20" alt="🤷‍♀">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A1.png" width="20" height="20" alt="😡">" |
+| emoji | String | true | Reaction emoji. Currently, it can be one of "<img class="emoji" src="//telegram.org/img/emoji/40/E29DA4.png" width="20" height="20" alt="❤">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918D.png" width="20" height="20" alt="👍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918E.png" width="20" height="20" alt="👎">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F94A5.png" width="20" height="20" alt="🔥">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B0.png" width="20" height="20" alt="🥰">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918F.png" width="20" height="20" alt="👏">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9881.png" width="20" height="20" alt="😁">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA494.png" width="20" height="20" alt="🤔">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AF.png" width="20" height="20" alt="🤯">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98B1.png" width="20" height="20" alt="😱">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AC.png" width="20" height="20" alt="🤬">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A2.png" width="20" height="20" alt="😢">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E89.png" width="20" height="20" alt="🎉">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A9.png" width="20" height="20" alt="🤩">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AE.png" width="20" height="20" alt="🤮">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F92A9.png" width="20" height="20" alt="💩">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F998F.png" width="20" height="20" alt="🙏">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F918C.png" width="20" height="20" alt="👌">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F958A.png" width="20" height="20" alt="🕊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A1.png" width="20" height="20" alt="🤡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B1.png" width="20" height="20" alt="🥱">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA5B4.png" width="20" height="20" alt="🥴">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F988D.png" width="20" height="20" alt="😍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F90B3.png" width="20" height="20" alt="🐳">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29DA4E2808DF09F94A5.png" width="20" height="20" alt="❤‍🔥">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8C9A.png" width="20" height="20" alt="🌚">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8CAD.png" width="20" height="20" alt="🌭">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F92AF.png" width="20" height="20" alt="💯">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A3.png" width="20" height="20" alt="🤣">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29AA1.png" width="20" height="20" alt="⚡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8D8C.png" width="20" height="20" alt="🍌">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F86.png" width="20" height="20" alt="🏆">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9294.png" width="20" height="20" alt="💔">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4A8.png" width="20" height="20" alt="🤨">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9890.png" width="20" height="20" alt="😐">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8D93.png" width="20" height="20" alt="🍓">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8DBE.png" width="20" height="20" alt="🍾">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F928B.png" width="20" height="20" alt="💋">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9695.png" width="20" height="20" alt="🖕">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9888.png" width="20" height="20" alt="😈">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98B4.png" width="20" height="20" alt="😴">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98AD.png" width="20" height="20" alt="😭">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA493.png" width="20" height="20" alt="🤓">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91BB.png" width="20" height="20" alt="👻">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91A8E2808DF09F92BB.png" width="20" height="20" alt="👨‍💻">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9180.png" width="20" height="20" alt="👀">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E83.png" width="20" height="20" alt="🎃">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9988.png" width="20" height="20" alt="🙈">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9887.png" width="20" height="20" alt="😇">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A8.png" width="20" height="20" alt="😨">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA49D.png" width="20" height="20" alt="🤝">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29C8D.png" width="20" height="20" alt="✍">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA497.png" width="20" height="20" alt="🤗">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FABA1.png" width="20" height="20" alt="🫡">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E85.png" width="20" height="20" alt="🎅">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8E84.png" width="20" height="20" alt="🎄">", "<img class="emoji" src="//telegram.org/img/emoji/40/E29883.png" width="20" height="20" alt="☃">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9285.png" width="20" height="20" alt="💅">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4AA.png" width="20" height="20" alt="🤪">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F97BF.png" width="20" height="20" alt="🗿">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F8692.png" width="20" height="20" alt="🆒">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9298.png" width="20" height="20" alt="💘">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9989.png" width="20" height="20" alt="🙉">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA684.png" width="20" height="20" alt="🦄">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F9898.png" width="20" height="20" alt="😘">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F928A.png" width="20" height="20" alt="💊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F998A.png" width="20" height="20" alt="🙊">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F988E.png" width="20" height="20" alt="😎">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F91BE.png" width="20" height="20" alt="👾">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7E2808DE29982.png" width="20" height="20" alt="🤷‍♂">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7.png" width="20" height="20" alt="🤷">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09FA4B7E2808DE29980.png" width="20" height="20" alt="🤷‍♀">", "<img class="emoji" src="//telegram.org/img/emoji/40/F09F98A1.png" width="20" height="20" alt="😡">" |
 
 #### ReactionTypeCustomEmoji
 
@@ -1508,6 +1799,16 @@
 |---|---|---|---|
 | type | String | true | Type of the reaction, always “custom_emoji” |
 | custom_emoji_id | String | true | Custom emoji identifier |
+
+#### ReactionTypePaid
+
+    ReactionTypePaid(type: String)
+
+<p>The reaction is paid.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the reaction, always “paid” |
 
 #### ReactionCount
 
@@ -1561,6 +1862,203 @@
 | name | String | true | Name of the topic |
 | icon_color | Integer | true | Color of the topic icon in RGB format |
 | icon_custom_emoji_id | String | false | <em>Optional</em>. Unique identifier of the custom emoji shown as the topic icon |
+
+#### Gift
+
+    Gift(id: String, sticker: Sticker, star_count: Integer, upgrade_star_count: Integer, total_count: Integer, remaining_count: Integer)
+
+<p>This object represents a gift that can be sent by the bot.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| id | String | true | Unique identifier of the gift |
+| sticker | Sticker | true | The sticker that represents the gift |
+| star_count | Integer | true | The number of Telegram Stars that must be paid to send the sticker |
+| upgrade_star_count | Integer | false | <em>Optional</em>. The number of Telegram Stars that must be paid to upgrade the gift to a unique one |
+| total_count | Integer | false | <em>Optional</em>. The total number of the gifts of this type that can be sent; for limited gifts only |
+| remaining_count | Integer | false | <em>Optional</em>. The number of remaining gifts of this type that can be sent; for limited gifts only |
+
+#### Gifts
+
+    Gifts(gifts: List<Gift>)
+
+<p>This object represent a list of gifts.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| gifts | List<Gift> | true | The list of gifts |
+
+#### UniqueGiftModel
+
+    UniqueGiftModel(name: String, sticker: Sticker, rarity_per_mille: Integer)
+
+<p>This object describes the model of a unique gift.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| name | String | true | Name of the model |
+| sticker | Sticker | true | The sticker that represents the unique gift |
+| rarity_per_mille | Integer | true | The number of unique gifts that receive this model for every 1000 gifts upgraded |
+
+#### UniqueGiftSymbol
+
+    UniqueGiftSymbol(name: String, sticker: Sticker, rarity_per_mille: Integer)
+
+<p>This object describes the symbol shown on the pattern of a unique gift.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| name | String | true | Name of the symbol |
+| sticker | Sticker | true | The sticker that represents the unique gift |
+| rarity_per_mille | Integer | true | The number of unique gifts that receive this model for every 1000 gifts upgraded |
+
+#### UniqueGiftBackdropColors
+
+    UniqueGiftBackdropColors(center_color: Integer, edge_color: Integer, symbol_color: Integer, text_color: Integer)
+
+<p>This object describes the colors of the backdrop of a unique gift.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| center_color | Integer | true | The color in the center of the backdrop in RGB format |
+| edge_color | Integer | true | The color on the edges of the backdrop in RGB format |
+| symbol_color | Integer | true | The color to be applied to the symbol in RGB format |
+| text_color | Integer | true | The color for the text on the backdrop in RGB format |
+
+#### UniqueGiftBackdrop
+
+    UniqueGiftBackdrop(name: String, colors: UniqueGiftBackdropColors, rarity_per_mille: Integer)
+
+<p>This object describes the backdrop of a unique gift.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| name | String | true | Name of the backdrop |
+| colors | UniqueGiftBackdropColors | true | Colors of the backdrop |
+| rarity_per_mille | Integer | true | The number of unique gifts that receive this backdrop for every 1000 gifts upgraded |
+
+#### UniqueGift
+
+    UniqueGift(base_name: String, name: String, number: Integer, model: UniqueGiftModel, symbol: UniqueGiftSymbol, backdrop: UniqueGiftBackdrop)
+
+<p>This object describes a unique gift that was upgraded from a regular gift.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| base_name | String | true | Human-readable name of the regular gift from which this unique gift was upgraded |
+| name | String | true | Unique name of the gift. This name can be used in <code>https://t.me/nft/...</code> links and story areas |
+| number | Integer | true | Unique number of the upgraded gift among gifts upgraded from the same regular gift |
+| model | UniqueGiftModel | true | Model of the gift |
+| symbol | UniqueGiftSymbol | true | Symbol of the gift |
+| backdrop | UniqueGiftBackdrop | true | Backdrop of the gift |
+
+#### GiftInfo
+
+    GiftInfo(gift: Gift, owned_gift_id: String, convert_star_count: Integer, prepaid_upgrade_star_count: Integer, can_be_upgraded: Boolean, text: String, entities: List<MessageEntity>, is_private: Boolean)
+
+<p>Describes a service message about a regular gift that was sent or received.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| gift | Gift | true | Information about the gift |
+| owned_gift_id | String | false | <em>Optional</em>. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts |
+| convert_star_count | Integer | false | <em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible |
+| prepaid_upgrade_star_count | Integer | false | <em>Optional</em>. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift |
+| can_be_upgraded | Boolean | false | <em>Optional</em>. <em>True</em>, if the gift can be upgraded to a unique gift |
+| text | String | false | <em>Optional</em>. Text of the message that was added to the gift |
+| entities | List<MessageEntity> | false | <em>Optional</em>. Special entities that appear in the text |
+| is_private | Boolean | false | <em>Optional</em>. <em>True</em>, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them |
+
+#### UniqueGiftInfo
+
+    UniqueGiftInfo(gift: UniqueGift, origin: String, last_resale_star_count: Integer, owned_gift_id: String, transfer_star_count: Integer, next_transfer_date: Integer)
+
+<p>Describes a service message about a unique gift that was sent or received.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| gift | UniqueGift | true | Information about the gift |
+| origin | String | true | Origin of the gift. Currently, either “upgrade” for gifts upgraded from regular gifts, “transfer” for gifts transferred from other users or channels, or “resale” for gifts bought from other users |
+| last_resale_star_count | Integer | false | <em>Optional</em>. For gifts bought from other users, the price paid for the gift |
+| owned_gift_id | String | false | <em>Optional</em>. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts |
+| transfer_star_count | Integer | false | <em>Optional</em>. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift |
+| next_transfer_date | Integer | false | <em>Optional</em>. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now |
+
+#### OwnedGiftRegular
+
+    OwnedGiftRegular(type: String, gift: Gift, owned_gift_id: String, sender_user: User, send_date: Integer, text: String, entities: List<MessageEntity>, is_private: Boolean, is_saved: Boolean, can_be_upgraded: Boolean, was_refunded: Boolean, convert_star_count: Integer, prepaid_upgrade_star_count: Integer)
+
+<p>Describes a regular gift owned by a user or a chat.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the gift, always “regular” |
+| gift | Gift | true | Information about the regular gift |
+| owned_gift_id | String | false | <em>Optional</em>. Unique identifier of the gift for the bot; for gifts received on behalf of business accounts only |
+| sender_user | User | false | <em>Optional</em>. Sender of the gift if it is a known user |
+| send_date | Integer | true | Date the gift was sent in Unix time |
+| text | String | false | <em>Optional</em>. Text of the message that was added to the gift |
+| entities | List<MessageEntity> | false | <em>Optional</em>. Special entities that appear in the text |
+| is_private | Boolean | false | <em>Optional</em>. <em>True</em>, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them |
+| is_saved | Boolean | false | <em>Optional</em>. <em>True</em>, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only |
+| can_be_upgraded | Boolean | false | <em>Optional</em>. <em>True</em>, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only |
+| was_refunded | Boolean | false | <em>Optional</em>. <em>True</em>, if the gift was refunded and isn't available anymore |
+| convert_star_count | Integer | false | <em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars |
+| prepaid_upgrade_star_count | Integer | false | <em>Optional</em>. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift |
+
+#### OwnedGiftUnique
+
+    OwnedGiftUnique(type: String, gift: UniqueGift, owned_gift_id: String, sender_user: User, send_date: Integer, is_saved: Boolean, can_be_transferred: Boolean, transfer_star_count: Integer, next_transfer_date: Integer)
+
+<p>Describes a unique gift received and owned by a user or a chat.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the gift, always “unique” |
+| gift | UniqueGift | true | Information about the unique gift |
+| owned_gift_id | String | false | <em>Optional</em>. Unique identifier of the received gift for the bot; for gifts received on behalf of business accounts only |
+| sender_user | User | false | <em>Optional</em>. Sender of the gift if it is a known user |
+| send_date | Integer | true | Date the gift was sent in Unix time |
+| is_saved | Boolean | false | <em>Optional</em>. <em>True</em>, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only |
+| can_be_transferred | Boolean | false | <em>Optional</em>. <em>True</em>, if the gift can be transferred to another owner; for gifts received on behalf of business accounts only |
+| transfer_star_count | Integer | false | <em>Optional</em>. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift |
+| next_transfer_date | Integer | false | <em>Optional</em>. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now |
+
+#### OwnedGifts
+
+    OwnedGifts(total_count: Integer, gifts: List<OwnedGift>, next_offset: String)
+
+<p>Contains the list of gifts received and owned by a user or a chat.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| total_count | Integer | true | The total number of gifts owned by the user or the chat |
+| gifts | List<OwnedGift> | true | The list of gifts |
+| next_offset | String | false | <em>Optional</em>. Offset for the next request. If empty, then there are no more results |
+
+#### AcceptedGiftTypes
+
+    AcceptedGiftTypes(unlimited_gifts: Boolean, limited_gifts: Boolean, unique_gifts: Boolean, premium_subscription: Boolean)
+
+<p>This object describes the types of gifts that can be gifted to a user or a chat.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| unlimited_gifts | Boolean | true | <em>True</em>, if unlimited regular gifts are accepted |
+| limited_gifts | Boolean | true | <em>True</em>, if limited regular gifts are accepted |
+| unique_gifts | Boolean | true | <em>True</em>, if unique gifts or gifts that can be upgraded to unique for free are accepted |
+| premium_subscription | Boolean | true | <em>True</em>, if a Telegram Premium subscription is accepted |
+
+#### StarAmount
+
+    StarAmount(amount: Integer, nanostar_amount: Integer)
+
+<p>Describes an amount of Telegram Stars.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| amount | Integer | true | Integer amount of Telegram Stars, rounded to 0; can be negative |
+| nanostar_amount | Integer | false | <em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars; from -999999999 to 999999999; can be negative if and only if <em>amount</em> is non-positive |
 
 #### BotCommand
 
@@ -1697,7 +2195,7 @@
 |---|---|---|---|
 | type | String | true | Type of the button, must be <em>web_app</em> |
 | text | String | true | Text on the button |
-| web_app | WebAppInfo | true | Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. |
+| web_app | WebAppInfo | true | Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href="#answerwebappquery">answerWebAppQuery</a>. Alternatively, a <code>t.me</code> link to a Web App of the bot can be specified in the object instead of the Web App's URL, in which case the Web App will be opened as if the user pressed the link. |
 
 #### MenuButtonDefault
 
@@ -1733,16 +2231,17 @@
 
 #### ChatBoostSourceGiveaway
 
-    ChatBoostSourceGiveaway(source: String, giveaway_message_id: Integer, user: User, is_unclaimed: Boolean)
+    ChatBoostSourceGiveaway(source: String, giveaway_message_id: Integer, user: User, prize_star_count: Integer, is_unclaimed: Boolean)
 
-<p>The boost was obtained by the creation of a Telegram Premium giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.</p>
+<p>The boost was obtained by the creation of a Telegram Premium or a Telegram Star giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription for Telegram Premium giveaways and <em>prize_star_count</em> / 500 times for one year for Telegram Star giveaways.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | source | String | true | Source of the boost, always “giveaway” |
 | giveaway_message_id | Integer | true | Identifier of a message in the chat with the giveaway; the message could have been deleted already. May be 0 if the message isn't sent yet. |
-| user | User | false | <em>Optional</em>. User that won the prize in the giveaway if any |
-| is_unclaimed | Boolean | false | <em>Optional</em>. True, if the giveaway was completed, but there was no user to win the prize |
+| user | User | false | <em>Optional</em>. User that won the prize in the giveaway if any; for Telegram Premium giveaways only |
+| prize_star_count | Integer | false | <em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only |
+| is_unclaimed | Boolean | false | <em>Optional</em>. <em>True</em>, if the giveaway was completed, but there was no user to win the prize |
 
 #### ChatBoost
 
@@ -1791,9 +2290,32 @@
 |---|---|---|---|
 | boosts | List<ChatBoost> | true | The list of boosts added to the chat by the user |
 
+#### BusinessBotRights
+
+    BusinessBotRights(can_reply: Boolean, can_read_messages: Boolean, can_delete_sent_messages: Boolean, can_delete_all_messages: Boolean, can_edit_name: Boolean, can_edit_bio: Boolean, can_edit_profile_photo: Boolean, can_edit_username: Boolean, can_change_gift_settings: Boolean, can_view_gifts_and_stars: Boolean, can_convert_gifts_to_stars: Boolean, can_transfer_and_upgrade_gifts: Boolean, can_transfer_stars: Boolean, can_manage_stories: Boolean)
+
+<p>Represents the rights of a business bot.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| can_reply | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can send and edit messages in the private chats that had incoming messages in the last 24 hours |
+| can_read_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can mark incoming private messages as read |
+| can_delete_sent_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can delete messages sent by the bot |
+| can_delete_all_messages | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can delete all private messages in managed chats |
+| can_edit_name | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can edit the first and last name of the business account |
+| can_edit_bio | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can edit the bio of the business account |
+| can_edit_profile_photo | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can edit the profile photo of the business account |
+| can_edit_username | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can edit the username of the business account |
+| can_change_gift_settings | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can change the privacy settings pertaining to gifts for the business account |
+| can_view_gifts_and_stars | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can view gifts and the amount of Telegram Stars owned by the business account |
+| can_convert_gifts_to_stars | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can convert regular gifts owned by the business account to Telegram Stars |
+| can_transfer_and_upgrade_gifts | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can transfer and upgrade gifts owned by the business account |
+| can_transfer_stars | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can transfer Telegram Stars received by the business account to its own account, or use them to upgrade and transfer gifts |
+| can_manage_stories | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can post, edit and delete stories on behalf of the business account |
+
 #### BusinessConnection
 
-    BusinessConnection(id: String, user: User, user_chat_id: Integer, date: Integer, can_reply: Boolean, is_enabled: Boolean)
+    BusinessConnection(id: String, user: User, user_chat_id: Integer, date: Integer, rights: BusinessBotRights, is_enabled: Boolean)
 
 <p>Describes the connection of the bot with a business account.</p>
 
@@ -1803,8 +2325,8 @@
 | user | User | true | Business account user that created the business connection |
 | user_chat_id | Integer | true | Identifier of a private chat with the user who created the business connection. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. |
 | date | Integer | true | Date the connection was established in Unix time |
-| can_reply | Boolean | true | True, if the bot can act on behalf of the business account in chats that were active in the last 24 hours |
-| is_enabled | Boolean | true | True, if the connection is active |
+| rights | BusinessBotRights | false | <em>Optional</em>. Rights of the business bot |
+| is_enabled | Boolean | true | <em>True</em>, if the connection is active |
 
 #### BusinessMessagesDeleted
 
@@ -1847,7 +2369,7 @@
 
 #### InputMediaVideo
 
-    InputMediaVideo(type: String, media: String, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, width: Integer, height: Integer, duration: Integer, supports_streaming: Boolean, has_spoiler: Boolean)
+    InputMediaVideo(type: String, media: String, thumbnail: String, cover: String, start_timestamp: Integer, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, width: Integer, height: Integer, duration: Integer, supports_streaming: Boolean, has_spoiler: Boolean)
 
 <p>Represents a video to be sent.</p>
 
@@ -1855,7 +2377,9 @@
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>video</em> |
 | media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a> |
-| thumbnail | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
+| thumbnail | String | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
+| cover | String | false | <em>Optional</em>. Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a> |
+| start_timestamp | Integer | false | <em>Optional</em>. Start timestamp for the video in the message |
 | caption | String | false | <em>Optional</em>. Caption of the video to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
@@ -1868,7 +2392,7 @@
 
 #### InputMediaAnimation
 
-    InputMediaAnimation(type: String, media: String, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, width: Integer, height: Integer, duration: Integer, has_spoiler: Boolean)
+    InputMediaAnimation(type: String, media: String, thumbnail: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, width: Integer, height: Integer, duration: Integer, has_spoiler: Boolean)
 
 <p>Represents an animation file (GIF or H.264/MPEG-4 AVC video without sound) to be sent.</p>
 
@@ -1876,7 +2400,7 @@
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>animation</em> |
 | media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a> |
-| thumbnail | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
+| thumbnail | String | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
 | caption | String | false | <em>Optional</em>. Caption of the animation to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the animation caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
@@ -1888,7 +2412,7 @@
 
 #### InputMediaAudio
 
-    InputMediaAudio(type: String, media: String, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, duration: Integer, performer: String, title: String)
+    InputMediaAudio(type: String, media: String, thumbnail: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, duration: Integer, performer: String, title: String)
 
 <p>Represents an audio file to be treated as music to be sent.</p>
 
@@ -1896,7 +2420,7 @@
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>audio</em> |
 | media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a> |
-| thumbnail | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
+| thumbnail | String | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
 | caption | String | false | <em>Optional</em>. Caption of the audio to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the audio caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
@@ -1906,7 +2430,7 @@
 
 #### InputMediaDocument
 
-    InputMediaDocument(type: String, media: String, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_content_type_detection: Boolean)
+    InputMediaDocument(type: String, media: String, thumbnail: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_content_type_detection: Boolean)
 
 <p>Represents a general file to be sent.</p>
 
@@ -1914,11 +2438,88 @@
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>document</em> |
 | media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a> |
-| thumbnail | InputFileOrString | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
+| thumbnail | String | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
 | caption | String | false | <em>Optional</em>. Caption of the document to be sent, 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | <em>Optional</em>. Mode for parsing entities in the document caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | <em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | disable_content_type_detection | Boolean | false | <em>Optional</em>. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always <em>True</em>, if the document is sent as part of an album. |
+
+#### InputPaidMediaPhoto
+
+    InputPaidMediaPhoto(type: String, media: String)
+
+<p>The paid media to send is a photo.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the media, must be <em>photo</em> |
+| media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a> |
+
+#### InputPaidMediaVideo
+
+    InputPaidMediaVideo(type: String, media: String, thumbnail: String, cover: String, start_timestamp: Integer, width: Integer, height: Integer, duration: Integer, supports_streaming: Boolean)
+
+<p>The paid media to send is a video.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the media, must be <em>video</em> |
+| media | String | true | File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a> |
+| thumbnail | String | false | <em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
+| cover | String | false | <em>Optional</em>. Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a> |
+| start_timestamp | Integer | false | <em>Optional</em>. Start timestamp for the video in the message |
+| width | Integer | false | <em>Optional</em>. Video width |
+| height | Integer | false | <em>Optional</em>. Video height |
+| duration | Integer | false | <em>Optional</em>. Video duration in seconds |
+| supports_streaming | Boolean | false | <em>Optional</em>. Pass <em>True</em> if the uploaded video is suitable for streaming |
+
+#### InputProfilePhotoStatic
+
+    InputProfilePhotoStatic(type: String, photo: String)
+
+<p>A static profile photo in the .JPG format.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the profile photo, must be <em>static</em> |
+| photo | String | true | The static profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the photo was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
+
+#### InputProfilePhotoAnimated
+
+    InputProfilePhotoAnimated(type: String, animation: String, main_frame_timestamp: Float)
+
+<p>An animated profile photo in the MPEG4 format.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the profile photo, must be <em>animated</em> |
+| animation | String | true | The animated profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the photo was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
+| main_frame_timestamp | Float | false | <em>Optional</em>. Timestamp in seconds of the frame that will be used as the static profile photo. Defaults to 0.0. |
+
+#### InputStoryContentPhoto
+
+    InputStoryContentPhoto(type: String, photo: String)
+
+<p>Describes a photo to post as a story.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the content, must be <em>photo</em> |
+| photo | String | true | The photo to post as a story. The photo must be of the size 1080x1920 and must not exceed 10 MB. The photo can't be reused and can only be uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the photo was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
+
+#### InputStoryContentVideo
+
+    InputStoryContentVideo(type: String, video: String, duration: Float, cover_frame_timestamp: Float, is_animation: Boolean)
+
+<p>Describes a video to post as a story.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the content, must be <em>video</em> |
+| video | String | true | The video to post as a story. The video must be of the size 720x1280, streamable, encoded with H.265 codec, with key frames added each second in the MPEG4 format, and must not exceed 30 MB. The video can't be reused and can only be uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the video was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
+| duration | Float | false | <em>Optional</em>. Precise duration of the video in seconds; 0-60 |
+| cover_frame_timestamp | Float | false | <em>Optional</em>. Timestamp in seconds of the frame that will be used as the static cover for the story. Defaults to 0.0. |
+| is_animation | Boolean | false | <em>Optional</em>. Pass <em>True</em> if the video has no sound |
 
 
 
@@ -1939,7 +2540,7 @@
 
 #### sendMessage
 
-    sendMessage(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, text: String, parse_mode: ParseMode, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendMessage(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, text: String, parse_mode: ParseMode, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send text messages. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -1954,13 +2555,14 @@
 | link_preview_options | LinkPreviewOptions | false | Link preview generation options for the message |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### forwardMessage
 
-    forwardMessage(chat_id: IntegerOrString, message_thread_id: Integer, from_chat_id: IntegerOrString, disable_notification: Boolean, protect_content: Boolean, message_id: Integer)
+    forwardMessage(chat_id: IntegerOrString, message_thread_id: Integer, from_chat_id: IntegerOrString, video_start_timestamp: Integer, disable_notification: Boolean, protect_content: Boolean, message_id: Integer)
 
 <p>Use this method to forward messages of any kind. Service messages and messages with protected content can't be forwarded. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -1969,6 +2571,7 @@
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
 | from_chat_id | IntegerOrString | true | Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>) |
+| video_start_timestamp | Integer | false | New start timestamp for the forwarded video in the message |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the forwarded message from forwarding and saving |
 | message_id | Integer | true | Message identifier in the chat specified in <em>from_chat_id</em> |
@@ -1990,9 +2593,9 @@
 
 #### copyMessage
 
-    copyMessage(chat_id: IntegerOrString, message_thread_id: Integer, from_chat_id: IntegerOrString, message_id: Integer, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    copyMessage(chat_id: IntegerOrString, message_thread_id: Integer, from_chat_id: IntegerOrString, message_id: Integer, video_start_timestamp: Integer, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
-<p>Use this method to copy messages of any kind. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
+<p>Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -2000,12 +2603,14 @@
 | message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
 | from_chat_id | IntegerOrString | true | Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>) |
 | message_id | Integer | true | Message identifier in the chat specified in <em>from_chat_id</em> |
+| video_start_timestamp | Integer | false | New start timestamp for the copied video in the message |
 | caption | String | false | New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept |
 | parse_mode | ParseMode | false | Mode for parsing entities in the new caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of <em>parse_mode</em> |
 | show_caption_above_media | Boolean | false | Pass <em>True</em>, if the caption must be shown above the message media. Ignored if a new caption isn't specified. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
@@ -2013,7 +2618,7 @@
 
     copyMessages(chat_id: IntegerOrString, message_thread_id: Integer, from_chat_id: IntegerOrString, message_ids: List<Integer>, disable_notification: Boolean, protect_content: Boolean, remove_caption: Boolean)
 
-<p>Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessages">forwardMessages</a>, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of <a href="#messageid">MessageId</a> of the sent messages is returned.</p>
+<p>Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessages">forwardMessages</a>, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of <a href="#messageid">MessageId</a> of the sent messages is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -2027,7 +2632,7 @@
 
 #### sendPhoto
 
-    sendPhoto(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, photo: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_spoiler: Boolean, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendPhoto(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, photo: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_spoiler: Boolean, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send photos. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -2044,13 +2649,14 @@
 | has_spoiler | Boolean | false | Pass <em>True</em> if the photo needs to be covered with a spoiler animation |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendAudio
 
-    sendAudio(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, audio: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, duration: Integer, performer: String, title: String, thumbnail: InputFileOrString, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendAudio(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, audio: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, duration: Integer, performer: String, title: String, thumbnail: InputFileOrString, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent <a href="#message">Message</a> is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.</p><p>For sending voice messages, use the <a href="#sendvoice">sendVoice</a> method instead.</p>
 
@@ -2069,13 +2675,14 @@
 | thumbnail | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendDocument
 
-    sendDocument(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, document: InputFileOrString, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_content_type_detection: Boolean, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendDocument(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, document: InputFileOrString, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, disable_content_type_detection: Boolean, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send general files. On success, the sent <a href="#message">Message</a> is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.</p>
 
@@ -2092,13 +2699,14 @@
 | disable_content_type_detection | Boolean | false | Disables automatic server-side content type detection for files uploaded using multipart/form-data |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendVideo
 
-    sendVideo(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, video: InputFileOrString, duration: Integer, width: Integer, height: Integer, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_spoiler: Boolean, supports_streaming: Boolean, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendVideo(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, video: InputFileOrString, duration: Integer, width: Integer, height: Integer, thumbnail: InputFileOrString, cover: InputFileOrString, start_timestamp: Integer, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_spoiler: Boolean, supports_streaming: Boolean, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send video files, Telegram clients support MPEG4 videos (other formats may be sent as <a href="#document">Document</a>). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.</p>
 
@@ -2112,6 +2720,8 @@
 | width | Integer | false | Video width |
 | height | Integer | false | Video height |
 | thumbnail | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
+| cover | InputFileOrString | false | Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href="#sending-files">More information on Sending Files »</a> |
+| start_timestamp | Integer | false | Start timestamp for the video in the message |
 | caption | String | false | Video caption (may also be used when resending videos by <em>file_id</em>), 0-1024 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the video caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
@@ -2120,13 +2730,14 @@
 | supports_streaming | Boolean | false | Pass <em>True</em> if the uploaded video is suitable for streaming |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendAnimation
 
-    sendAnimation(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, animation: InputFileOrString, duration: Integer, width: Integer, height: Integer, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_spoiler: Boolean, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendAnimation(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, animation: InputFileOrString, duration: Integer, width: Integer, height: Integer, thumbnail: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_spoiler: Boolean, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.</p>
 
@@ -2147,13 +2758,14 @@
 | has_spoiler | Boolean | false | Pass <em>True</em> if the animation needs to be covered with a spoiler animation |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendVoice
 
-    sendVoice(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, voice: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, duration: Integer, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendVoice(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, voice: InputFileOrString, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, duration: Integer, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS, or in .MP3 format, or in .M4A format (other formats may be sent as <a href="#audio">Audio</a> or <a href="#document">Document</a>). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.</p>
 
@@ -2169,13 +2781,14 @@
 | duration | Integer | false | Duration of the voice message in seconds |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendVideoNote
 
-    sendVideoNote(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, video_note: InputFileOrString, duration: Integer, length: Integer, thumbnail: InputFileOrString, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendVideoNote(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, video_note: InputFileOrString, duration: Integer, length: Integer, thumbnail: InputFileOrString, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>As of <a href="https://telegram.org/blog/video-messages-and-telescope">v.4.0</a>, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -2190,15 +2803,39 @@
 | thumbnail | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
+| reply_parameters | ReplyParameters | false | Description of the message to reply to |
+| reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
+
+#### sendPaidMedia
+
+    sendPaidMedia(business_connection_id: String, chat_id: IntegerOrString, star_count: Integer, media: List<InputPaidMedia>, payload: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+
+<p>Use this method to send paid media. On success, the sent <a href="#message">Message</a> is returned.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
+| chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance. |
+| star_count | Integer | true | The number of Telegram Stars that must be paid to buy access to the media; 1-10000 |
+| media | List<InputPaidMedia> | true | A JSON-serialized array describing the media to be sent; up to 10 items |
+| payload | String | false | Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes. |
+| caption | String | false | Media caption, 0-1024 characters after entities parsing |
+| parse_mode | ParseMode | false | Mode for parsing entities in the media caption. See <a href="#formatting-options">formatting options</a> for more details. |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| show_caption_above_media | Boolean | false | Pass <em>True</em>, if the caption must be shown above the message media |
+| disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendMediaGroup
 
-    sendMediaGroup(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, media: List<InputMedia>, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters)
+    sendMediaGroup(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, media: List<InputMedia>, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, reply_parameters: ReplyParameters)
 
-<p>Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of <a href="#message">Messages</a> that were sent is returned.</p>
+<p>Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of <a href="#message">Message</a> objects that were sent is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -2208,12 +2845,13 @@
 | media | List<InputMedia> | true | A JSON-serialized array describing messages to be sent, must include 2-10 items |
 | disable_notification | Boolean | false | Sends messages <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent messages from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 
 #### sendLocation
 
-    sendLocation(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, latitude: Float, longitude: Float, horizontal_accuracy: Float, live_period: Integer, heading: Integer, proximity_alert_radius: Integer, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendLocation(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, latitude: Float, longitude: Float, horizontal_accuracy: Float, live_period: Integer, heading: Integer, proximity_alert_radius: Integer, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send point on the map. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -2230,13 +2868,14 @@
 | proximity_alert_radius | Integer | false | For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendVenue
 
-    sendVenue(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, latitude: Float, longitude: Float, title: String, address: String, foursquare_id: String, foursquare_type: String, google_place_id: String, google_place_type: String, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendVenue(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, latitude: Float, longitude: Float, title: String, address: String, foursquare_id: String, foursquare_type: String, google_place_id: String, google_place_type: String, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send information about a venue. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -2255,13 +2894,14 @@
 | google_place_type | String | false | Google Places type of the venue. (See <a href="https://developers.google.com/places/web-service/supported_types">supported types</a>.) |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendContact
 
-    sendContact(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, phone_number: String, first_name: String, last_name: String, vcard: String, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendContact(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, phone_number: String, first_name: String, last_name: String, vcard: String, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send phone contacts. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -2276,13 +2916,14 @@
 | vcard | String | false | Additional data about the contact in the form of a <a href="https://en.wikipedia.org/wiki/VCard">vCard</a>, 0-2048 bytes |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
 #### sendPoll
 
-    sendPoll(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, question: String, question_parse_mode: String, question_entities: List<MessageEntity>, options: List<InputPollOption>, is_anonymous: Boolean, type: String, allows_multiple_answers: Boolean, correct_option_id: Integer, explanation: String, explanation_parse_mode: String, explanation_entities: List<MessageEntity>, open_period: Integer, close_date: Integer, is_closed: Boolean, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendPoll(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, question: String, question_parse_mode: String, question_entities: List<MessageEntity>, options: List<InputPollOption>, is_anonymous: Boolean, type: String, allows_multiple_answers: Boolean, correct_option_id: Integer, explanation: String, explanation_parse_mode: String, explanation_entities: List<MessageEntity>, open_period: Integer, close_date: Integer, is_closed: Boolean, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send a native poll. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -2294,7 +2935,7 @@
 | question | String | true | Poll question, 1-300 characters |
 | question_parse_mode | String | false | Mode for parsing entities in the question. See <a href="#formatting-options">formatting options</a> for more details. Currently, only custom emoji entities are allowed |
 | question_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of <em>question_parse_mode</em> |
-| options | List<InputPollOption> | true | A JSON-serialized list of 2-10 answer options |
+| options | List<InputPollOption> | true | A JSON-serialized list of 2-12 answer options |
 | is_anonymous | Boolean | false | <em>True</em>, if the poll needs to be anonymous, defaults to <em>True</em> |
 | type | String | false | Poll type, “quiz” or “regular”, defaults to “regular” |
 | allows_multiple_answers | Boolean | false | <em>True</em>, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to <em>False</em> |
@@ -2307,13 +2948,31 @@
 | is_closed | Boolean | false | Pass <em>True</em> if the poll needs to be immediately closed. This can be useful for poll preview. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
 
+#### sendChecklist
+
+    sendChecklist(business_connection_id: String, chat_id: Integer, checklist: InputChecklist, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: InlineKeyboardMarkup)
+
+<p>Use this method to send a checklist on behalf of a connected business account. On success, the sent <a href="#message">Message</a> is returned.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection on behalf of which the message will be sent |
+| chat_id | Integer | true | Unique identifier for the target chat |
+| checklist | InputChecklist | true | A JSON-serialized object for the checklist to send |
+| disable_notification | Boolean | false | Sends the message silently. Users will receive a notification with no sound. |
+| protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message |
+| reply_parameters | ReplyParameters | false | A JSON-serialized object for description of the message to reply to |
+| reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for an inline keyboard |
+
 #### sendDice
 
-    sendDice(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, emoji: String, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendDice(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, emoji: String, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send an animated emoji that will display a random value. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -2325,6 +2984,7 @@
 | emoji | String | false | Emoji on which the dice throw animation is based. Currently, must be one of “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”, “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, or “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Dice can have values 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, values 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” and “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, and values 1-64 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Defaults to “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
@@ -2348,13 +3008,13 @@
 
     setMessageReaction(chat_id: IntegerOrString, message_id: Integer, reaction: List<ReactionType>, is_big: Boolean)
 
-<p>Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Returns <em>True</em> on success.</p>
+<p>Use this method to change the chosen reactions on a message. Service messages of some types can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | true | Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead. |
-| reaction | List<ReactionType> | false | A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. |
+| reaction | List<ReactionType> | false | A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. Paid reactions can't be used by bots. |
 | is_big | Boolean | false | Pass <em>True</em> to set the reaction with a big animation |
 
 #### getUserProfilePhotos
@@ -2368,6 +3028,18 @@
 | user_id | Integer | true | Unique identifier of the target user |
 | offset | Integer | false | Sequential number of the first photo to be returned. By default, all photos are returned. |
 | limit | Integer | false | Limits the number of photos to be retrieved. Values between 1-100 are accepted. Defaults to 100. |
+
+#### setUserEmojiStatus
+
+    setUserEmojiStatus(user_id: Integer, emoji_status_custom_emoji_id: String, emoji_status_expiration_date: Integer)
+
+<p>Changes the emoji status for a given user that previously allowed the bot to manage their emoji status via the Mini App method <a href="/bots/webapps#initializing-mini-apps">requestEmojiStatusAccess</a>. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| user_id | Integer | true | Unique identifier of the target user |
+| emoji_status_custom_emoji_id | String | false | Custom emoji identifier of the emoji status to set. Pass an empty string to remove the status. |
+| emoji_status_expiration_date | Integer | false | Expiration date of the emoji status, if any |
 
 #### getFile
 
@@ -2429,7 +3101,7 @@
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | user_id | Integer | true | Unique identifier of the target user |
 | is_anonymous | Boolean | false | Pass <em>True</em> if the administrator's presence in the chat is hidden |
-| can_manage_chat | Boolean | false | Pass <em>True</em> if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege. |
+| can_manage_chat | Boolean | false | Pass <em>True</em> if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege. |
 | can_delete_messages | Boolean | false | Pass <em>True</em> if the administrator can delete messages of other users |
 | can_manage_video_chats | Boolean | false | Pass <em>True</em> if the administrator can manage video chats |
 | can_restrict_members | Boolean | false | Pass <em>True</em> if the administrator can restrict, ban or unban chat members, or access supergroup statistics |
@@ -2439,7 +3111,7 @@
 | can_post_stories | Boolean | false | Pass <em>True</em> if the administrator can post stories to the chat |
 | can_edit_stories | Boolean | false | Pass <em>True</em> if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive |
 | can_delete_stories | Boolean | false | Pass <em>True</em> if the administrator can delete stories posted by other users |
-| can_post_messages | Boolean | false | Pass <em>True</em> if the administrator can post messages in the channel, or access channel statistics; for channels only |
+| can_post_messages | Boolean | false | Pass <em>True</em> if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only |
 | can_edit_messages | Boolean | false | Pass <em>True</em> if the administrator can edit messages of other users and can pin messages; for channels only |
 | can_pin_messages | Boolean | false | Pass <em>True</em> if the administrator can pin messages; for supergroups only |
 | can_manage_topics | Boolean | false | Pass <em>True</em> if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only |
@@ -2531,6 +3203,31 @@
 | member_limit | Integer | false | The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999 |
 | creates_join_request | Boolean | false | <em>True</em>, if users joining the chat via the link need to be approved by chat administrators. If <em>True</em>, <em>member_limit</em> can't be specified |
 
+#### createChatSubscriptionInviteLink
+
+    createChatSubscriptionInviteLink(chat_id: IntegerOrString, name: String, subscription_period: Integer, subscription_price: Integer)
+
+<p>Use this method to create a <a href="https://telegram.org/blog/superchannels-star-reactions-subscriptions#star-subscriptions">subscription invite link</a> for a channel chat. The bot must have the <em>can_invite_users</em> administrator rights. The link can be edited using the method <a href="#editchatsubscriptioninvitelink">editChatSubscriptionInviteLink</a> or revoked using the method <a href="#revokechatinvitelink">revokeChatInviteLink</a>. Returns the new invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat_id | IntegerOrString | true | Unique identifier for the target channel chat or username of the target channel (in the format <code>@channelusername</code>) |
+| name | String | false | Invite link name; 0-32 characters |
+| subscription_period | Integer | true | The number of seconds the subscription will be active for before the next payment. Currently, it must always be 2592000 (30 days). |
+| subscription_price | Integer | true | The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat; 1-10000 |
+
+#### editChatSubscriptionInviteLink
+
+    editChatSubscriptionInviteLink(chat_id: IntegerOrString, invite_link: String, name: String)
+
+<p>Use this method to edit a subscription invite link created by the bot. The bot must have the <em>can_invite_users</em> administrator rights. Returns the edited invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
+| invite_link | String | true | The invite link to edit |
+| name | String | false | Invite link name; 0-32 characters |
+
 #### revokeChatInviteLink
 
     revokeChatInviteLink(chat_id: IntegerOrString, invite_link: String)
@@ -2609,26 +3306,28 @@
 
 #### pinChatMessage
 
-    pinChatMessage(chat_id: IntegerOrString, message_id: Integer, disable_notification: Boolean)
+    pinChatMessage(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, disable_notification: Boolean)
 
 <p>Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be pinned |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | true | Identifier of a message to pin |
 | disable_notification | Boolean | false | Pass <em>True</em> if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats. |
 
 #### unpinChatMessage
 
-    unpinChatMessage(chat_id: IntegerOrString, message_id: Integer)
+    unpinChatMessage(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer)
 
 <p>Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be unpinned |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_id | Integer | false | Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned. |
+| message_id | Integer | false | Identifier of the message to unpin. Required if <em>business_connection_id</em> is specified. If not specified, the most recent pinned message (by sending date) will be unpinned. |
 
 #### unpinAllChatMessages
 
@@ -2735,7 +3434,7 @@
 
     editForumTopic(chat_id: IntegerOrString, message_thread_id: Integer, name: String, icon_custom_emoji_id: String)
 
-<p>Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>
+<p>Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -2792,7 +3491,7 @@
 
     editGeneralForumTopic(chat_id: IntegerOrString, name: String)
 
-<p>Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>
+<p>Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -3032,12 +3731,13 @@
 ### Methods
 #### editMessageText
 
-    editMessageText(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, text: String, parse_mode: ParseMode, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, reply_markup: InlineKeyboardMarkup)
+    editMessageText(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, text: String, parse_mode: ParseMode, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, reply_markup: InlineKeyboardMarkup)
 
-<p>Use this method to edit text and <a href="#games">game</a> messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to edit text and <a href="#games">game</a> messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message to be edited was sent |
 | chat_id | IntegerOrString | false | Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | false | Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit |
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |
@@ -3049,12 +3749,13 @@
 
 #### editMessageCaption
 
-    editMessageCaption(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, reply_markup: InlineKeyboardMarkup)
+    editMessageCaption(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, reply_markup: InlineKeyboardMarkup)
 
-<p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message to be edited was sent |
 | chat_id | IntegerOrString | false | Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | false | Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit |
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |
@@ -3066,12 +3767,13 @@
 
 #### editMessageMedia
 
-    editMessageMedia(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, media: InputMedia, reply_markup: InlineKeyboardMarkup)
+    editMessageMedia(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, media: InputMedia, reply_markup: InlineKeyboardMarkup)
 
-<p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to edit animation, audio, document, photo, or video messages, or to add media to text messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message to be edited was sent |
 | chat_id | IntegerOrString | false | Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | false | Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit |
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |
@@ -3080,12 +3782,13 @@
 
 #### editMessageLiveLocation
 
-    editMessageLiveLocation(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, latitude: Float, longitude: Float, live_period: Integer, horizontal_accuracy: Float, heading: Integer, proximity_alert_radius: Integer, reply_markup: InlineKeyboardMarkup)
+    editMessageLiveLocation(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, latitude: Float, longitude: Float, live_period: Integer, horizontal_accuracy: Float, heading: Integer, proximity_alert_radius: Integer, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to edit live location messages. A location can be edited until its <em>live_period</em> expires or editing is explicitly disabled by a call to <a href="#stopmessagelivelocation">stopMessageLiveLocation</a>. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message to be edited was sent |
 | chat_id | IntegerOrString | false | Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | false | Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit |
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |
@@ -3099,25 +3802,41 @@
 
 #### stopMessageLiveLocation
 
-    stopMessageLiveLocation(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
+    stopMessageLiveLocation(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to stop updating a live location message before <em>live_period</em> expires. On success, if the message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message to be edited was sent |
 | chat_id | IntegerOrString | false | Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | false | Required if <em>inline_message_id</em> is not specified. Identifier of the message with live location to stop |
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |
 | reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for a new <a href="/bots/features#inline-keyboards">inline keyboard</a>. |
 
-#### editMessageReplyMarkup
+#### editMessageChecklist
 
-    editMessageReplyMarkup(chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
+    editMessageChecklist(business_connection_id: String, chat_id: Integer, message_id: Integer, checklist: InputChecklist, reply_markup: InlineKeyboardMarkup)
 
-<p>Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to edit a checklist on behalf of a connected business account. On success, the edited <a href="#message">Message</a> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection on behalf of which the message will be sent |
+| chat_id | Integer | true | Unique identifier for the target chat |
+| message_id | Integer | true | Unique identifier for the target message |
+| checklist | InputChecklist | true | A JSON-serialized object for the new checklist |
+| reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for the new inline keyboard for the message |
+
+#### editMessageReplyMarkup
+
+    editMessageReplyMarkup(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, inline_message_id: String, reply_markup: InlineKeyboardMarkup)
+
+<p>Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message to be edited was sent |
 | chat_id | IntegerOrString | false | Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | false | Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit |
 | inline_message_id | String | false | Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message |
@@ -3125,12 +3844,13 @@
 
 #### stopPoll
 
-    stopPoll(chat_id: IntegerOrString, message_id: Integer, reply_markup: InlineKeyboardMarkup)
+    stopPoll(business_connection_id: String, chat_id: IntegerOrString, message_id: Integer, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to stop a poll which was sent by the bot. On success, the stopped <a href="#poll">Poll</a> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message to be edited was sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | true | Identifier of the original message with the poll |
 | reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for a new message <a href="/bots/features#inline-keyboards">inline keyboard</a>. |
@@ -3156,6 +3876,292 @@
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_ids | List<Integer> | true | A JSON-serialized list of 1-100 identifiers of messages to delete. See <a href="#deletemessage">deleteMessage</a> for limitations on which messages can be deleted |
+
+#### sendGift
+
+    sendGift(user_id: Integer, chat_id: IntegerOrString, gift_id: String, pay_for_upgrade: Boolean, text: String, text_parse_mode: String, text_entities: List<MessageEntity>)
+
+<p>Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| user_id | Integer | false | Required if <em>chat_id</em> is not specified. Unique identifier of the target user who will receive the gift. |
+| chat_id | IntegerOrString | false | Required if <em>user_id</em> is not specified. Unique identifier for the chat or username of the channel (in the format <code>@channelusername</code>) that will receive the gift. |
+| gift_id | String | true | Identifier of the gift |
+| pay_for_upgrade | Boolean | false | Pass <em>True</em> to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver |
+| text | String | false | Text that will be shown along with the gift; 0-128 characters |
+| text_parse_mode | String | false | Mode for parsing entities in the text. See <a href="#formatting-options">formatting options</a> for more details. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored. |
+| text_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored. |
+
+#### giftPremiumSubscription
+
+    giftPremiumSubscription(user_id: Integer, month_count: Integer, star_count: Integer, text: String, text_parse_mode: String, text_entities: List<MessageEntity>)
+
+<p>Gifts a Telegram Premium subscription to the given user. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| user_id | Integer | true | Unique identifier of the target user who will receive a Telegram Premium subscription |
+| month_count | Integer | true | Number of months the Telegram Premium subscription will be active for the user; must be one of 3, 6, or 12 |
+| star_count | Integer | true | Number of Telegram Stars to pay for the Telegram Premium subscription; must be 1000 for 3 months, 1500 for 6 months, and 2500 for 12 months |
+| text | String | false | Text that will be shown along with the service message about the subscription; 0-128 characters |
+| text_parse_mode | String | false | Mode for parsing entities in the text. See <a href="#formatting-options">formatting options</a> for more details. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored. |
+| text_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored. |
+
+#### verifyUser
+
+    verifyUser(user_id: Integer, custom_description: String)
+
+<p>Verifies a user <a href="https://telegram.org/verify#third-party-verification">on behalf of the organization</a> which is represented by the bot. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| user_id | Integer | true | Unique identifier of the target user |
+| custom_description | String | false | Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description. |
+
+#### verifyChat
+
+    verifyChat(chat_id: IntegerOrString, custom_description: String)
+
+<p>Verifies a chat <a href="https://telegram.org/verify#third-party-verification">on behalf of the organization</a> which is represented by the bot. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
+| custom_description | String | false | Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description. |
+
+#### removeUserVerification
+
+    removeUserVerification(user_id: Integer)
+
+<p>Removes verification from a user who is currently verified <a href="https://telegram.org/verify#third-party-verification">on behalf of the organization</a> represented by the bot. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| user_id | Integer | true | Unique identifier of the target user |
+
+#### removeChatVerification
+
+    removeChatVerification(chat_id: IntegerOrString)
+
+<p>Removes verification from a chat that is currently verified <a href="https://telegram.org/verify#third-party-verification">on behalf of the organization</a> represented by the bot. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
+
+#### readBusinessMessage
+
+    readBusinessMessage(business_connection_id: String, chat_id: Integer, message_id: Integer)
+
+<p>Marks incoming message as read on behalf of a business account. Requires the <em>can_read_messages</em> business bot right. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection on behalf of which to read the message |
+| chat_id | Integer | true | Unique identifier of the chat in which the message was received. The chat must have been active in the last 24 hours. |
+| message_id | Integer | true | Unique identifier of the message to mark as read |
+
+#### deleteBusinessMessages
+
+    deleteBusinessMessages(business_connection_id: String, message_ids: List<Integer>)
+
+<p>Delete messages on behalf of a business account. Requires the <em>can_delete_sent_messages</em> business bot right to delete messages sent by the bot itself, or the <em>can_delete_all_messages</em> business bot right to delete any message. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection on behalf of which to delete the messages |
+| message_ids | List<Integer> | true | A JSON-serialized list of 1-100 identifiers of messages to delete. All messages must be from the same chat. See <a href="#deletemessage">deleteMessage</a> for limitations on which messages can be deleted |
+
+#### setBusinessAccountName
+
+    setBusinessAccountName(business_connection_id: String, first_name: String, last_name: String)
+
+<p>Changes the first and last name of a managed business account. Requires the <em>can_change_name</em> business bot right. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection |
+| first_name | String | true | The new value of the first name for the business account; 1-64 characters |
+| last_name | String | false | The new value of the last name for the business account; 0-64 characters |
+
+#### setBusinessAccountUsername
+
+    setBusinessAccountUsername(business_connection_id: String, username: String)
+
+<p>Changes the username of a managed business account. Requires the <em>can_change_username</em> business bot right. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection |
+| username | String | false | The new value of the username for the business account; 0-32 characters |
+
+#### setBusinessAccountBio
+
+    setBusinessAccountBio(business_connection_id: String, bio: String)
+
+<p>Changes the bio of a managed business account. Requires the <em>can_change_bio</em> business bot right. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection |
+| bio | String | false | The new value of the bio for the business account; 0-140 characters |
+
+#### setBusinessAccountProfilePhoto
+
+    setBusinessAccountProfilePhoto(business_connection_id: String, photo: InputProfilePhoto, is_public: Boolean)
+
+<p>Changes the profile photo of a managed business account. Requires the <em>can_edit_profile_photo</em> business bot right. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection |
+| photo | InputProfilePhoto | true | The new profile photo to set |
+| is_public | Boolean | false | Pass <em>True</em> to set the public photo, which will be visible even if the main photo is hidden by the business account's privacy settings. An account can have only one public photo. |
+
+#### removeBusinessAccountProfilePhoto
+
+    removeBusinessAccountProfilePhoto(business_connection_id: String, is_public: Boolean)
+
+<p>Removes the current profile photo of a managed business account. Requires the <em>can_edit_profile_photo</em> business bot right. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection |
+| is_public | Boolean | false | Pass <em>True</em> to remove the public photo, which is visible even if the main photo is hidden by the business account's privacy settings. After the main photo is removed, the previous profile photo (if present) becomes the main photo. |
+
+#### setBusinessAccountGiftSettings
+
+    setBusinessAccountGiftSettings(business_connection_id: String, show_gift_button: Boolean, accepted_gift_types: AcceptedGiftTypes)
+
+<p>Changes the privacy settings pertaining to incoming gifts in a managed business account. Requires the <em>can_change_gift_settings</em> business bot right. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection |
+| show_gift_button | Boolean | true | Pass <em>True</em>, if a button for sending a gift to the user or by the business account must always be shown in the input field |
+| accepted_gift_types | AcceptedGiftTypes | true | Types of gifts accepted by the business account |
+
+#### getBusinessAccountStarBalance
+
+    getBusinessAccountStarBalance(business_connection_id: String)
+
+<p>Returns the amount of Telegram Stars owned by a managed business account. Requires the <em>can_view_gifts_and_stars</em> business bot right. Returns <a href="#staramount">StarAmount</a> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection |
+
+#### transferBusinessAccountStars
+
+    transferBusinessAccountStars(business_connection_id: String, star_count: Integer)
+
+<p>Transfers Telegram Stars from the business account balance to the bot's balance. Requires the <em>can_transfer_stars</em> business bot right. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection |
+| star_count | Integer | true | Number of Telegram Stars to transfer; 1-10000 |
+
+#### getBusinessAccountGifts
+
+    getBusinessAccountGifts(business_connection_id: String, exclude_unsaved: Boolean, exclude_saved: Boolean, exclude_unlimited: Boolean, exclude_limited: Boolean, exclude_unique: Boolean, sort_by_price: Boolean, offset: String, limit: Integer)
+
+<p>Returns the gifts received and owned by a managed business account. Requires the <em>can_view_gifts_and_stars</em> business bot right. Returns <a href="#ownedgifts">OwnedGifts</a> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection |
+| exclude_unsaved | Boolean | false | Pass <em>True</em> to exclude gifts that aren't saved to the account's profile page |
+| exclude_saved | Boolean | false | Pass <em>True</em> to exclude gifts that are saved to the account's profile page |
+| exclude_unlimited | Boolean | false | Pass <em>True</em> to exclude gifts that can be purchased an unlimited number of times |
+| exclude_limited | Boolean | false | Pass <em>True</em> to exclude gifts that can be purchased a limited number of times |
+| exclude_unique | Boolean | false | Pass <em>True</em> to exclude unique gifts |
+| sort_by_price | Boolean | false | Pass <em>True</em> to sort results by gift price instead of send date. Sorting is applied before pagination. |
+| offset | String | false | Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results |
+| limit | Integer | false | The maximum number of gifts to be returned; 1-100. Defaults to 100 |
+
+#### convertGiftToStars
+
+    convertGiftToStars(business_connection_id: String, owned_gift_id: String)
+
+<p>Converts a given regular gift to Telegram Stars. Requires the <em>can_convert_gifts_to_stars</em> business bot right. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection |
+| owned_gift_id | String | true | Unique identifier of the regular gift that should be converted to Telegram Stars |
+
+#### upgradeGift
+
+    upgradeGift(business_connection_id: String, owned_gift_id: String, keep_original_details: Boolean, star_count: Integer)
+
+<p>Upgrades a given regular gift to a unique gift. Requires the <em>can_transfer_and_upgrade_gifts</em> business bot right. Additionally requires the <em>can_transfer_stars</em> business bot right if the upgrade is paid. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection |
+| owned_gift_id | String | true | Unique identifier of the regular gift that should be upgraded to a unique one |
+| keep_original_details | Boolean | false | Pass <em>True</em> to keep the original gift text, sender and receiver in the upgraded gift |
+| star_count | Integer | false | The amount of Telegram Stars that will be paid for the upgrade from the business account balance. If <code>gift.prepaid_upgrade_star_count &gt; 0</code>, then pass 0, otherwise, the <em>can_transfer_stars</em> business bot right is required and <code>gift.upgrade_star_count</code> must be passed. |
+
+#### transferGift
+
+    transferGift(business_connection_id: String, owned_gift_id: String, new_owner_chat_id: Integer, star_count: Integer)
+
+<p>Transfers an owned unique gift to another user. Requires the <em>can_transfer_and_upgrade_gifts</em> business bot right. Requires <em>can_transfer_stars</em> business bot right if the transfer is paid. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection |
+| owned_gift_id | String | true | Unique identifier of the regular gift that should be transferred |
+| new_owner_chat_id | Integer | true | Unique identifier of the chat which will own the gift. The chat must be active in the last 24 hours. |
+| star_count | Integer | false | The amount of Telegram Stars that will be paid for the transfer from the business account balance. If positive, then the <em>can_transfer_stars</em> business bot right is required. |
+
+#### postStory
+
+    postStory(business_connection_id: String, content: InputStoryContent, active_period: Integer, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, areas: List<StoryArea>, post_to_chat_page: Boolean, protect_content: Boolean)
+
+<p>Posts a story on behalf of a managed business account. Requires the <em>can_manage_stories</em> business bot right. Returns <a href="#story">Story</a> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection |
+| content | InputStoryContent | true | Content of the story |
+| active_period | Integer | true | Period after which the story is moved to the archive, in seconds; must be one of <code>6 * 3600</code>, <code>12 * 3600</code>, <code>86400</code>, or <code>2 * 86400</code> |
+| caption | String | false | Caption of the story, 0-2048 characters after entities parsing |
+| parse_mode | ParseMode | false | Mode for parsing entities in the story caption. See <a href="#formatting-options">formatting options</a> for more details. |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| areas | List<StoryArea> | false | A JSON-serialized list of clickable areas to be shown on the story |
+| post_to_chat_page | Boolean | false | Pass <em>True</em> to keep the story accessible after it expires |
+| protect_content | Boolean | false | Pass <em>True</em> if the content of the story must be protected from forwarding and screenshotting |
+
+#### editStory
+
+    editStory(business_connection_id: String, story_id: Integer, content: InputStoryContent, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, areas: List<StoryArea>)
+
+<p>Edits a story previously posted by the bot on behalf of a managed business account. Requires the <em>can_manage_stories</em> business bot right. Returns <a href="#story">Story</a> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection |
+| story_id | Integer | true | Unique identifier of the story to edit |
+| content | InputStoryContent | true | Content of the story |
+| caption | String | false | Caption of the story, 0-2048 characters after entities parsing |
+| parse_mode | ParseMode | false | Mode for parsing entities in the story caption. See <a href="#formatting-options">formatting options</a> for more details. |
+| caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
+| areas | List<StoryArea> | false | A JSON-serialized list of clickable areas to be shown on the story |
+
+#### deleteStory
+
+    deleteStory(business_connection_id: String, story_id: Integer)
+
+<p>Deletes a story previously posted by the bot on behalf of a managed business account. Requires the <em>can_manage_stories</em> business bot right. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection |
+| story_id | Integer | true | Unique identifier of the story to delete |
 
 
 
@@ -3215,14 +4221,14 @@
 
 #### InputSticker
 
-    InputSticker(sticker: InputFileOrString, format: String, emoji_list: List<String>, mask_position: MaskPosition, keywords: List<String>)
+    InputSticker(sticker: String, format: String, emoji_list: List<String>, mask_position: MaskPosition, keywords: List<String>)
 
 <p>This object describes a sticker to be added to a sticker set.</p>
 
 | name | type | required | description |
 |---|---|---|---|
-| sticker | InputFileOrString | true | The added sticker. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, upload a new one using multipart/form-data, or pass “attach://&lt;file_attach_name&gt;” to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. Animated and video stickers can't be uploaded via HTTP URL. <a href="#sending-files">More information on Sending Files »</a> |
-| format | String | true | Format of the added sticker, must be one of “static” for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, “animated” for a <strong>.TGS</strong> animation, “video” for a <strong>WEBM</strong> video |
+| sticker | String | true | The added sticker. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or pass “attach://&lt;file_attach_name&gt;” to upload a new file using multipart/form-data under &lt;file_attach_name&gt; name. Animated and video stickers can't be uploaded via HTTP URL. <a href="#sending-files">More information on Sending Files »</a> |
+| format | String | true | Format of the added sticker, must be one of “static” for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, “animated” for a <strong>.TGS</strong> animation, “video” for a <strong>.WEBM</strong> video |
 | emoji_list | List<String> | true | List of 1-20 emoji associated with the sticker |
 | mask_position | MaskPosition | false | <em>Optional</em>. Position where the mask should be placed on faces. For “mask” stickers only. |
 | keywords | List<String> | false | <em>Optional</em>. List of 0-20 search keywords for the sticker with total length of up to 64 characters. For “regular” and “custom_emoji” stickers only. |
@@ -3231,7 +4237,7 @@
 ### Methods
 #### sendSticker
 
-    sendSticker(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, sticker: InputFileOrString, emoji: String, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendSticker(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, sticker: InputFileOrString, emoji: String, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send static .WEBP, <a href="https://telegram.org/blog/animated-stickers">animated</a> .TGS, or <a href="https://telegram.org/blog/video-stickers-better-reactions">video</a> .WEBM stickers. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -3244,6 +4250,7 @@
 | emoji | String | false | Emoji associated with the sticker; only for just uploaded stickers |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
@@ -3395,8 +4402,8 @@
 |---|---|---|---|
 | name | String | true | Sticker set name |
 | user_id | Integer | true | User identifier of the sticker set owner |
-| thumbnail | InputFileOrString | false | A <strong>.WEBP</strong> or <strong>.PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a <strong>.TGS</strong> animation with a thumbnail up to 32 kilobytes in size (see <a href="/stickers#animated-sticker-requirements"></a><a href="https://core.telegram.org/stickers#animated-sticker-requirements">https://core.telegram.org/stickers#animated-sticker-requirements</a> for animated sticker technical requirements), or a <strong>WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href="/stickers#video-sticker-requirements"></a><a href="https://core.telegram.org/stickers#video-sticker-requirements">https://core.telegram.org/stickers#video-sticker-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a>. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail. |
-| format | String | true | Format of the thumbnail, must be one of “static” for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, “animated” for a <strong>.TGS</strong> animation, or “video” for a <strong>WEBM</strong> video |
+| thumbnail | InputFileOrString | false | A <strong>.WEBP</strong> or <strong>.PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a <strong>.TGS</strong> animation with a thumbnail up to 32 kilobytes in size (see <a href="/stickers#animation-requirements"></a><a href="https://core.telegram.org/stickers#animation-requirements">https://core.telegram.org/stickers#animation-requirements</a> for animated sticker technical requirements), or a <strong>.WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href="/stickers#video-requirements"></a><a href="https://core.telegram.org/stickers#video-requirements">https://core.telegram.org/stickers#video-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a>. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail. |
+| format | String | true | Format of the thumbnail, must be one of “static” for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, “animated” for a <strong>.TGS</strong> animation, or “video” for a <strong>.WEBM</strong> video |
 
 #### setCustomEmojiStickerSetThumbnail
 
@@ -3453,7 +4460,7 @@
 
 #### InlineQueryResultArticle
 
-    InlineQueryResultArticle(type: String, id: String, title: String, input_message_content: InputMessageContent, reply_markup: InlineKeyboardMarkup, url: String, hide_url: Boolean, description: String, thumbnail_url: String, thumbnail_width: Integer, thumbnail_height: Integer)
+    InlineQueryResultArticle(type: String, id: String, title: String, input_message_content: InputMessageContent, reply_markup: InlineKeyboardMarkup, url: String, description: String, thumbnail_url: String, thumbnail_width: Integer, thumbnail_height: Integer)
 
 <p>Represents a link to an article or web page.</p>
 
@@ -3465,7 +4472,6 @@
 | input_message_content | InputMessageContent | true | Content of the message to be sent |
 | reply_markup | InlineKeyboardMarkup | false | <em>Optional</em>. <a href="/bots/features#inline-keyboards">Inline keyboard</a> attached to the message |
 | url | String | false | <em>Optional</em>. URL of the result |
-| hide_url | Boolean | false | <em>Optional</em>. Pass <em>True</em> if you don't want the URL to be shown in the message |
 | description | String | false | <em>Optional</em>. Short description of the result |
 | thumbnail_url | String | false | <em>Optional</em>. Url of the thumbnail for the result |
 | thumbnail_width | Integer | false | <em>Optional</em>. Thumbnail width |
@@ -3504,7 +4510,7 @@
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>gif</em> |
 | id | String | true | Unique identifier for this result, 1-64 bytes |
-| gif_url | String | true | A valid URL for the GIF file. File size must not exceed 1MB |
+| gif_url | String | true | A valid URL for the GIF file |
 | gif_width | Integer | false | <em>Optional</em>. Width of the GIF |
 | gif_height | Integer | false | <em>Optional</em>. Height of the GIF |
 | gif_duration | Integer | false | <em>Optional</em>. Duration of the GIF in seconds |
@@ -3528,7 +4534,7 @@
 |---|---|---|---|
 | type | String | true | Type of the result, must be <em>mpeg4_gif</em> |
 | id | String | true | Unique identifier for this result, 1-64 bytes |
-| mpeg4_url | String | true | A valid URL for the MPEG4 file. File size must not exceed 1MB |
+| mpeg4_url | String | true | A valid URL for the MPEG4 file |
 | mpeg4_width | Integer | false | <em>Optional</em>. Video width |
 | mpeg4_height | Integer | false | <em>Optional</em>. Video height |
 | mpeg4_duration | Integer | false | <em>Optional</em>. Video duration in seconds |
@@ -3925,7 +4931,7 @@
 |---|---|---|---|
 | title | String | true | Product name, 1-32 characters |
 | description | String | true | Product description, 1-255 characters |
-| payload | String | true | Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes. |
+| payload | String | true | Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes. |
 | provider_token | String | false | <em>Optional</em>. Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a>. Pass an empty string for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
 | currency | String | true | Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>. Pass “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
 | prices | List<LabeledPrice> | true | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
@@ -3968,6 +4974,17 @@
 |---|---|---|---|
 | inline_message_id | String | false | <em>Optional</em>. Identifier of the sent inline message. Available only if there is an <a href="#inlinekeyboardmarkup">inline keyboard</a> attached to the message. |
 
+#### PreparedInlineMessage
+
+    PreparedInlineMessage(id: String, expiration_date: Integer)
+
+<p>Describes an inline message to be sent by a user of a Mini App.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| id | String | true | Unique identifier of the prepared message |
+| expiration_date | Integer | true | Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used |
+
 
 ### Methods
 #### answerInlineQuery
@@ -3995,6 +5012,21 @@
 |---|---|---|---|
 | web_app_query_id | String | true | Unique identifier for the query to be answered |
 | result | InlineQueryResult | true | A JSON-serialized object describing the message to be sent |
+
+#### savePreparedInlineMessage
+
+    savePreparedInlineMessage(user_id: Integer, result: InlineQueryResult, allow_user_chats: Boolean, allow_bot_chats: Boolean, allow_group_chats: Boolean, allow_channel_chats: Boolean)
+
+<p>Stores a message that can be sent by a user of a Mini App. Returns a <a href="#preparedinlinemessage">PreparedInlineMessage</a> object.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| user_id | Integer | true | Unique identifier of the target user that can use the prepared message |
+| result | InlineQueryResult | true | A JSON-serialized object describing the message to be sent |
+| allow_user_chats | Boolean | false | Pass <em>True</em> if the message can be sent to private chats with users |
+| allow_bot_chats | Boolean | false | Pass <em>True</em> if the message can be sent to private chats with bots |
+| allow_group_chats | Boolean | false | Pass <em>True</em> if the message can be sent to group and supergroup chats |
+| allow_channel_chats | Boolean | false | Pass <em>True</em> if the message can be sent to channel chats |
 
 
 
@@ -4068,19 +5100,36 @@
 
 #### SuccessfulPayment
 
-    SuccessfulPayment(currency: String, total_amount: Integer, invoice_payload: String, shipping_option_id: String, order_info: OrderInfo, telegram_payment_charge_id: String, provider_payment_charge_id: String)
+    SuccessfulPayment(currency: String, total_amount: Integer, invoice_payload: String, subscription_expiration_date: Integer, is_recurring: Boolean, is_first_recurring: Boolean, shipping_option_id: String, order_info: OrderInfo, telegram_payment_charge_id: String, provider_payment_charge_id: String)
 
-<p>This object contains basic information about a successful payment.</p>
+<p>This object contains basic information about a successful payment. Note that if the buyer initiates a chargeback with the relevant payment provider following this transaction, the funds may be debited from your balance. This is outside of Telegram's control.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | currency | String | true | Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a> |
 | total_amount | Integer | true | Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). |
-| invoice_payload | String | true | Bot specified invoice payload |
+| invoice_payload | String | true | Bot-specified invoice payload |
+| subscription_expiration_date | Integer | false | <em>Optional</em>. Expiration date of the subscription, in Unix time; for recurring payments only |
+| is_recurring | Boolean | false | <em>Optional</em>. <em>True</em>, if the payment is a recurring payment for a subscription |
+| is_first_recurring | Boolean | false | <em>Optional</em>. <em>True</em>, if the payment is the first payment for a subscription |
 | shipping_option_id | String | false | <em>Optional</em>. Identifier of the shipping option chosen by the user |
 | order_info | OrderInfo | false | <em>Optional</em>. Order information provided by the user |
 | telegram_payment_charge_id | String | true | Telegram payment identifier |
 | provider_payment_charge_id | String | true | Provider payment identifier |
+
+#### RefundedPayment
+
+    RefundedPayment(currency: String, total_amount: Integer, invoice_payload: String, telegram_payment_charge_id: String, provider_payment_charge_id: String)
+
+<p>This object contains basic information about a refunded payment.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| currency | String | true | Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. Currently, always “XTR” |
+| total_amount | Integer | true | Total refunded price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code>, <code>total_amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). |
+| invoice_payload | String | true | Bot-specified invoice payload |
+| telegram_payment_charge_id | String | true | Telegram payment identifier |
+| provider_payment_charge_id | String | false | <em>Optional</em>. Provider payment identifier |
 
 #### ShippingQuery
 
@@ -4092,7 +5141,7 @@
 |---|---|---|---|
 | id | String | true | Unique query identifier |
 | from | User | true | User who sent the query |
-| invoice_payload | String | true | Bot specified invoice payload |
+| invoice_payload | String | true | Bot-specified invoice payload |
 | shipping_address | ShippingAddress | true | User specified shipping address |
 
 #### PreCheckoutQuery
@@ -4107,15 +5156,182 @@
 | from | User | true | User who sent the query |
 | currency | String | true | Three-letter ISO 4217 <a href="/bots/payments#supported-currencies">currency</a> code, or “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a> |
 | total_amount | Integer | true | Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). |
-| invoice_payload | String | true | Bot specified invoice payload |
+| invoice_payload | String | true | Bot-specified invoice payload |
 | shipping_option_id | String | false | <em>Optional</em>. Identifier of the shipping option chosen by the user |
 | order_info | OrderInfo | false | <em>Optional</em>. Order information provided by the user |
+
+#### PaidMediaPurchased
+
+    PaidMediaPurchased(from: User, paid_media_payload: String)
+
+<p>This object contains information about a paid media purchase.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| from | User | true | User who purchased the media |
+| paid_media_payload | String | true | Bot-specified paid media payload |
+
+#### RevenueWithdrawalStatePending
+
+    RevenueWithdrawalStatePending(type: String)
+
+<p>The withdrawal is in progress.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the state, always “pending” |
+
+#### RevenueWithdrawalStateSucceeded
+
+    RevenueWithdrawalStateSucceeded(type: String, date: Integer, url: String)
+
+<p>The withdrawal succeeded.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the state, always “succeeded” |
+| date | Integer | true | Date the withdrawal was completed in Unix time |
+| url | String | true | An HTTPS URL that can be used to see transaction details |
+
+#### RevenueWithdrawalStateFailed
+
+    RevenueWithdrawalStateFailed(type: String)
+
+<p>The withdrawal failed and the transaction was refunded.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the state, always “failed” |
+
+#### AffiliateInfo
+
+    AffiliateInfo(affiliate_user: User, affiliate_chat: Chat, commission_per_mille: Integer, amount: Integer, nanostar_amount: Integer)
+
+<p>Contains information about the affiliate that received a commission via this transaction.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| affiliate_user | User | false | <em>Optional</em>. The bot or the user that received an affiliate commission if it was received by a bot or a user |
+| affiliate_chat | Chat | false | <em>Optional</em>. The chat that received an affiliate commission if it was received by a chat |
+| commission_per_mille | Integer | true | The number of Telegram Stars received by the affiliate for each 1000 Telegram Stars received by the bot from referred users |
+| amount | Integer | true | Integer amount of Telegram Stars received by the affiliate from the transaction, rounded to 0; can be negative for refunds |
+| nanostar_amount | Integer | false | <em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars received by the affiliate; from -999999999 to 999999999; can be negative for refunds |
+
+#### TransactionPartnerUser
+
+    TransactionPartnerUser(type: String, transaction_type: String, user: User, affiliate: AffiliateInfo, invoice_payload: String, subscription_period: Integer, paid_media: List<PaidMedia>, paid_media_payload: String, gift: Gift, premium_subscription_duration: Integer)
+
+<p>Describes a transaction with a user.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the transaction partner, always “user” |
+| transaction_type | String | true | Type of the transaction, currently one of “invoice_payment” for payments via invoices, “paid_media_payment” for payments for paid media, “gift_purchase” for gifts sent by the bot, “premium_purchase” for Telegram Premium subscriptions gifted by the bot, “business_account_transfer” for direct transfers from managed business accounts |
+| user | User | true | Information about the user |
+| affiliate | AffiliateInfo | false | <em>Optional</em>. Information about the affiliate that received a commission via this transaction. Can be available only for “invoice_payment” and “paid_media_payment” transactions. |
+| invoice_payload | String | false | <em>Optional</em>. Bot-specified invoice payload. Can be available only for “invoice_payment” transactions. |
+| subscription_period | Integer | false | <em>Optional</em>. The duration of the paid subscription. Can be available only for “invoice_payment” transactions. |
+| paid_media | List<PaidMedia> | false | <em>Optional</em>. Information about the paid media bought by the user; for “paid_media_payment” transactions only |
+| paid_media_payload | String | false | <em>Optional</em>. Bot-specified paid media payload. Can be available only for “paid_media_payment” transactions. |
+| gift | Gift | false | <em>Optional</em>. The gift sent to the user by the bot; for “gift_purchase” transactions only |
+| premium_subscription_duration | Integer | false | <em>Optional</em>. Number of months the gifted Telegram Premium subscription will be active for; for “premium_purchase” transactions only |
+
+#### TransactionPartnerChat
+
+    TransactionPartnerChat(type: String, chat: Chat, gift: Gift)
+
+<p>Describes a transaction with a chat.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the transaction partner, always “chat” |
+| chat | Chat | true | Information about the chat |
+| gift | Gift | false | <em>Optional</em>. The gift sent to the chat by the bot |
+
+#### TransactionPartnerAffiliateProgram
+
+    TransactionPartnerAffiliateProgram(type: String, sponsor_user: User, commission_per_mille: Integer)
+
+<p>Describes the affiliate program that issued the affiliate commission received via this transaction.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the transaction partner, always “affiliate_program” |
+| sponsor_user | User | false | <em>Optional</em>. Information about the bot that sponsored the affiliate program |
+| commission_per_mille | Integer | true | The number of Telegram Stars received by the bot for each 1000 Telegram Stars received by the affiliate program sponsor from referred users |
+
+#### TransactionPartnerFragment
+
+    TransactionPartnerFragment(type: String, withdrawal_state: RevenueWithdrawalState)
+
+<p>Describes a withdrawal transaction with Fragment.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the transaction partner, always “fragment” |
+| withdrawal_state | RevenueWithdrawalState | false | <em>Optional</em>. State of the transaction if the transaction is outgoing |
+
+#### TransactionPartnerTelegramAds
+
+    TransactionPartnerTelegramAds(type: String)
+
+<p>Describes a withdrawal transaction to the Telegram Ads platform.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the transaction partner, always “telegram_ads” |
+
+#### TransactionPartnerTelegramApi
+
+    TransactionPartnerTelegramApi(type: String, request_count: Integer)
+
+<p>Describes a transaction with payment for <a href="#paid-broadcasts">paid broadcasting</a>.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the transaction partner, always “telegram_api” |
+| request_count | Integer | true | The number of successful requests that exceeded regular limits and were therefore billed |
+
+#### TransactionPartnerOther
+
+    TransactionPartnerOther(type: String)
+
+<p>Describes a transaction with an unknown source or recipient.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the transaction partner, always “other” |
+
+#### StarTransaction
+
+    StarTransaction(id: String, amount: Integer, nanostar_amount: Integer, date: Integer, source: TransactionPartner, receiver: TransactionPartner)
+
+<p>Describes a Telegram Star transaction. Note that if the buyer initiates a chargeback with the payment provider from whom they acquired Stars (e.g., Apple, Google) following this transaction, the refunded Stars will be deducted from the bot's balance. This is outside of Telegram's control.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| id | String | true | Unique identifier of the transaction. Coincides with the identifier of the original transaction for refund transactions. Coincides with <em>SuccessfulPayment.telegram_payment_charge_id</em> for successful incoming payments from users. |
+| amount | Integer | true | Integer amount of Telegram Stars transferred by the transaction |
+| nanostar_amount | Integer | false | <em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars transferred by the transaction; from 0 to 999999999 |
+| date | Integer | true | Date the transaction was created in Unix time |
+| source | TransactionPartner | false | <em>Optional</em>. Source of an incoming transaction (e.g., a user purchasing goods or services, Fragment refunding a failed withdrawal). Only for incoming transactions |
+| receiver | TransactionPartner | false | <em>Optional</em>. Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions |
+
+#### StarTransactions
+
+    StarTransactions(transactions: List<StarTransaction>)
+
+<p>Contains a list of Telegram Star transactions.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| transactions | List<StarTransaction> | true | The list of transactions |
 
 
 ### Methods
 #### sendInvoice
 
-    sendInvoice(chat_id: IntegerOrString, message_thread_id: Integer, title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, start_parameter: String, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: InlineKeyboardMarkup)
+    sendInvoice(chat_id: IntegerOrString, message_thread_id: Integer, title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, start_parameter: String, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to send invoices. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -4125,7 +5341,7 @@
 | message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
 | title | String | true | Product name, 1-32 characters |
 | description | String | true | Product description, 1-255 characters |
-| payload | String | true | Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes. |
+| payload | String | true | Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes. |
 | provider_token | String | false | Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a>. Pass an empty string for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
 | currency | String | true | Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>. Pass “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
 | prices | List<LabeledPrice> | true | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
@@ -4146,24 +5362,27 @@
 | is_flexible | Boolean | false | Pass <em>True</em> if the final price depends on the shipping method. Ignored for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>. If empty, one 'Pay <code>total price</code>' button will be shown. If not empty, the first button must be a Pay button. |
 
 #### createInvoiceLink
 
-    createInvoiceLink(title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean)
+    createInvoiceLink(business_connection_id: String, title: String, description: String, payload: String, provider_token: String, currency: String, prices: List<LabeledPrice>, subscription_period: Integer, max_tip_amount: Integer, suggested_tip_amounts: List<Integer>, provider_data: String, photo_url: String, photo_size: Integer, photo_width: Integer, photo_height: Integer, need_name: Boolean, need_phone_number: Boolean, need_email: Boolean, need_shipping_address: Boolean, send_phone_number_to_provider: Boolean, send_email_to_provider: Boolean, is_flexible: Boolean)
 
 <p>Use this method to create a link for an invoice. Returns the created invoice link as <em>String</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the link will be created. For payments in <a href="https://t.me/BotNews/90">Telegram Stars</a> only. |
 | title | String | true | Product name, 1-32 characters |
 | description | String | true | Product description, 1-255 characters |
-| payload | String | true | Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes. |
+| payload | String | true | Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes. |
 | provider_token | String | false | Payment provider token, obtained via <a href="https://t.me/botfather">@BotFather</a>. Pass an empty string for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
 | currency | String | true | Three-letter ISO 4217 currency code, see <a href="/bots/payments#supported-currencies">more on currencies</a>. Pass “XTR” for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
 | prices | List<LabeledPrice> | true | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
+| subscription_period | Integer | false | The number of seconds the subscription will be active for before the next payment. The currency must be set to “XTR” (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 10000 Telegram Stars. |
 | max_tip_amount | Integer | false | The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href="/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in <a href="https://t.me/BotNews/90">Telegram Stars</a>. |
 | suggested_tip_amounts | List<Integer> | false | A JSON-serialized array of suggested amounts of tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>. |
 | provider_data | String | false | JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider. |
@@ -4190,7 +5409,7 @@
 | shipping_query_id | String | true | Unique identifier for the query to be answered |
 | ok | Boolean | true | Pass <em>True</em> if delivery to the specified address is possible and <em>False</em> if there are any problems (for example, if delivery to the specified address is not possible) |
 | shipping_options | List<ShippingOption> | false | Required if <em>ok</em> is <em>True</em>. A JSON-serialized array of available shipping options. |
-| error_message | String | false | Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user. |
+| error_message | String | false | Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains why it is impossible to complete the order (e.g. “Sorry, delivery to your desired address is unavailable”). Telegram will display this message to the user. |
 
 #### answerPreCheckoutQuery
 
@@ -4204,6 +5423,17 @@
 | ok | Boolean | true | Specify <em>True</em> if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order. Use <em>False</em> if there are any problems. |
 | error_message | String | false | Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user. |
 
+#### getStarTransactions
+
+    getStarTransactions(offset: Integer, limit: Integer)
+
+<p>Returns the bot's Telegram Star transactions in chronological order. On success, returns a <a href="#startransactions">StarTransactions</a> object.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| offset | Integer | false | Number of transactions to skip in the response |
+| limit | Integer | false | The maximum number of transactions to be retrieved. Values between 1-100 are accepted. Defaults to 100. |
+
 #### refundStarPayment
 
     refundStarPayment(user_id: Integer, telegram_payment_charge_id: String)
@@ -4214,6 +5444,18 @@
 |---|---|---|---|
 | user_id | Integer | true | Identifier of the user whose payment will be refunded |
 | telegram_payment_charge_id | String | true | Telegram payment identifier |
+
+#### editUserStarSubscription
+
+    editUserStarSubscription(user_id: Integer, telegram_payment_charge_id: String, is_canceled: Boolean)
+
+<p>Allows the bot to cancel or re-enable extension of a subscription paid in Telegram Stars. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| user_id | Integer | true | Identifier of the user whose subscription will be edited |
+| telegram_payment_charge_id | String | true | Telegram payment identifier for the subscription |
+| is_canceled | Boolean | true | Pass <em>True</em> to cancel extension of the user subscription; the subscription must be active up to the end of the current subscription period. Pass <em>False</em> to allow the user to re-enable a subscription that was previously canceled by the bot. |
 
 
 
@@ -4442,7 +5684,7 @@
 ### Methods
 #### sendGame
 
-    sendGame(business_connection_id: String, chat_id: Integer, message_thread_id: Integer, game_short_name: String, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: InlineKeyboardMarkup)
+    sendGame(business_connection_id: String, chat_id: Integer, message_thread_id: Integer, game_short_name: String, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: InlineKeyboardMarkup)
 
 <p>Use this method to send a game. On success, the sent <a href="#message">Message</a> is returned.</p>
 
@@ -4454,6 +5696,7 @@
 | game_short_name | String | true | Short name of the game, serves as the unique identifier for the game. Set up your games via <a href="https://t.me/botfather">@BotFather</a>. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
+| allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
 | message_effect_id | String | false | Unique identifier of the message effect to be added to the message; for private chats only |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | InlineKeyboardMarkup | false | A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game. |
